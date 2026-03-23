@@ -17,11 +17,21 @@ except ImportError:
     MinHash = None
     MinHashLSH = None
 
+# Fast fuzzy matching with fallback
 try:
-    from rapidfuzz import fuzz, ratio
+    from rapidfuzz import fuzz as _rfuzz
+    def _text_ratio(a: str, b: str) -> float:
+        return _rfuzz.ratio(a, b) / 100.0
+    def _partial_ratio(a: str, b: str) -> float:
+        return _rfuzz.partial_ratio(a, b) / 100.0
+    def _token_sort_ratio(a: str, b: str) -> float:
+        return _rfuzz.token_sort_ratio(a, b) / 100.0
 except ImportError:
-    fuzz = None
-    ratio = None
+    from difflib import SequenceMatcher
+    def _text_ratio(a: str, b: str) -> float:
+        return SequenceMatcher(None, a, b).ratio()
+    _partial_ratio = _text_ratio
+    _token_sort_ratio = _text_ratio
 
 from redup.core.scanner import CodeBlock
 
@@ -357,8 +367,8 @@ class FuzzySimilarityDetector:
         similarity += 0.1 * attr_similarity
         
         # Text content similarity (for HTML)
-        if sig1.text_content and sig2.text_content and fuzz is not None:
-            text_similarity = fuzz.ratio(sig1.text_content, sig2.text_content) / 100.0
+        if sig1.text_content and sig2.text_content:
+            text_similarity = _text_ratio(sig1.text_content, sig2.text_content)
             similarity += 0.1 * text_similarity
         
         # CSS properties similarity (for CSS)
@@ -392,10 +402,8 @@ class FuzzySimilarityDetector:
             val1, val2 = attrs1[key], attrs2[key]
             if val1 == val2:
                 value_similarities.append(1.0)
-            elif fuzz is not None:
-                value_similarities.append(fuzz.ratio(val1, val2) / 100.0)
             else:
-                value_similarities.append(0.0)
+                value_similarities.append(_text_ratio(val1, val2))
         
         if value_similarities:
             value_similarity = sum(value_similarities) / len(value_similarities)

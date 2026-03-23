@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redup"
-version = "0.3.31"
+version = "0.4.1"
 description = "Code duplication analyzer and refactoring planner for LLMs"
 readme = "README.md"
 license = "Apache-2.0"
@@ -35,10 +35,13 @@ dependencies = [
 
 [project.optional-dependencies]
 all = [
+    "redup[fast]",
     "redup[fuzzy]",
     "redup[ast]",
     "redup[lsh]",
+    "redup[semantic]",
 ]
+fast = ["xxhash>=3.0", "libcst>=1.0", "pybloom-live>=4.0"]
 fuzzy = ["rapidfuzz>=3.0"]
 ast = [
     "tree-sitter>=0.21",
@@ -77,6 +80,7 @@ ast = [
     "tree-sitter-vue>=0.20",
 ]
 lsh = ["datasketch>=1.6"]
+semantic = ["sentence-transformers>=2.0"]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",

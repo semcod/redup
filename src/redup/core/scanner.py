@@ -485,49 +485,11 @@ def _should_process_file(
 
 
 def _extract_function_blocks_python(content: str, file_path: str) -> list[CodeBlock]:
-    """Extract function blocks from Python code using AST."""
-    import ast
+    """Extract function blocks from Python code using libcst (fast) with ast fallback."""
+    from redup.core.python_parser import parse_python_functions, parsed_to_code_blocks
     
-    blocks = []
-    lines = content.splitlines()
-    
-    try:
-        tree = ast.parse(content)
-        
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                # Get function boundaries
-                start_line = node.lineno
-                end_line = node.end_lineno if hasattr(node, 'end_lineno') else start_line
-                
-                # Extract function text
-                func_lines = lines[start_line - 1:end_line]
-                func_text = '\\n'.join(func_lines)
-                
-                # Get class name if inside a class
-                class_name = None
-                for parent in ast.walk(tree):
-                    if isinstance(parent, ast.ClassDef):
-                        if (parent.lineno <= start_line <= 
-                            (parent.end_lineno if hasattr(parent, 'end_lineno') else float('inf'))):
-                            class_name = parent.name
-                            break
-                
-                block = CodeBlock(
-                    file=file_path,
-                    line_start=start_line,
-                    line_end=end_line,
-                    text=func_text,
-                    function_name=node.name,
-                    class_name=class_name
-                )
-                blocks.append(block)
-    
-    except SyntaxError:
-        # Return empty list for invalid Python
-        return []
-    
-    return blocks
+    parsed = parse_python_functions(content, file_path)
+    return parsed_to_code_blocks(parsed, file_path)
 
 
 def _extract_sliding_blocks(content: str, file_path: str) -> list[CodeBlock]:

@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-03-23
+
+### Other
+- Update VERSION
+- Update benchmarks/bench_libraries.py
+- Update project/duplication.toon
+
 ## [0.3.31] - 2026-03-23
 
 ## [0.3.30] - 2026-03-23

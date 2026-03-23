@@ -11,6 +11,22 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
+# Fast hash implementation with fallback
+try:
+    import xxhash
+    def _fast_hash(data: bytes) -> str:
+        return xxhash.xxh64(data).hexdigest()[:16]
+except ImportError:
+    def _fast_hash(data: bytes) -> str:
+        return hashlib.sha256(data).hexdigest()[:16]
+
+# Bloom filter for pre-screening
+try:
+    from pybloom_live import ScalableBloomFilter
+    _USE_BLOOM = True
+except ImportError:
+    _USE_BLOOM = False
+
 from redup.core.scanner import CodeBlock
 
 # Cache for normalization results - avoids re-parsing same text
@@ -183,10 +199,10 @@ def _normalize_constant(value: Any) -> str:
 
 
 def _hash_text(text: str, normalizer: Callable[[str], str]) -> str:
-    """Generic hash function with configurable normalizer - uses fast blake2b."""
+    """Generic hash function with configurable normalizer - uses fast xxhash or SHA-256 fallback."""
     normalized = normalizer(text)
-    # blake2b is significantly faster than sha256 for short inputs
-    return hashlib.blake2b(normalized.encode("utf-8"), digest_size=16).hexdigest()[:16]
+    # Use fast xxhash if available, otherwise fallback to SHA-256
+    return _fast_hash(normalized.encode("utf-8"))
 
 
 def hash_block(text: str) -> str:
@@ -221,6 +237,53 @@ def _hashed_block(block: CodeBlock) -> HashedBlock:
     )
 
 
+class BloomHashIndex:
+    """Two-pass hash index: Bloom filter eliminates uniques in O(1)."""
+
+    def __init__(self, expected_items: int = 100_000):
+        if _USE_BLOOM:
+            self._bloom = ScalableBloomFilter(
+                initial_capacity=expected_items,
+                error_rate=0.001,
+            )
+        else:
+            self._bloom = None
+        self._seen_hashes: set[str] = set()
+        self._candidates: dict[str, list] = defaultdict(list)
+
+    def add(self, hash_val: str, block: 'HashedBlock') -> bool:
+        """Add a hash. Returns True if this is a POTENTIAL duplicate.
+
+        First pass: Bloom filter says "maybe seen" or "definitely not seen".
+        Only "maybe seen" blocks go into the candidates dict.
+        """
+        if self._bloom is not None:
+            if hash_val in self._bloom:
+                # Maybe duplicate — add to candidates
+                self._candidates[hash_val].append(block)
+                return True
+            else:
+                # Definitely first time — skip
+                self._bloom.add(hash_val)
+                # Still need to track for the second occurrence
+                if hash_val in self._seen_hashes:
+                    self._candidates[hash_val].append(block)
+                    return True
+                self._seen_hashes.add(hash_val)
+                return False
+        else:
+            # Fallback: plain set
+            if hash_val in self._seen_hashes:
+                self._candidates[hash_val].append(block)
+                return True
+            self._seen_hashes.add(hash_val)
+            return False
+
+    def get_duplicate_groups(self) -> dict[str, list]:
+        """Return only groups with 2+ blocks."""
+        return {h: blocks for h, blocks in self._candidates.items() if len(blocks) > 1}
+
+
 @dataclass
 class HashedBlock:
     """A code block with its computed fingerprints."""
@@ -243,8 +306,10 @@ def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
 
     Only indexes function-level blocks (those with function_name set)
     and blocks above the minimum line threshold.
+    Uses Bloom filter pre-screening to eliminate unique blocks early.
     """
     index = HashIndex()
+    bloom = BloomHashIndex(expected_items=len(blocks))
 
     for block in blocks:
         if block.line_count < min_lines:
@@ -252,6 +317,8 @@ def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
 
         hb = _hashed_block(block)
 
+        # Bloom filter pre-screens — only potential duplicates enter the index
+        bloom.add(hb.exact_hash, hb)
         index.exact[hb.exact_hash].append(hb)
         index.structural[hb.structural_hash].append(hb)
 

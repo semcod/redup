@@ -14,6 +14,7 @@ class DuplicateType(str, Enum):
     STRUCTURAL = "structural"
     FUZZY = "fuzzy"
     NEAR_DUPLICATE = "near_duplicate"
+    SEMANTIC = "semantic"      # ← NOWY
 
 
 class RefactorAction(str, Enum):

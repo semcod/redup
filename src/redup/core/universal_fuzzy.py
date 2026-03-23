@@ -18,11 +18,8 @@ except ImportError:
     MinHash = None
     MinHashLSH = None
 
-try:
-    from rapidfuzz import fuzz, ratio
-except ImportError:
-    fuzz = None
-    ratio = None
+# Import rapidfuzz functions from fuzzy_similarity module
+from redup.core.fuzzy_similarity import _text_ratio, _partial_ratio, _token_sort_ratio
 
 from redup.core.scanner import CodeBlock
 
@@ -442,10 +439,8 @@ class UniversalFuzzyDetector:
             val1, val2 = meta1[key], meta2[key]
             if val1 == val2:
                 value_similarities.append(1.0)
-            elif fuzz is not None:
-                value_similarities.append(fuzz.ratio(val1, val2) / 100.0)
             else:
-                value_similarities.append(0.0)
+                value_similarities.append(_text_ratio(val1, val2))
         
         if value_similarities:
             value_similarity = sum(value_similarities) / len(value_similarities)

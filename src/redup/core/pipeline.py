@@ -519,6 +519,52 @@ def _find_near_duplicate_groups(
     return groups
 
 
+def _find_semantic_groups(
+    blocks: list[CodeBlock],
+    threshold: float = 0.80,
+) -> list[DuplicateGroup]:
+    """Tier 4: Semantic duplicate detection via embeddings."""
+    try:
+        from redup.core.semantic import SemanticDetector
+    except ImportError:
+        return []
+
+    detector = SemanticDetector(threshold=threshold)
+
+    # Only function-level blocks (skip sliding window noise)
+    func_blocks = [b for b in blocks if b.function_name]
+    if len(func_blocks) < 2:
+        return []
+
+    matches = detector.find_semantic_duplicates_fast(func_blocks)
+
+    groups: list[DuplicateGroup] = []
+    for i, match in enumerate(matches):
+        groups.append(DuplicateGroup(
+            id=f"M{i+1:04d}",
+            duplicate_type=DuplicateType.SEMANTIC,  # ← Use new semantic type
+            fragments=[
+                DuplicateFragment(
+                    file=match.block_a.file,
+                    line_start=match.block_a.line_start,
+                    line_end=match.block_a.line_end,
+                    text=match.block_a.text,
+                    function_name=match.block_a.function_name,
+                ),
+                DuplicateFragment(
+                    file=match.block_b.file,
+                    line_start=match.block_b.line_start,
+                    line_end=match.block_b.line_end,
+                    text=match.block_b.text,
+                    function_name=match.block_b.function_name,
+                ),
+            ],
+            similarity_score=match.similarity,
+        ))
+
+    return groups
+
+
 def analyze_optimized(
     config: ScanConfig | None = None,
     function_level_only: bool = False,
