@@ -1,5 +1,5 @@
 # goal.yaml - Goal configuration file
-# Generated: 2026-03-22 22:28:38
+# Generated: 2026-03-23 15:37:20
 # Documentation: https://github.com/wronai/goal#configuration
 #
 # This file configures Goal's behavior for:
@@ -20,8 +20,9 @@ project:
 versioning:
   strategy: semver
   files:
+  - VERSION
   - pyproject.toml:version
-  - src/redup/__init__.py:__version__
+  - venv/lib/python3.13/site-packages/markdown_it/__init__.py:__version__
   bump_rules:
     patch: 10
     minor: 50

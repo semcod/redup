@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from redup.core.models import (
     DuplicateFragment,
@@ -11,8 +11,8 @@ from redup.core.models import (
     RefactorSuggestion,
     ScanConfig,
 )
-from redup.core.scanner import scan_project
 from redup.core.pipeline import analyze
+from redup.core.scanner import scan_project
 
 __all__ = [
     "analyze",

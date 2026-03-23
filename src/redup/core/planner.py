@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-from collections import Counter
 
 from redup.core.models import (
     DuplicateGroup,
@@ -20,7 +19,7 @@ def _common_prefix(paths: list[str]) -> str:
         return ""
     parts_list = [p.split(os.sep) for p in paths]
     prefix: list[str] = []
-    for segments in zip(*parts_list):
+    for segments in zip(*parts_list, strict=True):
         if len(set(segments)) == 1:
             prefix.append(segments[0])
         else:

@@ -1,0 +1,96 @@
+{
+  "project_path": "/home/tom/github/semcod/redup",
+  "stats": {
+    "files_scanned": 16,
+    "total_lines": 1361,
+    "total_blocks": 38106,
+    "scan_time_ms": 370.7
+  },
+  "summary": {
+    "total_groups": 2,
+    "total_fragments": 4,
+    "total_saved_lines": 11
+  },
+  "groups": [
+    {
+      "id": "S0002",
+      "type": "structural",
+      "normalized_name": "find_exact_duplicates",
+      "similarity_score": 0.926,
+      "normalized_hash": "24a5629ddd7fbbc1",
+      "total_lines": 7,
+      "occurrences": 2,
+      "saved_lines_potential": 7,
+      "impact_score": 6.5,
+      "fragments": [
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 178,
+          "line_end": 184,
+          "function_name": "find_exact_duplicates",
+          "class_name": null
+        },
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 187,
+          "line_end": 193,
+          "function_name": "find_structural_duplicates",
+          "class_name": null
+        }
+      ]
+    },
+    {
+      "id": "S0001",
+      "type": "structural",
+      "normalized_name": "hash_block",
+      "similarity_score": 0.947,
+      "normalized_hash": "3530a2b7b9bf585c",
+      "total_lines": 4,
+      "occurrences": 2,
+      "saved_lines_potential": 4,
+      "impact_score": 3.8,
+      "fragments": [
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 125,
+          "line_end": 128,
+          "function_name": "hash_block",
+          "class_name": null
+        },
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 131,
+          "line_end": 134,
+          "function_name": "hash_block_structural",
+          "class_name": null
+        }
+      ]
+    }
+  ],
+  "refactor_suggestions": [
+    {
+      "group_id": "S0002",
+      "priority": 1,
+      "action": "extract_function",
+      "new_module": "src/redup/core/hasher.py/utils/find_exact_duplicates.py",
+      "function_name": "find_exact_duplicates",
+      "original_files": [
+        "src/redup/core/hasher.py"
+      ],
+      "risk_level": "low",
+      "rationale": "2 occurrences of 7-line block across 1 files — saves 7 lines"
+    },
+    {
+      "group_id": "S0001",
+      "priority": 2,
+      "action": "extract_function",
+      "new_module": "src/redup/core/hasher.py/utils/hash_block.py",
+      "function_name": "hash_block",
+      "original_files": [
+        "src/redup/core/hasher.py"
+      ],
+      "risk_level": "low",
+      "rationale": "2 occurrences of 4-line block across 1 files — saves 4 lines"
+    }
+  ]
+}

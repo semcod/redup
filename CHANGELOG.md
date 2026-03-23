@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-03-23
+
+### Docs
+- Update REFACTORING_SUMMARY.md
+- Update TODO.md
+- Update proxy_refactoring_plan.md
+
+### Other
+- Update .idea/misc.xml
+- Update .idea/redup.iml
+- Update cli_utilities_demo.py
+- Update project.sh
+- Update proxy_analysis/duplication.json
+- Update proxy_analysis/duplication.toon
+- Update proxy_analysis/duplication.yaml
+- Update redup_self_analysis/duplication.json
+- Update refactored_frontend_demo.py
+
 ## [0.1.1] - 2026-03-22
 
 ### Docs

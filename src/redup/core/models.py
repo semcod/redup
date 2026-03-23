@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 
 class DuplicateType(str, Enum):
@@ -59,8 +58,8 @@ class DuplicateFragment:
     line_start: int
     line_end: int
     text: str = ""
-    function_name: Optional[str] = None
-    class_name: Optional[str] = None
+    function_name: str | None = None
+    class_name: str | None = None
 
     @property
     def line_count(self) -> int:
@@ -76,7 +75,7 @@ class DuplicateGroup:
     fragments: list[DuplicateFragment] = field(default_factory=list)
     similarity_score: float = 1.0
     normalized_hash: str = ""
-    normalized_name: Optional[str] = None
+    normalized_name: str | None = None
 
     @property
     def occurrences(self) -> int:
@@ -107,8 +106,8 @@ class RefactorSuggestion:
     group_id: str
     action: RefactorAction
     new_module: str
-    function_name: Optional[str] = None
-    class_name: Optional[str] = None
+    function_name: str | None = None
+    class_name: str | None = None
     original_files: list[str] = field(default_factory=list)
     risk_level: RiskLevel = RiskLevel.LOW
     priority: int = 0
@@ -131,7 +130,7 @@ class DuplicationMap:
     """Complete result of a reDUP analysis run."""
 
     project_path: str = ""
-    config: Optional[ScanConfig] = None
+    config: ScanConfig | None = None
     groups: list[DuplicateGroup] = field(default_factory=list)
     suggestions: list[RefactorSuggestion] = field(default_factory=list)
     stats: ScanStats = field(default_factory=ScanStats)

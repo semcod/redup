@@ -1,0 +1,1058 @@
+project_path: /home/tom/github/wronai/proxy
+stats:
+  files_scanned: 113
+  total_lines: 18353
+  total_blocks: 608182
+  scan_time_ms: 4496.6
+summary:
+  total_groups: 21
+  total_fragments: 123
+  total_saved_lines: 465
+groups:
+- id: S0012
+  type: structural
+  normalized_name: dashboard_hook_js
+  similarity_score: 0.874
+  normalized_hash: 31f96c34051f8837
+  total_lines: 6
+  occurrences: 20
+  saved_lines_potential: 114
+  impact_score: 99.6
+  fragments:
+  - file: src/proxym/api/frontend.py
+    line_start: 85
+    line_end: 90
+    function_name: dashboard_hook_js
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 103
+    line_end: 108
+    function_name: dashboard_formatters_js
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 112
+    line_end: 117
+    function_name: dashboard_ui_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 121
+    line_end: 126
+    function_name: dashboard_models_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 130
+    line_end: 135
+    function_name: dashboard_accounts_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 139
+    line_end: 144
+    function_name: dashboard_layout_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 148
+    line_end: 153
+    function_name: dashboard_overview_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 157
+    line_end: 162
+    function_name: dashboard_vms_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 166
+    line_end: 171
+    function_name: dashboard_logs_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 175
+    line_end: 180
+    function_name: dashboard_voice_schemas_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 184
+    line_end: 189
+    function_name: dashboard_voice_engine_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 193
+    line_end: 198
+    function_name: dashboard_voice_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 202
+    line_end: 207
+    function_name: dashboard_projects_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 211
+    line_end: 216
+    function_name: dashboard_tickets_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 265
+    line_end: 270
+    function_name: dashboard_tools_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 274
+    line_end: 279
+    function_name: dashboard_home_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 283
+    line_end: 288
+    function_name: dashboard_tasks_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 292
+    line_end: 297
+    function_name: dashboard_system_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 319
+    line_end: 325
+    function_name: dashboard_setup_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 329
+    line_end: 335
+    function_name: dashboard_users_jsx
+    class_name: null
+- id: S0016
+  type: structural
+  normalized_name: tests_vscode
+  similarity_score: 0.901
+  normalized_hash: e454cd2c43dfe68b
+  total_lines: 4
+  occurrences: 19
+  saved_lines_potential: 72
+  impact_score: 64.9
+  fragments:
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 33
+    line_end: 36
+    function_name: tests_vscode
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 41
+    line_end: 44
+    function_name: tests_proxy
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 67
+    line_end: 70
+    function_name: tests_agent_setup
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 75
+    line_end: 78
+    function_name: tests_agent
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 100
+    line_end: 103
+    function_name: diagnose_proxy
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 108
+    line_end: 111
+    function_name: diagnose_vscode
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 125
+    line_end: 128
+    function_name: diagnose_agent
+    class_name: null
+  - file: src/proxym/cli/_groups/accounts_ctl.py
+    line_start: 22
+    line_end: 25
+    function_name: accounts_list
+    class_name: null
+  - file: src/proxym/cli/_groups/accounts_ctl.py
+    line_start: 47
+    line_end: 50
+    function_name: accounts_costs
+    class_name: null
+  - file: src/proxym/cli/_groups/observability_ctl.py
+    line_start: 22
+    line_end: 25
+    function_name: obs_errors
+    class_name: null
+  - file: src/proxym/cli/_groups/observability_ctl.py
+    line_start: 30
+    line_end: 33
+    function_name: obs_health
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 22
+    line_end: 25
+    function_name: vm_list
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 22
+    line_end: 25
+    function_name: vscode_start
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 30
+    line_end: 33
+    function_name: vscode_stop
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 38
+    line_end: 41
+    function_name: vscode_open
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 46
+    line_end: 49
+    function_name: vscode_logs
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 54
+    line_end: 57
+    function_name: vscode_status_cmd
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 62
+    line_end: 65
+    function_name: vscode_build
+    class_name: null
+  - file: src/proxym/cli/_groups/browser_ctl.py
+    line_start: 22
+    line_end: 25
+    function_name: browser_list
+    class_name: null
+- id: S0005
+  type: structural
+  normalized_name: status
+  similarity_score: 0.886
+  normalized_hash: 7b5988d226e8b994
+  total_lines: 4
+  occurrences: 19
+  saved_lines_potential: 72
+  impact_score: 63.8
+  fragments:
+  - file: src/proxym/ctl.py
+    line_start: 68
+    line_end: 71
+    function_name: status
+    class_name: null
+  - file: src/proxym/ctl.py
+    line_start: 77
+    line_end: 80
+    function_name: models
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 25
+    line_end: 28
+    function_name: tests_status
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 50
+    line_end: 53
+    function_name: tests_providers
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 59
+    line_end: 62
+    function_name: tests_extensions
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 92
+    line_end: 95
+    function_name: diagnose_all
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 117
+    line_end: 120
+    function_name: diagnose_providers
+    class_name: null
+  - file: src/proxym/cli/_groups/accounts_ctl.py
+    line_start: 56
+    line_end: 59
+    function_name: accounts_get
+    class_name: null
+  - file: src/proxym/cli/_groups/accounts_ctl.py
+    line_start: 66
+    line_end: 69
+    function_name: accounts_delete
+    class_name: null
+  - file: src/proxym/cli/_groups/context_ctl.py
+    line_start: 48
+    line_end: 51
+    function_name: context_stats
+    class_name: null
+  - file: src/proxym/cli/_groups/context_ctl.py
+    line_start: 57
+    line_end: 60
+    function_name: context_sessions
+    class_name: null
+  - file: src/proxym/cli/_groups/context_ctl.py
+    line_start: 66
+    line_end: 69
+    function_name: context_mcp
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 106
+    line_end: 109
+    function_name: vm_open
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 125
+    line_end: 128
+    function_name: vm_logs
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 134
+    line_end: 137
+    function_name: vm_delete
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 143
+    line_end: 146
+    function_name: vm_bulk_delete
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 152
+    line_end: 155
+    function_name: vm_console
+    class_name: null
+  - file: src/proxym/cli/_groups/browser_ctl.py
+    line_start: 41
+    line_end: 44
+    function_name: browser_sync
+    class_name: null
+  - file: src/proxym/cli/_groups/browser_ctl.py
+    line_start: 50
+    line_end: 53
+    function_name: browser_snapshot
+    class_name: null
+- id: S0014
+  type: structural
+  normalized_name: ticket
+  similarity_score: 0.857
+  normalized_hash: 94370ae67a066c9c
+  total_lines: 3
+  occurrences: 12
+  saved_lines_potential: 33
+  impact_score: 28.3
+  fragments:
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 22
+    line_end: 24
+    function_name: ticket
+    class_name: null
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 164
+    line_end: 166
+    function_name: sprint
+    class_name: null
+  - file: src/proxym/cli/_groups/projects_ctl.py
+    line_start: 15
+    line_end: 17
+    function_name: project
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 17
+    line_end: 19
+    function_name: tests
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 84
+    line_end: 86
+    function_name: diagnose
+    class_name: null
+  - file: src/proxym/cli/_groups/accounts_ctl.py
+    line_start: 15
+    line_end: 17
+    function_name: accounts
+    class_name: null
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 13
+    line_end: 15
+    function_name: tools
+    class_name: null
+  - file: src/proxym/cli/_groups/context_ctl.py
+    line_start: 15
+    line_end: 17
+    function_name: context
+    class_name: null
+  - file: src/proxym/cli/_groups/observability_ctl.py
+    line_start: 15
+    line_end: 17
+    function_name: obs
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 15
+    line_end: 17
+    function_name: vm
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 15
+    line_end: 17
+    function_name: vscode
+    class_name: null
+  - file: src/proxym/cli/_groups/browser_ctl.py
+    line_start: 15
+    line_end: 17
+    function_name: browser
+    class_name: null
+- id: E0004
+  type: exact
+  normalized_name: _make_args
+  similarity_score: 1.0
+  normalized_hash: d180235c79fb5c12
+  total_lines: 3
+  occurrences: 10
+  saved_lines_potential: 27
+  impact_score: 27.0
+  fragments:
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 14
+    line_end: 16
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/projects_ctl.py
+    line_start: 7
+    line_end: 9
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/diagnostics_ctl.py
+    line_start: 9
+    line_end: 11
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/accounts_ctl.py
+    line_start: 9
+    line_end: 11
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 7
+    line_end: 9
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/context_ctl.py
+    line_start: 9
+    line_end: 11
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/observability_ctl.py
+    line_start: 9
+    line_end: 11
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 9
+    line_end: 11
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/vscode_ctl.py
+    line_start: 9
+    line_end: 11
+    function_name: _make_args
+    class_name: null
+  - file: src/proxym/cli/_groups/browser_ctl.py
+    line_start: 9
+    line_end: 11
+    function_name: _make_args
+    class_name: null
+- id: S0015
+  type: structural
+  normalized_name: ticket_show
+  similarity_score: 0.913
+  normalized_hash: a464b9d28e6cac2a
+  total_lines: 4
+  occurrences: 7
+  saved_lines_potential: 24
+  impact_score: 21.9
+  fragments:
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 99
+    line_end: 102
+    function_name: ticket_show
+    class_name: null
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 146
+    line_end: 149
+    function_name: ticket_delete
+    class_name: null
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 155
+    line_end: 158
+    function_name: ticket_board
+    class_name: null
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 172
+    line_end: 175
+    function_name: sprint_list
+    class_name: null
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 193
+    line_end: 196
+    function_name: sprint_show
+    class_name: null
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 214
+    line_end: 217
+    function_name: sprint_delete
+    class_name: null
+  - file: src/proxym/cli/_groups/tickets_ctl.py
+    line_start: 223
+    line_end: 226
+    function_name: sprint_board
+    class_name: null
+- id: S0013
+  type: structural
+  normalized_name: dashboard_diag_helpers_jsx
+  similarity_score: 0.911
+  normalized_hash: f80d5e19395b3c2e
+  total_lines: 6
+  occurrences: 5
+  saved_lines_potential: 24
+  impact_score: 21.9
+  fragments:
+  - file: src/proxym/api/frontend.py
+    line_start: 220
+    line_end: 225
+    function_name: dashboard_diag_helpers_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 229
+    line_end: 234
+    function_name: dashboard_diag_infrastructure_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 238
+    line_end: 243
+    function_name: dashboard_diag_config_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 247
+    line_end: 252
+    function_name: dashboard_diag_extensions_jsx
+    class_name: null
+  - file: src/proxym/api/frontend.py
+    line_start: 256
+    line_end: 261
+    function_name: dashboard_diag_agent_jsx
+    class_name: null
+- id: S0018
+  type: structural
+  normalized_name: tools_cancel
+  similarity_score: 0.955
+  normalized_hash: b944e8ab3c70b6a1
+  total_lines: 7
+  occurrences: 3
+  saved_lines_potential: 14
+  impact_score: 13.4
+  fragments:
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 127
+    line_end: 133
+    function_name: tools_cancel
+    class_name: null
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 139
+    line_end: 145
+    function_name: tools_retry
+    class_name: null
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 151
+    line_end: 157
+    function_name: tools_repair
+    class_name: null
+- id: S0010
+  type: structural
+  normalized_name: tool_vm_start
+  similarity_score: 0.965
+  normalized_hash: 8cf09e6be08ff017
+  total_lines: 10
+  occurrences: 2
+  saved_lines_potential: 10
+  impact_score: 9.6
+  fragments:
+  - file: src/proxym/mcp/_tools_vm.py
+    line_start: 71
+    line_end: 80
+    function_name: tool_vm_start
+    class_name: null
+  - file: src/proxym/mcp/_tools_vm.py
+    line_start: 84
+    line_end: 93
+    function_name: tool_vm_stop
+    class_name: null
+- id: S0009
+  type: structural
+  normalized_name: cmd_ticket_delete
+  similarity_score: 0.893
+  normalized_hash: 6b2a639a1224f8df
+  total_lines: 9
+  occurrences: 2
+  saved_lines_potential: 9
+  impact_score: 8.0
+  fragments:
+  - file: src/proxym/cli/tickets.py
+    line_start: 177
+    line_end: 185
+    function_name: cmd_ticket_delete
+    class_name: null
+  - file: src/proxym/cli/tickets.py
+    line_start: 280
+    line_end: 288
+    function_name: cmd_sprint_delete
+    class_name: null
+- id: S0020
+  type: structural
+  normalized_name: vm_start
+  similarity_score: 0.932
+  normalized_hash: 7eb5abcf11f1f383
+  total_lines: 4
+  occurrences: 3
+  saved_lines_potential: 8
+  impact_score: 7.5
+  fragments:
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 49
+    line_end: 52
+    function_name: vm_start
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 68
+    line_end: 71
+    function_name: vm_pause
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 77
+    line_end: 80
+    function_name: vm_resume
+    class_name: null
+- id: E0003
+  type: exact
+  normalized_name: _extract_system_text
+  similarity_score: 1.0
+  normalized_hash: 7d27ac5ee4688ae7
+  total_lines: 7
+  occurrences: 2
+  saved_lines_potential: 7
+  impact_score: 7.0
+  fragments:
+  - file: src/proxym/context/detector.py
+    line_start: 184
+    line_end: 190
+    function_name: _extract_system_text
+    class_name: null
+  - file: src/proxym/router/__init__.py
+    line_start: 352
+    line_end: 357
+    function_name: _extract_system_text
+    class_name: null
+- id: S0021
+  type: structural
+  normalized_name: vm_switch
+  similarity_score: 0.861
+  normalized_hash: 1b4ccb011fbf89a1
+  total_lines: 4
+  occurrences: 3
+  saved_lines_potential: 8
+  impact_score: 6.9
+  fragments:
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 97
+    line_end: 100
+    function_name: vm_switch
+    class_name: null
+  - file: src/proxym/cli/_groups/vms_ctl.py
+    line_start: 116
+    line_end: 119
+    function_name: vm_ssh
+    class_name: null
+  - file: src/proxym/cli/_groups/browser_ctl.py
+    line_start: 32
+    line_end: 35
+    function_name: browser_assign
+    class_name: null
+- id: S0019
+  type: structural
+  normalized_name: tools_start
+  similarity_score: 0.978
+  normalized_hash: acd1c3bc1dfda26a
+  total_lines: 7
+  occurrences: 2
+  saved_lines_potential: 7
+  impact_score: 6.8
+  fragments:
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 162
+    line_end: 168
+    function_name: tools_start
+    class_name: null
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 173
+    line_end: 179
+    function_name: tools_stop
+    class_name: null
+- id: S0017
+  type: structural
+  normalized_name: tools_show
+  similarity_score: 0.897
+  normalized_hash: 66d635d6b5587670
+  total_lines: 7
+  occurrences: 2
+  saved_lines_potential: 7
+  impact_score: 6.3
+  fragments:
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 45
+    line_end: 51
+    function_name: tools_show
+    class_name: null
+  - file: src/proxym/cli/_groups/tools_ctl.py
+    line_start: 115
+    line_end: 121
+    function_name: tools_job
+    class_name: null
+- id: S0008
+  type: structural
+  normalized_name: detect_chrome_profiles
+  similarity_score: 0.939
+  normalized_hash: 2f3895e4af9f3023
+  total_lines: 6
+  occurrences: 2
+  saved_lines_potential: 6
+  impact_score: 5.6
+  fragments:
+  - file: src/proxym/virt/browser_profiles.py
+    line_start: 174
+    line_end: 179
+    function_name: detect_chrome_profiles
+    class_name: null
+  - file: src/proxym/virt/browser_profiles.py
+    line_start: 182
+    line_end: 187
+    function_name: detect_chromium_profiles
+    class_name: null
+- id: E0001
+  type: exact
+  normalized_name: _accounts
+  similarity_score: 1.0
+  normalized_hash: ddbc4dd76a65d106
+  total_lines: 5
+  occurrences: 2
+  saved_lines_potential: 5
+  impact_score: 5.0
+  fragments:
+  - file: src/proxym/dashboard/_system.py
+    line_start: 21
+    line_end: 25
+    function_name: _accounts
+    class_name: null
+  - file: src/proxym/dashboard/_costs.py
+    line_start: 14
+    line_end: 18
+    function_name: _accounts
+    class_name: null
+- id: E0002
+  type: exact
+  normalized_name: _vms
+  similarity_score: 1.0
+  normalized_hash: e44788c2be28813e
+  total_lines: 5
+  occurrences: 2
+  saved_lines_potential: 5
+  impact_score: 5.0
+  fragments:
+  - file: src/proxym/dashboard/_system.py
+    line_start: 28
+    line_end: 32
+    function_name: _vms
+    class_name: null
+  - file: src/proxym/dashboard/_vms.py
+    line_start: 15
+    line_end: 19
+    function_name: _vms
+    class_name: null
+- id: S0006
+  type: structural
+  normalized_name: start_executor
+  similarity_score: 0.954
+  normalized_hash: bf86bd7f56d65fff
+  total_lines: 5
+  occurrences: 2
+  saved_lines_potential: 5
+  impact_score: 4.8
+  fragments:
+  - file: src/proxym/dashboard/_tools_api.py
+    line_start: 657
+    line_end: 661
+    function_name: start_executor
+    class_name: null
+  - file: src/proxym/dashboard/_tools_api.py
+    line_start: 665
+    line_end: 669
+    function_name: stop_executor
+    class_name: null
+- id: S0007
+  type: structural
+  normalized_name: delete_ticket
+  similarity_score: 0.86
+  normalized_hash: e080569f5988b05e
+  total_lines: 5
+  occurrences: 2
+  saved_lines_potential: 5
+  impact_score: 4.3
+  fragments:
+  - file: src/proxym/dashboard/_tickets_api.py
+    line_start: 276
+    line_end: 280
+    function_name: delete_ticket
+    class_name: null
+  - file: src/proxym/dashboard/_tickets_api.py
+    line_start: 359
+    line_end: 363
+    function_name: delete_sprint
+    class_name: null
+- id: S0011
+  type: structural
+  normalized_name: test_proxy
+  similarity_score: 0.871
+  normalized_hash: fbc4943279c76f04
+  total_lines: 3
+  occurrences: 2
+  saved_lines_potential: 3
+  impact_score: 2.6
+  fragments:
+  - file: src/proxym/api/diagnostics.py
+    line_start: 191
+    line_end: 193
+    function_name: test_proxy
+    class_name: null
+  - file: src/proxym/api/diagnostics.py
+    line_start: 221
+    line_end: 223
+    function_name: test_agent_setup
+    class_name: null
+refactor_suggestions:
+- group_id: S0012
+  priority: 1
+  action: extract_function
+  new_module: src/proxym/api/frontend.py/utils/dashboard_hook_js.py
+  function_name: dashboard_hook_js
+  original_files:
+  - src/proxym/api/frontend.py
+  risk_level: low
+  rationale: 20 occurrences of 6-line block across 1 files — saves 114 lines
+- group_id: S0016
+  priority: 2
+  action: extract_function
+  new_module: src/proxym/cli/_groups/utils/tests_vscode.py
+  function_name: tests_vscode
+  original_files:
+  - src/proxym/cli/_groups/accounts_ctl.py
+  - src/proxym/cli/_groups/browser_ctl.py
+  - src/proxym/cli/_groups/diagnostics_ctl.py
+  - src/proxym/cli/_groups/observability_ctl.py
+  - src/proxym/cli/_groups/vms_ctl.py
+  - src/proxym/cli/_groups/vscode_ctl.py
+  risk_level: low
+  rationale: 19 occurrences of 4-line block across 6 files — saves 72 lines
+- group_id: S0005
+  priority: 3
+  action: extract_function
+  new_module: src/proxym/utils/status.py
+  function_name: status
+  original_files:
+  - src/proxym/cli/_groups/accounts_ctl.py
+  - src/proxym/cli/_groups/browser_ctl.py
+  - src/proxym/cli/_groups/context_ctl.py
+  - src/proxym/cli/_groups/diagnostics_ctl.py
+  - src/proxym/cli/_groups/vms_ctl.py
+  - src/proxym/ctl.py
+  risk_level: low
+  rationale: 19 occurrences of 4-line block across 6 files — saves 72 lines
+- group_id: S0014
+  priority: 4
+  action: extract_function
+  new_module: src/proxym/cli/_groups/utils/ticket.py
+  function_name: ticket
+  original_files:
+  - src/proxym/cli/_groups/accounts_ctl.py
+  - src/proxym/cli/_groups/browser_ctl.py
+  - src/proxym/cli/_groups/context_ctl.py
+  - src/proxym/cli/_groups/diagnostics_ctl.py
+  - src/proxym/cli/_groups/observability_ctl.py
+  - src/proxym/cli/_groups/projects_ctl.py
+  - src/proxym/cli/_groups/tickets_ctl.py
+  - src/proxym/cli/_groups/tools_ctl.py
+  - src/proxym/cli/_groups/vms_ctl.py
+  - src/proxym/cli/_groups/vscode_ctl.py
+  risk_level: low
+  rationale: 12 occurrences of 3-line block across 10 files — saves 33 lines
+- group_id: E0004
+  priority: 5
+  action: extract_function
+  new_module: src/proxym/cli/_groups/utils/_make_args.py
+  function_name: _make_args
+  original_files:
+  - src/proxym/cli/_groups/accounts_ctl.py
+  - src/proxym/cli/_groups/browser_ctl.py
+  - src/proxym/cli/_groups/context_ctl.py
+  - src/proxym/cli/_groups/diagnostics_ctl.py
+  - src/proxym/cli/_groups/observability_ctl.py
+  - src/proxym/cli/_groups/projects_ctl.py
+  - src/proxym/cli/_groups/tickets_ctl.py
+  - src/proxym/cli/_groups/tools_ctl.py
+  - src/proxym/cli/_groups/vms_ctl.py
+  - src/proxym/cli/_groups/vscode_ctl.py
+  risk_level: low
+  rationale: 10 occurrences of 3-line block across 10 files — saves 27 lines
+- group_id: S0015
+  priority: 6
+  action: extract_function
+  new_module: src/proxym/cli/_groups/tickets_ctl.py/utils/ticket_show.py
+  function_name: ticket_show
+  original_files:
+  - src/proxym/cli/_groups/tickets_ctl.py
+  risk_level: low
+  rationale: 7 occurrences of 4-line block across 1 files — saves 24 lines
+- group_id: S0013
+  priority: 7
+  action: extract_function
+  new_module: src/proxym/api/frontend.py/utils/dashboard_diag_helpers_jsx.py
+  function_name: dashboard_diag_helpers_jsx
+  original_files:
+  - src/proxym/api/frontend.py
+  risk_level: low
+  rationale: 5 occurrences of 6-line block across 1 files — saves 24 lines
+- group_id: S0018
+  priority: 8
+  action: extract_function
+  new_module: src/proxym/cli/_groups/tools_ctl.py/utils/tools_cancel.py
+  function_name: tools_cancel
+  original_files:
+  - src/proxym/cli/_groups/tools_ctl.py
+  risk_level: low
+  rationale: 3 occurrences of 7-line block across 1 files — saves 14 lines
+- group_id: S0010
+  priority: 9
+  action: extract_function
+  new_module: src/proxym/mcp/_tools_vm.py/utils/tool_vm_start.py
+  function_name: tool_vm_start
+  original_files:
+  - src/proxym/mcp/_tools_vm.py
+  risk_level: low
+  rationale: 2 occurrences of 10-line block across 1 files — saves 10 lines
+- group_id: S0009
+  priority: 10
+  action: extract_function
+  new_module: src/proxym/cli/tickets.py/utils/cmd_ticket_delete.py
+  function_name: cmd_ticket_delete
+  original_files:
+  - src/proxym/cli/tickets.py
+  risk_level: low
+  rationale: 2 occurrences of 9-line block across 1 files — saves 9 lines
+- group_id: S0020
+  priority: 11
+  action: extract_function
+  new_module: src/proxym/cli/_groups/vms_ctl.py/utils/vm_start.py
+  function_name: vm_start
+  original_files:
+  - src/proxym/cli/_groups/vms_ctl.py
+  risk_level: low
+  rationale: 3 occurrences of 4-line block across 1 files — saves 8 lines
+- group_id: E0003
+  priority: 12
+  action: extract_function
+  new_module: src/proxym/utils/_extract_system_text.py
+  function_name: _extract_system_text
+  original_files:
+  - src/proxym/context/detector.py
+  - src/proxym/router/__init__.py
+  risk_level: low
+  rationale: 2 occurrences of 7-line block across 2 files — saves 7 lines
+- group_id: S0021
+  priority: 13
+  action: extract_function
+  new_module: src/proxym/cli/_groups/utils/vm_switch.py
+  function_name: vm_switch
+  original_files:
+  - src/proxym/cli/_groups/browser_ctl.py
+  - src/proxym/cli/_groups/vms_ctl.py
+  risk_level: low
+  rationale: 3 occurrences of 4-line block across 2 files — saves 8 lines
+- group_id: S0019
+  priority: 14
+  action: extract_function
+  new_module: src/proxym/cli/_groups/tools_ctl.py/utils/tools_start.py
+  function_name: tools_start
+  original_files:
+  - src/proxym/cli/_groups/tools_ctl.py
+  risk_level: low
+  rationale: 2 occurrences of 7-line block across 1 files — saves 7 lines
+- group_id: S0017
+  priority: 15
+  action: extract_function
+  new_module: src/proxym/cli/_groups/tools_ctl.py/utils/tools_show.py
+  function_name: tools_show
+  original_files:
+  - src/proxym/cli/_groups/tools_ctl.py
+  risk_level: low
+  rationale: 2 occurrences of 7-line block across 1 files — saves 7 lines
+- group_id: S0008
+  priority: 16
+  action: extract_function
+  new_module: src/proxym/virt/browser_profiles.py/utils/detect_chrome_profiles.py
+  function_name: detect_chrome_profiles
+  original_files:
+  - src/proxym/virt/browser_profiles.py
+  risk_level: low
+  rationale: 2 occurrences of 6-line block across 1 files — saves 6 lines
+- group_id: E0001
+  priority: 17
+  action: extract_function
+  new_module: src/proxym/dashboard/utils/_accounts.py
+  function_name: _accounts
+  original_files:
+  - src/proxym/dashboard/_costs.py
+  - src/proxym/dashboard/_system.py
+  risk_level: low
+  rationale: 2 occurrences of 5-line block across 2 files — saves 5 lines
+- group_id: E0002
+  priority: 18
+  action: extract_function
+  new_module: src/proxym/dashboard/utils/_vms.py
+  function_name: _vms
+  original_files:
+  - src/proxym/dashboard/_system.py
+  - src/proxym/dashboard/_vms.py
+  risk_level: low
+  rationale: 2 occurrences of 5-line block across 2 files — saves 5 lines
+- group_id: S0006
+  priority: 19
+  action: extract_function
+  new_module: src/proxym/dashboard/_tools_api.py/utils/start_executor.py
+  function_name: start_executor
+  original_files:
+  - src/proxym/dashboard/_tools_api.py
+  risk_level: low
+  rationale: 2 occurrences of 5-line block across 1 files — saves 5 lines
+- group_id: S0007
+  priority: 20
+  action: extract_function
+  new_module: src/proxym/dashboard/_tickets_api.py/utils/delete_ticket.py
+  function_name: delete_ticket
+  original_files:
+  - src/proxym/dashboard/_tickets_api.py
+  risk_level: low
+  rationale: 2 occurrences of 5-line block across 1 files — saves 5 lines
+- group_id: S0011
+  priority: 21
+  action: extract_function
+  new_module: src/proxym/api/diagnostics.py/utils/test_proxy.py
+  function_name: test_proxy
+  original_files:
+  - src/proxym/api/diagnostics.py
+  risk_level: low
+  rationale: 2 occurrences of 3-line block across 1 files — saves 3 lines

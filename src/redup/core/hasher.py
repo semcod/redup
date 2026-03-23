@@ -23,7 +23,7 @@ def _normalize_text(text: str) -> str:
             continue
         if stripped.startswith('"""') or stripped.startswith("'''"):
             continue
-        stripped = re.sub(r"#.*$", "", stripped)
+        stripped = re.sub(r'#.*$', "", stripped)
         stripped = stripped.strip()
         if stripped:
             lines.append(stripped)
@@ -49,7 +49,7 @@ def _normalize_ast_text(text: str) -> str:
     normalized = _normalize_text(text)
     normalized = re.sub(r'"[^"]*"', '"__STR__"', normalized)
     normalized = re.sub(r"'[^']*'", "'__STR__'", normalized)
-    normalized = re.sub(r"\b\d+\.?\d*\b", "__NUM__", normalized)
+    normalized = re.sub(r'\b\d+\.?\d*\b', "__NUM__", normalized)
     return normalized
 
 
@@ -122,16 +122,20 @@ def _ast_to_normalized_string(tree: object) -> str:
     return " ".join(parts)
 
 
+def _hash_text(text: str, normalizer: callable) -> str:
+    """Generic SHA-256 hash function with configurable normalizer."""
+    normalized = normalizer(text)
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+
+
 def hash_block(text: str) -> str:
     """SHA-256 hash of normalized text."""
-    normalized = _normalize_text(text)
-    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+    return _hash_text(text, _normalize_text)
 
 
 def hash_block_structural(text: str) -> str:
     """SHA-256 hash of deeply normalized text (variable names replaced)."""
-    normalized = _normalize_ast_text(text)
-    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+    return _hash_text(text, _normalize_ast_text)
 
 
 @dataclass
@@ -175,22 +179,23 @@ def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
     return index
 
 
-def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
-    """Find groups of blocks with identical normalized text."""
+def _find_duplicates(hash_dict: dict[str, list[HashedBlock]]) -> dict[str, list[HashedBlock]]:
+    """Generic duplicate finder for any hash dictionary."""
     return {
         h: blocks
-        for h, blocks in index.exact.items()
+        for h, blocks in hash_dict.items()
         if len(blocks) > 1 and _blocks_from_different_locations(blocks)
     }
+
+
+def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
+    """Find groups of blocks with identical normalized text."""
+    return _find_duplicates(index.exact)
 
 
 def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
     """Find groups of blocks with identical structure (names may differ)."""
-    return {
-        h: blocks
-        for h, blocks in index.structural.items()
-        if len(blocks) > 1 and _blocks_from_different_locations(blocks)
-    }
+    return _find_duplicates(index.structural)
 
 
 def _blocks_from_different_locations(blocks: list[HashedBlock]) -> bool:

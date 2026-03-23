@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -29,6 +28,11 @@ class OutputFormat(str, Enum):
     all = "all"
 
 
+DEFAULT_PATH = Path(".")
+DEFAULT_FORMAT = OutputFormat.toon
+DEFAULT_OUTPUT: Path | None = None
+
+
 def _write_output(content: str, output: Path | None, suffix: str) -> None:
     """Write content to file or stdout."""
     if output:
@@ -43,19 +47,19 @@ def _write_output(content: str, output: Path | None, suffix: str) -> None:
 @app.command()
 def scan(
     path: Path = typer.Argument(
-        Path("."),
+        DEFAULT_PATH,
         help="Project root directory to scan.",
         exists=True,
         dir_okay=True,
         file_okay=False,
     ),
     format: OutputFormat = typer.Option(
-        OutputFormat.toon,
+        DEFAULT_FORMAT,
         "--format", "-f",
         help="Output format.",
     ),
-    output: Optional[Path] = typer.Option(
-        None,
+    output: Path | None = typer.Option(
+        DEFAULT_OUTPUT,
         "--output", "-o",
         help="Output directory or file path. Defaults to stdout.",
     ),
@@ -118,7 +122,7 @@ def scan(
             output_dir = path / "redup_output"
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        for fmt, renderer, suffix in [
+        for _fmt, renderer, suffix in [
             ("JSON", to_json, "json"),
             ("YAML", to_yaml, "yaml"),
             ("TOON", to_toon, "toon"),
@@ -139,8 +143,8 @@ def scan(
 def info() -> None:
     """Show reDUP version and configuration info."""
     typer.echo(f"reDUP v{redup.__version__}")
-    typer.echo(f"  Python package: redup")
-    typer.echo(f"  Repo: https://github.com/semcod/redup")
+    typer.echo("  Python package: redup")
+    typer.echo("  Repo: https://github.com/semcod/redup")
     typer.echo("")
     typer.echo("Optional dependencies:")
 

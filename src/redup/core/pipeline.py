@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-from collections import defaultdict
-
 from redup.core.hasher import (
     HashedBlock,
     build_hash_index,
     find_exact_duplicates,
     find_structural_duplicates,
 )
-from redup.core.matcher import match_candidates, refine_structural_matches
+from redup.core.matcher import refine_structural_matches
 from redup.core.models import (
     DuplicateFragment,
     DuplicateGroup,
@@ -19,7 +17,7 @@ from redup.core.models import (
     ScanConfig,
 )
 from redup.core.planner import generate_suggestions
-from redup.core.scanner import CodeBlock, ScannedFile, scan_project
+from redup.core.scanner import CodeBlock, scan_project
 
 
 def _blocks_to_group(

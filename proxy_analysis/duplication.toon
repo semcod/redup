@@ -1,0 +1,224 @@
+# redup/duplication | 21 groups | 113f 18353L | 2026-03-23
+
+SUMMARY:
+  files_scanned: 113
+  total_lines:   18353
+  dup_groups:    21
+  dup_fragments: 123
+  saved_lines:   465
+  scan_ms:       4497
+
+DUPLICATES[21] (ranked by impact):
+  [S0012] ! STRU  dashboard_hook_js  L=6 N=20 saved=114 sim=0.87
+      src/proxym/api/frontend.py:85-90  (dashboard_hook_js)
+      src/proxym/api/frontend.py:103-108  (dashboard_formatters_js)
+      src/proxym/api/frontend.py:112-117  (dashboard_ui_jsx)
+      src/proxym/api/frontend.py:121-126  (dashboard_models_jsx)
+      src/proxym/api/frontend.py:130-135  (dashboard_accounts_jsx)
+      src/proxym/api/frontend.py:139-144  (dashboard_layout_jsx)
+      src/proxym/api/frontend.py:148-153  (dashboard_overview_jsx)
+      src/proxym/api/frontend.py:157-162  (dashboard_vms_jsx)
+      src/proxym/api/frontend.py:166-171  (dashboard_logs_jsx)
+      src/proxym/api/frontend.py:175-180  (dashboard_voice_schemas_jsx)
+      src/proxym/api/frontend.py:184-189  (dashboard_voice_engine_jsx)
+      src/proxym/api/frontend.py:193-198  (dashboard_voice_jsx)
+      src/proxym/api/frontend.py:202-207  (dashboard_projects_jsx)
+      src/proxym/api/frontend.py:211-216  (dashboard_tickets_jsx)
+      src/proxym/api/frontend.py:265-270  (dashboard_tools_jsx)
+      src/proxym/api/frontend.py:274-279  (dashboard_home_jsx)
+      src/proxym/api/frontend.py:283-288  (dashboard_tasks_jsx)
+      src/proxym/api/frontend.py:292-297  (dashboard_system_jsx)
+      src/proxym/api/frontend.py:319-325  (dashboard_setup_jsx)
+      src/proxym/api/frontend.py:329-335  (dashboard_users_jsx)
+  [S0016] ! STRU  tests_vscode  L=4 N=19 saved=72 sim=0.90
+      src/proxym/cli/_groups/diagnostics_ctl.py:33-36  (tests_vscode)
+      src/proxym/cli/_groups/diagnostics_ctl.py:41-44  (tests_proxy)
+      src/proxym/cli/_groups/diagnostics_ctl.py:67-70  (tests_agent_setup)
+      src/proxym/cli/_groups/diagnostics_ctl.py:75-78  (tests_agent)
+      src/proxym/cli/_groups/diagnostics_ctl.py:100-103  (diagnose_proxy)
+      src/proxym/cli/_groups/diagnostics_ctl.py:108-111  (diagnose_vscode)
+      src/proxym/cli/_groups/diagnostics_ctl.py:125-128  (diagnose_agent)
+      src/proxym/cli/_groups/accounts_ctl.py:22-25  (accounts_list)
+      src/proxym/cli/_groups/accounts_ctl.py:47-50  (accounts_costs)
+      src/proxym/cli/_groups/observability_ctl.py:22-25  (obs_errors)
+      src/proxym/cli/_groups/observability_ctl.py:30-33  (obs_health)
+      src/proxym/cli/_groups/vms_ctl.py:22-25  (vm_list)
+      src/proxym/cli/_groups/vscode_ctl.py:22-25  (vscode_start)
+      src/proxym/cli/_groups/vscode_ctl.py:30-33  (vscode_stop)
+      src/proxym/cli/_groups/vscode_ctl.py:38-41  (vscode_open)
+      src/proxym/cli/_groups/vscode_ctl.py:46-49  (vscode_logs)
+      src/proxym/cli/_groups/vscode_ctl.py:54-57  (vscode_status_cmd)
+      src/proxym/cli/_groups/vscode_ctl.py:62-65  (vscode_build)
+      src/proxym/cli/_groups/browser_ctl.py:22-25  (browser_list)
+  [S0005] ! STRU  status  L=4 N=19 saved=72 sim=0.89
+      src/proxym/ctl.py:68-71  (status)
+      src/proxym/ctl.py:77-80  (models)
+      src/proxym/cli/_groups/diagnostics_ctl.py:25-28  (tests_status)
+      src/proxym/cli/_groups/diagnostics_ctl.py:50-53  (tests_providers)
+      src/proxym/cli/_groups/diagnostics_ctl.py:59-62  (tests_extensions)
+      src/proxym/cli/_groups/diagnostics_ctl.py:92-95  (diagnose_all)
+      src/proxym/cli/_groups/diagnostics_ctl.py:117-120  (diagnose_providers)
+      src/proxym/cli/_groups/accounts_ctl.py:56-59  (accounts_get)
+      src/proxym/cli/_groups/accounts_ctl.py:66-69  (accounts_delete)
+      src/proxym/cli/_groups/context_ctl.py:48-51  (context_stats)
+      src/proxym/cli/_groups/context_ctl.py:57-60  (context_sessions)
+      src/proxym/cli/_groups/context_ctl.py:66-69  (context_mcp)
+      src/proxym/cli/_groups/vms_ctl.py:106-109  (vm_open)
+      src/proxym/cli/_groups/vms_ctl.py:125-128  (vm_logs)
+      src/proxym/cli/_groups/vms_ctl.py:134-137  (vm_delete)
+      src/proxym/cli/_groups/vms_ctl.py:143-146  (vm_bulk_delete)
+      src/proxym/cli/_groups/vms_ctl.py:152-155  (vm_console)
+      src/proxym/cli/_groups/browser_ctl.py:41-44  (browser_sync)
+      src/proxym/cli/_groups/browser_ctl.py:50-53  (browser_snapshot)
+  [S0014]   STRU  ticket  L=3 N=12 saved=33 sim=0.86
+      src/proxym/cli/_groups/tickets_ctl.py:22-24  (ticket)
+      src/proxym/cli/_groups/tickets_ctl.py:164-166  (sprint)
+      src/proxym/cli/_groups/projects_ctl.py:15-17  (project)
+      src/proxym/cli/_groups/diagnostics_ctl.py:17-19  (tests)
+      src/proxym/cli/_groups/diagnostics_ctl.py:84-86  (diagnose)
+      src/proxym/cli/_groups/accounts_ctl.py:15-17  (accounts)
+      src/proxym/cli/_groups/tools_ctl.py:13-15  (tools)
+      src/proxym/cli/_groups/context_ctl.py:15-17  (context)
+      src/proxym/cli/_groups/observability_ctl.py:15-17  (obs)
+      src/proxym/cli/_groups/vms_ctl.py:15-17  (vm)
+      src/proxym/cli/_groups/vscode_ctl.py:15-17  (vscode)
+      src/proxym/cli/_groups/browser_ctl.py:15-17  (browser)
+  [E0004]   EXAC  _make_args  L=3 N=10 saved=27 sim=1.00
+      src/proxym/cli/_groups/tickets_ctl.py:14-16  (_make_args)
+      src/proxym/cli/_groups/projects_ctl.py:7-9  (_make_args)
+      src/proxym/cli/_groups/diagnostics_ctl.py:9-11  (_make_args)
+      src/proxym/cli/_groups/accounts_ctl.py:9-11  (_make_args)
+      src/proxym/cli/_groups/tools_ctl.py:7-9  (_make_args)
+      src/proxym/cli/_groups/context_ctl.py:9-11  (_make_args)
+      src/proxym/cli/_groups/observability_ctl.py:9-11  (_make_args)
+      src/proxym/cli/_groups/vms_ctl.py:9-11  (_make_args)
+      src/proxym/cli/_groups/vscode_ctl.py:9-11  (_make_args)
+      src/proxym/cli/_groups/browser_ctl.py:9-11  (_make_args)
+  [S0015]   STRU  ticket_show  L=4 N=7 saved=24 sim=0.91
+      src/proxym/cli/_groups/tickets_ctl.py:99-102  (ticket_show)
+      src/proxym/cli/_groups/tickets_ctl.py:146-149  (ticket_delete)
+      src/proxym/cli/_groups/tickets_ctl.py:155-158  (ticket_board)
+      src/proxym/cli/_groups/tickets_ctl.py:172-175  (sprint_list)
+      src/proxym/cli/_groups/tickets_ctl.py:193-196  (sprint_show)
+      src/proxym/cli/_groups/tickets_ctl.py:214-217  (sprint_delete)
+      src/proxym/cli/_groups/tickets_ctl.py:223-226  (sprint_board)
+  [S0013]   STRU  dashboard_diag_helpers_jsx  L=6 N=5 saved=24 sim=0.91
+      src/proxym/api/frontend.py:220-225  (dashboard_diag_helpers_jsx)
+      src/proxym/api/frontend.py:229-234  (dashboard_diag_infrastructure_jsx)
+      src/proxym/api/frontend.py:238-243  (dashboard_diag_config_jsx)
+      src/proxym/api/frontend.py:247-252  (dashboard_diag_extensions_jsx)
+      src/proxym/api/frontend.py:256-261  (dashboard_diag_agent_jsx)
+  [S0018]   STRU  tools_cancel  L=7 N=3 saved=14 sim=0.95
+      src/proxym/cli/_groups/tools_ctl.py:127-133  (tools_cancel)
+      src/proxym/cli/_groups/tools_ctl.py:139-145  (tools_retry)
+      src/proxym/cli/_groups/tools_ctl.py:151-157  (tools_repair)
+  [S0010]   STRU  tool_vm_start  L=10 N=2 saved=10 sim=0.96
+      src/proxym/mcp/_tools_vm.py:71-80  (tool_vm_start)
+      src/proxym/mcp/_tools_vm.py:84-93  (tool_vm_stop)
+  [S0009]   STRU  cmd_ticket_delete  L=9 N=2 saved=9 sim=0.89
+      src/proxym/cli/tickets.py:177-185  (cmd_ticket_delete)
+      src/proxym/cli/tickets.py:280-288  (cmd_sprint_delete)
+  [S0020]   STRU  vm_start  L=4 N=3 saved=8 sim=0.93
+      src/proxym/cli/_groups/vms_ctl.py:49-52  (vm_start)
+      src/proxym/cli/_groups/vms_ctl.py:68-71  (vm_pause)
+      src/proxym/cli/_groups/vms_ctl.py:77-80  (vm_resume)
+  [E0003]   EXAC  _extract_system_text  L=7 N=2 saved=7 sim=1.00
+      src/proxym/context/detector.py:184-190  (_extract_system_text)
+      src/proxym/router/__init__.py:352-357  (_extract_system_text)
+  [S0021]   STRU  vm_switch  L=4 N=3 saved=8 sim=0.86
+      src/proxym/cli/_groups/vms_ctl.py:97-100  (vm_switch)
+      src/proxym/cli/_groups/vms_ctl.py:116-119  (vm_ssh)
+      src/proxym/cli/_groups/browser_ctl.py:32-35  (browser_assign)
+  [S0019]   STRU  tools_start  L=7 N=2 saved=7 sim=0.98
+      src/proxym/cli/_groups/tools_ctl.py:162-168  (tools_start)
+      src/proxym/cli/_groups/tools_ctl.py:173-179  (tools_stop)
+  [S0017]   STRU  tools_show  L=7 N=2 saved=7 sim=0.90
+      src/proxym/cli/_groups/tools_ctl.py:45-51  (tools_show)
+      src/proxym/cli/_groups/tools_ctl.py:115-121  (tools_job)
+  [S0008]   STRU  detect_chrome_profiles  L=6 N=2 saved=6 sim=0.94
+      src/proxym/virt/browser_profiles.py:174-179  (detect_chrome_profiles)
+      src/proxym/virt/browser_profiles.py:182-187  (detect_chromium_profiles)
+  [E0001]   EXAC  _accounts  L=5 N=2 saved=5 sim=1.00
+      src/proxym/dashboard/_system.py:21-25  (_accounts)
+      src/proxym/dashboard/_costs.py:14-18  (_accounts)
+  [E0002]   EXAC  _vms  L=5 N=2 saved=5 sim=1.00
+      src/proxym/dashboard/_system.py:28-32  (_vms)
+      src/proxym/dashboard/_vms.py:15-19  (_vms)
+  [S0006]   STRU  start_executor  L=5 N=2 saved=5 sim=0.95
+      src/proxym/dashboard/_tools_api.py:657-661  (start_executor)
+      src/proxym/dashboard/_tools_api.py:665-669  (stop_executor)
+  [S0007]   STRU  delete_ticket  L=5 N=2 saved=5 sim=0.86
+      src/proxym/dashboard/_tickets_api.py:276-280  (delete_ticket)
+      src/proxym/dashboard/_tickets_api.py:359-363  (delete_sprint)
+  [S0011]   STRU  test_proxy  L=3 N=2 saved=3 sim=0.87
+      src/proxym/api/diagnostics.py:191-193  (test_proxy)
+      src/proxym/api/diagnostics.py:221-223  (test_agent_setup)
+
+REFACTOR[21] (ranked by priority):
+  [1] ○ extract_function   → src/proxym/api/frontend.py/utils/dashboard_hook_js.py
+      WHY: 20 occurrences of 6-line block across 1 files — saves 114 lines
+      FILES: src/proxym/api/frontend.py
+  [2] ○ extract_function   → src/proxym/cli/_groups/utils/tests_vscode.py
+      WHY: 19 occurrences of 4-line block across 6 files — saves 72 lines
+      FILES: src/proxym/cli/_groups/accounts_ctl.py, src/proxym/cli/_groups/browser_ctl.py, src/proxym/cli/_groups/diagnostics_ctl.py, src/proxym/cli/_groups/observability_ctl.py, src/proxym/cli/_groups/vms_ctl.py +1 more
+  [3] ○ extract_function   → src/proxym/utils/status.py
+      WHY: 19 occurrences of 4-line block across 6 files — saves 72 lines
+      FILES: src/proxym/cli/_groups/accounts_ctl.py, src/proxym/cli/_groups/browser_ctl.py, src/proxym/cli/_groups/context_ctl.py, src/proxym/cli/_groups/diagnostics_ctl.py, src/proxym/cli/_groups/vms_ctl.py +1 more
+  [4] ○ extract_function   → src/proxym/cli/_groups/utils/ticket.py
+      WHY: 12 occurrences of 3-line block across 10 files — saves 33 lines
+      FILES: src/proxym/cli/_groups/accounts_ctl.py, src/proxym/cli/_groups/browser_ctl.py, src/proxym/cli/_groups/context_ctl.py, src/proxym/cli/_groups/diagnostics_ctl.py, src/proxym/cli/_groups/observability_ctl.py +5 more
+  [5] ○ extract_function   → src/proxym/cli/_groups/utils/_make_args.py
+      WHY: 10 occurrences of 3-line block across 10 files — saves 27 lines
+      FILES: src/proxym/cli/_groups/accounts_ctl.py, src/proxym/cli/_groups/browser_ctl.py, src/proxym/cli/_groups/context_ctl.py, src/proxym/cli/_groups/diagnostics_ctl.py, src/proxym/cli/_groups/observability_ctl.py +5 more
+  [6] ○ extract_function   → src/proxym/cli/_groups/tickets_ctl.py/utils/ticket_show.py
+      WHY: 7 occurrences of 4-line block across 1 files — saves 24 lines
+      FILES: src/proxym/cli/_groups/tickets_ctl.py
+  [7] ○ extract_function   → src/proxym/api/frontend.py/utils/dashboard_diag_helpers_jsx.py
+      WHY: 5 occurrences of 6-line block across 1 files — saves 24 lines
+      FILES: src/proxym/api/frontend.py
+  [8] ○ extract_function   → src/proxym/cli/_groups/tools_ctl.py/utils/tools_cancel.py
+      WHY: 3 occurrences of 7-line block across 1 files — saves 14 lines
+      FILES: src/proxym/cli/_groups/tools_ctl.py
+  [9] ○ extract_function   → src/proxym/mcp/_tools_vm.py/utils/tool_vm_start.py
+      WHY: 2 occurrences of 10-line block across 1 files — saves 10 lines
+      FILES: src/proxym/mcp/_tools_vm.py
+  [10] ○ extract_function   → src/proxym/cli/tickets.py/utils/cmd_ticket_delete.py
+      WHY: 2 occurrences of 9-line block across 1 files — saves 9 lines
+      FILES: src/proxym/cli/tickets.py
+  [11] ○ extract_function   → src/proxym/cli/_groups/vms_ctl.py/utils/vm_start.py
+      WHY: 3 occurrences of 4-line block across 1 files — saves 8 lines
+      FILES: src/proxym/cli/_groups/vms_ctl.py
+  [12] ○ extract_function   → src/proxym/utils/_extract_system_text.py
+      WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
+      FILES: src/proxym/context/detector.py, src/proxym/router/__init__.py
+  [13] ○ extract_function   → src/proxym/cli/_groups/utils/vm_switch.py
+      WHY: 3 occurrences of 4-line block across 2 files — saves 8 lines
+      FILES: src/proxym/cli/_groups/browser_ctl.py, src/proxym/cli/_groups/vms_ctl.py
+  [14] ○ extract_function   → src/proxym/cli/_groups/tools_ctl.py/utils/tools_start.py
+      WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
+      FILES: src/proxym/cli/_groups/tools_ctl.py
+  [15] ○ extract_function   → src/proxym/cli/_groups/tools_ctl.py/utils/tools_show.py
+      WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
+      FILES: src/proxym/cli/_groups/tools_ctl.py
+  [16] ○ extract_function   → src/proxym/virt/browser_profiles.py/utils/detect_chrome_profiles.py
+      WHY: 2 occurrences of 6-line block across 1 files — saves 6 lines
+      FILES: src/proxym/virt/browser_profiles.py
+  [17] ○ extract_function   → src/proxym/dashboard/utils/_accounts.py
+      WHY: 2 occurrences of 5-line block across 2 files — saves 5 lines
+      FILES: src/proxym/dashboard/_costs.py, src/proxym/dashboard/_system.py
+  [18] ○ extract_function   → src/proxym/dashboard/utils/_vms.py
+      WHY: 2 occurrences of 5-line block across 2 files — saves 5 lines
+      FILES: src/proxym/dashboard/_system.py, src/proxym/dashboard/_vms.py
+  [19] ○ extract_function   → src/proxym/dashboard/_tools_api.py/utils/start_executor.py
+      WHY: 2 occurrences of 5-line block across 1 files — saves 5 lines
+      FILES: src/proxym/dashboard/_tools_api.py
+  [20] ○ extract_function   → src/proxym/dashboard/_tickets_api.py/utils/delete_ticket.py
+      WHY: 2 occurrences of 5-line block across 1 files — saves 5 lines
+      FILES: src/proxym/dashboard/_tickets_api.py
+  [21] ○ extract_function   → src/proxym/api/diagnostics.py/utils/test_proxy.py
+      WHY: 2 occurrences of 3-line block across 1 files — saves 3 lines
+      FILES: src/proxym/api/diagnostics.py
+
+METRICS-TARGET:
+  dup_groups:  21 → 0
+  saved_lines: 465 lines recoverable

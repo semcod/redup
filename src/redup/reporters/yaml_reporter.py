@@ -10,7 +10,7 @@ def to_yaml(dup_map: DuplicationMap) -> str:
     try:
         import yaml
     except ImportError:
-        raise ImportError("pyyaml is required for YAML output: pip install pyyaml")
+        raise ImportError("pyyaml is required for YAML output: pip install pyyaml") from None
 
     from redup.reporters.json_reporter import _group_to_dict, _suggestion_to_dict
 
