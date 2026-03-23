@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redup"
-version = "0.3.3"
+version = "0.3.4"
 description = "Code duplication analyzer and refactoring planner for LLMs"
 readme = "README.md"
 license = "Apache-2.0"
@@ -66,6 +66,14 @@ ast = [
     "tree-sitter-swift>=0.20",
     "tree-sitter-objc>=0.20",
     "tree-sitter-c-sharp>=0.20",
+    "tree-sitter-lua>=0.20",
+    "tree-sitter-graphql>=0.20",
+    "tree-sitter-dockerfile>=0.20",
+    "tree-sitter-make>=0.20",
+    "tree-sitter-vim>=0.20",
+    "tree-sitter-nginx>=0.20",
+    "tree-sitter-svelte>=0.20",
+    "tree-sitter-vue>=0.20",
 ]
 lsh = ["datasketch>=1.6"]
 dev = [

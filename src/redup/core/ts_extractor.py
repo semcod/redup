@@ -335,6 +335,8 @@ def extract_functions_treesitter(source: str, file_path: str) -> list[CodeBlock]
         return _extract_functions_php(tree.root_node, source_lines, file_path)
     elif language_name == "bash":
         return _extract_functions_bash(tree.root_node, source_lines, file_path)
+    elif language_name == "lua":
+        return _extract_functions_lua(tree.root_node, source_lines, file_path)
     elif language_name in ("c", "cpp"):
         return _extract_functions_c_cpp(tree.root_node, source_lines, file_path)
     elif language_name in ("html", "xml"):

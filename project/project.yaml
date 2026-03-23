@@ -3,47 +3,32 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:36:27Z'
+  analyzed_at: '2026-03-23T16:47:22Z'
   tool: code2llm
   stats:
-    files: 17
-    lines: 4496
-    functions: 106
-    classes: 17
+    files: 21
+    lines: 5329
+    functions: 146
+    classes: 20
 health:
-  cc_avg: 4.5
-  critical_count: 9
+  cc_avg: 3.9
+  critical_count: 10
   critical_limit: 10
   duplicates: 0
   cycles: 0
   alerts:
-  - type: cc_exceeded
-    target: _get_tree_sitter_language
-    value: 28
-    limit: 15
-    severity: critical
-  - type: high_fan_out
-    target: _get_tree_sitter_language
-    value: 26
-    limit: 10
-    severity: critical
   - type: high_fan_out
     target: extract_functions_treesitter
-    value: 20
+    value: 24
     limit: 10
     severity: critical
   - type: cc_exceeded
     target: extract_functions_treesitter
-    value: 20
+    value: 23
     limit: 15
     severity: error
   - type: high_fan_out
     target: scan_project
-    value: 17
-    limit: 10
-    severity: error
-  - type: high_fan_out
-    target: scan_project_parallel
     value: 17
     limit: 10
     severity: error
@@ -57,10 +42,15 @@ health:
     value: 18
     limit: 15
     severity: warning
-  - type: cc_exceeded
+  - type: high_fan_out
     target: scan_project_parallel
-    value: 16
-    limit: 15
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _write_results
+    value: 13
+    limit: 10
     severity: warning
   - type: high_fan_out
     target: compare_scans
@@ -69,11 +59,6 @@ health:
     severity: warning
   - type: high_fan_out
     target: _find_structural_groups
-    value: 11
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: _write_results
     value: 11
     limit: 10
     severity: warning
@@ -87,19 +72,27 @@ health:
     value: 11
     limit: 10
     severity: warning
+  - type: high_fan_out
+    target: _find_files_optimized
+    value: 10
+    limit: 10
+    severity: warning
 modules:
 - path: src/redup/core/ts_extractor.py
-  lines: 493
-  classes: 0
-  methods: 8
-  cc_max: 28
+  lines: 757
+  classes: 1
+  methods: 22
+  cc_max: 23
   inbound_deps: 2
   exports:
+  - name: _LanguageRegistry
+    type: class
+    cc_avg: 3.0
   - name: extract_functions_treesitter
     type: function
-    cc: 20
+    cc: 23
     flag: split
-    fan_out: 20
+    fan_out: 24
   - name: get_supported_languages
     type: function
     cc: 4
@@ -124,33 +117,11 @@ modules:
   - name: format_diff_result
     type: function
     cc: 14
-- path: src/redup/core/parallel_scanner.py
-  lines: 185
-  classes: 0
-  methods: 4
-  cc_max: 16
-  inbound_deps: 1
-  exports:
-  - name: scan_project_parallel
-    type: function
-    cc: 16
-    flag: split
-    fan_out: 17
-- path: src/redup/reporters/markdown_reporter.py
-  lines: 90
-  classes: 0
-  methods: 1
-  cc_max: 12
-  inbound_deps: 1
-  exports:
-  - name: to_markdown
-    type: function
-    cc: 12
 - path: src/redup/cli_app/main.py
-  lines: 414
+  lines: 422
   classes: 0
   methods: 11
-  cc_max: 11
+  cc_max: 12
   inbound_deps: 0
   exports:
   - name: scan
@@ -170,8 +141,29 @@ modules:
   - name: info
     type: function
     cc: 3
+- path: src/redup/reporters/markdown_reporter.py
+  lines: 90
+  classes: 0
+  methods: 1
+  cc_max: 12
+  inbound_deps: 1
+  exports:
+  - name: to_markdown
+    type: function
+    cc: 12
+- path: src/redup/core/parallel_scanner.py
+  lines: 234
+  classes: 0
+  methods: 6
+  cc_max: 11
+  inbound_deps: 1
+  exports:
+  - name: scan_project_parallel
+    type: function
+    cc: 11
+    fan_out: 13
 - path: src/redup/core/pipeline.py
-  lines: 392
+  lines: 409
   classes: 0
   methods: 15
   cc_max: 11
@@ -222,6 +214,16 @@ modules:
     type: function
     cc: 8
     fan_out: 17
+- path: src/redup/reporters/enhanced_reporter.py
+  lines: 274
+  classes: 1
+  methods: 17
+  cc_max: 8
+  inbound_deps: 0
+  exports:
+  - name: EnhancedReporter
+    type: class
+    cc_avg: 3.5
 - path: src/redup/reporters/toon_reporter.py
   lines: 106
   classes: 0
@@ -265,11 +267,11 @@ modules:
     type: function
     cc: 6
 - path: src/redup/core/hasher.py
-  lines: 229
+  lines: 233
   classes: 2
   methods: 15
   cc_max: 6
-  inbound_deps: 3
+  inbound_deps: 5
   exports:
   - name: HashedBlock
     type: class
@@ -283,15 +285,15 @@ modules:
   - name: hash_block_structural
     type: function
     cc: 1
-  - name: build_hash_index
-    type: function
-    cc: 3
   - name: find_exact_duplicates
     type: function
     cc: 1
   - name: find_structural_duplicates
     type: function
     cc: 1
+  - name: build_hash_index
+    type: function
+    cc: 3
 - path: src/redup/core/config.py
   lines: 154
   classes: 0
@@ -308,6 +310,16 @@ modules:
   - name: create_sample_redup_toml
     type: function
     cc: 1
+- path: src/redup/core/utils/function_extractor.py
+  lines: 143
+  classes: 1
+  methods: 5
+  cc_max: 5
+  inbound_deps: 0
+  exports:
+  - name: FunctionExtractor
+    type: class
+    cc_avg: 1.5
 - path: src/redup/reporters/json_reporter.py
   lines: 73
   classes: 0
@@ -339,6 +351,26 @@ modules:
     type: function
     cc: 3
   - name: benchmark_feature_performance
+    type: function
+    cc: 3
+- path: src/redup/core/utils/duplicate_finders.py
+  lines: 36
+  classes: 0
+  methods: 1
+  cc_max: 3
+  inbound_deps: 0
+  exports:
+  - name: create_duplicate_finder
+    type: function
+    cc: 3
+- path: src/redup/core/utils/hash_utils.py
+  lines: 37
+  classes: 0
+  methods: 1
+  cc_max: 3
+  inbound_deps: 0
+  exports:
+  - name: create_hash_function
     type: function
     cc: 3
 - path: src/redup/core/models.py
@@ -405,6 +437,12 @@ modules:
   methods: 0
   cc_max: 0
   inbound_deps: 0
+- path: src/redup/core/utils/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
 - path: src/redup/reporters/__init__.py
   lines: 1
   classes: 0
@@ -418,48 +456,43 @@ modules:
   cc_max: 0
   inbound_deps: 0
 hotspots:
-- name: _get_tree_sitter_language
-  fan_out: 26
-  note: Get tree-sitter language parser.
 - name: extract_functions_treesitter
-  fan_out: 20
+  fan_out: 24
   note: Extract functions using tree-sitter for multi-language support.
 - name: scan_project
   fan_out: 17
   note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
     \ Tuple of ("
-- name: scan_project_parallel
-  fan_out: 17
-  note: Scan project files in parallel for better performance on large projects.
 - name: _load_duplication_map
   fan_out: 15
   note: Load a DuplicationMap from a JSON file.
+- name: scan_project_parallel
+  fan_out: 13
+  note: Scan project files in parallel for better performance on large projects.
+- name: _write_results
+  fan_out: 13
+  note: Write scan results to output files.
 - name: compare_scans
   fan_out: 13
   note: Compare two reDUP scan results and return the differences.
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
-- name: _write_results
-  fan_out: 11
-  note: Write scan results to output files.
 - name: check
   fan_out: 11
   note: Check project for duplicates and exit with non-zero code if thresholds exceeded.
 - name: config
   fan_out: 11
   note: Manage reDUP configuration.
+- name: _find_files_optimized
+  fan_out: 10
+  note: Optimized file discovery using set lookups and compiled patterns.
 refactoring:
   priorities:
-  - action: Split _get_tree_sitter_language (CC=28 → target CC<10)
+  - action: Split god module src/redup/core/ts_extractor.py (757L, 1 classes)
     impact: high
-    effort: low
-    module: ts_extractor.py
-  - action: Split scan_project_parallel (CC=16 → target CC<10)
-    impact: medium
-    effort: low
-    module: parallel_scanner.py
-  - action: Split extract_functions_treesitter (CC=20 → target CC<10)
+    effort: high
+  - action: Split extract_functions_treesitter (CC=23 → target CC<10)
     impact: medium
     effort: low
     module: ts_extractor.py
@@ -467,18 +500,18 @@ refactoring:
     impact: medium
     effort: low
     module: differ.py
-  - action: Reduce _get_tree_sitter_language fan-out (currently 26)
-    impact: medium
-    effort: medium
-  - action: Reduce extract_functions_treesitter fan-out (currently 20)
+  - action: Reduce extract_functions_treesitter fan-out (currently 24)
     impact: medium
     effort: medium
   - action: Reduce scan_project fan-out (currently 17)
     impact: medium
     effort: medium
+  - action: Reduce _load_duplication_map fan-out (currently 15)
+    impact: medium
+    effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 4.5
-  critical: 9
-  lines: 4496
+  cc_avg: 3.9
+  critical: 10
+  lines: 5329
   note: Automated analysis

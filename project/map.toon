@@ -1,26 +1,31 @@
-# redup | 25f 3431L | python:24,shell:1
+# redup | 30f 4264L | python:29,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[25]:
+M[30]:
   benchmark.py,111
   examples/01_basic_usage.py,58
   project.sh,17
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,414
+  src/redup/cli_app/main.py,422
   src/redup/core/__init__.py,1
   src/redup/core/config.py,154
   src/redup/core/differ.py,246
-  src/redup/core/hasher.py,229
+  src/redup/core/hasher.py,233
   src/redup/core/lsh_matcher.py,217
   src/redup/core/matcher.py,107
   src/redup/core/models.py,157
-  src/redup/core/parallel_scanner.py,185
-  src/redup/core/pipeline.py,392
+  src/redup/core/parallel_scanner.py,234
+  src/redup/core/pipeline.py,409
   src/redup/core/planner.py,110
   src/redup/core/scanner.py,201
-  src/redup/core/ts_extractor.py,493
+  src/redup/core/ts_extractor.py,757
+  src/redup/core/utils/__init__.py,1
+  src/redup/core/utils/duplicate_finders.py,36
+  src/redup/core/utils/function_extractor.py,143
+  src/redup/core/utils/hash_utils.py,37
   src/redup/reporters/__init__.py,1
+  src/redup/reporters/enhanced_reporter.py,274
   src/redup/reporters/json_reporter.py,73
   src/redup/reporters/markdown_reporter.py,90
   src/redup/reporters/toon_reporter.py,106
@@ -28,13 +33,26 @@ M[25]:
   src/sitecustomize.py,4
 D:
   src/redup/core/ts_extractor.py:
-    e: _get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,get_supported_languages,is_language_supported
+    e: _LanguageRegistry,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
+    _LanguageRegistry: __init__(0),get_language(1)  # Registry for tree-sitter language parsers...
     _get_tree_sitter_language(language_name)
     _extract_functions_javascript(node;source_lines;file_path)
     _extract_functions_go(node;source_lines;file_path)
     _extract_functions_rust(node;source_lines;file_path)
     _extract_functions_java(node;source_lines;file_path)
     extract_functions_treesitter(source;file_path)
+    _extract_functions_c_cpp(node;source_lines;file_path)
+    _extract_blocks_html_xml(node;source_lines;file_path)
+    _extract_blocks_css(node;source_lines;file_path)
+    _extract_blocks_sql(node;source_lines;file_path)
+    _extract_functions_c_sharp(node;source_lines;file_path)
+    _extract_functions_scala(node;source_lines;file_path)
+    _extract_functions_kotlin(node;source_lines;file_path)
+    _extract_functions_swift(node;source_lines;file_path)
+    _extract_functions_objc(node;source_lines;file_path)
+    _extract_functions_ruby(node;source_lines;file_path)
+    _extract_functions_php(node;source_lines;file_path)
+    _extract_functions_bash(node;source_lines;file_path)
     get_supported_languages()
     is_language_supported(file_path)
   src/redup/core/differ.py:
@@ -45,15 +63,22 @@ D:
     _groups_match(group1;group2)
     compare_scans(before_file;after_file)
     format_diff_result(diff)
-  src/redup/core/parallel_scanner.py:
-    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel
-    _scan_file_worker(args)
-    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
-    _is_test_file(file_path;project_root)
-    scan_project_parallel(root;extensions;exclude_patterns;include_tests;function_level_only;max_file_size;max_workers;min_files_for_parallel)
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
+  src/redup/cli_app/main.py:
+    e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
+    _write_output(content;output;suffix)
+    _build_config(path;extensions;min_lines;min_similarity;include_tests)
+    _build_config_with_file_support(path;extensions;min_lines;min_similarity;include_tests)
+    _print_scan_header(path;ext_list;min_lines;min_similarity)
+    _print_scan_summary(dup_map)
+    _write_results(dup_map;format;output;path)
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers)
+    diff(before;after)
+    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
+    config(init;show)
+    info()
   src/redup/core/pipeline.py:
     e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_parallel
     _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
@@ -71,19 +96,14 @@ D:
     _calculate_similarity(matches)
     _find_near_duplicate_groups(all_blocks;config)
     analyze_parallel(config;function_level_only;max_workers)
-  src/redup/cli_app/main.py:
-    e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
-    _write_output(content;output;suffix)
-    _build_config(path;extensions;min_lines;min_similarity;include_tests)
-    _build_config_with_file_support(path;extensions;min_lines;min_similarity;include_tests)
-    _print_scan_header(path;config)
-    _print_scan_summary(dup_map)
-    _write_results(dup_map;format;output;path)
-    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers)
-    diff(before;after)
-    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
-    config(init;show)
-    info()
+  src/redup/core/parallel_scanner.py:
+    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
+    _scan_file_worker(args)
+    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
+    _is_test_file(file_path;project_root)
+    scan_project_parallel(root;extensions;exclude_patterns;include_tests;function_level_only;max_file_size;max_workers;min_files_for_parallel;use_threading)
+    _find_files_optimized(root;extensions;exclude_patterns)
+    _is_test_file_cached(relative_path;test_parts)
   src/redup/core/lsh_matcher.py:
     e: _SimpleMinHash,LSHIndex,_create_minhash,_text_to_minhash_features,_create_simple_minhash,build_lsh_index,find_near_duplicates
     _SimpleMinHash: __init__(2),jaccard(1)  # Simple MinHash implementation for fallback without datasketc...
@@ -103,6 +123,9 @@ D:
     _extract_blocks_sliding(lines;min_lines)
     _extract_function_blocks_python(source;filepath)
     scan_project(config)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -127,7 +150,7 @@ D:
     match_candidates(candidates;min_similarity)
     refine_structural_matches(candidates;min_similarity)
   src/redup/core/hasher.py:
-    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,_hashed_block,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
+    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,_hashed_block,build_hash_index,_find_duplicates,_blocks_from_different_locations
     HashedBlock:  # A code block with its computed fingerprints...
     HashIndex:  # Index mapping hashes to blocks for fast lookup...
     _normalize_text(text)
@@ -139,11 +162,11 @@ D:
     _hash_text(text;normalizer)
     hash_block(text)
     hash_block_structural(text)
+    find_exact_duplicates(index)
+    find_structural_duplicates(index)
     _hashed_block(block)
     build_hash_index(blocks;min_lines)
     _find_duplicates(hash_dict)
-    find_exact_duplicates(index)
-    find_structural_duplicates(index)
     _blocks_from_different_locations(blocks)
   examples/01_basic_usage.py:
     e: main
@@ -161,6 +184,10 @@ D:
     _group_to_dict(group;include_snippets)
     _suggestion_to_dict(s)
     to_json(dup_map;indent;include_snippets)
+  src/redup/core/utils/function_extractor.py:
+    e: FunctionExtractor,_extract_java_class_name
+    FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
+    _extract_java_class_name(node)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
@@ -168,6 +195,12 @@ D:
     e: benchmark_sequential_vs_parallel,benchmark_feature_performance
     benchmark_sequential_vs_parallel()
     benchmark_feature_performance()
+  src/redup/core/utils/hash_utils.py:
+    e: create_hash_function
+    create_hash_function(normalizer)
+  src/redup/core/utils/duplicate_finders.py:
+    e: create_duplicate_finder
+    create_duplicate_finder(hash_type)
   src/redup/core/models.py:
     e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats,DuplicationMap
     DuplicateType(str,Enum):  # How the duplicate was detected...
@@ -179,10 +212,11 @@ D:
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
-  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/redup/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:
+  src/redup/core/utils/__init__.py:
   project.sh:

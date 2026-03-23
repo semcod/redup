@@ -264,7 +264,7 @@ class EnhancedReporter:
                     "fragments": len(g.fragments),
                     "similarity": g.similarity_score,
                     "impact_score": g.impact_score,
-                    "saved_lines": g.saved_lines
+                    "saved_lines": g.saved_lines_potential
                 }
                 for g in self.groups[:20]  # Top 20 groups
             ]
