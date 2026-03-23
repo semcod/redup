@@ -2,6 +2,7 @@
 clear
 #.venv/bin/pip install redup --upgrade
 pip install -e .
+.venv/bin/pip install vallm --upgrade
 .venv/bin/pip install glon --upgrade
 .venv/bin/pip install goal --upgrade
 .venv/bin/pip install code2logic --upgrade
@@ -16,3 +17,4 @@ rm project/analysis.yaml
 .venv/bin/code2docs ./ --readme-only
 .venv/bin/redup scan . --format toon --output ./project
 .venv/bin/redup scan . --format toon --output ./project
+.venv/bin/vallm batch . --recursive --output toon > ./project/validation.toon

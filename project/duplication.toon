@@ -1,8 +1,8 @@
-# redup/duplication | 5 groups | 36f 6213L | 2026-03-23
+# redup/duplication | 5 groups | 38f 7204L | 2026-03-23
 
 SUMMARY:
-  files_scanned: 36
-  total_lines:   6213
+  files_scanned: 38
+  total_lines:   7204
   dup_groups:    5
   dup_fragments: 17
   saved_lines:   63

@@ -4,19 +4,19 @@
 
 - **Project**: redup
 - **Language**: python
-- **Files**: 28
-- **Lines**: 7521
-- **Functions**: 207
-- **Classes**: 25
-- **Avg CC**: 3.8
-- **Critical (CC≥10)**: 18
+- **Files**: 30
+- **Lines**: 9097
+- **Functions**: 245
+- **Classes**: 32
+- **Avg CC**: 3.9
+- **Critical (CC≥10)**: 23
 
 ## Architecture
 
-### root/ (2 files, 129L, 2 functions)
+### root/ (2 files, 131L, 2 functions)
 
 - `benchmark.py` — 111L, 2 methods, CC↑3
-- `project.sh` — 18L, 0 methods, CC↑0
+- `project.sh` — 20L, 0 methods, CC↑0
 
 ### src/ (1 files, 4L, 0 functions)
 
@@ -27,19 +27,19 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 507L, 11 functions)
+### src/redup/cli_app/ (2 files, 601L, 12 functions)
 
-- `main.py` — 506L, 11 methods, CC↑14
+- `main.py` — 600L, 12 methods, CC↑19
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (17 files, 4422L, 148 functions)
+### src/redup/core/ (19 files, 5319L, 185 functions)
 
 - `differ.py` — 209L, 5 methods, CC↑14
 - `ultra_fast_scanner.py` — 358L, 8 methods, CC↑14
 - `memory_scanner.py` — 285L, 8 methods, CC↑13
-- `scanner.py` — 343L, 9 methods, CC↑13
+- `scanner.py` — 373L, 10 methods, CC↑13
 - `parallel_scanner.py` — 234L, 6 methods, CC↑11
-- _12 more files_
+- _14 more files_
 
 ### src/redup/core/utils/ (5 files, 294L, 12 functions)
 
@@ -60,6 +60,8 @@
 
 ## Key Exports
 
+- **UniversalFuzzyDetector** (class, CC̄=5.6)
+- **FuzzySimilarityDetector** (class, CC̄=5.3)
 - **LSHIndex** (class, CC̄=5.6)
 
 ## Hotspots (High Fan-Out)
@@ -80,18 +82,19 @@ Performance optimization
 Args:
     config: Scan 
 - **_find_duplicates_phase_lazy** — fan-out=15: Phase 3: Hash and find duplicates with caching and lazy evaluation.
-- **_write_results** — fan-out=15: Write scan results to output files.
+- **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/cli_app/main.py (506L, 0 classes) | high | high |
+| 1 | Split god module src/redup/cli_app/main.py (600L, 0 classes) | high | high |
 | 2 | Split god module src/redup/core/pipeline.py (664L, 0 classes) | high | high |
 | 3 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
-| 4 | Reduce scan_project_parallel_memory_optimized fan-out (currently 32) | medium | medium |
-| 5 | Reduce scan_project_memory_optimized fan-out (currently 27) | medium | medium |
-| 6 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
+| 4 | Split _apply_fuzzy_similarity (CC=19 → target CC<10) | medium | low |
+| 5 | Reduce scan_project_parallel_memory_optimized fan-out (currently 32) | medium | medium |
+| 6 | Reduce scan_project_memory_optimized fan-out (currently 27) | medium | medium |
+| 7 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
 
 ## Context for LLM
 

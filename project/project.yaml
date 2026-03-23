@@ -3,16 +3,16 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T18:48:46Z'
+  analyzed_at: '2026-03-23T20:13:23Z'
   tool: code2llm
   stats:
-    files: 28
-    lines: 7521
-    functions: 207
-    classes: 25
+    files: 30
+    lines: 9097
+    functions: 245
+    classes: 32
 health:
-  cc_avg: 3.8
-  critical_count: 18
+  cc_avg: 3.9
+  critical_count: 23
   critical_limit: 10
   duplicates: 1
   cycles: 0
@@ -48,17 +48,27 @@ health:
     limit: 10
     severity: error
   - type: high_fan_out
-    target: _write_results
-    value: 15
-    limit: 10
-    severity: error
-  - type: high_fan_out
     target: _load_duplication_map
     value: 15
     limit: 10
     severity: error
   - type: high_fan_out
+    target: _write_results
+    value: 15
+    limit: 10
+    severity: error
+  - type: cc_exceeded
+    target: _apply_fuzzy_similarity
+    value: 19
+    limit: 15
+    severity: warning
+  - type: high_fan_out
     target: analyze_optimized
+    value: 14
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _apply_fuzzy_similarity
     value: 14
     limit: 10
     severity: warning
@@ -73,12 +83,12 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: scan
-    value: 13
+    target: smart_hash_block
+    value: 12
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: smart_hash_block
+    target: scan
     value: 12
     limit: 10
     severity: warning
@@ -98,37 +108,27 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
+    target: _collect_files
+    value: 10
+    limit: 10
+    severity: warning
+  - type: high_fan_out
     target: _extract_blocks_sliding
-    value: 10
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: _extract_function_blocks_python
-    value: 10
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: _find_files_optimized
-    value: 10
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: extract_functions_treesitter
     value: 10
     limit: 10
     severity: warning
 modules:
 - path: src/redup/cli_app/main.py
-  lines: 506
+  lines: 600
   classes: 0
-  methods: 11
-  cc_max: 14
+  methods: 12
+  cc_max: 19
   inbound_deps: 0
   exports:
   - name: scan
     type: function
-    cc: 7
-    fan_out: 13
+    cc: 5
+    fan_out: 12
   - name: diff
     type: function
     cc: 3
@@ -203,9 +203,9 @@ modules:
     cc: 11
     fan_out: 32
 - path: src/redup/core/scanner.py
-  lines: 343
+  lines: 373
   classes: 2
-  methods: 9
+  methods: 10
   cc_max: 13
   inbound_deps: 4
   exports:
@@ -258,6 +258,28 @@ modules:
     type: function
     cc: 3
     fan_out: 13
+- path: src/redup/core/universal_fuzzy.py
+  lines: 454
+  classes: 3
+  methods: 16
+  cc_max: 11
+  inbound_deps: 0
+  exports:
+  - name: UniversalSignature
+    type: class
+    cc_avg: 0.0
+  - name: UniversalFuzzyExtractor
+    type: class
+    cc_avg: 2.8
+    methods:
+    - name: _extract_metadata
+      cc: 11
+  - name: UniversalFuzzyDetector
+    type: class
+    cc_avg: 5.6
+    methods:
+    - name: _compute_metadata_similarity
+      cc: 10
 - path: src/redup/reporters/code2llm_reporter.py
   lines: 209
   classes: 0
@@ -274,6 +296,31 @@ modules:
   - name: export_code2llm
     type: function
     cc: 1
+- path: src/redup/core/fuzzy_similarity.py
+  lines: 408
+  classes: 4
+  methods: 20
+  cc_max: 10
+  inbound_deps: 0
+  exports:
+  - name: ComponentSignature
+    type: class
+    cc_avg: 0.0
+  - name: HTMLComponentExtractor
+    type: class
+    cc_avg: 2.8
+  - name: CSSComponentExtractor
+    type: class
+    cc_avg: 4.7
+    methods:
+    - name: _detect_css_component_type
+      cc: 10
+  - name: FuzzySimilarityDetector
+    type: class
+    cc_avg: 5.3
+    methods:
+    - name: _compute_attribute_similarity
+      cc: 10
 - path: src/redup/core/lsh_matcher.py
   lines: 225
   classes: 2
@@ -531,7 +578,7 @@ modules:
     type: function
     cc: 3
 - path: src/redup/core/models.py
-  lines: 164
+  lines: 169
   classes: 9
   methods: 1
   cc_max: 1
@@ -565,7 +612,7 @@ modules:
     type: class
     cc_avg: 1.0
 - path: project.sh
-  lines: 18
+  lines: 20
   classes: 0
   methods: 0
   cc_max: 0
@@ -639,21 +686,21 @@ hotspots:
 - name: _find_duplicates_phase_lazy
   fan_out: 15
   note: 'Phase 3: Hash and find duplicates with caching and lazy evaluation.'
-- name: _write_results
-  fan_out: 15
-  note: Write scan results to output files.
 - name: _load_duplication_map
   fan_out: 15
   note: Load a DuplicationMap from a JSON file.
+- name: _write_results
+  fan_out: 15
+  note: Write scan results to output files.
 - name: analyze_optimized
   fan_out: 14
   note: Analysis pipeline, 14 stages
-- name: scan_project_parallel
-  fan_out: 13
-  note: Scan project files in parallel for better performance on large projects.
+- name: _apply_fuzzy_similarity
+  fan_out: 14
+  note: Apply fuzzy similarity detection to find similar components across all languages
 refactoring:
   priorities:
-  - action: Split god module src/redup/cli_app/main.py (506L, 0 classes)
+  - action: Split god module src/redup/cli_app/main.py (600L, 0 classes)
     impact: high
     effort: high
   - action: Split god module src/redup/core/pipeline.py (664L, 0 classes)
@@ -662,6 +709,10 @@ refactoring:
   - action: Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
     impact: high
     effort: high
+  - action: Split _apply_fuzzy_similarity (CC=19 → target CC<10)
+    impact: medium
+    effort: low
+    module: main.py
   - action: Reduce scan_project_parallel_memory_optimized fan-out (currently 32)
     impact: medium
     effort: medium
@@ -673,7 +724,7 @@ refactoring:
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 3.8
-  critical: 18
-  lines: 7521
+  cc_avg: 3.9
+  critical: 23
+  lines: 9097
   note: Automated analysis

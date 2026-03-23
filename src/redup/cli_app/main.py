@@ -142,6 +142,95 @@ def _print_scan_summary(dup_map: DuplicationMap) -> None:
     typer.echo("")
 
 
+def _apply_fuzzy_similarity(dup_map: DuplicationMap, threshold: float) -> DuplicationMap:
+    """Apply fuzzy similarity detection to find similar components across all languages."""
+    from redup.core.fuzzy_similarity import FuzzySimilarityDetector
+    from redup.core.universal_fuzzy import UniversalFuzzyDetector
+    
+    # Collect all code blocks for fuzzy analysis
+    all_blocks = []
+    for scanned_file in dup_map.scanned_files:
+        for block in scanned_file.blocks:
+            all_blocks.append(block)
+    
+    if not all_blocks:
+        typer.echo("🔍 No code blocks found for fuzzy analysis")
+        return dup_map
+    
+    typer.echo(f"🔍 Analyzing {len(all_blocks)} code blocks for universal fuzzy similarity...")
+    
+    # Use specialized detectors for HTML/CSS and universal for others
+    html_css_blocks = [block for block in all_blocks 
+                      if Path(block.file).suffix.lower() in ['.html', '.htm', '.css', '.scss', '.sass', '.less']]
+    
+    other_blocks = [block for block in all_blocks if block not in html_css_blocks]
+    
+    similar_pairs = []
+    
+    # Analyze HTML/CSS with specialized detector
+    if html_css_blocks:
+        typer.echo(f"  📝 Analyzing {len(html_css_blocks)} HTML/CSS blocks...")
+        html_css_detector = FuzzySimilarityDetector(similarity_threshold=threshold)
+        html_css_similar = html_css_detector.find_similar_components(html_css_blocks)
+        similar_pairs.extend(html_css_similar)
+        typer.echo(f"    ✨ Found {len(html_css_similar)} similar HTML/CSS component pairs")
+    
+    # Analyze other languages with universal detector
+    if other_blocks:
+        typer.echo(f"  🔧 Analyzing {len(other_blocks)} blocks from other languages...")
+        universal_detector = UniversalFuzzyDetector(similarity_threshold=threshold)
+        universal_similar = universal_detector.find_similar_components(other_blocks)
+        similar_pairs.extend(universal_similar)
+        typer.echo(f"    ✨ Found {len(universal_similar)} similar component pairs from other languages")
+    
+    if similar_pairs:
+        typer.echo(f"🎯 Total fuzzy similar components found: {len(similar_pairs)}")
+        
+        # Simplified reporting to reduce complexity
+        typer.echo(f"  📊 Language groups: {len(set(Path(b1.file).suffix + '+' + Path(b2.file).suffix for b1, b2, _ in similar_pairs))}")
+        
+        # Show top examples only
+        for block1, block2, similarity in similar_pairs[:5]:
+            typer.echo(f"    {block1.file} ↔ {block2.file}: {similarity:.2f}")
+        
+        if len(similar_pairs) > 5:
+            typer.echo(f"    ... and {len(similar_pairs) - 5} more")
+        
+        # Note: In production, you'd integrate these into DuplicationMap
+        # For now, we just report the findings
+        
+    else:
+        typer.echo("🔍 No fuzzy similar components found")
+    
+    return dup_map
+
+
+def _report_similarity_by_groups(similar_pairs):
+    """Extracted function to reduce complexity."""
+    lang_groups = {}
+    for block1, block2, similarity in similar_pairs:
+        lang1 = Path(block1.file).suffix
+        lang2 = Path(block2.file).suffix
+        comp_type = "unknown"
+        
+        # Try to get component type
+        try:
+            from redup.core.universal_fuzzy import UniversalFuzzyExtractor
+            extractor = UniversalFuzzyExtractor()
+            sig1 = extractor.extract_universal_signature(block1)
+            if sig1:
+                comp_type = sig1.component_type
+        except:
+            pass
+        
+        group_key = f"{lang1}+{lang2}:{comp_type}"
+        if group_key not in lang_groups:
+            lang_groups[group_key] = []
+        lang_groups[group_key].append((block1, block2, similarity))
+    
+    return lang_groups
+
+
 def _write_results(
     dup_map: DuplicationMap,
     format: str,
@@ -267,6 +356,16 @@ def scan(
         "--max-cache-mb",
         help="Maximum memory for file caching in MB (default: 512).",
     ),
+    fuzzy: bool = typer.Option(
+        False,
+        "--fuzzy/--no-fuzzy",
+        help="Enable fuzzy similarity detection for HTML/CSS components (default: disabled).",
+    ),
+    fuzzy_threshold: float = typer.Option(
+        0.8,
+        "--fuzzy-threshold",
+        help="Fuzzy similarity threshold (0.0-1.0, default: 0.8).",
+    ),
 ) -> None:
     """Scan a project for code duplicates and generate a refactoring map.
     
@@ -284,6 +383,10 @@ def scan(
             parallel, max_workers, incremental, memory_cache, max_cache_mb, functions_only
         )
 
+        # Add fuzzy options to config
+        config.fuzzy_enabled = fuzzy
+        config.fuzzy_threshold = fuzzy_threshold
+
         _print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
 
         # Choose analysis method
@@ -291,6 +394,10 @@ def scan(
             dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
         else:
             dup_map = analyze(config=config, function_level_only=functions_only)
+
+        # Apply fuzzy similarity detection if enabled
+        if fuzzy:
+            dup_map = _apply_fuzzy_similarity(dup_map, fuzzy_threshold)
 
         _print_scan_summary(dup_map)
         _write_results(dup_map, format, output, path)

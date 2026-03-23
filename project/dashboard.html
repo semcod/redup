@@ -60,17 +60,17 @@
 <p style="color:var(--muted);font-size:.85rem;">
   Analyzed 2026-03-23 by code2llm
   &nbsp;·&nbsp; Primary language: <strong>python</strong>
-  &nbsp;·&nbsp; Python: 35, Shell: 1
+  &nbsp;·&nbsp; Python: 37, Shell: 1
 </p>
 
 <div class="grid">
-  <div class="card"><div class="value">207</div><div class="label">Functions</div></div>
-  <div class="card"><div class="value">25</div><div class="label">Classes</div></div>
-  <div class="card"><div class="value">28</div><div class="label">Files</div></div>
-  <div class="card"><div class="value">7,521</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">245</div><div class="label">Functions</div></div>
+  <div class="card"><div class="value">32</div><div class="label">Classes</div></div>
+  <div class="card"><div class="value">30</div><div class="label">Files</div></div>
+  <div class="card"><div class="value">9,097</div><div class="label">Lines</div></div>
   <div class="card"><div class="value">2</div><div class="label">Languages</div></div>
-  <div class="card"><div class="value">3.8</div><div class="label">Avg CC</div></div>
-  <div class="card"><div class="value">18</div><div class="label">Critical (CC≥10)</div></div>
+  <div class="card"><div class="value">3.9</div><div class="label">Avg CC</div></div>
+  <div class="card"><div class="value">23</div><div class="label">Critical (CC≥10)</div></div>
   <div class="card"><div class="value">1</div><div class="label">Duplicates</div></div>
   <div class="card"><div class="value">0</div><div class="label">Cycles</div></div>
 </div>
@@ -94,14 +94,14 @@
   <div class="chart-container">
     <h2 style="border:none;margin:0 0 .5rem;">Evolution (2026-03-23)</h2>
     <div class="evo-cards">
-      <div class="card"><div class="value">3.8</div><div class="label">CC̄ →</div></div>
-      <div class="card"><div class="value">18</div><div class="label">Critical →</div></div>
-      <div class="card"><div class="value">7521</div><div class="label">Lines</div></div>
+      <div class="card"><div class="value">3.9</div><div class="label">CC̄ →</div></div>
+      <div class="card"><div class="value">23</div><div class="label">Critical →</div></div>
+      <div class="card"><div class="value">9097</div><div class="label">Lines</div></div>
     </div>
     <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
   </div>
   <div>
-    <h2>Top Modules (36)</h2>
+    <h2>Top Modules (38)</h2>
     <div class="card"><div class="table-wrap">
     <table>
       <thead><tr><th>Module</th><th>Path</th><th style="text-align:right">Lines</th><th style="text-align:right">Funcs</th><th style="text-align:right">Classes</th><th style="text-align:right">CC max</th></tr></thead>
@@ -125,10 +125,34 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>main.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/cli_app</td>
-                <td style="text-align:right">506</td>
-                <td style="text-align:right">11</td>
+                <td style="text-align:right">600</td>
+                <td style="text-align:right">12</td>
                 <td style="text-align:right">0</td>
-                <td style="text-align:right">14</td>
+                <td style="text-align:right">19</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>universal_fuzzy.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">454</td>
+                <td style="text-align:right">16</td>
+                <td style="text-align:right">3</td>
+                <td style="text-align:right">11</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>fuzzy_similarity.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">408</td>
+                <td style="text-align:right">20</td>
+                <td style="text-align:right">4</td>
+                <td style="text-align:right">10</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>scanner.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">373</td>
+                <td style="text-align:right">10</td>
+                <td style="text-align:right">2</td>
+                <td style="text-align:right">13</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>ultra_fast_scanner.py</td>
@@ -137,14 +161,6 @@
                 <td style="text-align:right">8</td>
                 <td style="text-align:right">0</td>
                 <td style="text-align:right">14</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>scanner.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">343</td>
-                <td style="text-align:right">9</td>
-                <td style="text-align:right">2</td>
-                <td style="text-align:right">13</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>memory_scanner.py</td>
@@ -213,7 +229,7 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>models.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">164</td>
+                <td style="text-align:right">169</td>
                 <td style="text-align:right">1</td>
                 <td style="text-align:right">9</td>
                 <td style="text-align:right">1</td>
@@ -249,22 +265,6 @@
                 <td style="text-align:right">2</td>
                 <td style="text-align:right">0</td>
                 <td style="text-align:right">3</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>planner.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">110</td>
-                <td style="text-align:right">5</td>
-                <td style="text-align:right">0</td>
-                <td style="text-align:right">7</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>matcher.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">107</td>
-                <td style="text-align:right">5</td>
-                <td style="text-align:right">1</td>
-                <td style="text-align:right">7</td>
             </tr></tbody>
     </table>
     </div></div>
@@ -320,21 +320,35 @@
             </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
-                <td>_write_results</td>
+                <td>_load_duplication_map</td>
                 <td>high_fan_out</td>
                 <td>15</td>
                 <td>10</td>
             </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
-                <td>_load_duplication_map</td>
+                <td>_write_results</td>
                 <td>high_fan_out</td>
                 <td>15</td>
                 <td>10</td>
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
+                <td>_apply_fuzzy_similarity</td>
+                <td>cc_exceeded</td>
+                <td>19</td>
+                <td>15</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
                 <td>analyze_optimized</td>
+                <td>high_fan_out</td>
+                <td>14</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>_apply_fuzzy_similarity</td>
                 <td>high_fan_out</td>
                 <td>14</td>
                 <td>10</td>
@@ -355,13 +369,6 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>scan</td>
-                <td>high_fan_out</td>
-                <td>13</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
                 <td>smart_hash_block</td>
                 <td>high_fan_out</td>
                 <td>12</td>
@@ -369,16 +376,9 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>_find_structural_groups</td>
+                <td>scan</td>
                 <td>high_fan_out</td>
-                <td>11</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>check</td>
-                <td>high_fan_out</td>
-                <td>11</td>
+                <td>12</td>
                 <td>10</td>
             </tr></tbody>
 </table>
@@ -432,14 +432,14 @@ Args:
                 <td>Phase 3: Hash and find duplicates with caching and lazy evaluation.</td>
             </tr>
             <tr>
-                <td><strong>_write_results</strong></td>
-                <td>15</td>
-                <td>Write scan results to output files.</td>
-            </tr>
-            <tr>
                 <td><strong>_load_duplication_map</strong></td>
                 <td>15</td>
                 <td>Load a DuplicationMap from a JSON file.</td>
+            </tr>
+            <tr>
+                <td><strong>_write_results</strong></td>
+                <td>15</td>
+                <td>Write scan results to output files.</td>
             </tr>
             <tr>
                 <td><strong>analyze_optimized</strong></td>
@@ -447,23 +447,23 @@ Args:
                 <td>Analysis pipeline, 14 stages</td>
             </tr>
             <tr>
-                <td><strong>scan_project_parallel</strong></td>
-                <td>13</td>
-                <td>Scan project files in parallel for better performance on large projects.</td>
+                <td><strong>_apply_fuzzy_similarity</strong></td>
+                <td>14</td>
+                <td>Apply fuzzy similarity detection to find similar components across all languages</td>
             </tr></tbody>
 </table>
 </div></div>
 </div>
 
 <div>
-<h2>Refactoring Priorities (6)</h2>
+<h2>Refactoring Priorities (7)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>#</th><th>Action</th><th>Impact</th><th>Effort</th></tr></thead>
   <tbody>
             <tr>
                 <td>1</td>
-                <td>Split god module src/redup/cli_app/main.py (506L, 0 classes)</td>
+                <td>Split god module src/redup/cli_app/main.py (600L, 0 classes)</td>
                 <td><span class="badge high">high</span></td>
                 <td>high</td>
             </tr>
@@ -481,18 +481,24 @@ Args:
             </tr>
             <tr>
                 <td>4</td>
+                <td>Split _apply_fuzzy_similarity (CC=19 → target CC<10)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>low</td>
+            </tr>
+            <tr>
+                <td>5</td>
                 <td>Reduce scan_project_parallel_memory_optimized fan-out (currently 32)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr>
             <tr>
-                <td>5</td>
+                <td>6</td>
                 <td>Reduce scan_project_memory_optimized fan-out (currently 27)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr>
             <tr>
-                <td>6</td>
+                <td>7</td>
                 <td>Reduce preload_to_ram fan-out (currently 22)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
@@ -502,7 +508,7 @@ Args:
 </div>
 </div>
 
-<footer>Generated by code2llm on 2026-03-23 18:48</footer>
+<footer>Generated by code2llm on 2026-03-23 20:13</footer>
 
 <script>
 // Evolution chart disabled — fewer than 3 data points
@@ -514,7 +520,7 @@ new Chart(langCtx, {
   data: {
     labels: ['Python', 'Shell'],
     datasets: [{
-      data: [35, 1],
+      data: [37, 1],
       backgroundColor: ['#3572A5', '#89e051'],
       borderColor: 'var(--border)', borderWidth: 1
     }]
@@ -532,8 +538,8 @@ const modLinesCtx = document.getElementById('modLinesChart').getContext('2d');
 new Chart(modLinesCtx, {
   type: 'bar',
   data: {
-    labels: ['ts_extractor.py', 'pipeline.py', 'main.py', 'ultra_fast_scanner.py', 'scanner.py', 'memory_scanner.py', 'enhanced_reporter.py', 'hasher.py', 'cache.py', 'parallel_scanner.py', 'lsh_matcher.py', 'differ.py', 'code2llm_reporter.py', 'models.py', 'lazy_grouper.py'],
-    datasets: [{ label: 'Lines', data: [765, 664, 506, 358, 343, 285, 274, 273, 267, 234, 225, 209, 209, 164, 159],
+    labels: ['ts_extractor.py', 'pipeline.py', 'main.py', 'universal_fuzzy.py', 'fuzzy_similarity.py', 'scanner.py', 'ultra_fast_scanner.py', 'memory_scanner.py', 'enhanced_reporter.py', 'hasher.py', 'cache.py', 'parallel_scanner.py', 'lsh_matcher.py', 'differ.py', 'code2llm_reporter.py'],
+    datasets: [{ label: 'Lines', data: [765, 664, 600, 454, 408, 373, 358, 285, 274, 273, 267, 234, 225, 209, 209],
       backgroundColor: '#3b82f6'
     }]
   },
@@ -552,8 +558,8 @@ const modFuncsCtx = document.getElementById('modFuncsChart').getContext('2d');
 new Chart(modFuncsCtx, {
   type: 'bar',
   data: {
-    labels: ['ts_extractor.py', 'pipeline.py', 'enhanced_reporter.py', 'hasher.py', 'lsh_matcher.py', 'main.py', 'cache.py', 'hash_cache.py', 'scanner.py', 'ultra_fast_scanner.py', 'memory_scanner.py', 'lazy_grouper.py', 'parallel_scanner.py', 'code2llm_reporter.py', 'toon_reporter.py'],
-    datasets: [{ label: 'Functions', data: [24, 17, 17, 15, 12, 11, 10, 10, 9, 8, 8, 7, 6, 6, 6],
+    labels: ['ts_extractor.py', 'fuzzy_similarity.py', 'pipeline.py', 'enhanced_reporter.py', 'universal_fuzzy.py', 'hasher.py', 'main.py', 'lsh_matcher.py', 'scanner.py', 'cache.py', 'hash_cache.py', 'ultra_fast_scanner.py', 'memory_scanner.py', 'lazy_grouper.py', 'parallel_scanner.py'],
+    datasets: [{ label: 'Functions', data: [24, 20, 17, 17, 16, 15, 12, 12, 10, 10, 10, 8, 8, 7, 6],
       backgroundColor: '#22c55e'
     }]
   },

@@ -1,30 +1,34 @@
-# code2llm/evolution | 208 func | 29f | 2026-03-23
+# code2llm/evolution | 246 func | 31f | 2026-03-23
 
-NEXT[3] (ranked by impact):
-  [1] !! SPLIT           src/redup/core/pipeline.py
+NEXT[4] (ranked by impact):
+  [1] !! SPLIT           src/redup/cli_app/main.py
+      WHY: 600L, 0 classes, max CC=19
+      EFFORT: ~4h  IMPACT: 11400
+
+  [2] !! SPLIT           src/redup/core/pipeline.py
       WHY: 664L, 0 classes, max CC=11
       EFFORT: ~4h  IMPACT: 7304
-
-  [2] !! SPLIT           src/redup/cli_app/main.py
-      WHY: 506L, 0 classes, max CC=14
-      EFFORT: ~4h  IMPACT: 7084
 
   [3] !! SPLIT           src/redup/core/ts_extractor.py
       WHY: 765L, 1 classes, max CC=7
       EFFORT: ~4h  IMPACT: 5355
 
+  [4] !  SPLIT-FUNC      _apply_fuzzy_similarity  CC=19  fan=14
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 266
+
 
 RISKS[3]:
   ⚠ Splitting src/redup/core/ts_extractor.py may break 24 import paths
   ⚠ Splitting src/redup/core/pipeline.py may break 17 import paths
-  ⚠ Splitting src/redup/cli_app/main.py may break 11 import paths
+  ⚠ Splitting src/redup/cli_app/main.py may break 12 import paths
 
 METRICS-TARGET:
   CC̄:          3.9 → ≤2.7
-  max-CC:      14 → ≤7
+  max-CC:      19 → ≤9
   god-modules: 3 → 0
-  high-CC(≥15): 0 → ≤0
+  high-CC(≥15): 1 → ≤0
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=3.8 → now CC̄=3.9
+  prev CC̄=3.9 → now CC̄=3.9

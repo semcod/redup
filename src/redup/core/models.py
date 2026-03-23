@@ -49,16 +49,21 @@ class ScanConfig:
     min_similarity: float = 0.85
     max_file_size_kb: int = 1024
     include_tests: bool = False
+    enable_cache: bool = False
+    parallel_workers: int = 1
+    _parallel_enabled: bool = False
+    _memory_cache: bool = True
+    _max_cache_mb: int = 512
+    functions_only: bool = True
+    fuzzy_enabled: bool = False
+    fuzzy_threshold: float = 0.8
     # LSH configuration
     lsh_enabled: bool = True
     lsh_min_lines: int = 50
     lsh_threshold: float = 0.8
     # Performance configuration
     parallel_workers: int | None = None  # None = auto-detect CPU count
-    enable_cache: bool = False
     cache_dir: Path = field(default_factory=lambda: Path(".redup/cache"))
-    # Ultra-fast scanner options
-    functions_only: bool = False
     use_ultra_fast_scanner: bool = True
 
 

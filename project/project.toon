@@ -1,29 +1,31 @@
-# redup | 46f 7607L | python:46
+# redup | 50f 9185L | python:50
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[46]:
+M[50]:
   benchmark.py,83
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,420
+  src/redup/cli_app/main.py,485
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,205
   src/redup/core/config.py,107
   src/redup/core/differ.py,152
+  src/redup/core/fuzzy_similarity.py,287
   src/redup/core/hash_cache.py,82
   src/redup/core/hasher.py,190
   src/redup/core/lazy_grouper.py,116
   src/redup/core/lsh_matcher.py,149
   src/redup/core/matcher.py,84
   src/redup/core/memory_scanner.py,206
-  src/redup/core/models.py,123
+  src/redup/core/models.py,129
   src/redup/core/parallel_scanner.py,155
   src/redup/core/pipeline.py,477
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,245
+  src/redup/core/scanner.py,265
   src/redup/core/ts_extractor.py,550
   src/redup/core/ultra_fast_scanner.py,257
+  src/redup/core/universal_fuzzy.py,333
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,24
   src/redup/core/utils/function_extractor.py,111
@@ -37,6 +39,8 @@ M[46]:
   src/redup/reporters/toon_reporter.py,82
   src/redup/reporters/yaml_reporter.py,27
   src/sitecustomize.py,3
+  test_fuzzy_similarity.py,191
+  test_universal_fuzzy.py,257
   tests/__init__.py,0
   tests/test_e2e.py,330
   tests/test_hasher.py,78
@@ -65,9 +69,9 @@ D:
     _build_config_with_file_support(path:Path;extensions:Any;min_lines:Any;min_similarity:Any;include_tests:Any;parallel:bool=False;...+1)->ScanConfig
     _print_scan_header(path:Path;ext_list:list[str];min_lines:int;min_similarity:float)->None
     _print_scan_summary(dup_map:DuplicationMap)->None
+    _apply_fuzzy_similarity(dup_map:DuplicationMap;threshold:float)->DuplicationMap
     _write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
     scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; code2llm; all; enhanced).');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
-    diff(before:Path=typer.Argument(...; help='Path to the earlier scan JSON file.'; exists=True; dir_okay=False; file_okay=True);after:Path=typer.Argument(...; help='Path to the later scan JSON file.'; exists=True; dir_okay=False; file_okay=True))->None
   src/redup/core/cache.py:
     i: hashlib,sqlite3,time,pathlib.Path,redup.core.hasher.{hash_block,hash_block_structural},redup.core.scanner.CodeBlock,typing.Any
     e: HashCache,hash_block_with_cache,build_hash_index_with_cache
@@ -92,6 +96,13 @@ D:
     _groups_match(group1:DuplicateGroup;group2:DuplicateGroup)->bool
     compare_scans(before_file:Path;after_file:Path)->DiffResult
     format_diff_result(diff:DiffResult)->str
+  src/redup/core/fuzzy_similarity.py:
+    i: re,dataclasses.dataclass,datasketch.{MinHash,MinHashLSH},pathlib.Path,rapidfuzz.{fuzz,ratio},redup.core.scanner.CodeBlock,typing.Any
+    e: ComponentSignature,HTMLComponentExtractor,CSSComponentExtractor,FuzzySimilarityDetector
+    ComponentSignature:   # Semantic signature of a component for...
+    HTMLComponentExtractor: __init__(0),extract_component_signature(1),_normalize_html(1),_normalize_class_name(1),_detect_component_type(1)  # Extract HTML components with semantic...
+    CSSComponentExtractor: __init__(0),extract_component_signature(1),_extract_css_properties(1),_normalize_css_value(1),_detect_css_component_type(1)  # Extract CSS components with semantic...
+    FuzzySimilarityDetector: __init__(1),find_similar_components(1),_extract_signature(1),_compute_similarity(2),_compute_attribute_similarity(2)  # Detect fuzzy similarity between HTML/...
   src/redup/core/hash_cache.py:
     i: hashlib,json,pathlib.Path,typing.Any
     e: HashCache
@@ -180,18 +191,18 @@ D:
     _choose_action(group:DuplicateGroup)->RefactorAction
     generate_suggestions(dup_map:DuplicationMap)->list[RefactorSuggestion]
   src/redup/core/scanner.py:
-    i: fnmatch,functools,mmap,time,collections.abc.Iterator,dataclasses.{dataclass,field},pathlib.Path,redup.core.models.{ScanConfig,ScanStats}
+    i: fnmatch,functools,mmap,os,time,collections.abc.Iterator,dataclasses.{dataclass,field},pathlib.Path,redup.core.models.ScanConfig
     e: CodeBlock,ScannedFile,scan_project
     CodeBlock: line_count(0)  # A contiguous block of source code lines.
     ScannedFile: line_count(0)  # A file that has been read and split i...
     _should_exclude(path:Path;patterns:tuple[str;Ellipsis])->bool
+    _load_gitignore_patterns(root_path:Path)->list[str]
     _collect_files(config:ScanConfig)->Iterator[Path]
     _is_test_file(path:Path)->bool
     _read_file_optimized(filepath:Path;max_size_kb:int=1024)->str | None
     _extract_blocks_sliding(lines:list[str];min_lines:int)->list[tuple[int, int, str]]
     _extract_class_blocks_python(source:str;filepath:str)->list[CodeBlock]
     _extract_function_blocks_python(source:str;filepath:str)->list[CodeBlock]
-    _preload_files_to_ram(config:ScanConfig)->list[tuple[Path, str]]
   src/redup/core/ts_extractor.py:
     i: tree_sitter,pathlib.Path,redup.core.scanner.CodeBlock,redup.core.utils.function_extractor,typing.Any
     e: _LANGUAGE_MAPPING,extract_functions_treesitter,get_supported_languages,is_language_supported
@@ -215,6 +226,12 @@ D:
     _extract_blocks_for_file(file_path:Path;source:str;rel_path:str;config:ScanConfig)->list[CodeBlock]
     _process_sources_batch(sources:dict[Path;str];config:ScanConfig;stats:ScanStats)->tuple[list[ScannedFile], ScanStats]
     scan_project_incremental_fast(config:Any=None)->tuple[list[ScannedFile], ScanStats]
+  src/redup/core/universal_fuzzy.py:
+    i: re,dataclasses.dataclass,datasketch.{MinHash,MinHashLSH},pathlib.Path,rapidfuzz.{fuzz,ratio},redup.core.scanner.CodeBlock,typing.Any
+    e: UniversalSignature,UniversalFuzzyExtractor,UniversalFuzzyDetector
+    UniversalSignature:   # Universal semantic signature for any...
+    UniversalFuzzyExtractor: __init__(0),extract_universal_signature(1),_detect_language(1),_normalize_code(2),_remove_comments(2)  # Universal fuzzy extractor for all sup...
+    UniversalFuzzyDetector: __init__(1),find_similar_components(1),_compute_universal_similarity(2),_compute_pattern_similarity(2),_compute_metadata_similarity(2)  # Universal fuzzy similarity detector f...
   src/redup/core/utils/duplicate_finders.py:
     i: typing.{Callable,Dict,List,TYPE_CHECKING}
     e: create_duplicate_finder
@@ -268,6 +285,20 @@ D:
     i: redup.core.models.DuplicationMap
     e: to_yaml
     to_yaml(dup_map:DuplicationMap)->str
+  test_fuzzy_similarity.py:
+    i: tempfile,pathlib.Path,redup.core.fuzzy_similarity.FuzzySimilarityDetector,redup.core.scanner.CodeBlock
+    e: test_html_fuzzy_similarity,test_css_fuzzy_similarity,test_mixed_html_css
+    test_html_fuzzy_similarity()
+    test_css_fuzzy_similarity()
+    test_mixed_html_css()
+  test_universal_fuzzy.py:
+    i: tempfile,pathlib.Path,redup.core.scanner.CodeBlock,redup.core.universal_fuzzy.{UniversalFuzzyDetector,UniversalFuzzyExtractor}
+    e: test_programming_languages,test_configuration_files,test_data_formats,test_query_languages,test_cross_language_patterns
+    test_programming_languages()
+    test_configuration_files()
+    test_data_formats()
+    test_query_languages()
+    test_cross_language_patterns()
   tests/test_e2e.py:
     i: json,subprocess,sys,tempfile,pytest,pathlib.Path,redup.cli_app.main.app,typer.testing.CliRunner
     e: project_with_duplicates,empty_project,no_duplicates_project,TestCLIInfo,TestCLIScanToon,TestCLIScanJSON,TestCLIScanYAML,TestCLIScanAll
