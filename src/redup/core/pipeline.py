@@ -120,8 +120,8 @@ def analyze(
     """
     config = _ensure_config(config)
 
-    # Phase 1: Scan
-    scanned_files, stats = _scan_phase(config)
+    # Phase 1: Scan with function_level_only optimization
+    scanned_files, stats = _scan_phase(config, function_level_only=function_level_only)
 
     # Phase 2: Process blocks
     all_blocks = _process_blocks(scanned_files, function_level_only)

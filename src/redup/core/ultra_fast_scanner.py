@@ -83,13 +83,9 @@ def preload_to_ram(config: ScanConfig, show_progress: bool = True) -> dict[Path,
     size_mb = total_size / 1e6
     print(f"📁 Preloaded {len(sources)} files to RAM ({size_mb:.1f}MB) in {load_time:.2f}s")
     
-    # Early exit: if no files or too small, return immediately
+    # Early exit: if no files, return immediately
     if len(sources) == 0:
         print("🔍 No files to scan")
-        return {}
-    
-    if total_size < 1000:  # Less than 1KB total
-        print("🔍 Project too small for meaningful analysis")
         return {}
     
     return sources

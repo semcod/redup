@@ -63,7 +63,7 @@ def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
 
 def _collect_files(config: ScanConfig) -> Iterator[Path]:
     """Yield all files matching the scan configuration."""
-    root = config.root.resolve()
+    root = Path(config.root).resolve() if isinstance(config.root, str) else config.root.resolve()
     for ext in config.extensions:
         for path in root.rglob(f"*{ext}"):
             if _should_exclude(path, tuple(config.exclude_patterns)):
@@ -249,7 +249,6 @@ def _preload_files_to_ram(config: ScanConfig) -> list[tuple[Path, str]]:
     Returns list of (path, content) tuples. Filters out files exceeding size limit.
     """
     files_content: list[tuple[Path, str]] = []
-    total_size = 0
     
     for filepath in _collect_files(config):
         # Check size first to avoid loading huge files
@@ -263,7 +262,6 @@ def _preload_files_to_ram(config: ScanConfig) -> list[tuple[Path, str]]:
         source = _read_file_optimized(filepath, config.max_file_size_kb)
         if source is not None:
             files_content.append((filepath, source))
-            total_size += len(source)
     
     return files_content
 

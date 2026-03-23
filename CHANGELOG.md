@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+## [0.3.17] - 2026-03-23
+
+### Docs
+- Update docs/README.md
+- Update project/README.md
+
+### Other
+- Update project/analysis.json
+- Update project/analysis.yaml
+- Update project/calls.png
+- Update project/duplication.toon
+- Update project/evolution.toon
+- Update project/flow.png
+- Update project/index.html
+- Update project/project.toon
+- Update project/prompt.txt
+
 ## [0.3.16] - 2026-03-23
 
 ### Docs
