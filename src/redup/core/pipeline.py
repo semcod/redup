@@ -104,7 +104,7 @@ def _deduplicate_groups(groups: list[DuplicateGroup]) -> list[DuplicateGroup]:
 
 def analyze(
     config: ScanConfig | None = None,
-    function_level_only: bool = False,
+    function_level_only: bool | None = None,
 ) -> DuplicationMap:
     """Run the full reDUP analysis pipeline.
 
@@ -112,11 +112,16 @@ def analyze(
         config: Scan configuration. Defaults to current directory, .py files.
         function_level_only: If True, only analyze function-level blocks
             (skip sliding-window line blocks). Faster but misses inline duplicates.
+            If None, uses config.functions_only.
 
     Returns:
         A DuplicationMap with all duplicate groups and refactoring suggestions.
     """
     config = _ensure_config(config)
+
+    # Use config.functions_only if function_level_only is not explicitly provided
+    if function_level_only is None:
+        function_level_only = config.functions_only
 
     # Phase 1: Scan with function_level_only optimization
     scanned_files, stats = _scan_phase(config, function_level_only=function_level_only)
@@ -254,8 +259,11 @@ def _ensure_config(config: ScanConfig | None) -> ScanConfig:
     return config or ScanConfig()
 
 
-def _scan_phase(config: ScanConfig, function_level_only: bool = False) -> tuple[list[ScannedFile], ScanStats]:
+def _scan_phase(config: ScanConfig, function_level_only: bool | None = None) -> tuple[list[ScannedFile], ScanStats]:
     """Phase 1: Scan project files."""
+    # Use config.functions_only if function_level_only is not explicitly provided
+    if function_level_only is None:
+        function_level_only = config.functions_only
     # Use standard scan_project (ultra_fast_scanner disabled - doesn't extract function names)
     return scan_project(config, function_level_only=function_level_only)
 

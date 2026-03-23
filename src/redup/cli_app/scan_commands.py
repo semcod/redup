@@ -50,7 +50,7 @@ def scan_command(
     elif memory_cache:
         dup_map = analyze_optimized(config, use_memory_cache=True, max_cache_mb=max_cache_mb)
     else:
-        dup_map = analyze(config, function_level_only=functions_only)
+        dup_map = analyze(config)
     
     # Apply fuzzy similarity if requested
     if fuzzy:
