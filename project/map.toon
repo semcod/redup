@@ -1,13 +1,13 @@
-# redup | 30f 4279L | python:29,shell:1
+# redup | 31f 4543L | python:30,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[30]:
+M[31]:
   benchmark.py,111
   examples/01_basic_usage.py,58
   project.sh,17
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,422
+  src/redup/cli_app/main.py,435
   src/redup/core/__init__.py,1
   src/redup/core/config.py,154
   src/redup/core/differ.py,246
@@ -18,13 +18,14 @@ M[30]:
   src/redup/core/parallel_scanner.py,234
   src/redup/core/pipeline.py,409
   src/redup/core/planner.py,110
-  src/redup/core/scanner.py,201
+  src/redup/core/scanner.py,243
   src/redup/core/ts_extractor.py,767
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,36
   src/redup/core/utils/function_extractor.py,148
   src/redup/core/utils/hash_utils.py,37
   src/redup/reporters/__init__.py,1
+  src/redup/reporters/code2llm_reporter.py,209
   src/redup/reporters/enhanced_reporter.py,274
   src/redup/reporters/json_reporter.py,73
   src/redup/reporters/markdown_reporter.py,90
@@ -64,9 +65,6 @@ D:
     _groups_match(group1;group2)
     compare_scans(before_file;after_file)
     format_diff_result(diff)
-  src/redup/reporters/markdown_reporter.py:
-    e: to_markdown
-    to_markdown(dup_map)
   src/redup/cli_app/main.py:
     e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
     _write_output(content;output;suffix)
@@ -80,6 +78,9 @@ D:
     check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config(init;show)
     info()
+  src/redup/reporters/markdown_reporter.py:
+    e: to_markdown
+    to_markdown(dup_map)
   src/redup/core/parallel_scanner.py:
     e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
     _scan_file_worker(args)
@@ -105,6 +106,14 @@ D:
     _calculate_similarity(matches)
     _find_near_duplicate_groups(all_blocks;config)
     analyze_parallel(config;function_level_only;max_workers)
+  src/redup/reporters/code2llm_reporter.py:
+    e: _calculate_avg_cc,_count_critical_functions,_get_layers,to_code2llm_toon,to_code2llm_context,export_code2llm
+    _calculate_avg_cc(dup_map)
+    _count_critical_functions(dup_map)
+    _get_layers(dup_map)
+    to_code2llm_toon(dup_map;files_scanned;total_lines;functions_count;classes_count)
+    to_code2llm_context(dup_map;files_scanned;total_lines;functions_count;classes_count;modules)
+    export_code2llm(dup_map;output_dir;files_scanned;total_lines;functions_count;classes_count)
   src/redup/core/lsh_matcher.py:
     e: _SimpleMinHash,LSHIndex,_create_minhash,_text_to_minhash_features,_create_simple_minhash,build_lsh_index,find_near_duplicates
     _SimpleMinHash: __init__(2),jaccard(1)  # Simple MinHash implementation for fallback without datasketc...
@@ -115,18 +124,16 @@ D:
     build_lsh_index(blocks;threshold;min_lines)
     find_near_duplicates(blocks;threshold;min_lines)
   src/redup/core/scanner.py:
-    e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_function_blocks_python,scan_project
+    e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_class_blocks_python,_extract_function_blocks_python,scan_project
     CodeBlock:  # A contiguous block of source code lines...
     ScannedFile:  # A file that has been read and split into blocks...
     _should_exclude(path;patterns)
     _collect_files(config)
     _is_test_file(path)
     _extract_blocks_sliding(lines;min_lines)
+    _extract_class_blocks_python(source;filepath)
     _extract_function_blocks_python(source;filepath)
     scan_project(config)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -135,6 +142,9 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map;groups)
     to_toon(dup_map)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -169,6 +179,9 @@ D:
     build_hash_index(blocks;min_lines)
     _find_duplicates(hash_dict)
     _blocks_from_different_locations(blocks)
+  examples/01_basic_usage.py:
+    e: main
+    main()
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -177,9 +190,6 @@ D:
     load_config()
     config_to_scan_config(config;path)
     create_sample_redup_toml()
-  examples/01_basic_usage.py:
-    e: main
-    main()
   src/redup/reporters/json_reporter.py:
     e: _group_to_dict,_suggestion_to_dict,to_json
     _group_to_dict(group;include_snippets)
@@ -213,9 +223,9 @@ D:
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
+  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
-  src/redup/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

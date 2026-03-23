@@ -1,12 +1,12 @@
-# redup | 38f 5423L | python:38
+# redup | 40f 5914L | python:40
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[38]:
+M[40]:
   benchmark.py,83
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,351
+  src/redup/cli_app/main.py,363
   src/redup/core/__init__.py,1
   src/redup/core/config.py,107
   src/redup/core/differ.py,181
@@ -17,13 +17,14 @@ M[38]:
   src/redup/core/parallel_scanner.py,155
   src/redup/core/pipeline.py,296
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,157
+  src/redup/core/scanner.py,190
   src/redup/core/ts_extractor.py,559
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,24
   src/redup/core/utils/function_extractor.py,111
   src/redup/core/utils/hash_utils.py,25
   src/redup/reporters/__init__.py,1
+  src/redup/reporters/code2llm_reporter.py,167
   src/redup/reporters/enhanced_reporter.py,229
   src/redup/reporters/json_reporter.py,60
   src/redup/reporters/markdown_reporter.py,67
@@ -39,6 +40,7 @@ M[38]:
   tests/test_planner.py,110
   tests/test_reporters.py,80
   tests/test_scanner.py,52
+  tests/test_ts_extractor.py,168
 D:
   benchmark.py:
     i: time,sys,pathlib.Path,redup.core.models.ScanConfig,redup.core.pipeline.{analyze,analyze_parallel}
@@ -58,7 +60,7 @@ D:
     _print_scan_header(path:Path;ext_list:list[str];min_lines:int;min_similarity:float)->None
     _print_scan_summary(dup_map:DuplicationMap)->None
     _write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
-    scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; all; enhanced).');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
+    scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; code2llm; all; enhanced).');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
     diff(before:Path=typer.Argument(...; help='Path to the earlier scan JSON file.'; exists=True; dir_okay=False; file_okay=True);after:Path=typer.Argument(...; help='Path to the later scan JSON file.'; exists=True; dir_okay=False; file_okay=True))->None
   src/redup/core/config.py:
     i: os,tomllib,pathlib.Path,redup.core.models.ScanConfig,typing.Any
@@ -155,6 +157,7 @@ D:
     _collect_files(config:ScanConfig)->Iterator[Path]
     _is_test_file(path:Path)->bool
     _extract_blocks_sliding(lines:list[str];min_lines:int)->list[tuple[int, int, str]]
+    _extract_class_blocks_python(source:str;filepath:str)->list[CodeBlock]
     _extract_function_blocks_python(source:str;filepath:str)->list[CodeBlock]
     scan_project(config:Any=None)->tuple[list[ScannedFile], ScanStats]
   src/redup/core/ts_extractor.py:
@@ -182,6 +185,15 @@ D:
     i: hasher.{_normalize_ast_text,_normalize_text},typing.{Callable,TYPE_CHECKING}
     e: create_hash_function
     create_hash_function(normalizer:Callable[Any;str])->Callable[[str], str]
+  src/redup/reporters/code2llm_reporter.py:
+    i: datetime,datetime.timezone,pathlib.Path,redup.core.models.DuplicationMap,typing.Any
+    e: to_code2llm_toon,to_code2llm_context,export_code2llm
+    _calculate_avg_cc(dup_map:DuplicationMap)->float
+    _count_critical_functions(dup_map:DuplicationMap)->int
+    _get_layers(dup_map:DuplicationMap)->list[dict]
+    to_code2llm_toon(dup_map:DuplicationMap;files_scanned:int=0;total_lines:int=0;functions_count:int=0;classes_count:int=0)->str
+    to_code2llm_context(dup_map:DuplicationMap;files_scanned:int=0;total_lines:int=0;functions_count:int=0;classes_count:int=0;modules:Any=None)->str
+    export_code2llm(dup_map:DuplicationMap;output_dir:Path;files_scanned:int=0;total_lines:int=0;functions_count:int=0;classes_count:int=0)->tuple[Path, Path]
   src/redup/reporters/enhanced_reporter.py:
     i: json,time,collections.{Counter,defaultdict},pathlib.Path,redup.core.models.{DuplicateFragment,DuplicateGroup},typing.{Any,Dict,List}
     e: EnhancedReporter
@@ -286,3 +298,11 @@ D:
     test_extract_function_blocks_python()
     test_extract_function_blocks_syntax_error()
     test_scan_project_real_dir()
+  tests/test_ts_extractor.py:
+    i: pytest,pathlib.Path,redup.core.ts_extractor.{_LANGUAGE_MAPPING,_language_registry,extract_functions_treesitter,get_supported_languages,is_language_supported}
+    e: TestLanguageMapping,TestLanguageRegistry,TestLanguageSupportFunctions,TestExtractFunctions,TestHTMLExtraction,TestCSSExtraction,TestSQLExtraction,TestCExtraction
+    TestLanguageMapping: test_language_mapping_has_common_extensions(0),test_language_mapping_has_new_web_languages(0),test_language_mapping_has_data_formats(0),test_language_mapping_has_sql(0),test_language_mapping_has_dsl_languages(0)  # Test language extension mappings.
+    TestLanguageRegistry: test_registry_has_core_languages(0),test_registry_has_web_languages(0),test_registry_has_new_languages(0),test_registry_has_dsl_languages(0),test_registry_has_data_formats(0)  # Test language registry for tree-sitte...
+    TestLanguageSupportFunctions: test_is_language_supported_python(0),test_is_language_supported_unknown_extension(0),test_is_language_supported_known_languages(0)  # Test language support checking functi...
+    TestExtractFunctions: test_extract_python_returns_empty(0),test_extract_unknown_extension_returns_empty(0),test_extract_javascript_no_treesitter(0)  # Test function extraction for differen...
+    TestHTMLExtraction: test_html_extraction_structure(0)  # Test HTML block extraction.

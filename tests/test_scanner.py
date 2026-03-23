@@ -13,15 +13,15 @@ from redup.core.scanner import (
 
 
 def test_should_exclude_git():
-    assert _should_exclude(Path(".git/config"), [".git"])
+    assert _should_exclude(Path(".git/config"), (".git",))
 
 
 def test_should_exclude_venv():
-    assert _should_exclude(Path("project/venv/lib/site.py"), ["venv"])
+    assert _should_exclude(Path("project/venv/lib/site.py"), ("venv",))
 
 
 def test_should_not_exclude_normal():
-    assert not _should_exclude(Path("src/main.py"), [".git", "venv"])
+    assert not _should_exclude(Path("src/main.py"), (".git", "venv"))
 
 
 def test_is_test_file():

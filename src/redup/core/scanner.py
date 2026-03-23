@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import fnmatch
+import functools
 import time
 from collections.abc import Iterator
 from dataclasses import dataclass, field
@@ -40,7 +41,8 @@ class ScannedFile:
         return len(self.lines)
 
 
-def _should_exclude(path: Path, patterns: list[str]) -> bool:
+@functools.lru_cache(maxsize=1000)
+def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
     """Check if a path matches any exclusion pattern."""
     name = path.name
     str_path = str(path)
@@ -63,7 +65,7 @@ def _collect_files(config: ScanConfig) -> Iterator[Path]:
     root = config.root.resolve()
     for ext in config.extensions:
         for path in root.rglob(f"*{ext}"):
-            if _should_exclude(path, config.exclude_patterns):
+            if _should_exclude(path, tuple(config.exclude_patterns)):
                 continue
             if not config.include_tests and _is_test_file(path):
                 continue
@@ -100,7 +102,9 @@ def _extract_blocks_sliding(lines: list[str], min_lines: int) -> list[tuple[int,
             chunk = non_empty[start_idx : start_idx + window_size]
             first_line = chunk[0][0] + 1
             last_line = chunk[-1][0] + 1
-            text = "\n".join(line.strip() for _, line in chunk)
+            # Optimized: reduce string operations
+            lines = [line.strip() for _, line in chunk]
+            text = "\n".join(lines)
             blocks.append((first_line, last_line, text))
 
     return blocks
