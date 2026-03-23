@@ -1,4 +1,4 @@
-# redup | 26f 2589L | python:26
+# redup | 26f 2641L | python:26
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[26]:
   examples/01_basic_usage.py,39
@@ -7,7 +7,7 @@ M[26]:
   src/redup/cli_app/__init__.py,1
   src/redup/cli_app/main.py,142
   src/redup/core/__init__.py,1
-  src/redup/core/hasher.py,176
+  src/redup/core/hasher.py,177
   src/redup/core/matcher.py,84
   src/redup/core/models.py,114
   src/redup/core/pipeline.py,191
@@ -19,12 +19,12 @@ M[26]:
   src/redup/reporters/yaml_reporter.py,27
   src/sitecustomize.py,3
   tests/__init__.py,0
-  tests/test_e2e.py,332
-  tests/test_hasher.py,48
+  tests/test_e2e.py,330
+  tests/test_hasher.py,78
   tests/test_matcher.py,49
   tests/test_models.py,85
   tests/test_pipeline.py,96
-  tests/test_planner.py,85
+  tests/test_planner.py,110
   tests/test_reporters.py,80
   tests/test_scanner.py,52
 D:
@@ -40,7 +40,7 @@ D:
     scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:OutputFormat=typer.Option(DEFAULT_FORMAT; '--format'; '-f'; help='Output format.');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:str=typer.Option('.py'; '--ext'; '-e'; help='Comma-separated file extensions to scan.');min_lines:int=typer.Option(3; '--min-lines'; help='Minimum block size (lines) to consider as duplicate.');min_similarity:float=typer.Option(0.85; '--min-sim'; help='Minimum similarity score (0.0-1.0) for fuzzy matches.');...+1)->None
     info()->None
   src/redup/core/hasher.py:
-    i: hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock
+    i: hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock,typing.Any
     e: hash_block,hash_block_structural,HashedBlock,HashIndex,build_hash_index,find_exact_duplicates,find_structural_duplicates
     HashedBlock:   # A code block with its computed finger...
     HashIndex:   # Index mapping hashes to blocks for fa...
@@ -49,7 +49,7 @@ D:
     _ast_to_normalized_string(tree:object)->str
     _process_ast_node(node;name_map:dict[str;str];counter:list[int])->str | None
     _get_placeholder(name:str;name_map:dict[str;str];counter:list[int])->str
-    _normalize_constant(value)->str
+    _normalize_constant(value:Any)->str
     _hash_text(text:str;normalizer:Callable[Any;str])->str
     hash_block(text:str)->str
   src/redup/core/matcher.py:

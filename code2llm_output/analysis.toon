@@ -1,5 +1,5 @@
-# code2llm | 18f 1907L | python:17,shell:1 | 2026-03-23
-# CC̄=4.4 | critical:5/66 | dups:0 | cycles:0
+# code2llm | 17f 1504L | python:16,shell:1 | 2026-03-23
+# CC̄=3.5 | critical:0/62 | dups:0 | cycles:0
 
 HEALTH[0]: ok
 
@@ -8,56 +8,48 @@ REFACTOR[0]: none needed
 COUPLING: no cross-package imports detected
 
 LAYERS:
-  ./                              CC̄=4.9    ←in:0  →out:0
-  │ !  cli_utilities_demo         231L  0C    7m  CC=12     ←0
-  │ refactored_frontend_demo   218L  0C    6m  CC=4      ←0
-  │ project.sh                  16L  0C    0m  CC=0.0    ←0
-  │
-  src/                            CC̄=4.2    ←in:0  →out:0
-  │ pipeline                   266L  0C   12m  CC=9      ←2
-  │ !  hasher                     234L  2C   15m  CC=14     ←2
+  src/                            CC̄=3.5    ←in:0  →out:0
+  │ pipeline                   257L  0C   12m  CC=9      ←2
+  │ hasher                     229L  2C   15m  CC=6      ←2
+  │ main                       196L  1C    7m  CC=7      ←0
   │ scanner                    193L  2C    6m  CC=9      ←1
-  │ main                       165L  1C    3m  CC=9      ←0
   │ models                     152L  9C    1m  CC=1      ←0
-  │ planner                    117L  0C    5m  CC=7      ←1
+  │ planner                    110L  0C    5m  CC=7      ←1
   │ matcher                    107L  1C    5m  CC=7      ←1
-  │ !  toon_reporter               75L  0C    1m  CC=12     ←2
+  │ toon_reporter              106L  0C    6m  CC=8      ←2
   │ json_reporter               66L  0C    3m  CC=3      ←3
   │ yaml_reporter               34L  0C    1m  CC=4      ←1
   │ __init__                    25L  0C    0m  CC=0.0    ←0
   │ __main__                     5L  0C    0m  CC=0.0    ←0
+  │ sitecustomize                4L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │
+  ./                              CC̄=0.0    ←in:0  →out:0
+  │ project.sh                  17L  0C    0m  CC=0.0    ←0
+  │
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 5 of 65):
-   14.0  _process_ast_node                          17n   6exit  cond+ret
-   12.0  format_output                              17n   6exit  cond+ret
-   12.0  format_table                               14n   3exit  loops+cond+ret
-   12.0  to_toon                                    14n   2exit  loops+cond+ret
-   10.0  make_args_from_config                      10n   2exit  loops+cond+ret
-
-  summary:
-    critical(≥10): 5 | high(5-10): 23 | medium(2-5): 19 | low(<2): 18
-    8% CC≥10  43% CC≥5
+FUNCTIONS (CC≥10, 0 of 61): none
 
 HOTSPOTS:
-  #1  scan                                 fan=18   "calls 18 functions"
-  #2  scan_project                         fan=15   "calls 15 functions"
-  #3  format_output                        fan=11   "11-way dispatch"
-  #4  _find_structural_groups              fan=11   "calls 11 functions"
-  #5  format_table                         fan=10   "10-way dispatch"
-  #6  generate_suggestions                 fan=9    "calls 9 functions"
-  #7  analyze                              fan=8    "analysis pipeline, 8 stages"
-  #8  to_toon                              fan=8    "calls 8 functions"
-  #9  _blocks_to_group                     fan=7    "calls 7 functions"
-  #10 _extract_blocks_sliding              fan=7    "calls 7 functions"
+  #1  scan_project                         fan=15   "calls 15 functions"
+  #2  _find_structural_groups              fan=11   "calls 11 functions"
+  #3  generate_suggestions                 fan=9    "calls 9 functions"
+  #4  analyze                              fan=8    "analysis pipeline, 8 stages"
+  #5  _write_results                       fan=8    "calls 8 functions"
+  #6  scan                                 fan=8    "calls 8 functions"
+  #7  _extract_blocks_sliding              fan=7    "calls 7 functions"
+  #8  _extract_function_blocks_python      fan=7    "calls 7 functions"
+  #9  to_toon                              fan=7    "calls 7 functions"
+  #10 _normalize_text                      fan=7    "calls 7 functions"
 
 CLASSES:
   DuplicationMap                 ████████████████████████   1m  CC̄=1.0   max=1   
+  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
+  ScannedFile                                               0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
   RiskLevel                                                 0m  CC̄=0.0   max=0.0 
@@ -66,14 +58,69 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
-  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
-  ScannedFile                                               0m  CC̄=0.0   max=0.0 
-  OutputFormat                                              0m  CC̄=0.0   max=0.0 
   MatchResult                                               0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
+  OutputFormat                                              0m  CC̄=0.0   max=0.0 
 
 D:
+  src/redup/core/scanner.py:
+    e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_function_blocks_python,scan_project
+    CodeBlock  # A contiguous block of source code lines....
+    ScannedFile  # A file that has been read and split into blocks....
+    _should_exclude(path,patterns)
+    _collect_files(config)
+    _is_test_file(path)
+    _extract_blocks_sliding(lines,min_lines)
+    _extract_function_blocks_python(source,filepath)
+    scan_project(config)
+  src/redup/core/pipeline.py:
+    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity
+    _blocks_to_group(group_id,blocks,dup_type,similarity,normalized_hash)
+    _deduplicate_groups(groups)
+    analyze(config,function_level_only)
+    _ensure_config(config)
+    _scan_phase(config)
+    _process_blocks(scanned_files,function_level_only)
+    _find_duplicates_phase(all_blocks,config)
+    _find_exact_groups(index)
+    _find_structural_groups(index,exact_groups_list)
+    _deduplicate_phase(groups)
+    _match_results_to_blocks(matches)
+    _calculate_similarity(matches)
+  src/redup/reporters/toon_reporter.py:
+    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
+    _render_header(dup_map)
+    _render_summary(dup_map)
+    _render_duplicates(groups)
+    _render_refactor(suggestions)
+    _render_metrics_target(dup_map,groups)
+    to_toon(dup_map)
+  src/redup/core/planner.py:
+    e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
+    _common_prefix(paths)
+    _suggest_module_name(group)
+    _assess_risk(group)
+    _choose_action(group)
+    generate_suggestions(dup_map)
+  src/redup/core/matcher.py:
+    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
+    MatchResult  # Result of comparing two code blocks....
+    sequence_similarity(text_a,text_b)
+    fuzzy_similarity(text_a,text_b)
+    _compare_against_reference(candidates,min_similarity,similarity_fn,method_fn,skip_same_location)
+    match_candidates(candidates,min_similarity)
+    refine_structural_matches(candidates,min_similarity)
+  src/redup/cli_app/main.py:
+    e: OutputFormat,_write_output,_build_config,_print_scan_header,_print_scan_summary,_write_results,scan,info
+    OutputFormat
+    _write_output(content,output,suffix)
+    _build_config(path,extensions,min_lines,min_similarity,include_tests)
+    _print_scan_header(path,ext_list,min_lines,min_similarity)
+    _print_scan_summary(dup_map)
+    _write_results(dup_map,format,output,path)
+    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only)
+    info()
   src/redup/core/hasher.py:
     e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,_hashed_block,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
     HashedBlock  # A code block with its computed fingerprints....
@@ -93,74 +140,9 @@ D:
     find_exact_duplicates(index)
     find_structural_duplicates(index)
     _blocks_from_different_locations(blocks)
-  cli_utilities_demo.py:
-    e: show_vscode_tests,show_status,make_args_from_config,confirm_action,format_output,format_table,handle_error
-    show_vscode_tests(config,label)
-    show_status(config,label)
-    make_args_from_config(config,required_args)
-    confirm_action(message,default)
-    format_output(data,format_type)
-    format_table(headers,rows)
-    handle_error(error,context)
-  src/redup/reporters/toon_reporter.py:
-    e: to_toon
-    to_toon(dup_map)
-  src/redup/core/pipeline.py:
-    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity
-    _blocks_to_group(group_id,blocks,dup_type,similarity,normalized_hash)
-    _deduplicate_groups(groups)
-    analyze(config,function_level_only)
-    _ensure_config(config)
-    _scan_phase(config)
-    _process_blocks(scanned_files,function_level_only)
-    _find_duplicates_phase(all_blocks,config)
-    _find_exact_groups(index)
-    _find_structural_groups(index,exact_groups_list)
-    _deduplicate_phase(groups)
-    _match_results_to_blocks(matches)
-    _calculate_similarity(matches)
-  src/redup/core/scanner.py:
-    e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_function_blocks_python,scan_project
-    CodeBlock  # A contiguous block of source code lines....
-    ScannedFile  # A file that has been read and split into blocks....
-    _should_exclude(path,patterns)
-    _collect_files(config)
-    _is_test_file(path)
-    _extract_blocks_sliding(lines,min_lines)
-    _extract_function_blocks_python(source,filepath)
-    scan_project(config)
-  src/redup/cli_app/main.py:
-    e: OutputFormat,_write_output,scan,info
-    OutputFormat
-    _write_output(content,output,suffix)
-    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only)
-    info()
-  src/redup/core/planner.py:
-    e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
-    _common_prefix(paths)
-    _suggest_module_name(group)
-    _assess_risk(group)
-    _choose_action(group)
-    generate_suggestions(dup_map)
-  src/redup/core/matcher.py:
-    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
-    MatchResult  # Result of comparing two code blocks....
-    sequence_similarity(text_a,text_b)
-    fuzzy_similarity(text_a,text_b)
-    _compare_against_reference(candidates,min_similarity,similarity_fn,method_fn,skip_same_location)
-    match_candidates(candidates,min_similarity)
-    refine_structural_matches(candidates,min_similarity)
   examples/01_basic_usage.py:
     e: main
     main()
-  refactored_frontend_demo.py:
-    e: _serve_file,_create_endpoint,favicon,index,config_json,health_check
-    _serve_file(paths,media_type,charset_header)
-    _create_endpoint(route,file_path,description)
-    favicon()
-    index()
-    config_json()
-    health_check()
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
@@ -184,6 +166,7 @@ D:
   src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:
   project.sh:

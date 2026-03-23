@@ -1,4 +1,4 @@
-# code2llm | 17f 1450L | python:16,shell:1 | 2026-03-23
+# code2llm | 17f 1451L | python:16,shell:1 | 2026-03-23
 # CC̄=4.1 | critical:2/53 | dups:0 | cycles:0
 
 HEALTH[0]: ok
@@ -10,7 +10,7 @@ COUPLING: no cross-package imports detected
 LAYERS:
   src/                            CC̄=4.1    ←in:0  →out:0
   │ pipeline                   256L  0C   12m  CC=9      ←2
-  │ !  hasher                     234L  2C   15m  CC=14     ←2
+  │ !  hasher                     235L  2C   15m  CC=14     ←2
   │ scanner                    193L  2C    6m  CC=9      ←1
   │ main                       169L  1C    3m  CC=9      ←0
   │ models                     152L  9C    1m  CC=1      ←0
@@ -161,9 +161,9 @@ D:
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
   src/redup/__init__.py:
-  src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/redup/__main__.py:
   src/redup/reporters/__init__.py:
+  src/sitecustomize.py:
   src/redup/cli_app/__init__.py:
   project.sh:
-  src/sitecustomize.py:

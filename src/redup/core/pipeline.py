@@ -16,9 +16,10 @@ from redup.core.models import (
     DuplicateType,
     DuplicationMap,
     ScanConfig,
+    ScanStats,
 )
 from redup.core.planner import generate_suggestions
-from redup.core.scanner import CodeBlock, ScannedFile, ScanStats, scan_project
+from redup.core.scanner import CodeBlock, ScannedFile, scan_project
 
 
 def _blocks_to_group(

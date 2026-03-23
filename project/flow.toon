@@ -35,7 +35,7 @@ PIPELINES[5] (Core:4, NLP:1):
               → _normalize_ast_text(text:str) → str     CC=2    pure ▶
               → _ast_to_normalized_string(tree:object) → str CC=3    mutation
               → _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None CC=14   pure
-              → _normalize_constant(value) → str        CC=3    pure ■
+              → _normalize_constant(value:Any) → str    CC=3    pure ■
               PURITY: 3/4 pure  BOTTLENECK: _process_ast_node(CC=14)
 
   Src [NLP]: str → str
@@ -159,8 +159,8 @@ CONTRACTS:
       IN:  node, name_map:dict[str, str], counter:list[int]
       OUT: str | None
 
-    _normalize_constant(value) → str
-      IN:  value
+    _normalize_constant(value:Any) → str
+      IN:  value:Any
       OUT: str
       INVARIANT: len(output) <= len(input)
 
@@ -183,23 +183,23 @@ CONTRACTS:
 DATA_TYPES (by cross-function usage) [52 annotated, 0 inferred / 53 functions]:
   str                  consumed:17  produced:13   !! HUB-TYPE → split interface
   list[DuplicateGroup] consumed:3   produced:6  
-  float                consumed:5   produced:3  
   bool                 consumed:5   produced:3  
+  float                consumed:5   produced:3  
   list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
-  HashIndex            consumed:4   produced:1  
   DuplicationMap       consumed:4   produced:1  
   list[MatchResult]    consumed:2   produced:3  
+  HashIndex            consumed:4   produced:1  
   list[CodeBlock]      consumed:2   produced:2    narrow scope
-  DuplicateGroup       consumed:3   produced:1    narrow scope
   int                  consumed:4   produced:0    narrow scope
   dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
   ScanConfig           consumed:3   produced:1    narrow scope
-  ScanConfig | None    consumed:3   produced:0    narrow scope
+  DuplicateGroup       consumed:3   produced:1    narrow scope
   Path                 consumed:3   produced:0    narrow scope
   list[str]            consumed:3   produced:0    narrow scope
-  Path | None          consumed:2   produced:0    narrow scope
+  ScanConfig | None    consumed:3   produced:0    narrow scope
+  dict                 consumed:0   produced:2    narrow scope
   tuple[list[ScannedFile], ScanStats] consumed:0   produced:2    narrow scope
-  dict[str, str]       consumed:2   produced:0    narrow scope
+  Path | None          consumed:2   produced:0    narrow scope
   list[int]            consumed:2   produced:0    narrow scope
 
   HUB TYPES (consumed ≥10):

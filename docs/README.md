@@ -150,7 +150,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redup/
-    ├── redup/        ├── __main__        ├── core/    ├── 01_basic_usage            ├── planner            ├── scanner            ├── models            ├── pipeline        ├── reporters/            ├── json_reporter            ├── toon_reporter            ├── yaml_reporter        ├── cli_app/    ├── sitecustomize├── project            ├── main            ├── hasher            ├── matcher```
+        ├── __main__    ├── 01_basic_usage        ├── core/    ├── redup/            ├── planner            ├── scanner            ├── models            ├── pipeline        ├── reporters/            ├── json_reporter            ├── toon_reporter            ├── yaml_reporter        ├── cli_app/    ├── sitecustomize├── project            ├── matcher            ├── main            ├── hasher```
 
 ## API Overview
 
@@ -167,10 +167,10 @@ redup/
 - **`RefactorSuggestion`** — A concrete refactoring proposal for a duplicate group.
 - **`ScanStats`** — Statistics from the scanning phase.
 - **`DuplicationMap`** — Complete result of a reDUP analysis run.
+- **`MatchResult`** — Result of comparing two code blocks.
 - **`OutputFormat`** — —
 - **`HashedBlock`** — A code block with its computed fingerprints.
 - **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
-- **`MatchResult`** — Result of comparing two code blocks.
 
 ### Functions
 
@@ -181,6 +181,10 @@ redup/
 - `to_json(dup_map, indent)` — Serialize a DuplicationMap to JSON string.
 - `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
 - `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
+- `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
+- `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
+- `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
+- `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
 - `scan(path, format, output, extensions)` — Scan a project for code duplicates and generate a refactoring map.
 - `info()` — Show reDUP version and configuration info.
 - `hash_block(text)` — SHA-256 hash of normalized text.
@@ -188,10 +192,6 @@ redup/
 - `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
 - `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
 - `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
-- `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
-- `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
-- `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
-- `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
 
 
 ## Project Structure

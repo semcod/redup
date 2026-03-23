@@ -3,11 +3,11 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T15:59:32Z'
+  analyzed_at: '2026-03-23T16:03:50Z'
   tool: code2llm
   stats:
     files: 10
-    lines: 2522
+    lines: 2574
     functions: 52
     classes: 15
 health:
@@ -34,7 +34,7 @@ health:
     severity: warning
 modules:
 - path: src/redup/core/hasher.py
-  lines: 234
+  lines: 235
   classes: 2
   methods: 15
   cc_max: 14
@@ -266,5 +266,5 @@ evolution:
 - date: '2026-03-23'
   cc_avg: 4.1
   critical: 2
-  lines: 2522
+  lines: 2574
   note: Automated analysis

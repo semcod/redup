@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import re
 from collections import defaultdict
@@ -81,34 +82,27 @@ def _process_ast_node(
     counter: list[int]
 ) -> str | None:
     """Process a single AST node and return its normalized representation."""
-    import ast
 
-    if isinstance(node, ast.Name):
-        return _get_placeholder(node.id, name_map, counter)
-    elif isinstance(node, ast.arg):
-        return _get_placeholder(node.arg, name_map, counter)
-    elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-        return f"DEF({_get_placeholder(node.name, name_map, counter)})"
-    elif isinstance(node, ast.ClassDef):
-        return f"CLASS({_get_placeholder(node.name, name_map, counter)})"
-    elif isinstance(node, ast.Constant):
-        return _normalize_constant(node.value)
-    elif isinstance(node, ast.If):
-        return "IF"
-    elif isinstance(node, ast.For):
-        return "FOR"
-    elif isinstance(node, ast.While):
-        return "WHILE"
-    elif isinstance(node, ast.Return):
-        return "RETURN"
-    elif isinstance(node, ast.Compare):
-        ops = [type(op).__name__ for op in node.ops]
-        return f"CMP({','.join(ops)})"
-    elif isinstance(node, ast.BinOp):
-        return f"BINOP({type(node.op).__name__})"
-    elif isinstance(node, ast.Call):
-        return "CALL"
-    return None
+    handler = _AST_HANDLERS.get(type(node))
+    return handler(node, name_map, counter) if handler else None
+
+
+# Dispatch table for AST node types - reduces complexity from CC=14 to CC=2
+_AST_HANDLERS: dict[type, Callable] = {
+    ast.Name: lambda n, nm, c: _get_placeholder(n.id, nm, c),
+    ast.arg: lambda n, nm, c: _get_placeholder(n.arg, nm, c),
+    ast.FunctionDef: lambda n, nm, c: f"DEF({_get_placeholder(n.name, nm, c)})",
+    ast.AsyncFunctionDef: lambda n, nm, c: f"DEF({_get_placeholder(n.name, nm, c)})",
+    ast.ClassDef: lambda n, nm, c: f"CLASS({_get_placeholder(n.name, nm, c)})",
+    ast.Constant: lambda n, nm, c: _normalize_constant(n.value),
+    ast.If: lambda n, nm, c: "IF",
+    ast.For: lambda n, nm, c: "FOR",
+    ast.While: lambda n, nm, c: "WHILE",
+    ast.Return: lambda n, nm, c: "RETURN",
+    ast.Call: lambda n, nm, c: "CALL",
+    ast.BinOp: lambda n, nm, c: f"BINOP({type(n.op).__name__})",
+    ast.Compare: lambda n, nm, c: f"CMP({','.join(type(op).__name__ for op in n.ops)})",
+}
 
 
 def _get_placeholder(

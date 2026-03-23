@@ -5,7 +5,7 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 10
-- **Lines**: 2522
+- **Lines**: 2574
 - **Functions**: 52
 - **Classes**: 15
 - **Avg CC**: 4.1
@@ -31,9 +31,9 @@
 - `main.py` — 169L, 3 methods, CC↑9
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (7 files, 1053L, 44 functions)
+### src/redup/core/ (7 files, 1054L, 44 functions)
 
-- `hasher.py` — 234L, 15 methods, CC↑14
+- `hasher.py` — 235L, 15 methods, CC↑14
 - `pipeline.py` — 256L, 12 methods, CC↑9
 - `scanner.py` — 193L, 6 methods, CC↑9
 - `matcher.py` — 107L, 5 methods, CC↑7

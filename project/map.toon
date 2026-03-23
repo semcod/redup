@@ -1,4 +1,4 @@
-# redup | 18f 1508L | python:17,shell:1
+# redup | 18f 1509L | python:17,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[18]:
   examples/01_basic_usage.py,58
@@ -8,7 +8,7 @@ M[18]:
   src/redup/cli_app/__init__.py,1
   src/redup/cli_app/main.py,169
   src/redup/core/__init__.py,1
-  src/redup/core/hasher.py,234
+  src/redup/core/hasher.py,235
   src/redup/core/matcher.py,107
   src/redup/core/models.py,152
   src/redup/core/pipeline.py,256
@@ -110,9 +110,9 @@ D:
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
   src/redup/__init__.py:
-  src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/redup/__main__.py:
   src/redup/reporters/__init__.py:
+  src/sitecustomize.py:
   src/redup/cli_app/__init__.py:
   project.sh:
-  src/sitecustomize.py:

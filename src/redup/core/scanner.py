@@ -168,11 +168,19 @@ def scan_project(config: ScanConfig | None = None) -> tuple[list[ScannedFile], S
         lines = source.splitlines()
         rel_path = str(filepath.relative_to(config.root.resolve()))
 
-        # Extract function-level blocks for Python
+        # Extract function-level blocks for Python and other supported languages
         if filepath.suffix == ".py":
             func_blocks = _extract_function_blocks_python(source, rel_path)
         else:
-            func_blocks = []
+            # Try tree-sitter extraction for other languages
+            try:
+                from redup.core.ts_extractor import extract_functions_treesitter, is_language_supported
+                if is_language_supported(rel_path):
+                    func_blocks = extract_functions_treesitter(source, rel_path)
+                else:
+                    func_blocks = []
+            except ImportError:
+                func_blocks = []
 
         # Also extract sliding-window blocks for line-level matching
         sliding = _extract_blocks_sliding(lines, config.min_block_lines)
