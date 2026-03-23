@@ -1,4 +1,4 @@
-# redup/flow | 66 func | 5 pipelines | 1 hub-types | 2026-03-23
+# redup/flow | 53 func | 5 pipelines | 1 hub-types | 2026-03-23
 
 PIPELINES[5] (Core:4, NLP:1):
   Src [Core]: ? → bool
@@ -48,9 +48,7 @@ PIPELINES[5] (Core:4, NLP:1):
 TRANSFORMS (fan-out ≥10):
   scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None fan=18   fan=18
   scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats] fan=15   fan=15
-  format_output(data:Any, format_type:str) → str          fan=11   fan=11
   _find_structural_groups(index:HashIndex, exact_groups_list:list[DuplicateGroup]) → list[DuplicateGroup] fan=11   fan=11
-  format_table(headers:List[str], rows:List[List[str]]) → str fan=10   fan=10
 
 CONTRACTS:
   Pipeline: Src
@@ -182,36 +180,36 @@ CONTRACTS:
       INVARIANT: len(output) <= len(input)
 
 
-DATA_TYPES (by cross-function usage) [61 annotated, 0 inferred / 66 functions]:
-  str                  consumed:28  produced:16   !! HUB-TYPE → split interface
-  bool                 consumed:6   produced:4  
+DATA_TYPES (by cross-function usage) [52 annotated, 0 inferred / 53 functions]:
+  str                  consumed:17  produced:13   !! HUB-TYPE → split interface
   list[DuplicateGroup] consumed:3   produced:6  
   float                consumed:5   produced:3  
+  bool                 consumed:5   produced:3  
   list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
+  list[MatchResult]    consumed:2   produced:3  
   DuplicationMap       consumed:4   produced:1  
   HashIndex            consumed:4   produced:1  
-  list[MatchResult]    consumed:2   produced:3  
-  DuplicateGroup       consumed:3   produced:1    narrow scope
-  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
-  ScanConfig           consumed:3   produced:1    narrow scope
-  list[str]            consumed:4   produced:0    narrow scope
-  int                  consumed:4   produced:0    narrow scope
   list[CodeBlock]      consumed:2   produced:2    narrow scope
-  Path                 consumed:3   produced:0    narrow scope
+  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
+  int                  consumed:4   produced:0    narrow scope
+  ScanConfig           consumed:3   produced:1    narrow scope
+  DuplicateGroup       consumed:3   produced:1    narrow scope
   ScanConfig | None    consumed:3   produced:0    narrow scope
-  dict[str, str]       consumed:2   produced:0    narrow scope
-  str | None           consumed:1   produced:1    narrow scope
-  tuple[list[ScannedFile], ScanStats] consumed:0   produced:2    narrow scope
+  list[str]            consumed:3   produced:0    narrow scope
+  Path                 consumed:3   produced:0    narrow scope
+  dict                 consumed:0   produced:2    narrow scope
   Path | None          consumed:2   produced:0    narrow scope
+  dict[str, str]       consumed:2   produced:0    narrow scope
+  list[int]            consumed:2   produced:0    narrow scope
 
   HUB TYPES (consumed ≥10):
-    str → 28 consumers → split into:
+    str → 17 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        main, _serve_file, config_json, show_vscode_tests, show_status, confirm_action, format_output, handle_error, scan_project, to_json
-  Mutation:  make_args_from_config, format_table, _common_prefix, generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, to_toon, _compare_against_reference, _normalize_text, _ast_to_normalized_string
-  Pure:      _create_endpoint, favicon, index, health_check, _suggest_module_name, _assess_risk, _choose_action, _should_exclude, _collect_files, _is_test_file
+  IO:        main, scan_project, to_json, to_yaml, _write_output, scan
+  Mutation:  generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, _blocks_to_group, _deduplicate_groups, _process_blocks, _find_exact_groups, _find_structural_groups, _match_results_to_blocks, to_toon
+  Pure:      _common_prefix, _suggest_module_name, _assess_risk, _choose_action, _should_exclude, _collect_files, _is_test_file, DuplicationMap.sorted_by_impact, analyze, _ensure_config
 
   PIPELINE PURITY:
     Src             ██░░ 71% pure

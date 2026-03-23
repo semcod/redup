@@ -1,20 +1,18 @@
-# redup | 20f 1959L | python:19,shell:1
+# redup | 18f 1508L | python:17,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[20]:
-  cli_utilities_demo.py,231
+M[18]:
   examples/01_basic_usage.py,58
-  project.sh,16
-  refactored_frontend_demo.py,218
+  project.sh,17
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,165
+  src/redup/cli_app/main.py,169
   src/redup/core/__init__.py,1
   src/redup/core/hasher.py,234
   src/redup/core/matcher.py,107
   src/redup/core/models.py,152
   src/redup/core/pipeline.py,256
-  src/redup/core/planner.py,117
+  src/redup/core/planner.py,110
   src/redup/core/scanner.py,193
   src/redup/reporters/__init__.py,1
   src/redup/reporters/json_reporter.py,66
@@ -41,15 +39,6 @@ D:
     find_exact_duplicates(index)
     find_structural_duplicates(index)
     _blocks_from_different_locations(blocks)
-  cli_utilities_demo.py:
-    e: show_vscode_tests,show_status,make_args_from_config,confirm_action,format_output,format_table,handle_error
-    show_vscode_tests(config;label)
-    show_status(config;label)
-    make_args_from_config(config;required_args)
-    confirm_action(message;default)
-    format_output(data;format_type)
-    format_table(headers;rows)
-    handle_error(error;context)
   src/redup/reporters/toon_reporter.py:
     e: to_toon
     to_toon(dup_map)
@@ -63,12 +52,6 @@ D:
     _extract_blocks_sliding(lines;min_lines)
     _extract_function_blocks_python(source;filepath)
     scan_project(config)
-  src/redup/cli_app/main.py:
-    e: OutputFormat,_write_output,scan,info
-    OutputFormat(str,Enum):
-    _write_output(content;output;suffix)
-    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only)
-    info()
   src/redup/core/pipeline.py:
     e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity
     _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
@@ -83,6 +66,12 @@ D:
     _deduplicate_phase(groups)
     _match_results_to_blocks(matches)
     _calculate_similarity(matches)
+  src/redup/cli_app/main.py:
+    e: OutputFormat,_write_output,scan,info
+    OutputFormat(str,Enum):
+    _write_output(content;output;suffix)
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only)
+    info()
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -101,14 +90,6 @@ D:
   examples/01_basic_usage.py:
     e: main
     main()
-  refactored_frontend_demo.py:
-    e: _serve_file,_create_endpoint,favicon,index,config_json,health_check
-    _serve_file(paths;media_type;charset_header)
-    _create_endpoint(route;file_path;description)
-    favicon()
-    index()
-    config_json()
-    health_check()
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
@@ -128,10 +109,10 @@ D:
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
-  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
-  src/sitecustomize.py:
+  src/redup/__init__.py:
   src/redup/reporters/__init__.py:
+  src/sitecustomize.py:
   src/redup/cli_app/__init__.py:
   project.sh:

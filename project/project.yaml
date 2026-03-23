@@ -3,16 +3,16 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T15:46:19Z'
+  analyzed_at: '2026-03-23T15:54:45Z'
   tool: code2llm
   stats:
-    files: 12
-    lines: 2978
-    functions: 65
+    files: 10
+    lines: 2527
+    functions: 52
     classes: 15
 health:
-  cc_avg: 4.3
-  critical_count: 5
+  cc_avg: 4.1
+  critical_count: 2
   critical_limit: 10
   duplicates: 0
   cycles: 0
@@ -28,18 +28,8 @@ health:
     limit: 10
     severity: error
   - type: high_fan_out
-    target: format_output
-    value: 11
-    limit: 10
-    severity: warning
-  - type: high_fan_out
     target: _find_structural_groups
     value: 11
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: format_table
-    value: 10
     limit: 10
     severity: warning
 modules:
@@ -71,36 +61,6 @@ modules:
   - name: find_structural_duplicates
     type: function
     cc: 1
-- path: cli_utilities_demo.py
-  lines: 231
-  classes: 0
-  methods: 7
-  cc_max: 12
-  inbound_deps: 0
-  exports:
-  - name: show_vscode_tests
-    type: function
-    cc: 7
-  - name: show_status
-    type: function
-    cc: 5
-  - name: make_args_from_config
-    type: function
-    cc: 10
-  - name: confirm_action
-    type: function
-    cc: 5
-  - name: format_output
-    type: function
-    cc: 12
-    fan_out: 11
-  - name: format_table
-    type: function
-    cc: 12
-    fan_out: 10
-  - name: handle_error
-    type: function
-    cc: 4
 - path: src/redup/reporters/toon_reporter.py
   lines: 75
   classes: 0
@@ -112,7 +72,7 @@ modules:
     type: function
     cc: 12
 - path: src/redup/cli_app/main.py
-  lines: 165
+  lines: 169
   classes: 1
   methods: 3
   cc_max: 9
@@ -178,7 +138,7 @@ modules:
     type: function
     cc: 1
 - path: src/redup/core/planner.py
-  lines: 117
+  lines: 110
   classes: 0
   methods: 5
   cc_max: 7
@@ -187,25 +147,6 @@ modules:
   - name: generate_suggestions
     type: function
     cc: 6
-- path: refactored_frontend_demo.py
-  lines: 218
-  classes: 0
-  methods: 6
-  cc_max: 4
-  inbound_deps: 0
-  exports:
-  - name: favicon
-    type: function
-    cc: 1
-  - name: index
-    type: function
-    cc: 1
-  - name: config_json
-    type: function
-    cc: 1
-  - name: health_check
-    type: function
-    cc: 1
 - path: src/redup/reporters/yaml_reporter.py
   lines: 34
   classes: 0
@@ -261,7 +202,7 @@ modules:
     type: class
     cc_avg: 1.0
 - path: project.sh
-  lines: 16
+  lines: 17
   classes: 0
   methods: 0
   cc_max: 0
@@ -310,15 +251,9 @@ hotspots:
   fan_out: 15
   note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
     \ Tuple of ("
-- name: format_output
-  fan_out: 11
-  note: 11-way dispatch
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
-- name: format_table
-  fan_out: 10
-  note: 10-way dispatch
 refactoring:
   priorities:
   - action: Reduce scan fan-out (currently 18)
@@ -329,7 +264,7 @@ refactoring:
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 4.3
-  critical: 5
-  lines: 2978
+  cc_avg: 4.1
+  critical: 2
+  lines: 2527
   note: Automated analysis

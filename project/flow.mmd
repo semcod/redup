@@ -1,23 +1,6 @@
 flowchart TD
-    subgraph cli_utilities_demo
-        cli_utilities_demo__show_vscode_tests["show_vscode_tests"]
-        cli_utilities_demo__show_status["show_status"]
-        cli_utilities_demo__make_args_from_config("make_args_from_config CC=10")
-        cli_utilities_demo__confirm_action["confirm_action"]
-        cli_utilities_demo__format_output("format_output CC=12")
-        cli_utilities_demo__format_table("format_table CC=12")
-        cli_utilities_demo__handle_error["handle_error"]
-    end
     subgraph examples_01_basic_usage
         examples__01_basic_usage__main["main"]
-    end
-    subgraph refactored_frontend_demo
-        refactored_frontend_demo___serve_file["_serve_file"]
-        refactored_frontend_demo___create_endpoint["_create_endpoint"]
-        refactored_frontend_demo__favicon["favicon"]
-        refactored_frontend_demo__index["index"]
-        refactored_frontend_demo__config_json["config_json"]
-        refactored_frontend_demo__health_check["health_check"]
     end
     subgraph src_redup
         src__redup__core__planner___common_prefix["_common_prefix"]
@@ -32,14 +15,23 @@ flowchart TD
         src___extract_function_blocks_python("_extract_function_blocks_python CC=9")
         src__redup__core__scanner__scan_project["scan_project"]
         src__sorted_by_impact["sorted_by_impact"]
+        src__redup__core__pipeline___blocks_to_group["_blocks_to_group"]
+        src__redup__core__pipeline___deduplicate_groups["_deduplicate_groups"]
+        src__redup__core__pipeline__analyze["analyze"]
+        src__redup__core__pipeline___ensure_config["_ensure_config"]
+        src__redup__core__pipeline___scan_phase["_scan_phase"]
+        src__redup__core__pipeline___process_blocks["_process_blocks"]
+        src__redup__core__pipeline___find_duplicates_phase["_find_duplicates_phase"]
+        src__redup__core__pipeline___find_exact_groups["_find_exact_groups"]
+        src___find_structural_groups("_find_structural_groups CC=9")
+        src__redup__core__pipeline___deduplicate_phase["_deduplicate_phase"]
+        src___match_results_to_blocks["_match_results_to_blocks"]
+        src__redup__core__pipeline___calculate_similarity["_calculate_similarity"]
         src___group_to_dict["_group_to_dict"]
         src___suggestion_to_dict["_suggestion_to_dict"]
         src__redup__reporters__json_reporter__to_json["to_json"]
-        src__redup__reporters__toon_reporter__to_toon("to_toon CC=12")
         src__redup__reporters__yaml_reporter__to_yaml["to_yaml"]
-        src__redup__cli_app__main___write_output["_write_output"]
-        src__redup__cli_app__main__scan("scan CC=9")
-        src__redup__cli_app__main__info["info"]
+        src__redup__reporters__toon_reporter__to_toon("to_toon CC=12")
         src__redup__core__matcher__sequence_similarity["sequence_similarity"]
         src__redup__core__matcher__fuzzy_similarity["fuzzy_similarity"]
         src___compare_against_reference["_compare_against_reference"]
@@ -60,26 +52,13 @@ flowchart TD
         src__redup__core__hasher__find_exact_duplicates["find_exact_duplicates"]
         src__find_structural_duplicates["find_structural_duplicates"]
         src___blocks_from_different_locations["_blocks_from_different_locations"]
-        src__redup__core__pipeline___blocks_to_group["_blocks_to_group"]
-        src__redup__core__pipeline___deduplicate_groups["_deduplicate_groups"]
-        src__redup__core__pipeline__analyze["analyze"]
-        src__redup__core__pipeline___ensure_config["_ensure_config"]
-        src__redup__core__pipeline___scan_phase["_scan_phase"]
-        src__redup__core__pipeline___process_blocks["_process_blocks"]
-        src__redup__core__pipeline___find_duplicates_phase["_find_duplicates_phase"]
-        src__redup__core__pipeline___find_exact_groups["_find_exact_groups"]
-        src___find_structural_groups("_find_structural_groups CC=9")
-        src__redup__core__pipeline___deduplicate_phase["_deduplicate_phase"]
-        src___match_results_to_blocks["_match_results_to_blocks"]
-        src__redup__core__pipeline___calculate_similarity["_calculate_similarity"]
+        src__redup__cli_app__main___write_output["_write_output"]
+        src__redup__cli_app__main__scan("scan CC=9")
+        src__redup__cli_app__main__info["info"]
     end
     examples__01_basic_usage__main --> src__redup__core__pipeline__analyze
     examples__01_basic_usage__main --> src__redup__reporters__toon_reporter__to_toon
     examples__01_basic_usage__main --> src__redup__reporters__json_reporter__to_json
-    refactored_frontend_demo___create_endpoint --> refactored_frontend_demo___serve_file
-    refactored_frontend_demo__favicon --> refactored_frontend_demo___serve_file
-    refactored_frontend_demo__index --> refactored_frontend_demo___serve_file
-    cli_utilities_demo__format_output --> cli_utilities_demo__format_table
     src__redup__core__planner___suggest_module_name --> src__redup__core__planner___common_prefix
     src__redup__core__planner__generate_suggestions --> src__redup__core__planner___choose_action
     src__redup__core__planner__generate_suggestions --> src__redup__core__planner___suggest_module_name
@@ -89,29 +68,6 @@ flowchart TD
     src__redup__core__scanner__scan_project --> src__redup__core__scanner___collect_files
     src__redup__core__scanner__scan_project --> src__redup__core__scanner___extract_blocks_sliding
     src__redup__core__scanner__scan_project --> src___extract_function_blocks_python
-    src__redup__reporters__json_reporter__to_json --> src___group_to_dict
-    src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
-    src__redup__reporters__yaml_reporter__to_yaml --> src___group_to_dict
-    src__redup__reporters__yaml_reporter__to_yaml --> src___suggestion_to_dict
-    src__redup__cli_app__main__scan --> src__redup__core__pipeline__analyze
-    src__redup__core__matcher__sequence_similarity --> src__redup__core__hasher___normalize_text
-    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__hasher___normalize_text
-    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__matcher__sequence_similarity
-    src__redup__core__matcher__match_candidates --> src___compare_against_reference
-    src__refine_structural_matches --> src___compare_against_reference
-    src__redup__core__hasher___normalize_ast_text --> src__redup__core__hasher___normalize_text
-    src__redup__core__hasher___normalize_ast_text --> src___ast_to_normalized_string
-    src___ast_to_normalized_string --> src__redup__core__hasher___process_ast_node
-    src__redup__core__hasher___process_ast_node --> src__redup__core__hasher___get_placeholder
-    src__redup__core__hasher___process_ast_node --> src__redup__core__hasher___normalize_constant
-    src__redup__core__hasher__hash_block --> src__redup__core__hasher___hash_text
-    src__redup__core__hasher__hash_block_structural --> src__redup__core__hasher___hash_text
-    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block
-    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block_structural
-    src__redup__core__hasher__build_hash_index --> src__redup__core__hasher___hashed_block
-    src__redup__core__hasher___find_duplicates --> src___blocks_from_different_locations
-    src__redup__core__hasher__find_exact_duplicates --> src__redup__core__hasher___find_duplicates
-    src__find_structural_duplicates --> src__redup__core__hasher___find_duplicates
     src__redup__core__pipeline__analyze --> src__redup__core__pipeline___ensure_config
     src__redup__core__pipeline__analyze --> src__redup__core__pipeline___scan_phase
     src__redup__core__pipeline__analyze --> src__redup__core__pipeline___process_blocks
@@ -130,7 +86,30 @@ flowchart TD
     src___find_structural_groups --> src__redup__core__pipeline___blocks_to_group
     src___find_structural_groups --> src__redup__core__pipeline___calculate_similarity
     src__redup__core__pipeline___deduplicate_phase --> src__redup__core__pipeline___deduplicate_groups
+    src__redup__reporters__json_reporter__to_json --> src___group_to_dict
+    src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
+    src__redup__reporters__yaml_reporter__to_yaml --> src___group_to_dict
+    src__redup__reporters__yaml_reporter__to_yaml --> src___suggestion_to_dict
+    src__redup__core__matcher__sequence_similarity --> src__redup__core__hasher___normalize_text
+    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__hasher___normalize_text
+    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__matcher__sequence_similarity
+    src__redup__core__matcher__match_candidates --> src___compare_against_reference
+    src__refine_structural_matches --> src___compare_against_reference
+    src__redup__core__hasher___normalize_ast_text --> src__redup__core__hasher___normalize_text
+    src__redup__core__hasher___normalize_ast_text --> src___ast_to_normalized_string
+    src___ast_to_normalized_string --> src__redup__core__hasher___process_ast_node
+    src__redup__core__hasher___process_ast_node --> src__redup__core__hasher___get_placeholder
+    src__redup__core__hasher___process_ast_node --> src__redup__core__hasher___normalize_constant
+    src__redup__core__hasher__hash_block --> src__redup__core__hasher___hash_text
+    src__redup__core__hasher__hash_block_structural --> src__redup__core__hasher___hash_text
+    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block
+    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block_structural
+    src__redup__core__hasher__build_hash_index --> src__redup__core__hasher___hashed_block
+    src__redup__core__hasher___find_duplicates --> src___blocks_from_different_locations
+    src__redup__core__hasher__find_exact_duplicates --> src__redup__core__hasher___find_duplicates
+    src__find_structural_duplicates --> src__redup__core__hasher___find_duplicates
+    src__redup__cli_app__main__scan --> src__redup__core__pipeline__analyze
 
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
-    class cli_utilities_demo__make_args_from_config,cli_utilities_demo__format_output,cli_utilities_demo__format_table,src___extract_function_blocks_python,src__redup__reporters__toon_reporter__to_toon,src__redup__cli_app__main__scan,src__redup__core__hasher___process_ast_node,src___find_structural_groups medCC
+    class src___extract_function_blocks_python,src___find_structural_groups,src__redup__reporters__toon_reporter__to_toon,src__redup__core__hasher___process_ast_node,src__redup__cli_app__main__scan medCC

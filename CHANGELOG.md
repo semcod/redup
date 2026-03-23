@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+## [0.1.8] - 2026-03-23
+
+### Docs
+- Update REFACTORING_SUMMARY.md
+- Update docs/README.md
+- Update project/context.md
+- Update proxy_refactoring_plan.md
+
+### Other
+- Update VERSION
+- Update cli_utilities_demo.py
+- Update project/analysis.json
+- Update project/analysis.toon
+- Update project/analysis.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/dashboard.html
+- Update project/duplication.toon
+- Update project/evolution.toon
+- ... and 8 more files
+
 ## [0.1.6] - 2026-03-23
 
 ### Docs

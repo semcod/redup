@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import warnings
 from enum import Enum
 from pathlib import Path
 
 import typer
+
+# Suppress SyntaxWarning from external libraries
+warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 import redup
 from redup.core.models import ScanConfig
