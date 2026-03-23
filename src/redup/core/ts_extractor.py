@@ -16,6 +16,36 @@ from redup.core.utils.function_extractor import (
     SCALA_EXTRACTOR, KOTLIN_EXTRACTOR, SWIFT_EXTRACTOR, OBJC_EXTRACTOR,
     LUA_EXTRACTOR
 )
+from redup.core.utils.language_dispatcher import language_dispatcher
+
+
+def _initialize_language_dispatcher() -> None:
+    """Initialize the language dispatcher with all supported extractors."""
+    # Register individual language extractors
+    language_dispatcher.register_extractor("go", _extract_functions_go)
+    language_dispatcher.register_extractor("rust", _extract_functions_rust)
+    language_dispatcher.register_extractor("java", _extract_functions_java)
+    language_dispatcher.register_extractor("scala", _extract_functions_scala)
+    language_dispatcher.register_extractor("kotlin", _extract_functions_kotlin)
+    language_dispatcher.register_extractor("swift", _extract_functions_swift)
+    language_dispatcher.register_extractor("objc", _extract_functions_objc)
+    language_dispatcher.register_extractor("lua", _extract_functions_lua)
+    
+    # Register groups of languages
+    language_dispatcher.register_group("web_languages", ["javascript", "typescript"])
+    language_dispatcher.register_group("c_cpp", ["c", "cpp"])
+    language_dispatcher.register_extractor("web_languages", _extract_functions_javascript)
+    language_dispatcher.register_extractor("c_cpp", _extract_functions_c_cpp)
+    
+    # Register other languages
+    language_dispatcher.register_extractor("c_sharp", _extract_functions_c_sharp)
+    language_dispatcher.register_extractor("ruby", _extract_functions_ruby)
+    language_dispatcher.register_extractor("php", _extract_functions_php)
+    language_dispatcher.register_extractor("bash", _extract_functions_bash)
+    language_dispatcher.register_extractor("html", _extract_blocks_html_xml)
+    language_dispatcher.register_extractor("xml", _extract_blocks_html_xml)
+    language_dispatcher.register_extractor("css", _extract_blocks_css)
+    language_dispatcher.register_extractor("sql", _extract_blocks_sql)
 
 
 # Language mappings for tree-sitter
@@ -287,6 +317,10 @@ def extract_functions_treesitter(source: str, file_path: str) -> list[CodeBlock]
     if tree_sitter is None:
         return []
     
+    # Initialize dispatcher on first use
+    if not language_dispatcher._extractors:
+        _initialize_language_dispatcher()
+    
     # Determine language from file extension
     file_ext = Path(file_path).suffix.lower()
     language_name = _LANGUAGE_MAPPING.get(file_ext)
@@ -313,46 +347,10 @@ def extract_functions_treesitter(source: str, file_path: str) -> list[CodeBlock]
     
     source_lines = source.splitlines()
     
-    # Extract functions based on language
-    if language_name in ("javascript", "typescript"):
-        return _extract_functions_javascript(tree.root_node, source_lines, file_path)
-    elif language_name == "go":
-        return _extract_functions_go(tree.root_node, source_lines, file_path)
-    elif language_name == "rust":
-        return _extract_functions_rust(tree.root_node, source_lines, file_path)
-    elif language_name == "java":
-        return _extract_functions_java(tree.root_node, source_lines, file_path)
-    elif language_name == "c_sharp":
-        return _extract_functions_c_sharp(tree.root_node, source_lines, file_path)
-    elif language_name == "scala":
-        return _extract_functions_scala(tree.root_node, source_lines, file_path)
-    elif language_name == "kotlin":
-        return _extract_functions_kotlin(tree.root_node, source_lines, file_path)
-    elif language_name == "swift":
-        return _extract_functions_swift(tree.root_node, source_lines, file_path)
-    elif language_name == "objc":
-        return _extract_functions_objc(tree.root_node, source_lines, file_path)
-    elif language_name == "ruby":
-        return _extract_functions_ruby(tree.root_node, source_lines, file_path)
-    elif language_name == "php":
-        return _extract_functions_php(tree.root_node, source_lines, file_path)
-    elif language_name == "bash":
-        return _extract_functions_bash(tree.root_node, source_lines, file_path)
-    elif language_name == "lua":
-        return _extract_functions_lua(tree.root_node, source_lines, file_path)
-    elif language_name in ("c", "cpp"):
-        return _extract_functions_c_cpp(tree.root_node, source_lines, file_path)
-    elif language_name in ("html", "xml"):
-        return _extract_blocks_html_xml(tree.root_node, source_lines, file_path)
-    elif language_name == "css":
-        return _extract_blocks_css(tree.root_node, source_lines, file_path)
-    elif language_name == "sql":
-        return _extract_blocks_sql(tree.root_node, source_lines, file_path)
-    elif language_name in ("json", "yaml", "toml", "markdown", "embedded_template", "regex", "graphql", "dockerfile", "make", "vim", "nginx", "svelte", "vue"):
-        # Data formats, markup languages, config files, and template languages don't have functions in the traditional sense
-        return []
-    
-    return []
+    # Use dispatcher to extract functions
+    return language_dispatcher.extract_functions(
+        language_name, tree.root_node, source_lines, file_path
+    )
 
 
 

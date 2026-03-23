@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+## [0.3.12] - 2026-03-23
+
+### Docs
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Other
+- Update .redup/cache/hash_cache.db
+- Update project/analysis.json
+- Update project/analysis.toon
+- Update project/analysis.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/dashboard.html
+- Update project/duplication.toon
+- ... and 9 more files
+
 ## [0.3.11] - 2026-03-23
 
 ### Docs

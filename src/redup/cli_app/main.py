@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore", category=SyntaxWarning)
 import redup  # noqa: E402
 from redup.core.config import config_to_scan_config, create_sample_redup_toml, load_config  # noqa: E402
 from redup.core.models import DuplicationMap, ScanConfig  # noqa: E402
-from redup.core.pipeline import analyze, analyze_parallel  # noqa: E402
+from redup.core.pipeline import analyze, analyze_parallel, analyze_optimized  # noqa: E402
 from redup.reporters.json_reporter import to_json  # noqa: E402
 from redup.reporters.markdown_reporter import to_markdown  # noqa: E402
 from redup.reporters.toon_reporter import to_toon  # noqa: E402
@@ -73,7 +73,10 @@ def _build_config_with_file_support(
     extensions: str | None,
     min_lines: int | None,
     min_similarity: float | None,
-    include_tests: bool | None
+    include_tests: bool | None,
+    parallel: bool = False,
+    max_workers: int | None = None,
+    incremental: bool = False,
 ) -> ScanConfig:
     """Build scan configuration supporting config files and CLI overrides."""
     # Load configuration from files
@@ -89,7 +92,18 @@ def _build_config_with_file_support(
     if include_tests is not None:
         file_config["include_tests"] = include_tests
     
-    return config_to_scan_config(file_config, path)
+    config = config_to_scan_config(file_config, path)
+    
+    # Apply performance options
+    if parallel:
+        config.parallel_workers = max_workers
+    elif max_workers is not None:
+        config.parallel_workers = max_workers
+    
+    if incremental:
+        config.enable_cache = True
+    
+    return config
 
 
 def _print_scan_header(
@@ -233,12 +247,17 @@ def scan(
     ),
 ) -> None:
     """Scan a project for code duplicates and generate a refactoring map."""
-    config = _build_config_with_file_support(path, extensions, min_lines, min_similarity, include_tests)
+    config = _build_config_with_file_support(
+        path, extensions, min_lines, min_similarity, include_tests, 
+        parallel, max_workers, incremental
+    )
 
     _print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
 
-    # Choose analysis method
-    if parallel:
+    # Choose analysis method based on optimization flags
+    if parallel or incremental:
+        dup_map = analyze_optimized(config=config, function_level_only=functions_only)
+    elif parallel:
         dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
     else:
         dup_map = analyze(config=config, function_level_only=functions_only)

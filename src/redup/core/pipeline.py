@@ -27,6 +27,8 @@ from redup.core.models import (
 )
 from redup.core.planner import generate_suggestions
 from redup.core.scanner import CodeBlock, ScannedFile, scan_project
+from redup.core.cache import HashCache, build_hash_index_with_cache
+from redup.core.lazy_grouper import find_all_duplicates_lazy, DuplicateGroupCollector
 
 
 def _blocks_to_group(
@@ -122,8 +124,8 @@ def analyze(
     # Phase 2: Process blocks
     all_blocks = _process_blocks(scanned_files, function_level_only)
 
-    # Phase 3: Hash and find duplicates
-    groups = _find_duplicates_phase(all_blocks, config)
+    # Phase 3: Hash and find duplicates with optimizations
+    groups = _find_duplicates_phase_optimized(all_blocks, config)
 
     # Phase 4: Deduplicate and suggest
     final_groups = _deduplicate_phase(groups)
@@ -135,6 +137,67 @@ def analyze(
         groups=final_groups,
     )
     dup_map.suggestions = generate_suggestions(dup_map)
+
+    return dup_map
+
+
+def analyze_optimized(
+    config: ScanConfig | None = None,
+    function_level_only: bool = False,
+) -> DuplicationMap:
+    """Run reDUP analysis with all performance optimizations enabled.
+    
+    Uses parallel scanning, hash caching, and lazy grouping for maximum speed.
+    
+    Args:
+        config: Scan configuration. Defaults to current directory, .py files.
+        function_level_only: If True, only analyze function-level blocks.
+        
+    Returns:
+        A DuplicationMap with all duplicate groups and refactoring suggestions.
+    """
+    config = _ensure_config(config)
+    
+    # Initialize cache if enabled
+    cache = None
+    if config.enable_cache:
+        cache = HashCache(config.cache_dir)
+    
+    import time
+    start_time = time.time()
+    
+    # Phase 1: Parallel or sequential scan based on configuration
+    if config.parallel_workers != 1:
+        scanned_files, stats = _scan_phase_parallel(config, config.parallel_workers)
+    else:
+        scanned_files, stats = _scan_phase(config)
+
+    # Phase 2: Process blocks
+    all_blocks = _process_blocks(scanned_files, function_level_only)
+
+    # Phase 3: Hash and find duplicates with caching and lazy grouping
+    groups = _find_duplicates_phase_lazy(all_blocks, config, cache)
+
+    # Phase 4: Deduplicate and suggest
+    final_groups = _deduplicate_phase(groups)
+
+    # Update scan time
+    stats.scan_time_ms = (time.time() - start_time) * 1000
+
+    dup_map = DuplicationMap(
+        project_path=config.root.as_posix(),
+        config=config,
+        stats=stats,
+        groups=final_groups,
+    )
+    dup_map.suggestions = generate_suggestions(dup_map)
+    
+    # Store cache data if caching is enabled
+    if cache is not None:
+        try:
+            cache.cleanup_old_entries()
+        except Exception:
+            pass  # Ignore cache cleanup errors
 
     return dup_map
 
@@ -182,7 +245,7 @@ def _process_blocks(
     return all_blocks
 
 
-def _find_duplicates_phase(
+def _find_duplicates_phase_optimized(
     all_blocks: list[CodeBlock],
     config: ScanConfig
 ) -> list[DuplicateGroup]:
@@ -192,19 +255,65 @@ def _find_duplicates_phase(
     # Build hash index with progress tracking
     index = build_hash_index(all_blocks, min_lines=config.min_block_lines)
     
-    # Find duplicates in parallel where possible
-    exact_groups = _find_exact_groups(index)
-    structural_groups = _find_structural_groups(index, exact_groups)
-    near_duplicate_groups = _find_near_duplicate_groups(all_blocks, config)
+    # Find duplicates using lazy evaluation for better performance
+    groups = list(find_all_duplicates_lazy(index, min_lines=config.min_block_lines))
     
-    # Combine and sort by impact
-    all_groups = exact_groups + structural_groups + near_duplicate_groups
-    all_groups.sort(key=lambda g: g.impact_score, reverse=True)
+    # Add near-duplicates if LSH is enabled
+    near_duplicate_groups = _find_near_duplicate_groups(all_blocks, config)
+    groups.extend(near_duplicate_groups)
+    
+    # Sort by impact
+    groups.sort(key=lambda g: g.impact_score, reverse=True)
     
     processing_time = (time.time() - start_time) * 1000
     print(f"Duplicate finding completed in {processing_time:.1f}ms")
     
-    return all_groups
+    return groups
+
+
+def _find_duplicates_phase_lazy(
+    all_blocks: list[CodeBlock],
+    config: ScanConfig,
+    cache: HashCache | None = None
+) -> list[DuplicateGroup]:
+    """Phase 3: Hash and find duplicates with caching and lazy evaluation."""
+    start_time = time.time()
+    
+    # Build hash index with optional caching
+    if cache is not None:
+        index, block_hash_cache = build_hash_index_with_cache(
+            all_blocks, min_lines=config.min_block_lines, cache=cache
+        )
+        
+        # Store cache data for incremental scans
+        for file_path, hashes in block_hash_cache.items():
+            if file_path.exists():
+                try:
+                    content = file_path.read_text()
+                    cache.store_file_hashes(file_path, content, hashes)
+                except OSError:
+                    pass
+    else:
+        index = build_hash_index(all_blocks, min_lines=config.min_block_lines)
+    
+    # Use lazy grouping with early exit
+    groups = list(find_all_duplicates_lazy(index, min_lines=config.min_block_lines))
+    
+    # Add near-duplicates if LSH is enabled
+    near_duplicate_groups = _find_near_duplicate_groups(all_blocks, config)
+    groups.extend(near_duplicate_groups)
+    
+    # Sort by impact
+    groups.sort(key=lambda g: g.impact_score, reverse=True)
+    
+    processing_time = (time.time() - start_time) * 1000
+    if cache is not None:
+        cache_stats = cache.get_stats()
+        print(f"Duplicate finding completed in {processing_time:.1f}ms (cache: {cache_stats.get('cached_files', 0)} files)")
+    else:
+        print(f"Duplicate finding completed in {processing_time:.1f}ms")
+    
+    return groups
 
 
 def _find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:
@@ -388,7 +497,7 @@ def analyze_parallel(
     all_blocks = _process_blocks(scanned_files, function_level_only)
 
     # Phase 3: Hash and find duplicates
-    groups = _find_duplicates_phase(all_blocks, config)
+    groups = _find_duplicates_phase_optimized(all_blocks, config)
 
     # Phase 4: Deduplicate and suggest
     final_groups = _deduplicate_phase(groups)

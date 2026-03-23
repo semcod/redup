@@ -3,30 +3,20 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T18:18:08Z'
+  analyzed_at: '2026-03-23T18:28:14Z'
   tool: code2llm
   stats:
-    files: 23
-    lines: 5946
-    functions: 164
-    classes: 21
+    files: 27
+    lines: 6543
+    functions: 195
+    classes: 26
 health:
-  cc_avg: 3.8
-  critical_count: 11
+  cc_avg: 3.5
+  critical_count: 10
   critical_limit: 10
-  duplicates: 0
+  duplicates: 1
   cycles: 0
   alerts:
-  - type: high_fan_out
-    target: extract_functions_treesitter
-    value: 25
-    limit: 10
-    severity: critical
-  - type: cc_exceeded
-    target: extract_functions_treesitter
-    value: 24
-    limit: 15
-    severity: error
   - type: high_fan_out
     target: scan_project
     value: 18
@@ -42,23 +32,18 @@ health:
     value: 15
     limit: 10
     severity: error
-  - type: cc_exceeded
-    target: compare_scans
-    value: 18
-    limit: 15
-    severity: warning
   - type: high_fan_out
     target: scan_project_parallel
     value: 13
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: compare_scans
-    value: 13
+    target: _find_structural_groups
+    value: 11
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: _find_structural_groups
+    target: _normalize_text
     value: 11
     limit: 10
     severity: warning
@@ -77,46 +62,12 @@ health:
     value: 10
     limit: 10
     severity: warning
+  - type: high_fan_out
+    target: extract_functions_treesitter
+    value: 10
+    limit: 10
+    severity: warning
 modules:
-- path: src/redup/core/ts_extractor.py
-  lines: 767
-  classes: 1
-  methods: 23
-  cc_max: 24
-  inbound_deps: 2
-  exports:
-  - name: _LanguageRegistry
-    type: class
-    cc_avg: 3.0
-  - name: extract_functions_treesitter
-    type: function
-    cc: 24
-    flag: split
-    fan_out: 25
-  - name: get_supported_languages
-    type: function
-    cc: 4
-  - name: is_language_supported
-    type: function
-    cc: 3
-- path: src/redup/core/differ.py
-  lines: 246
-  classes: 1
-  methods: 5
-  cc_max: 18
-  inbound_deps: 1
-  exports:
-  - name: DiffResult
-    type: class
-    cc_avg: 0.0
-  - name: compare_scans
-    type: function
-    cc: 18
-    flag: split
-    fan_out: 13
-  - name: format_diff_result
-    type: function
-    cc: 14
 - path: src/redup/cli_app/main.py
   lines: 440
   classes: 0
@@ -141,6 +92,22 @@ modules:
   - name: info
     type: function
     cc: 3
+- path: src/redup/core/differ.py
+  lines: 209
+  classes: 1
+  methods: 5
+  cc_max: 14
+  inbound_deps: 1
+  exports:
+  - name: DiffResult
+    type: class
+    cc_avg: 0.0
+  - name: compare_scans
+    type: function
+    cc: 1
+  - name: format_diff_result
+    type: function
+    cc: 14
 - path: src/redup/reporters/markdown_reporter.py
   lines: 90
   classes: 0
@@ -163,7 +130,7 @@ modules:
     cc: 11
     fan_out: 13
 - path: src/redup/core/pipeline.py
-  lines: 409
+  lines: 411
   classes: 0
   methods: 15
   cc_max: 11
@@ -214,10 +181,10 @@ modules:
     type: function
     cc: 2
 - path: src/redup/core/scanner.py
-  lines: 247
+  lines: 249
   classes: 2
   methods: 7
-  cc_max: 9
+  cc_max: 10
   inbound_deps: 2
   exports:
   - name: CodeBlock
@@ -230,6 +197,34 @@ modules:
     type: function
     cc: 8
     fan_out: 18
+- path: src/redup/core/hasher.py
+  lines: 270
+  classes: 2
+  methods: 15
+  cc_max: 8
+  inbound_deps: 7
+  exports:
+  - name: HashedBlock
+    type: class
+    cc_avg: 0.0
+  - name: HashIndex
+    type: class
+    cc_avg: 0.0
+  - name: hash_block
+    type: function
+    cc: 1
+  - name: hash_block_structural
+    type: function
+    cc: 1
+  - name: find_exact_duplicates
+    type: function
+    cc: 1
+  - name: find_structural_duplicates
+    type: function
+    cc: 1
+  - name: build_hash_index
+    type: function
+    cc: 3
 - path: src/redup/reporters/enhanced_reporter.py
   lines: 274
   classes: 1
@@ -248,6 +243,25 @@ modules:
   inbound_deps: 2
   exports:
   - name: to_toon
+    type: function
+    cc: 3
+- path: src/redup/core/lazy_grouper.py
+  lines: 155
+  classes: 1
+  methods: 7
+  cc_max: 7
+  inbound_deps: 0
+  exports:
+  - name: DuplicateGroupCollector
+    type: class
+    cc_avg: 3.0
+  - name: find_exact_duplicates_lazy
+    type: function
+    cc: 5
+  - name: find_structural_duplicates_lazy
+    type: function
+    cc: 5
+  - name: find_all_duplicates_lazy
     type: function
     cc: 3
 - path: src/redup/core/matcher.py
@@ -282,34 +296,55 @@ modules:
   - name: generate_suggestions
     type: function
     cc: 6
-- path: src/redup/core/hasher.py
-  lines: 233
-  classes: 2
-  methods: 15
-  cc_max: 6
-  inbound_deps: 5
+- path: src/redup/core/ts_extractor.py
+  lines: 765
+  classes: 1
+  methods: 24
+  cc_max: 7
+  inbound_deps: 2
   exports:
-  - name: HashedBlock
+  - name: _LanguageRegistry
     type: class
-    cc_avg: 0.0
-  - name: HashIndex
-    type: class
-    cc_avg: 0.0
-  - name: hash_block
+    cc_avg: 3.0
+  - name: extract_functions_treesitter
     type: function
-    cc: 1
-  - name: hash_block_structural
+    cc: 7
+    fan_out: 10
+  - name: get_supported_languages
     type: function
-    cc: 1
-  - name: find_exact_duplicates
-    type: function
-    cc: 1
-  - name: find_structural_duplicates
-    type: function
-    cc: 1
-  - name: build_hash_index
+    cc: 4
+  - name: is_language_supported
     type: function
     cc: 3
+- path: src/redup/core/utils/diff_helpers.py
+  lines: 97
+  classes: 2
+  methods: 8
+  cc_max: 7
+  inbound_deps: 0
+  exports:
+  - name: GroupMatcher
+    type: class
+    cc_avg: 3.5
+  - name: DiffCalculator
+    type: class
+    cc_avg: 3.0
+- path: src/redup/core/cache.py
+  lines: 267
+  classes: 1
+  methods: 10
+  cc_max: 5
+  inbound_deps: 0
+  exports:
+  - name: HashCache
+    type: class
+    cc_avg: 2.6
+  - name: hash_block_with_cache
+    type: function
+    cc: 4
+  - name: build_hash_index_with_cache
+    type: function
+    cc: 4
 - path: src/redup/core/config.py
   lines: 154
   classes: 0
@@ -346,6 +381,16 @@ modules:
   - name: to_json
     type: function
     cc: 3
+- path: src/redup/core/utils/language_dispatcher.py
+  lines: 72
+  classes: 1
+  methods: 5
+  cc_max: 4
+  inbound_deps: 0
+  exports:
+  - name: LanguageDispatcher
+    type: class
+    cc_avg: 1.8
 - path: src/redup/reporters/yaml_reporter.py
   lines: 34
   classes: 0
@@ -400,7 +445,7 @@ modules:
     type: function
     cc: 3
 - path: src/redup/core/models.py
-  lines: 157
+  lines: 161
   classes: 9
   methods: 1
   cc_max: 1
@@ -482,9 +527,6 @@ modules:
   cc_max: 0
   inbound_deps: 0
 hotspots:
-- name: extract_functions_treesitter
-  fan_out: 25
-  note: Extract functions using tree-sitter for multi-language support.
 - name: scan_project
   fan_out: 18
   note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
@@ -498,12 +540,15 @@ hotspots:
 - name: scan_project_parallel
   fan_out: 13
   note: Scan project files in parallel for better performance on large projects.
-- name: compare_scans
-  fan_out: 13
-  note: Compare two reDUP scan results and return the differences.
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
+- name: _normalize_text
+  fan_out: 11
+  note: 'Normalize code text for comparison.
+
+
+    Strips comments, normalizes whitespace, low'
 - name: check
   fan_out: 11
   note: Check project for duplicates and exit with non-zero code if thresholds exceeded.
@@ -513,31 +558,26 @@ hotspots:
 - name: _find_files_optimized
   fan_out: 10
   note: Optimized file discovery using set lookups and compiled patterns.
+- name: extract_functions_treesitter
+  fan_out: 10
+  note: Extract functions using tree-sitter for multi-language support.
 refactoring:
   priorities:
-  - action: Split god module src/redup/core/ts_extractor.py (767L, 1 classes)
+  - action: Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
     impact: high
     effort: high
-  - action: Split compare_scans (CC=18 → target CC<10)
-    impact: medium
-    effort: low
-    module: differ.py
-  - action: Split extract_functions_treesitter (CC=24 → target CC<10)
-    impact: medium
-    effort: low
-    module: ts_extractor.py
-  - action: Reduce extract_functions_treesitter fan-out (currently 25)
-    impact: medium
-    effort: medium
   - action: Reduce scan_project fan-out (currently 18)
     impact: medium
     effort: medium
   - action: Reduce _load_duplication_map fan-out (currently 15)
     impact: medium
     effort: medium
+  - action: Reduce _write_results fan-out (currently 15)
+    impact: medium
+    effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 3.8
-  critical: 11
-  lines: 5946
+  cc_avg: 3.5
+  critical: 10
+  lines: 6543
   note: Automated analysis

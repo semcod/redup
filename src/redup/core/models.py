@@ -53,6 +53,10 @@ class ScanConfig:
     lsh_enabled: bool = True
     lsh_min_lines: int = 50
     lsh_threshold: float = 0.8
+    # Performance configuration
+    parallel_workers: int | None = None  # None = auto-detect CPU count
+    enable_cache: bool = False
+    cache_dir: Path = field(default_factory=lambda: Path(".redup/cache"))
 
 
 @dataclass

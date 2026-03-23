@@ -1,28 +1,20 @@
-# code2llm/evolution | 165 func | 24f | 2026-03-23
+# code2llm/evolution | 196 func | 28f | 2026-03-23
 
-NEXT[3] (ranked by impact):
+NEXT[1] (ranked by impact):
   [1] !! SPLIT           src/redup/core/ts_extractor.py
-      WHY: 767L, 1 classes, max CC=24
-      EFFORT: ~4h  IMPACT: 18408
-
-  [2] !  SPLIT-FUNC      extract_functions_treesitter  CC=24  fan=25
-      WHY: CC=24 exceeds 15
-      EFFORT: ~1h  IMPACT: 600
-
-  [3] !  SPLIT-FUNC      compare_scans  CC=18  fan=13
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 234
+      WHY: 765L, 1 classes, max CC=7
+      EFFORT: ~4h  IMPACT: 5355
 
 
 RISKS[1]:
-  ⚠ Splitting src/redup/core/ts_extractor.py may break 23 import paths
+  ⚠ Splitting src/redup/core/ts_extractor.py may break 24 import paths
 
 METRICS-TARGET:
-  CC̄:          3.8 → ≤2.7
-  max-CC:      24 → ≤12
+  CC̄:          3.5 → ≤2.4
+  max-CC:      14 → ≤7
   god-modules: 1 → 0
-  high-CC(≥15): 2 → ≤1
+  high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=3.8 → now CC̄=3.8
+  prev CC̄=3.6 → now CC̄=3.5

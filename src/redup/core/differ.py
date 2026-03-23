@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from redup.core.models import DuplicationMap, DuplicateGroup
+from redup.core.utils.diff_helpers import GroupMatcher, DiffCalculator
 
 
 @dataclass
@@ -127,63 +128,25 @@ def compare_scans(before_file: Path, after_file: Path) -> DiffResult:
     before_groups = _group_by_id(before_map.groups)
     after_groups = _group_by_id(after_map.groups)
     
-    # Find resolved groups (present in before, not in after)
-    resolved_groups = []
-    for group_id, group in before_groups.items():
-        if group_id not in after_groups:
-            # Check if there's a similar group in after (might have different ID)
-            found_similar = False
-            for after_group in after_groups.values():
-                if _groups_match(group, after_group):
-                    found_similar = True
-                    break
-            if not found_similar:
-                resolved_groups.append(group)
+    # Use helper classes to find matching groups and calculate stats
+    matcher = GroupMatcher(before_groups, after_groups)
     
-    # Find new groups (present in after, not in before)
-    new_groups = []
-    for group_id, group in after_groups.items():
-        if group_id not in before_groups:
-            # Check if there's a similar group in before (might have different ID)
-            found_similar = False
-            for before_group in before_groups.values():
-                if _groups_match(group, before_group):
-                    found_similar = True
-                    break
-            if not found_similar:
-                new_groups.append(group)
+    resolved_groups = matcher.get_resolved_groups()
+    new_groups = matcher.get_new_groups()
+    unchanged_groups = matcher.get_unchanged_groups()
     
-    # Find unchanged groups (present in both with similar structure)
-    unchanged_groups = []
-    for group_id, group in after_groups.items():
-        if group_id in before_groups:
-            unchanged_groups.append(group)
-        else:
-            # Check if there's a similar group in before
-            for before_group in before_groups.values():
-                if _groups_match(group, before_group):
-                    unchanged_groups.append(group)
-                    break
-    
-    # Calculate statistics
-    resolved_count = len(resolved_groups)
-    new_count = len(new_groups)
-    unchanged_count = len(unchanged_groups)
-    
-    resolved_lines = sum(g.saved_lines_potential for g in resolved_groups)
-    new_lines = sum(g.saved_lines_potential for g in new_groups)
-    unchanged_lines = sum(g.saved_lines_potential for g in unchanged_groups)
+    stats = DiffCalculator.calculate_diff_stats(resolved_groups, new_groups, unchanged_groups)
     
     return DiffResult(
         resolved_groups=resolved_groups,
         new_groups=new_groups,
         unchanged_groups=unchanged_groups,
-        resolved_count=resolved_count,
-        new_count=new_count,
-        unchanged_count=unchanged_count,
-        resolved_lines=resolved_lines,
-        new_lines=new_lines,
-        unchanged_lines=unchanged_lines,
+        resolved_count=stats['resolved_count'],
+        new_count=stats['new_count'],
+        unchanged_count=stats['unchanged_count'],
+        resolved_lines=stats['resolved_lines'],
+        new_lines=stats['new_lines'],
+        unchanged_lines=stats['unchanged_lines'],
     )
 
 

@@ -1,6 +1,6 @@
-# redup | 41f 6028L | python:41
+# redup | 45f 6690L | python:45
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[41]:
+M[45]:
   benchmark.py,83
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
@@ -8,22 +8,26 @@ M[41]:
   src/redup/cli_app/__init__.py,1
   src/redup/cli_app/main.py,368
   src/redup/core/__init__.py,1
+  src/redup/core/cache.py,205
   src/redup/core/config.py,107
-  src/redup/core/differ.py,181
+  src/redup/core/differ.py,152
   src/redup/core/hash_cache.py,82
-  src/redup/core/hasher.py,172
+  src/redup/core/hasher.py,191
+  src/redup/core/lazy_grouper.py,114
   src/redup/core/lsh_matcher.py,144
   src/redup/core/matcher.py,84
-  src/redup/core/models.py,118
+  src/redup/core/models.py,121
   src/redup/core/parallel_scanner.py,155
-  src/redup/core/pipeline.py,296
+  src/redup/core/pipeline.py,337
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,193
-  src/redup/core/ts_extractor.py,559
+  src/redup/core/scanner.py,190
+  src/redup/core/ts_extractor.py,550
   src/redup/core/utils/__init__.py,1
+  src/redup/core/utils/diff_helpers.py,73
   src/redup/core/utils/duplicate_finders.py,24
   src/redup/core/utils/function_extractor.py,111
   src/redup/core/utils/hash_utils.py,25
+  src/redup/core/utils/language_dispatcher.py,51
   src/redup/reporters/__init__.py,1
   src/redup/reporters/code2llm_reporter.py,167
   src/redup/reporters/enhanced_reporter.py,229
@@ -63,6 +67,12 @@ D:
     _write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
     scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; code2llm; all; enhanced).');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
     diff(before:Path=typer.Argument(...; help='Path to the earlier scan JSON file.'; exists=True; dir_okay=False; file_okay=True);after:Path=typer.Argument(...; help='Path to the later scan JSON file.'; exists=True; dir_okay=False; file_okay=True))->None
+  src/redup/core/cache.py:
+    i: hashlib,sqlite3,time,pathlib.Path,redup.core.hasher.{hash_block,hash_block_structural},redup.core.scanner.CodeBlock,typing.Any
+    e: HashCache,hash_block_with_cache,build_hash_index_with_cache
+    HashCache: __init__(1),_init_tables(0),_get_file_hash(2),is_file_unchanged(2),get_cached_block_hashes(2)  # SQLite-based cache for file and block...
+    hash_block_with_cache(text:str;file_path:Path;start:int;end:int;cache:Any=None)->tuple[str, str]
+    build_hash_index_with_cache(blocks:list[CodeBlock];min_lines:int=3;cache:Any=None)->tuple[Any, dict[Path, dict[tuple[int, int], tuple[str, str]]]]
   src/redup/core/config.py:
     i: os,tomllib,pathlib.Path,redup.core.models.ScanConfig,typing.Any
     e: load_config,config_to_scan_config,create_sample_redup_toml
@@ -73,7 +83,7 @@ D:
     config_to_scan_config(config:dict[str;Any];path:Path)->ScanConfig
     create_sample_redup_toml()->str
   src/redup/core/differ.py:
-    i: json,dataclasses.dataclass,pathlib.Path,redup.core.models.{DuplicateGroup,DuplicationMap},typing.Any
+    i: json,dataclasses.dataclass,pathlib.Path,redup.core.models.{DuplicateGroup,DuplicationMap},redup.core.utils.diff_helpers.{DiffCalculator,GroupMatcher},typing.Any
     e: DiffResult,compare_scans,format_diff_result
     DiffResult:   # Result of comparing two reDUP scans.
     _load_duplication_map(file_path:Path)->DuplicationMap
@@ -87,8 +97,8 @@ D:
     HashCache: __init__(1),_load(0),save(0),get_file_hash(1),is_unchanged(2)  # Cache for file hashes to enable incre...
     _config_to_hash(config:Any)->str
   src/redup/core/hasher.py:
-    i: ast,hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock,typing.Any
-    e: _AST_HANDLERS,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,HashedBlock,HashIndex,build_hash_index
+    i: ast,functools,hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock,typing.Any
+    e: _MAX_CACHE_SIZE,_AST_HANDLERS,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,HashedBlock,HashIndex
     HashedBlock:   # A code block with its computed finger...
     HashIndex:   # Index mapping hashes to blocks for fa...
     _normalize_text(text:str)->str
@@ -99,6 +109,14 @@ D:
     _normalize_constant(value:Any)->str
     _hash_text(text:str;normalizer:Callable[Any;str])->str
     hash_block(text:str)->str
+  src/redup/core/lazy_grouper.py:
+    i: collections.abc.Iterator,redup.core.hasher.{HashIndex,HashedBlock,_blocks_from_different_locations},redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType},typing.Any
+    e: find_exact_duplicates_lazy,find_structural_duplicates_lazy,find_all_duplicates_lazy,DuplicateGroupCollector
+    DuplicateGroupCollector: __init__(3),collect(1),collect_sorted(1)  # Collector for lazy duplicate groups w...
+    find_exact_duplicates_lazy(index:HashIndex;min_lines:int=3)->Iterator[DuplicateGroup]
+    find_structural_duplicates_lazy(index:HashIndex;min_lines:int=3)->Iterator[DuplicateGroup]
+    _create_duplicate_group(hash_val:str;blocks:list[HashedBlock];duplicate_type:DuplicateType)->DuplicateGroup
+    find_all_duplicates_lazy(index:HashIndex;min_lines:int=3;include_exact:bool=True;include_structural:bool=True)->Iterator[DuplicateGroup]
   src/redup/core/lsh_matcher.py:
     i: hashlib,datasketch.{MinHash,MinHashLSH},redup.core.hasher._normalize_text,redup.core.scanner.CodeBlock,typing.Any
     e: LSHIndex,build_lsh_index,find_near_duplicates
@@ -137,15 +155,15 @@ D:
     _is_test_file_cached(relative_path:str;test_parts:frozenset)->bool
   src/redup/core/pipeline.py:
     i: time,itertools,collections.defaultdict,redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.lsh_matcher.find_near_duplicates,typing.Any
-    e: analyze,analyze_parallel
+    e: analyze,analyze_optimized,analyze_parallel
     _blocks_to_group(group_id:str;blocks:list[HashedBlock];dup_type:DuplicateType;similarity:float=1.0;normalized_hash:str='')->DuplicateGroup
     _deduplicate_groups(groups:list[DuplicateGroup])->list[DuplicateGroup]
     analyze(config:Any=None;function_level_only:bool=False)->DuplicationMap
+    analyze_optimized(config:Any=None;function_level_only:bool=False)->DuplicationMap
     _ensure_config(config:Any)->ScanConfig
     _scan_phase(config:ScanConfig)->tuple[list[ScannedFile], ScanStats]
     _scan_phase_parallel(config:ScanConfig;max_workers:Any=None)->tuple[list[ScannedFile], ScanStats]
     _process_blocks(scanned_files:list[ScannedFile];function_level_only:bool)->list[CodeBlock]
-    _find_duplicates_phase(all_blocks:list[CodeBlock];config:ScanConfig)->list[DuplicateGroup]
   src/redup/core/planner.py:
     i: os,redup.core.models.{DuplicateGroup,DuplicationMap,RefactorAction,RefactorSuggestion,RiskLevel}
     e: generate_suggestions
@@ -170,6 +188,7 @@ D:
     i: tree_sitter,pathlib.Path,redup.core.scanner.CodeBlock,redup.core.utils.function_extractor,typing.Any
     e: _LANGUAGE_MAPPING,extract_functions_treesitter,get_supported_languages,is_language_supported
     _LanguageRegistry: __init__(0),get_language(1)  # Registry for tree-sitter language par...
+    _initialize_language_dispatcher()->None
     _get_tree_sitter_language(language_name:str)->Any
     _extract_functions_javascript(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
     _extract_functions_go(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
@@ -177,7 +196,11 @@ D:
     _extract_functions_java(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
     extract_functions_treesitter(source:str;file_path:str)->list[CodeBlock]
     _extract_functions_c_cpp(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
-    _extract_blocks_html_xml(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
+  src/redup/core/utils/diff_helpers.py:
+    i: models.DuplicateGroup,typing.{Dict,List,Set}
+    e: GroupMatcher,DiffCalculator
+    GroupMatcher: __init__(2),_find_all_matches(0),_groups_match(2),get_resolved_groups(0),get_new_groups(0)  # Helper class to find matching groups...
+    DiffCalculator: calculate_lines(1),calculate_diff_stats(3)  # Helper class to calculate diff statis...
   src/redup/core/utils/duplicate_finders.py:
     i: typing.{Callable,Dict,List,TYPE_CHECKING}
     e: create_duplicate_finder
@@ -191,6 +214,10 @@ D:
     i: hasher.{_normalize_ast_text,_normalize_text},typing.{Callable,TYPE_CHECKING}
     e: create_hash_function
     create_hash_function(normalizer:Callable[Any;str])->Callable[[str], str]
+  src/redup/core/utils/language_dispatcher.py:
+    i: scanner.CodeBlock,typing.{Any,Callable,Dict,List,Optional}
+    e: LanguageDispatcher
+    LanguageDispatcher: __init__(0),register_extractor(2),register_group(2),get_extractor(1),extract_functions(4)  # Dispatches function extraction to app...
   src/redup/reporters/code2llm_reporter.py:
     i: datetime,datetime.timezone,pathlib.Path,redup.core.models.DuplicationMap,typing.Any
     e: to_code2llm_toon,to_code2llm_context,export_code2llm

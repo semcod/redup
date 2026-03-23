@@ -123,18 +123,14 @@ def _extract_class_blocks_python(source: str, filepath: str) -> list[CodeBlock]:
     except SyntaxError:
         return blocks
 
+    # Cache splitlines - call once instead of for every class
+    lines = source.splitlines()
+
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef):
             start = node.lineno
             end = node.end_lineno or start
-            lines = source.splitlines()
             text = "\n".join(lines[start - 1 : end])
-
-            # Get method names for context
-            method_names = [
-                n.name for n in ast.walk(node)
-                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-            ]
 
             blocks.append(
                 CodeBlock(
@@ -160,20 +156,26 @@ def _extract_function_blocks_python(source: str, filepath: str) -> list[CodeBloc
     except SyntaxError:
         return blocks
 
+    # Cache splitlines - single call for all functions
+    lines = source.splitlines()
+    
+    # Build parent-child mapping in single AST walk - O(n) instead of O(n²)
+    node_to_parent: dict[ast.AST, ast.ClassDef] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef):
+            for child in ast.iter_child_nodes(node):
+                if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    node_to_parent[child] = node
+
     for node in ast.walk(tree):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             start = node.lineno
             end = node.end_lineno or start
-            lines = source.splitlines()
             text = "\n".join(lines[start - 1 : end])
 
-            class_name = None
-            for parent in ast.walk(tree):
-                if isinstance(parent, ast.ClassDef):
-                    for child in ast.walk(parent):
-                        if child is node:
-                            class_name = parent.name
-                            break
+            # O(1) lookup instead of nested walk
+            class_name = node_to_parent.get(node)
+            class_name = class_name.name if class_name else None
 
             blocks.append(
                 CodeBlock(
