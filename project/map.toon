@@ -1,4 +1,4 @@
-# redup | 30f 4266L | python:29,shell:1
+# redup | 30f 4301L | python:29,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[30]:
   benchmark.py,111
@@ -19,7 +19,7 @@ M[30]:
   src/redup/core/pipeline.py,409
   src/redup/core/planner.py,110
   src/redup/core/scanner.py,201
-  src/redup/core/ts_extractor.py,759
+  src/redup/core/ts_extractor.py,794
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,36
   src/redup/core/utils/function_extractor.py,143
@@ -33,7 +33,7 @@ M[30]:
   src/sitecustomize.py,4
 D:
   src/redup/core/ts_extractor.py:
-    e: _LanguageRegistry,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
+    e: _LanguageRegistry,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_lua,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
     _LanguageRegistry: __init__(0),get_language(1)  # Registry for tree-sitter language parsers...
     _get_tree_sitter_language(language_name)
     _extract_functions_javascript(node;source_lines;file_path)
@@ -45,6 +45,7 @@ D:
     _extract_blocks_html_xml(node;source_lines;file_path)
     _extract_blocks_css(node;source_lines;file_path)
     _extract_blocks_sql(node;source_lines;file_path)
+    _extract_functions_lua(node;source_lines;file_path)
     _extract_functions_c_sharp(node;source_lines;file_path)
     _extract_functions_scala(node;source_lines;file_path)
     _extract_functions_kotlin(node;source_lines;file_path)
@@ -212,8 +213,8 @@ D:
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
-  src/redup/__main__.py:
   src/redup/__init__.py:
+  src/redup/__main__.py:
   src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:

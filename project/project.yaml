@@ -3,12 +3,12 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:49:55Z'
+  analyzed_at: '2026-03-23T16:53:45Z'
   tool: code2llm
   stats:
     files: 21
-    lines: 5331
-    functions: 146
+    lines: 5366
+    functions: 147
     classes: 20
 health:
   cc_avg: 3.9
@@ -48,12 +48,12 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: _write_results
+    target: compare_scans
     value: 13
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: compare_scans
+    target: _write_results
     value: 13
     limit: 10
     severity: warning
@@ -79,9 +79,9 @@ health:
     severity: warning
 modules:
 - path: src/redup/core/ts_extractor.py
-  lines: 759
+  lines: 794
   classes: 1
-  methods: 22
+  methods: 23
   cc_max: 24
   inbound_deps: 2
   exports:
@@ -469,12 +469,12 @@ hotspots:
 - name: scan_project_parallel
   fan_out: 13
   note: Scan project files in parallel for better performance on large projects.
-- name: _write_results
-  fan_out: 13
-  note: Write scan results to output files.
 - name: compare_scans
   fan_out: 13
   note: Compare two reDUP scan results and return the differences.
+- name: _write_results
+  fan_out: 13
+  note: Write scan results to output files.
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
@@ -489,7 +489,7 @@ hotspots:
   note: Optimized file discovery using set lookups and compiled patterns.
 refactoring:
   priorities:
-  - action: Split god module src/redup/core/ts_extractor.py (759L, 1 classes)
+  - action: Split god module src/redup/core/ts_extractor.py (794L, 1 classes)
     impact: high
     effort: high
   - action: Split extract_functions_treesitter (CC=24 → target CC<10)
@@ -513,5 +513,5 @@ evolution:
 - date: '2026-03-23'
   cc_avg: 3.9
   critical: 10
-  lines: 5331
+  lines: 5366
   note: Automated analysis

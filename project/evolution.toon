@@ -1,9 +1,9 @@
-# code2llm/evolution | 147 func | 22f | 2026-03-23
+# code2llm/evolution | 148 func | 22f | 2026-03-23
 
 NEXT[3] (ranked by impact):
   [1] !! SPLIT           src/redup/core/ts_extractor.py
-      WHY: 759L, 1 classes, max CC=24
-      EFFORT: ~4h  IMPACT: 18216
+      WHY: 794L, 1 classes, max CC=24
+      EFFORT: ~4h  IMPACT: 19056
 
   [2] !  SPLIT-FUNC      extract_functions_treesitter  CC=24  fan=25
       WHY: CC=24 exceeds 15
@@ -15,7 +15,7 @@ NEXT[3] (ranked by impact):
 
 
 RISKS[1]:
-  ⚠ Splitting src/redup/core/ts_extractor.py may break 22 import paths
+  ⚠ Splitting src/redup/core/ts_extractor.py may break 23 import paths
 
 METRICS-TARGET:
   CC̄:          3.9 → ≤2.7

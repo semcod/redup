@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redup
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-147-green)
-> **147** functions | **20** classes | **30** files | CC̄ = 3.9
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-148-green)
+> **148** functions | **20** classes | **30** files | CC̄ = 3.9
 
 > Auto-generated project documentation from source code analysis.
 
@@ -150,7 +150,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redup/
-    ├── 01_basic_usage        ├── __main__├── benchmark            ├── config        ├── core/    ├── redup/            ├── planner            ├── scanner            ├── parallel_scanner            ├── models    ├── sitecustomize            ├── hasher            ├── matcher            ├── pipeline            ├── lsh_matcher            ├── markdown_reporter        ├── reporters/            ├── json_reporter            ├── differ            ├── yaml_reporter        ├── cli_app/            ├── toon_reporter            ├── enhanced_reporter            ├── utils/                ├── hash_utils            ├── ts_extractor├── project                ├── duplicate_finders                ├── function_extractor            ├── main```
+    ├── redup/        ├── __main__            ├── config├── benchmark        ├── core/    ├── 01_basic_usage            ├── planner            ├── scanner    ├── sitecustomize            ├── parallel_scanner            ├── matcher            ├── pipeline            ├── hasher            ├── lsh_matcher            ├── markdown_reporter            ├── differ        ├── reporters/            ├── json_reporter            ├── ts_extractor            ├── enhanced_reporter        ├── cli_app/            ├── toon_reporter            ├── yaml_reporter            ├── utils/                ├── hash_utils                ├── duplicate_finders├── project                ├── function_extractor            ├── main            ├── models```
 
 ## API Overview
 
@@ -158,6 +158,13 @@ redup/
 
 - **`CodeBlock`** — A contiguous block of source code lines.
 - **`ScannedFile`** — A file that has been read and split into blocks.
+- **`MatchResult`** — Result of comparing two code blocks.
+- **`HashedBlock`** — A code block with its computed fingerprints.
+- **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
+- **`LSHIndex`** — LSH index for efficient near-duplicate detection.
+- **`DiffResult`** — Result of comparing two reDUP scans.
+- **`EnhancedReporter`** — Enhanced reporter with detailed metrics and visualizations.
+- **`FunctionExtractor`** — Generic function extractor that can be configured for different languages.
 - **`DuplicateType`** — How the duplicate was detected.
 - **`RefactorAction`** — Proposed refactoring action.
 - **`RiskLevel`** — Risk of the proposed refactoring.
@@ -167,48 +174,41 @@ redup/
 - **`RefactorSuggestion`** — A concrete refactoring proposal for a duplicate group.
 - **`ScanStats`** — Statistics from the scanning phase.
 - **`DuplicationMap`** — Complete result of a reDUP analysis run.
-- **`HashedBlock`** — A code block with its computed fingerprints.
-- **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
-- **`MatchResult`** — Result of comparing two code blocks.
-- **`LSHIndex`** — LSH index for efficient near-duplicate detection.
-- **`DiffResult`** — Result of comparing two reDUP scans.
-- **`EnhancedReporter`** — Enhanced reporter with detailed metrics and visualizations.
-- **`FunctionExtractor`** — Generic function extractor that can be configured for different languages.
 
 ### Functions
 
-- `main()` — —
-- `benchmark_sequential_vs_parallel()` — Compare sequential vs parallel scanning performance.
-- `benchmark_feature_performance()` — Test performance of different features.
 - `load_config()` — Load reDUP configuration from available sources.
 - `config_to_scan_config(config, path)` — Convert configuration dict to ScanConfig object.
 - `create_sample_redup_toml()` — Create a sample redup.toml configuration file content.
+- `benchmark_sequential_vs_parallel()` — Compare sequential vs parallel scanning performance.
+- `benchmark_feature_performance()` — Test performance of different features.
+- `main()` — —
 - `generate_suggestions(dup_map)` — Generate prioritized refactoring suggestions for all duplicate groups.
 - `scan_project(config)` — Scan a project and return files with their code blocks.
 - `scan_project_parallel(root, extensions, exclude_patterns, include_tests)` — Scan project files in parallel for better performance on large projects.
-- `hash_block(text)` — SHA-256 hash of normalized text.
-- `hash_block_structural(text)` — SHA-256 hash of deeply normalized text (variable names replaced).
-- `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
-- `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
-- `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
 - `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
 - `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
 - `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
 - `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
 - `analyze(config, function_level_only)` — Run the full reDUP analysis pipeline.
 - `analyze_parallel(config, function_level_only, max_workers)` — Run reDUP analysis with parallel scanning for large projects.
+- `hash_block(text)` — SHA-256 hash of normalized text.
+- `hash_block_structural(text)` — SHA-256 hash of deeply normalized text (variable names replaced).
+- `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
+- `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
+- `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
 - `build_lsh_index(blocks, threshold, min_lines)` — Build LSH index from code blocks.
 - `find_near_duplicates(blocks, threshold, min_lines)` — Find near-duplicate code blocks using LSH.
 - `to_markdown(dup_map)` — Serialize a DuplicationMap to Markdown format.
-- `to_json(dup_map, indent, include_snippets)` — Serialize a DuplicationMap to JSON string.
 - `compare_scans(before_file, after_file)` — Compare two reDUP scan results and return the differences.
 - `format_diff_result(diff)` — Format a DiffResult as a human-readable string.
-- `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
-- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
-- `create_hash_function(normalizer)` — Factory function to create hash functions with different normalizers.
+- `to_json(dup_map, indent, include_snippets)` — Serialize a DuplicationMap to JSON string.
 - `extract_functions_treesitter(source, file_path)` — Extract functions using tree-sitter for multi-language support.
 - `get_supported_languages()` — Get list of supported languages for tree-sitter extraction.
 - `is_language_supported(file_path)` — Check if a file extension is supported by tree-sitter extraction.
+- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
+- `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
+- `create_hash_function(normalizer)` — Factory function to create hash functions with different normalizers.
 - `create_duplicate_finder(hash_type)` — Factory function to create duplicate finders for different hash types.
 - `scan(path, format, output, extensions)` — Scan a project for code duplicates and generate a refactoring map.
 - `diff(before, after)` — Compare two reDUP scans and show the differences.
@@ -237,7 +237,7 @@ redup/
 📄 `src.redup.core.pipeline` (15 functions)
 📄 `src.redup.core.planner` (5 functions)
 📄 `src.redup.core.scanner` (6 functions, 2 classes)
-📄 `src.redup.core.ts_extractor` (22 functions, 1 classes)
+📄 `src.redup.core.ts_extractor` (23 functions, 1 classes)
 📦 `src.redup.core.utils`
 📄 `src.redup.core.utils.duplicate_finders` (1 functions)
 📄 `src.redup.core.utils.function_extractor` (5 functions, 1 classes)

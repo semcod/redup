@@ -60,6 +60,8 @@ _LANGUAGE_MAPPING = {
     # Python (fallback to AST)
     ".py": "python",
     ".pyw": "python",
+    # Lua
+    ".lua": "lua",
     # Ruby
     ".rb": "ruby",
     ".rbw": "ruby",

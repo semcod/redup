@@ -1,22 +1,22 @@
-# redup/duplication | 2 groups | 29f 4249L | 2026-03-23
+# redup/duplication | 2 groups | 29f 4284L | 2026-03-23
 
 SUMMARY:
   files_scanned: 29
-  total_lines:   4249
+  total_lines:   4284
   dup_groups:    2
   dup_fragments: 9
   saved_lines:   22
-  scan_ms:       1584
+  scan_ms:       1169
 
 DUPLICATES[2] (ranked by impact):
   [S6897]   STRU  _extract_functions_go  L=3 N=7 saved=18 sim=0.96
-      src/redup/core/ts_extractor.py:267-269  (_extract_functions_go)
-      src/redup/core/ts_extractor.py:272-274  (_extract_functions_rust)
-      src/redup/core/ts_extractor.py:277-279  (_extract_functions_java)
-      src/redup/core/ts_extractor.py:572-574  (_extract_functions_scala)
-      src/redup/core/ts_extractor.py:577-579  (_extract_functions_kotlin)
-      src/redup/core/ts_extractor.py:582-584  (_extract_functions_swift)
-      src/redup/core/ts_extractor.py:587-589  (_extract_functions_objc)
+      src/redup/core/ts_extractor.py:269-271  (_extract_functions_go)
+      src/redup/core/ts_extractor.py:274-276  (_extract_functions_rust)
+      src/redup/core/ts_extractor.py:279-281  (_extract_functions_java)
+      src/redup/core/ts_extractor.py:607-609  (_extract_functions_scala)
+      src/redup/core/ts_extractor.py:612-614  (_extract_functions_kotlin)
+      src/redup/core/ts_extractor.py:617-619  (_extract_functions_swift)
+      src/redup/core/ts_extractor.py:622-624  (_extract_functions_objc)
   [S1289]   STRU  hash_block  L=4 N=2 saved=4 sim=0.84
       src/redup/core/hasher.py:152-155  (hash_block)
       src/redup/core/hasher.py:158-161  (hash_block_structural)

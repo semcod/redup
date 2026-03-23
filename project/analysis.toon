@@ -1,5 +1,5 @@
-# code2llm | 29f 4208L | python:28,shell:1 | 2026-03-23
-# CC̄=3.9 | critical:10/147 | dups:0 | cycles:0
+# code2llm | 29f 4243L | python:28,shell:1 | 2026-03-23
+# CC̄=3.9 | critical:10/148 | dups:0 | cycles:0
 
 HEALTH[2]:
   🟡 CC    extract_functions_treesitter CC=24 (limit:15)
@@ -16,7 +16,7 @@ COUPLING:
 
 LAYERS:
   src/                            CC̄=3.9    ←in:0  →out:0
-  │ !! ts_extractor               759L  1C   22m  CC=24     ←2
+  │ !! ts_extractor               794L  1C   23m  CC=24     ←2
   │ !  main                       422L  0C   11m  CC=12     ←0
   │ !  pipeline                   409L  0C   15m  CC=11     ←3
   │ enhanced_reporter          274L  1C   17m  CC=8      ←0
@@ -51,7 +51,7 @@ LAYERS:
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 10 of 146):
+FUNCTIONS (CC≥10, 10 of 147):
    24.0  extract_functions_treesitter               29n  10exit  cond+ret  !! split
    18.0  compare_scans                              19n   2exit  loops+cond+ret  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
@@ -64,16 +64,16 @@ FUNCTIONS (CC≥10, 10 of 146):
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
 
   summary:
-    critical(≥10): 10 | high(5-10): 39 | medium(2-5): 49 | low(<2): 48
-    7% CC≥10  34% CC≥5
+    critical(≥10): 10 | high(5-10): 39 | medium(2-5): 49 | low(<2): 49
+    7% CC≥10  33% CC≥5
 
 HOTSPOTS:
   #1  extract_functions_treesitter         fan=25   "calls 25 functions"
   #2  scan_project                         fan=17   "calls 17 functions"
   #3  _load_duplication_map                fan=15   "calls 15 functions"
   #4  scan_project_parallel                fan=13   "calls 13 functions"
-  #5  _write_results                       fan=13   "calls 13 functions"
-  #6  compare_scans                        fan=13   "calls 13 functions"
+  #5  compare_scans                        fan=13   "calls 13 functions"
+  #6  _write_results                       fan=13   "calls 13 functions"
   #7  _find_structural_groups              fan=11   "calls 11 functions"
   #8  check                                fan=11   "calls 11 functions"
   #9  config                               fan=11   "calls 11 functions"
@@ -96,14 +96,14 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
-  HashedBlock                                               0m  CC̄=0.0   max=0.0 
-  HashIndex                                                 0m  CC̄=0.0   max=0.0 
   MatchResult                                               0m  CC̄=0.0   max=0.0 
   DiffResult                                                0m  CC̄=0.0   max=0.0 
+  HashedBlock                                               0m  CC̄=0.0   max=0.0 
+  HashIndex                                                 0m  CC̄=0.0   max=0.0 
 
 D:
   src/redup/core/ts_extractor.py:
-    e: _LanguageRegistry,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
+    e: _LanguageRegistry,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_lua,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
     _LanguageRegistry  # Registry for tree-sitter language parsers....
       __init__(0)  CC=1.0
     _get_tree_sitter_language(language_name)
@@ -116,6 +116,7 @@ D:
     _extract_blocks_html_xml(node,source_lines,file_path)
     _extract_blocks_css(node,source_lines,file_path)
     _extract_blocks_sql(node,source_lines,file_path)
+    _extract_functions_lua(node,source_lines,file_path)
     _extract_functions_c_sharp(node,source_lines,file_path)
     _extract_functions_scala(node,source_lines,file_path)
     _extract_functions_kotlin(node,source_lines,file_path)
@@ -288,8 +289,8 @@ D:
     ScanStats  # Statistics from the scanning phase....
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
-  src/redup/__main__.py:
   src/redup/__init__.py:
+  src/redup/__main__.py:
   src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:

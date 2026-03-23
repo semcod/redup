@@ -5,8 +5,8 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 21
-- **Lines**: 5331
-- **Functions**: 146
+- **Lines**: 5366
+- **Functions**: 147
 - **Classes**: 20
 - **Avg CC**: 3.9
 - **Critical (CC≥10)**: 10
@@ -32,9 +32,9 @@
 - `main.py` — 422L, 11 methods, CC↑12
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (12 files, 2828L, 98 functions)
+### src/redup/core/ (12 files, 2863L, 99 functions)
 
-- `ts_extractor.py` — 759L, 22 methods, CC↑24
+- `ts_extractor.py` — 794L, 23 methods, CC↑24
 - `differ.py` — 246L, 5 methods, CC↑18
 - `parallel_scanner.py` — 234L, 6 methods, CC↑11
 - `pipeline.py` — 409L, 15 methods, CC↑11
@@ -72,15 +72,15 @@ Returns:
     Tuple of (
 - **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
 - **scan_project_parallel** — fan-out=13: Scan project files in parallel for better performance on large projects.
-- **_write_results** — fan-out=13: Write scan results to output files.
 - **compare_scans** — fan-out=13: Compare two reDUP scan results and return the differences.
+- **_write_results** — fan-out=13: Write scan results to output files.
 - **_find_structural_groups** — fan-out=11: Find structural duplicate groups.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/core/ts_extractor.py (759L, 1 classes) | high | high |
+| 1 | Split god module src/redup/core/ts_extractor.py (794L, 1 classes) | high | high |
 | 2 | Split extract_functions_treesitter (CC=24 → target CC<10) | medium | low |
 | 3 | Split compare_scans (CC=18 → target CC<10) | medium | low |
 | 4 | Reduce extract_functions_treesitter fan-out (currently 25) | medium | medium |
