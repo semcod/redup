@@ -34,25 +34,31 @@ def _create_minhash(text: str, num_perm: int = 128) -> MinHash | None:
 
 def _text_to_minhash_features(text: str, num_features: int = 10) -> list[str]:
     """Extract text features for MinHash without external dependencies."""
-    normalized = _normalize_text(text)
+    # Use cached normalization if available
+    from redup.core.hasher import _normalize_cache
+    cache_key = text
+    normalized = _normalize_cache.get(cache_key)
+    if normalized is None:
+        normalized = _normalize_text(text)
     
     # Create n-gram features
     features = []
     words = normalized.split()
+    if not words:
+        return features
     
     # Single words
     features.extend(words[:num_features//2])
     
-    # 2-grams
-    for i in range(len(words) - 1):
-        if len(features) >= num_features:
-            break
+    # 2-grams - early exit optimization
+    max_2grams = min(len(words) - 1, num_features - len(features))
+    for i in range(max_2grams):
         features.append(f"{words[i]} {words[i+1]}")
     
-    # 3-grams
-    for i in range(len(words) - 2):
-        if len(features) >= num_features:
-            break
+    # 3-grams - early exit optimization  
+    remaining = num_features - len(features)
+    max_3grams = min(len(words) - 2, remaining)
+    for i in range(max_3grams):
         features.append(f"{words[i]} {words[i+1]} {words[i+2]}")
     
     return features[:num_features]
@@ -174,6 +180,9 @@ class LSHIndex:
         groups = {}
         processed = set()
         
+        # Build block-to-index map once for O(1) lookup instead of O(n) scan
+        block_to_index = {block: i for i, block in enumerate(self.blocks)}
+        
         for i, block in enumerate(self.blocks):
             if i in processed or block.line_count < min_lines:
                 continue
@@ -186,13 +195,12 @@ class LSHIndex:
                 group_key = f"LSH_{i:04d}"
                 groups[group_key] = [(block, 1.0)] + near_dups
                 
-                # Mark all as processed
+                # Mark all as processed using O(1) lookup
                 processed.add(i)
                 for dup_block, _ in near_dups:
-                    for j, stored_block in enumerate(self.blocks):
-                        if stored_block == dup_block:
-                            processed.add(j)
-                            break
+                    idx = block_to_index.get(dup_block)
+                    if idx is not None:
+                        processed.add(idx)
         
         return groups
 
