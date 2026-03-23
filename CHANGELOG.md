@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-03-23
+
+### Docs
+- Update docs/README.md
+- Update project/context.md
+
+### Test
+- Update tests/test_e2e.py
+- Update tests/test_hasher.py
+- Update tests/test_planner.py
+
+### Other
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/dashboard.html
+- Update project/duplication.toon
+- Update project/evolution.toon
+- Update project/flow.mmd
+- Update project/flow.png
+- Update project/flow.toon
+- Update project/index.html
+- ... and 3 more files
+
 ## [0.1.9] - 2026-03-23
 
 ### Docs

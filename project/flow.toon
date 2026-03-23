@@ -186,19 +186,19 @@ DATA_TYPES (by cross-function usage) [52 annotated, 0 inferred / 53 functions]:
   float                consumed:5   produced:3  
   bool                 consumed:5   produced:3  
   list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
-  list[MatchResult]    consumed:2   produced:3  
-  DuplicationMap       consumed:4   produced:1  
   HashIndex            consumed:4   produced:1  
+  DuplicationMap       consumed:4   produced:1  
+  list[MatchResult]    consumed:2   produced:3  
   list[CodeBlock]      consumed:2   produced:2    narrow scope
-  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
-  int                  consumed:4   produced:0    narrow scope
-  ScanConfig           consumed:3   produced:1    narrow scope
   DuplicateGroup       consumed:3   produced:1    narrow scope
+  int                  consumed:4   produced:0    narrow scope
+  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
+  ScanConfig           consumed:3   produced:1    narrow scope
   ScanConfig | None    consumed:3   produced:0    narrow scope
-  list[str]            consumed:3   produced:0    narrow scope
   Path                 consumed:3   produced:0    narrow scope
-  dict                 consumed:0   produced:2    narrow scope
+  list[str]            consumed:3   produced:0    narrow scope
   Path | None          consumed:2   produced:0    narrow scope
+  tuple[list[ScannedFile], ScanStats] consumed:0   produced:2    narrow scope
   dict[str, str]       consumed:2   produced:0    narrow scope
   list[int]            consumed:2   produced:0    narrow scope
 

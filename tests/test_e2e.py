@@ -170,7 +170,7 @@ class TestCLIScanJSON:
         assert result.exit_code == 0
         # Extract JSON from output (skip the info lines at the top)
         lines = result.output.strip().split("\n")
-        json_start = next(i for i, l in enumerate(lines) if l.strip().startswith("{"))
+        json_start = next(i for i, line in enumerate(lines) if line.strip().startswith("{"))
         json_text = "\n".join(lines[json_start:])
         data = json.loads(json_text)
         assert data["summary"]["total_groups"] >= 1
@@ -299,10 +299,6 @@ class TestCLIOptions:
         ])
         assert result_low.exit_code == 0
         assert result_high.exit_code == 0
-        # Higher min_lines should find fewer or equal groups
-        low_groups = result_low.output.count("duplicate group")
-        high_groups = result_high.output.count("duplicate group")
-        # Both should run without errors
 
     def test_include_tests_flag(self, tmp_path: Path):
         (tmp_path / "tests").mkdir()

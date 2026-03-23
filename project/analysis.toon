@@ -64,10 +64,10 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
-  MatchResult                                               0m  CC̄=0.0   max=0.0 
+  OutputFormat                                              0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
-  OutputFormat                                              0m  CC̄=0.0   max=0.0 
+  MatchResult                                               0m  CC̄=0.0   max=0.0 
 
 D:
   src/redup/core/hasher.py:
@@ -160,10 +160,10 @@ D:
     ScanStats  # Statistics from the scanning phase....
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
+  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
-  src/redup/__init__.py:
   src/redup/reporters/__init__.py:
-  src/sitecustomize.py:
   src/redup/cli_app/__init__.py:
   project.sh:
+  src/sitecustomize.py:

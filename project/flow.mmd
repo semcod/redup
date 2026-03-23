@@ -30,13 +30,11 @@ flowchart TD
         src___group_to_dict["_group_to_dict"]
         src___suggestion_to_dict["_suggestion_to_dict"]
         src__redup__reporters__json_reporter__to_json["to_json"]
-        src__redup__reporters__yaml_reporter__to_yaml["to_yaml"]
         src__redup__reporters__toon_reporter__to_toon("to_toon CC=12")
-        src__redup__core__matcher__sequence_similarity["sequence_similarity"]
-        src__redup__core__matcher__fuzzy_similarity["fuzzy_similarity"]
-        src___compare_against_reference["_compare_against_reference"]
-        src__redup__core__matcher__match_candidates["match_candidates"]
-        src__refine_structural_matches["refine_structural_matches"]
+        src__redup__reporters__yaml_reporter__to_yaml["to_yaml"]
+        src__redup__cli_app__main___write_output["_write_output"]
+        src__redup__cli_app__main__scan("scan CC=9")
+        src__redup__cli_app__main__info["info"]
         src__redup__core__hasher___normalize_text["_normalize_text"]
         src__redup__core__hasher___normalize_ast_text["_normalize_ast_text"]
         src___ast_to_normalized_string["_ast_to_normalized_string"]
@@ -52,9 +50,11 @@ flowchart TD
         src__redup__core__hasher__find_exact_duplicates["find_exact_duplicates"]
         src__find_structural_duplicates["find_structural_duplicates"]
         src___blocks_from_different_locations["_blocks_from_different_locations"]
-        src__redup__cli_app__main___write_output["_write_output"]
-        src__redup__cli_app__main__scan("scan CC=9")
-        src__redup__cli_app__main__info["info"]
+        src__redup__core__matcher__sequence_similarity["sequence_similarity"]
+        src__redup__core__matcher__fuzzy_similarity["fuzzy_similarity"]
+        src___compare_against_reference["_compare_against_reference"]
+        src__redup__core__matcher__match_candidates["match_candidates"]
+        src__refine_structural_matches["refine_structural_matches"]
     end
     examples__01_basic_usage__main --> src__redup__core__pipeline__analyze
     examples__01_basic_usage__main --> src__redup__reporters__toon_reporter__to_toon
@@ -90,11 +90,7 @@ flowchart TD
     src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
     src__redup__reporters__yaml_reporter__to_yaml --> src___group_to_dict
     src__redup__reporters__yaml_reporter__to_yaml --> src___suggestion_to_dict
-    src__redup__core__matcher__sequence_similarity --> src__redup__core__hasher___normalize_text
-    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__hasher___normalize_text
-    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__matcher__sequence_similarity
-    src__redup__core__matcher__match_candidates --> src___compare_against_reference
-    src__refine_structural_matches --> src___compare_against_reference
+    src__redup__cli_app__main__scan --> src__redup__core__pipeline__analyze
     src__redup__core__hasher___normalize_ast_text --> src__redup__core__hasher___normalize_text
     src__redup__core__hasher___normalize_ast_text --> src___ast_to_normalized_string
     src___ast_to_normalized_string --> src__redup__core__hasher___process_ast_node
@@ -108,8 +104,12 @@ flowchart TD
     src__redup__core__hasher___find_duplicates --> src___blocks_from_different_locations
     src__redup__core__hasher__find_exact_duplicates --> src__redup__core__hasher___find_duplicates
     src__find_structural_duplicates --> src__redup__core__hasher___find_duplicates
-    src__redup__cli_app__main__scan --> src__redup__core__pipeline__analyze
+    src__redup__core__matcher__sequence_similarity --> src__redup__core__hasher___normalize_text
+    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__hasher___normalize_text
+    src__redup__core__matcher__fuzzy_similarity --> src__redup__core__matcher__sequence_similarity
+    src__redup__core__matcher__match_candidates --> src___compare_against_reference
+    src__refine_structural_matches --> src___compare_against_reference
 
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
-    class src___extract_function_blocks_python,src___find_structural_groups,src__redup__reporters__toon_reporter__to_toon,src__redup__core__hasher___process_ast_node,src__redup__cli_app__main__scan medCC
+    class src___extract_function_blocks_python,src___find_structural_groups,src__redup__reporters__toon_reporter__to_toon,src__redup__cli_app__main__scan,src__redup__core__hasher___process_ast_node medCC

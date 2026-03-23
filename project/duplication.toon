@@ -6,7 +6,7 @@ SUMMARY:
   dup_groups:    2
   dup_fragments: 4
   saved_lines:   6
-  scan_ms:       582
+  scan_ms:       619
 
 DUPLICATES[2] (ranked by impact):
   [S0401]   STRU  hash_block  L=3 N=2 saved=3 sim=0.91

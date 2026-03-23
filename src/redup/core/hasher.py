@@ -7,6 +7,7 @@ import re
 from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from typing import Any
 
 from redup.core.scanner import CodeBlock
 
@@ -138,7 +139,7 @@ def _get_placeholder(
     return name_map[name]
 
 
-def _normalize_constant(value) -> str:
+def _normalize_constant(value: Any) -> str:
     """Normalize constant values."""
     if isinstance(value, str):
         return "__STR__"

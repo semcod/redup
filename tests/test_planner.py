@@ -18,9 +18,24 @@ def test_generate_suggestions_basic():
                 duplicate_type=DuplicateType.EXACT,
                 normalized_name="calculate_tax",
                 fragments=[
-                    DuplicateFragment(file="billing.py", line_start=1, line_end=10, function_name="calculate_tax"),
-                    DuplicateFragment(file="shipping.py", line_start=1, line_end=10, function_name="calculate_tax"),
-                    DuplicateFragment(file="returns.py", line_start=1, line_end=10, function_name="calculate_tax"),
+                    DuplicateFragment(
+                        file="billing.py",
+                        line_start=1,
+                        line_end=10,
+                        function_name="calculate_tax",
+                    ),
+                    DuplicateFragment(
+                        file="shipping.py",
+                        line_start=1,
+                        line_end=10,
+                        function_name="calculate_tax",
+                    ),
+                    DuplicateFragment(
+                        file="returns.py",
+                        line_start=1,
+                        line_end=10,
+                        function_name="calculate_tax",
+                    ),
                 ],
             ),
         ],
@@ -85,8 +100,18 @@ def test_large_block_extract_module():
                 id="huge",
                 duplicate_type=DuplicateType.EXACT,
                 fragments=[
-                    DuplicateFragment(file="a.py", line_start=1, line_end=60, function_name="big_func"),
-                    DuplicateFragment(file="b.py", line_start=1, line_end=60, function_name="big_func"),
+                    DuplicateFragment(
+                        file="a.py",
+                        line_start=1,
+                        line_end=60,
+                        function_name="big_func",
+                    ),
+                    DuplicateFragment(
+                        file="b.py",
+                        line_start=1,
+                        line_end=60,
+                        function_name="big_func",
+                    ),
                 ],
             ),
         ],

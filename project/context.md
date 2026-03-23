@@ -5,7 +5,7 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 10
-- **Lines**: 2527
+- **Lines**: 2522
 - **Functions**: 52
 - **Classes**: 15
 - **Avg CC**: 4.1

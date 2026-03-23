@@ -109,10 +109,10 @@ D:
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
+  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
-  src/redup/__init__.py:
   src/redup/reporters/__init__.py:
-  src/sitecustomize.py:
   src/redup/cli_app/__init__.py:
   project.sh:
+  src/sitecustomize.py:

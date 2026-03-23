@@ -11,12 +11,12 @@ import typer
 # Suppress SyntaxWarning from external libraries
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
-import redup
-from redup.core.models import ScanConfig
-from redup.core.pipeline import analyze
-from redup.reporters.json_reporter import to_json
-from redup.reporters.toon_reporter import to_toon
-from redup.reporters.yaml_reporter import to_yaml
+import redup  # noqa: E402
+from redup.core.models import ScanConfig  # noqa: E402
+from redup.core.pipeline import analyze  # noqa: E402
+from redup.reporters.json_reporter import to_json  # noqa: E402
+from redup.reporters.toon_reporter import to_toon  # noqa: E402
+from redup.reporters.yaml_reporter import to_yaml  # noqa: E402
 
 app = typer.Typer(
     name="redup",
