@@ -71,13 +71,13 @@ flowchart TD
     examples__01_basic_usage__main --> src__redup__core__pipeline__analyze
     examples__01_basic_usage__main --> src__redup__reporters__toon_reporter__to_toon
     examples__01_basic_usage__main --> src__redup__reporters__json_reporter__to_json
-    benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze
-    benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze_parallel
-    benchmark__benchmark_feature_performance --> src__redup__core__pipeline__analyze_parallel
     src___get_config_from_pyproject --> src__redup__core__config___load_toml_file
     src___get_config_from_redup_toml --> src__redup__core__config___load_toml_file
     src__redup__core__config__load_config --> src___get_config_from_redup_toml
     src__redup__core__config__load_config --> src___get_config_from_pyproject
+    benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze
+    benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze_parallel
+    benchmark__benchmark_feature_performance --> src__redup__core__pipeline__analyze_parallel
     src__find_exact_duplicates_lazy --> src___create_duplicate_group
     src__find_exact_duplicates_lazy --> src___blocks_from_different_locations
     src__find_structural_duplicates_lazy --> src___create_duplicate_group
@@ -131,14 +131,14 @@ flowchart TD
     src__extract_functions_treesitter --> src___initialize_language_dispatcher
     src__get_supported_languages --> src___get_tree_sitter_language
     src__is_language_supported --> src___get_tree_sitter_language
-    src__redup__core__cache__hash_block_with_cache --> src__redup__core__hasher__hash_block
-    src__redup__core__cache__hash_block_with_cache --> src__redup__core__hasher__hash_block_structural
-    src__build_hash_index_with_cache --> src__redup__core__cache__hash_block_with_cache
     src___get_layers --> src___calculate_avg_cc
     src__to_code2llm_toon --> src___calculate_avg_cc
     src__to_code2llm_toon --> src___count_critical_functions
     src__export_code2llm --> src__to_code2llm_toon
     src__export_code2llm --> src__to_code2llm_context
+    src__redup__core__cache__hash_block_with_cache --> src__redup__core__hasher__hash_block
+    src__redup__core__cache__hash_block_with_cache --> src__redup__core__hasher__hash_block_structural
+    src__build_hash_index_with_cache --> src__redup__core__cache__hash_block_with_cache
     src__redup__reporters__json_reporter__to_json --> src___group_to_dict
     src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
     src__redup__reporters__toon_reporter__to_toon --> src___render_header
@@ -148,6 +148,13 @@ flowchart TD
     src__redup__reporters__toon_reporter__to_toon --> src___render_metrics_target
     src__redup__reporters__yaml_reporter__to_yaml --> src___group_to_dict
     src__redup__reporters__yaml_reporter__to_yaml --> src___suggestion_to_dict
+    src__redup__cli_app__scan_commands__diff_command --> src__redup__core__differ__compare_scans
+    src__redup__cli_app__scan_commands__diff_command --> src__redup__core__differ__format_diff_result
+    src__redup__cli_app__scan_commands__check_command --> src__print_scan_header
+    src__redup__cli_app__scan_commands__check_command --> src__redup__core__pipeline__analyze
+    src__redup__cli_app__scan_commands__check_command --> src__print_scan_summary
+    src__redup__cli_app__scan_commands__config_command --> src__redup__core__config__create_sample_redup_toml
+    src__redup__cli_app__scan_commands__config_command --> src__redup__core__config__load_config
     src__redup__cli_app__output_writer__write_results --> src__redup__reporters__json_reporter__to_json
     src__redup__cli_app__output_writer__write_results --> src__redup__cli_app__output_writer__write_output
     src__redup__cli_app__output_writer__write_results --> src__redup__reporters__yaml_reporter__to_yaml
@@ -156,26 +163,10 @@ flowchart TD
     src__redup__cli_app__output_writer__write_results --> src__to_code2llm_context
     src__redup__cli_app__output_writer__write_results --> src__export_code2llm
     src__apply_fuzzy_similarity --> src___apply_fuzzy_similarity
-    src__redup__cli_app__scan_commands__diff_command --> src__redup__core__differ__compare_scans
-    src__redup__cli_app__scan_commands__diff_command --> src__redup__core__differ__format_diff_result
-    src__redup__cli_app__scan_commands__check_command --> src__print_scan_header
-    src__redup__cli_app__scan_commands__check_command --> src__redup__core__pipeline__analyze
-    src__redup__cli_app__scan_commands__check_command --> src__print_scan_summary
-    src__redup__cli_app__scan_commands__config_command --> src__redup__core__config__create_sample_redup_toml
-    src__redup__cli_app__scan_commands__config_command --> src__redup__core__config__load_config
     src__redup__cli_app__main__diff --> src__redup__cli_app__scan_commands__diff_command
     src__redup__cli_app__main__check --> src__redup__cli_app__scan_commands__check_command
     src__redup__cli_app__main__config --> src__redup__cli_app__scan_commands__config_command
     src__redup__cli_app__main__info --> src__redup__cli_app__scan_commands__info_command
-    src___apply_fuzzy_similarity --> src___validate_fuzzy_input
-    src___apply_fuzzy_similarity --> src___extract_all_blocks
-    src___apply_fuzzy_similarity --> src___separate_blocks_by_type
-    src___apply_fuzzy_similarity --> src___analyze_blocks_with_detectors
-    src___apply_fuzzy_similarity --> src___report_fuzzy_results
-    src___analyze_blocks_with_detectors --> src___analyze_html_css_blocks
-    src___analyze_blocks_with_detectors --> src___analyze_other_language_blocks
-    src__create_hash_function --> src__redup__core__hasher___hash_text
-    src__create_duplicate_finder --> src__redup__core__hasher___find_duplicates
     src__redup__core__pipeline__analyze --> src__redup__core__pipeline___ensure_config
     src__redup__core__pipeline__analyze --> src__redup__core__pipeline___scan_phase
     src__redup__core__pipeline__analyze --> src__redup__core__pipeline___process_blocks
@@ -212,6 +203,15 @@ flowchart TD
     src__redup__core__pipeline__analyze_parallel --> src___find_duplicates_phase_optimized
     src__redup__core__pipeline__analyze_parallel --> src__redup__core__pipeline___deduplicate_phase
     src__redup__core__pipeline__analyze_parallel --> src__redup__core__planner__generate_suggestions
+    src__create_hash_function --> src__redup__core__hasher___hash_text
+    src__create_duplicate_finder --> src__redup__core__hasher___find_duplicates
+    src___apply_fuzzy_similarity --> src___validate_fuzzy_input
+    src___apply_fuzzy_similarity --> src___extract_all_blocks
+    src___apply_fuzzy_similarity --> src___separate_blocks_by_type
+    src___apply_fuzzy_similarity --> src___analyze_blocks_with_detectors
+    src___apply_fuzzy_similarity --> src___report_fuzzy_results
+    src___analyze_blocks_with_detectors --> src___analyze_html_css_blocks
+    src___analyze_blocks_with_detectors --> src___analyze_other_language_blocks
     src__redup__core__differ__compare_scans --> src__redup__core__differ___load_duplication_map
     src__redup__core__differ__compare_scans --> src__redup__core__differ___group_by_id
 

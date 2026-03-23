@@ -5,7 +5,7 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 31
-- **Lines**: 8615
+- **Lines**: 8616
 - **Functions**: 245
 - **Classes**: 33
 - **Avg CC**: 3.4
@@ -13,10 +13,10 @@
 
 ## Architecture
 
-### root/ (2 files, 131L, 2 functions)
+### root/ (2 files, 132L, 2 functions)
 
 - `benchmark.py` — 111L, 2 methods, CC↑3
-- `project.sh` — 20L, 0 methods, CC↑0
+- `project.sh` — 21L, 0 methods, CC↑0
 
 ### src/ (1 files, 4L, 0 functions)
 

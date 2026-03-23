@@ -111,20 +111,33 @@ class MemoryFileCache:
 
 @functools.lru_cache(maxsize=1000)
 def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
-    """Check if a path matches any exclusion pattern."""
+    """Check if a path matches any exclusion pattern with support for negation."""
     name = path.name
     str_path = str(path)
     
-    # Check against patterns
+    # First check for exclusions (patterns starting with ! are inclusions)
     for pattern in patterns:
-        if fnmatch.fnmatch(name, pattern) or fnmatch.fnmatch(str_path, pattern):
-            return True
-        # Check if any parent directory matches
-        for part in path.parts:
-            if fnmatch.fnmatch(part, pattern):
+        if not pattern.startswith('!'):  # Regular exclusion pattern
+            if fnmatch.fnmatch(name, pattern) or fnmatch.fnmatch(str_path, pattern):
                 return True
+            # Check if any parent directory matches
+            for part in path.parts:
+                if fnmatch.fnmatch(part, pattern):
+                    return True
     
-    return False
+    # Then check for explicit inclusions (negation patterns starting with !)
+    for pattern in patterns:
+        if pattern.startswith('!'):
+            # Remove ! and check if it matches
+            include_pattern = pattern[1:]
+            if fnmatch.fnmatch(name, include_pattern) or fnmatch.fnmatch(str_path, include_pattern):
+                return False  # Explicitly included
+            # Check if any parent directory matches
+            for part in path.parts:
+                if fnmatch.fnmatch(part, include_pattern):
+                    return False  # Explicitly included
+    
+    return False  # Not excluded by any pattern
 
 
 def _collect_files(config: ScanConfig) -> list[Path]:

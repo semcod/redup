@@ -2,8 +2,8 @@
 
 NEXT[4] (ranked by impact):
   [1] !! SPLIT           src/redup/core/scanner.py
-      WHY: 642L, 4 classes, max CC=12
-      EFFORT: ~4h  IMPACT: 7704
+      WHY: 655L, 4 classes, max CC=12
+      EFFORT: ~4h  IMPACT: 7860
 
   [2] !! SPLIT           src/redup/core/pipeline.py
       WHY: 660L, 0 classes, max CC=11

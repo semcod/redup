@@ -41,8 +41,62 @@ class ScanConfig:
     extensions: list[str] = field(default_factory=lambda: [".py"])
     exclude_patterns: list[str] = field(
         default_factory=lambda: [
-            "__pycache__", ".git", ".venv", "venv", "node_modules",
-            ".tox", ".mypy_cache", ".pytest_cache", "*.egg-info", "dist", "build",
+            # Universal system files
+            ".*",
+            "!.*.py", "!.*.js", "!.*.ts", "!.*.java", "!.*.cpp", "!.*.c",
+            "!.*.h", "!.*.hpp", "!.*.rs", "!.*.go", "!.*.rb", "!.*.php",
+            "!.*.sh", "!.*.bat", "!.*.ps1", "!.*.yaml", "!.*.yml", "!.*.toml",
+            "!.*.json", "!.*.xml", "!.*.html", "!.*.css", "!.*.md", "!.*.txt",
+            "!.*.sql", "!.*.dockerfile", "!.*.makefile", "!.*.cmake",
+            "!.*.gitignore", "!.*.editorconfig",
+            
+            # Python specific
+            "__pycache__", "*.pyc", "*.pyo", "*.pyd", "$py.class",
+            "python*/", "python3*/", "Python*/",
+            "venv*/", "env*/", ".venv*/", ".env*/",
+            ".tox/", ".nox/", ".pytest_cache/", ".mypy_cache/", ".ruff_cache/",
+            ".coverage", "htmlcov/", "*.egg-info/", "*.egg", "build/", "dist/",
+            ".installer/", ".eggs/", "lib/", "lib64/", "parts/", "sdist/", "var/", "wheels/",
+            
+            # Node.js/JavaScript
+            "node_modules/", "npm-debug.log*", "yarn-debug.log*", "yarn-error.log*",
+            "pnpm-debug.log*", ".npm/", ".yarn-integrity/", ".eslintcache/", ".stylelintcache/",
+            ".next/", ".nuxt/", ".vuepress/dist/",
+            
+            # Java/Maven/Gradle
+            "target/", "build/", "out/", ".classpath/", ".project/", ".settings/",
+            ".mvn/", "gradle/", ".gradle/", "*.class", "*.jar", "*.war", "*.ear", "*.aar",
+            
+            # Rust
+            "target/", "Cargo.lock", "**/*.rs.bk",
+            
+            # Go
+            "vendor/", "*.exe", "*.exe~", "*.dll", "*.so", "*.dylib", "*.test", "*.out",
+            
+            # Docker
+            ".dockerignore", ".docker/",
+            
+            # Mobile
+            "android/app/build/", "ios/build/", "*.apk", "*.ipa", "*.xcarchive",
+            
+            # IDE/Editors
+            ".vscode/", ".idea/", "*.swp", "*.swo", "*~", ".DS_Store", "Thumbs.db",
+            
+            # Database
+            "*.db", "*.sqlite", "*.sqlite3", "data/", "logs/",
+            
+            # Cloud/DevOps
+            ".terraform/", ".terraform.lock.hcl", "*.tfstate", "*.tfstate.*", ".ansible/", ".kube/",
+            
+            # General build/cache
+            "cache/", ".cache/", "tmp/", ".tmp/", "*.tmp", "*.temp", "*.bak", "*.backup",
+            
+            # Package managers
+            "composer.lock", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", 
+            "poetry.lock", "Pipfile.lock", "Gemfile.lock",
+            
+            # Logs
+            "*.log", "logs/",
         ]
     )
     min_block_lines: int = 3

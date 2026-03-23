@@ -1,4 +1,4 @@
-# code2llm | 39f 6608L | python:38,shell:1 | 2026-03-23
+# code2llm | 39f 6609L | python:38,shell:1 | 2026-03-23
 # CC̄=3.4 | critical:13/246 | dups:0 | cycles:0
 
 HEALTH[2]:
@@ -57,7 +57,7 @@ LAYERS:
   │
   ./                              CC̄=3.0    ←in:0  →out:0
   │ benchmark                  111L  0C    2m  CC=3      ←0
-  │ project.sh                  20L  0C    0m  CC=0.0    ←0
+  │ project.sh                  21L  0C    0m  CC=0.0    ←0
   │
 
 DUPLICATES[0]: none
@@ -336,6 +336,11 @@ Provides ~10x...
     _group_to_dict(group,include_snippets)
     _suggestion_to_dict(s)
     to_json(dup_map,indent,include_snippets)
+  src/redup/core/utils/function_extractor.py:
+    e: FunctionExtractor,_extract_java_class_name
+    FunctionExtractor  # Generic function extractor that can be configured for differ...
+      __init__(3)  CC=1.0
+    _extract_java_class_name(node)
   src/redup/cli_app/fuzzy_similarity.py:
     e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups
     _apply_fuzzy_similarity(dup_map,threshold)
@@ -347,11 +352,6 @@ Provides ~10x...
     _analyze_other_language_blocks(other_blocks,threshold)
     _report_fuzzy_results(similar_pairs)
     _report_similarity_by_groups(similar_pairs)
-  src/redup/core/utils/function_extractor.py:
-    e: FunctionExtractor,_extract_java_class_name
-    FunctionExtractor  # Generic function extractor that can be configured for differ...
-      __init__(3)  CC=1.0
-    _extract_java_class_name(node)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)

@@ -1,9 +1,9 @@
-# redup | 40f 6666L | python:39,shell:1
+# redup | 40f 6667L | python:39,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[40]:
   benchmark.py,111
   examples/01_basic_usage.py,58
-  project.sh,20
+  project.sh,21
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
@@ -236,6 +236,10 @@ Provides ~10x...
     _group_to_dict(group;include_snippets)
     _suggestion_to_dict(s)
     to_json(dup_map;indent;include_snippets)
+  src/redup/core/utils/function_extractor.py:
+    e: FunctionExtractor,_extract_java_class_name
+    FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
+    _extract_java_class_name(node)
   src/redup/cli_app/fuzzy_similarity.py:
     e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups
     _apply_fuzzy_similarity(dup_map;threshold)
@@ -247,10 +251,6 @@ Provides ~10x...
     _analyze_other_language_blocks(other_blocks;threshold)
     _report_fuzzy_results(similar_pairs)
     _report_similarity_by_groups(similar_pairs)
-  src/redup/core/utils/function_extractor.py:
-    e: FunctionExtractor,_extract_java_class_name
-    FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
-    _extract_java_class_name(node)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)

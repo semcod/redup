@@ -595,12 +595,12 @@ DATA_TYPES (by cross-function usage) [237 annotated, 0 inferred / 246 functions]
   DuplicationMap       consumed:21  produced:6    !! HUB-TYPE → split interface
   list[DuplicateGroup] consumed:4   produced:10 
   list                 consumed:9   produced:4  
-  str, Any             consumed:0   produced:12   output-heavy
-  CodeBlock            consumed:8   produced:4  
   dict[str, str]       consumed:9   produced:3  
+  CodeBlock            consumed:8   produced:4  
+  str, Any             consumed:0   produced:12   output-heavy
   ScanConfig           consumed:8   produced:2  
-  int | None           consumed:9   produced:0    input-heavy (read-only flow)
   ScanConfig | None    consumed:9   produced:0    input-heavy (read-only flow)
+  int | None           consumed:9   produced:0    input-heavy (read-only flow)
   tuple[list[ScannedFile], ScanStats] consumed:0   produced:9    output-heavy
   HashIndex            consumed:7   produced:1    input-heavy (read-only flow)
   dict[str, Any]       consumed:2   produced:5  
@@ -623,7 +623,7 @@ DATA_TYPES (by cross-function usage) [237 annotated, 0 inferred / 246 functions]
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        main, benchmark_sequential_vs_parallel, benchmark_feature_performance, _load_toml_file, HashCache._load, HashCache.save, HashCache.get_file_hash, HashCache.clear, _config_to_hash, MemoryFileCache.get_file_content
+  IO:        main, _load_toml_file, benchmark_sequential_vs_parallel, benchmark_feature_performance, HashCache._load, HashCache.save, HashCache.get_file_hash, HashCache.clear, _config_to_hash, MemoryFileCache.get_file_content
   Cache:     HashCache.invalidate, MemoryFileCache._evict_oldest, _should_exclude, scan_project, _normalize_text, _normalize_ast_text, _text_to_minhash_features, hash_block_with_cache, build_hash_index_with_cache
   Mutation:  load_config, HashCache.__init__, DuplicateGroupCollector.__init__, DuplicateGroupCollector.collect, UniversalFuzzyExtractor.__init__, UniversalFuzzyExtractor._extract_semantic_patterns, UniversalFuzzyDetector.__init__, UniversalFuzzyDetector.find_similar_components, UniversalFuzzyDetector._compute_metadata_similarity, generate_suggestions
   Pure:      _get_config_from_pyproject, _get_config_from_redup_toml, config_to_scan_config, create_sample_redup_toml, HashCache.is_unchanged, HashCache.update, HashCache.get_cached_results, find_exact_duplicates_lazy, find_structural_duplicates_lazy, _create_duplicate_group

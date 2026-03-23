@@ -3,11 +3,11 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T20:23:45Z'
+  analyzed_at: '2026-03-23T20:37:08Z'
   tool: code2llm
   stats:
     files: 31
-    lines: 8615
+    lines: 8616
     functions: 245
     classes: 33
 health:
@@ -620,7 +620,7 @@ modules:
     type: class
     cc_avg: 1.0
 - path: project.sh
-  lines: 20
+  lines: 21
   classes: 0
   methods: 0
   cc_max: 0
@@ -726,5 +726,5 @@ evolution:
 - date: '2026-03-23'
   cc_avg: 3.4
   critical: 13
-  lines: 8615
+  lines: 8616
   note: Automated analysis

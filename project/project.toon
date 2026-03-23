@@ -1,4 +1,4 @@
-# redup | 52f 8705L | python:52
+# redup | 52f 8772L | python:52
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[52]:
   benchmark.py,83
@@ -22,10 +22,10 @@ M[52]:
   src/redup/core/lazy_grouper.py,116
   src/redup/core/lsh_matcher.py,149
   src/redup/core/matcher.py,84
-  src/redup/core/models.py,129
+  src/redup/core/models.py,156
   src/redup/core/pipeline.py,473
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,464
+  src/redup/core/scanner.py,473
   src/redup/core/ts_extractor.py,550
   src/redup/core/universal_fuzzy.py,333
   src/redup/core/utils/__init__.py,1
