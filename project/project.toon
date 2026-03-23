@@ -1,4 +1,4 @@
-# redup | 41f 6023L | python:41
+# redup | 41f 6028L | python:41
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[41]:
   benchmark.py,83
@@ -6,7 +6,7 @@ M[41]:
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,363
+  src/redup/cli_app/main.py,368
   src/redup/core/__init__.py,1
   src/redup/core/config.py,107
   src/redup/core/differ.py,181

@@ -5,7 +5,7 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 23
-- **Lines**: 5941
+- **Lines**: 5946
 - **Functions**: 164
 - **Classes**: 21
 - **Avg CC**: 3.8
@@ -27,9 +27,9 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 436L, 11 functions)
+### src/redup/cli_app/ (2 files, 441L, 11 functions)
 
-- `main.py` — 435L, 11 methods, CC↑14
+- `main.py` — 440L, 11 methods, CC↑14
 - `__init__.py` — 1L, 0 methods, CC↑0
 
 ### src/redup/core/ (13 files, 2986L, 110 functions)

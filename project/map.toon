@@ -1,4 +1,4 @@
-# redup | 32f 4651L | python:31,shell:1
+# redup | 32f 4656L | python:31,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[32]:
   benchmark.py,111
@@ -7,7 +7,7 @@ M[32]:
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,435
+  src/redup/cli_app/main.py,440
   src/redup/core/__init__.py,1
   src/redup/core/config.py,154
   src/redup/core/differ.py,246
@@ -74,7 +74,7 @@ D:
     _print_scan_header(path;ext_list;min_lines;min_similarity)
     _print_scan_summary(dup_map)
     _write_results(dup_map;format;output;path)
-    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers)
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental)
     diff(before;after)
     check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config(init;show)
@@ -229,8 +229,8 @@ D:
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
   src/redup/__main__.py:
-  src/redup/core/__init__.py:
   src/redup/__init__.py:
+  src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

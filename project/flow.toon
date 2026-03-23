@@ -38,7 +38,7 @@ PIPELINES[12] (Core:7, IO:2, NLP:3):
               PURITY: 2/9 pure  BOTTLENECK: _find_near_duplicate_groups(CC=11)
 
   Src [Core]: Path → str
-              → scan(path:Path, format:str, output:Path | None, extensions:str | None, min_lines:int | None, min_similarity:float | None, include_tests:bool | None, functions_only:bool, parallel:bool, max_workers:int) → None CC=2    pure ▶
+              → scan(path:Path, format:str, output:Path | None, extensions:str | None, min_lines:int | None, min_similarity:float | None, include_tests:bool | None, functions_only:bool, parallel:bool, max_workers:int, incremental:bool) → None CC=2    pure ▶
               → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=1    pure
               → _find_duplicates_phase(all_blocks:list[CodeBlock], config:ScanConfig) → list[DuplicateGroup] CC=1    IO
               → _find_near_duplicate_groups(all_blocks:list[CodeBlock], config:ScanConfig) → list[DuplicateGroup] CC=11   mutation
@@ -260,8 +260,8 @@ CONTRACTS:
       INVARIANT: len(output) <= len(input)
 
   Pipeline: Src
-    scan(path:Path, format:str, output:Path | None, extensions:str | None, min_lines:int | None, min_similarity:float | None, include_tests:bool | None, functions_only:bool, parallel:bool, max_workers:int) → None
-      IN:  path:Path, format:str, output:Path | None, extensions:str | None, min_lines:int | None, min_similarity:float | None, include_tests:bool | None, functions_only:bool, parallel:bool, max_workers:int
+    scan(path:Path, format:str, output:Path | None, extensions:str | None, min_lines:int | None, min_similarity:float | None, include_tests:bool | None, functions_only:bool, parallel:bool, max_workers:int, incremental:bool) → None
+      IN:  path:Path, format:str, output:Path | None, extensions:str | None, min_lines:int | None, min_similarity:float | None, include_tests:bool | None, functions_only:bool, parallel:bool, max_workers:int, incremental:bool
       OUT: None
 
     analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap
@@ -490,11 +490,11 @@ CONTRACTS:
 
 DATA_TYPES (by cross-function usage) [161 annotated, 0 inferred / 165 functions]:
   str                  consumed:59  produced:21   !! HUB-TYPE → split interface
-  int                  consumed:30  produced:1    !! HUB-TYPE → split interface
   list[str]            consumed:24  produced:7    !! HUB-TYPE → split interface
+  int                  consumed:30  produced:1    !! HUB-TYPE → split interface
   Path                 consumed:27  produced:0    !! HUB-TYPE → split interface
   list[CodeBlock]      consumed:5   produced:21 
-  bool                 consumed:15  produced:9    !! HUB-TYPE → split interface
+  bool                 consumed:16  produced:9    !! HUB-TYPE → split interface
   DuplicationMap       consumed:17  produced:3    !! HUB-TYPE → split interface
   float                consumed:10  produced:6    !! HUB-TYPE → split interface
   str, Any             consumed:0   produced:12   output-heavy
@@ -502,24 +502,24 @@ DATA_TYPES (by cross-function usage) [161 annotated, 0 inferred / 165 functions]
   ScanConfig           consumed:5   produced:4  
   int | None           consumed:8   produced:0    input-heavy (read-only flow)
   CodeBlock            consumed:4   produced:3  
-  dict[str, Any]       consumed:2   produced:4  
   list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
   DuplicateGroup       consumed:5   produced:1    input-heavy (read-only flow)
-  HashIndex            consumed:4   produced:1  
-  list[MatchResult]    consumed:2   produced:3  
+  dict[str, Any]       consumed:2   produced:4  
   Path | None          consumed:5   produced:0    input-heavy (read-only flow)
-  ScanConfig | None    consumed:4   produced:0    narrow scope
+  list[MatchResult]    consumed:2   produced:3  
+  HashIndex            consumed:4   produced:1  
+  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
 
   HUB TYPES (consumed ≥10):
     str → 59 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
-    int → 30 consumers → split into:
-      - (analyze consumers to suggest sub-interfaces)
     list[str] → 24 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+    int → 30 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
     Path → 27 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
-    bool → 15 consumers → split into:
+    bool → 16 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
     DuplicationMap → 17 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)

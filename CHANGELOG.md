@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+## [0.3.11] - 2026-03-23
+
+### Docs
+- Update docs/README.md
+- Update project/context.md
+
+### Other
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/dashboard.html
+- Update project/evolution.toon
+- Update project/flow.mmd
+- Update project/flow.png
+- Update project/flow.toon
+- Update project/index.html
+- Update project/map.toon
+- ... and 2 more files
+
 ## [0.3.10] - 2026-03-23
 
 ### Docs

@@ -1,4 +1,4 @@
-# code2llm | 31f 4593L | python:30,shell:1 | 2026-03-23
+# code2llm | 31f 4598L | python:30,shell:1 | 2026-03-23
 # CC̄=3.8 | critical:11/165 | dups:0 | cycles:0
 
 HEALTH[2]:
@@ -17,7 +17,7 @@ COUPLING:
 LAYERS:
   src/                            CC̄=3.8    ←in:0  →out:0
   │ !! ts_extractor               767L  1C   23m  CC=24     ←2
-  │ !  main                       435L  0C   11m  CC=14     ←0
+  │ !  main                       440L  0C   11m  CC=14     ←0
   │ !  pipeline                   409L  0C   15m  CC=11     ←3
   │ enhanced_reporter          274L  1C   17m  CC=8      ←0
   │ scanner                    247L  2C    7m  CC=9      ←2
@@ -92,10 +92,6 @@ CLASSES:
   DuplicationMap                 █                          1m  CC̄=1.0   max=1   
   CodeBlock                                                 0m  CC̄=0.0   max=0.0 
   ScannedFile                                               0m  CC̄=0.0   max=0.0 
-  MatchResult                                               0m  CC̄=0.0   max=0.0 
-  HashedBlock                                               0m  CC̄=0.0   max=0.0 
-  HashIndex                                                 0m  CC̄=0.0   max=0.0 
-  DiffResult                                                0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
   RiskLevel                                                 0m  CC̄=0.0   max=0.0 
@@ -104,6 +100,10 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
+  MatchResult                                               0m  CC̄=0.0   max=0.0 
+  HashedBlock                                               0m  CC̄=0.0   max=0.0 
+  HashIndex                                                 0m  CC̄=0.0   max=0.0 
+  DiffResult                                                0m  CC̄=0.0   max=0.0 
 
 D:
   src/redup/core/ts_extractor.py:
@@ -147,7 +147,7 @@ D:
     _print_scan_header(path,ext_list,min_lines,min_similarity)
     _print_scan_summary(dup_map)
     _write_results(dup_map,format,output,path)
-    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only,parallel,max_workers)
+    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only,parallel,max_workers,incremental)
     diff(before,after)
     check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
     config(init,show)
@@ -309,8 +309,8 @@ D:
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
   src/redup/__main__.py:
-  src/redup/core/__init__.py:
   src/redup/__init__.py:
+  src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:
