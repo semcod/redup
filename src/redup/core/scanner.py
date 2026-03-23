@@ -5,6 +5,7 @@ from __future__ import annotations
 import fnmatch
 import functools
 import mmap
+import os
 import time
 from collections.abc import Iterator
 from dataclasses import dataclass, field
@@ -61,12 +62,41 @@ def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
     return False
 
 
+def _load_gitignore_patterns(root_path: Path) -> list[str]:
+    """Load exclusion patterns from .gitignore file if it exists."""
+    gitignore_path = root_path / ".gitignore"
+    patterns = []
+    
+    if gitignore_path.exists():
+        try:
+            with open(gitignore_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    # Skip empty lines and comments
+                    if line and not line.startswith('#'):
+                        # Remove leading slashes and convert to proper pattern
+                        pattern = line.lstrip('/')
+                        # Convert directory patterns (ending with /) to match contents
+                        if pattern.endswith('/'):
+                            pattern = pattern.rstrip('/')
+                        patterns.append(pattern)
+        except (OSError, UnicodeDecodeError):
+            pass  # Silently ignore if we can't read .gitignore
+    
+    return patterns
+
+
 def _collect_files(config: ScanConfig) -> Iterator[Path]:
     """Yield all files matching the scan configuration."""
     root = Path(config.root).resolve() if isinstance(config.root, str) else config.root.resolve()
+    
+    # Load .gitignore patterns and merge with default exclude patterns
+    gitignore_patterns = _load_gitignore_patterns(root)
+    all_exclude_patterns = list(config.exclude_patterns) + gitignore_patterns
+    
     for ext in config.extensions:
         for path in root.rglob(f"*{ext}"):
-            if _should_exclude(path, tuple(config.exclude_patterns)):
+            if _should_exclude(path, tuple(all_exclude_patterns)):
                 continue
             if not config.include_tests and _is_test_file(path):
                 continue

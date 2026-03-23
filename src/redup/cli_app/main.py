@@ -286,20 +286,10 @@ def scan(
 
         _print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
 
-        # Choose analysis method based on optimization flags
-        if parallel and not incremental:
-            # Pure parallel mode (no cache)
+        # Choose analysis method
+        if parallel:
             dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
-        elif parallel or incremental:
-            # Optimized mode with cache and/or parallel
-            dup_map = analyze_optimized(
-                config=config, 
-                function_level_only=functions_only,
-                use_memory_cache=getattr(config, '_memory_cache', True),
-                max_cache_mb=getattr(config, '_max_cache_mb', 512)
-            )
         else:
-            # Standard mode
             dup_map = analyze(config=config, function_level_only=functions_only)
 
         _print_scan_summary(dup_map)
