@@ -1,0 +1,367 @@
+version: '1'
+project:
+  name: redup
+  repo: /home/tom/github/semcod/redup
+  language: python
+  analyzed_at: '2026-03-23T15:37:59Z'
+  tool: code2llm
+  stats:
+    files: 12
+    lines: 2895
+    functions: 56
+    classes: 15
+health:
+  cc_avg: 4.8
+  critical_count: 6
+  critical_limit: 10
+  duplicates: 0
+  cycles: 0
+  alerts:
+  - type: high_fan_out
+    target: analyze
+    value: 21
+    limit: 10
+    severity: critical
+  - type: cc_exceeded
+    target: analyze
+    value: 20
+    limit: 15
+    severity: error
+  - type: high_fan_out
+    target: scan
+    value: 18
+    limit: 10
+    severity: error
+  - type: high_fan_out
+    target: scan_project
+    value: 15
+    limit: 10
+    severity: error
+  - type: cc_exceeded
+    target: _ast_to_normalized_string
+    value: 17
+    limit: 15
+    severity: warning
+  - type: high_fan_out
+    target: format_output
+    value: 11
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: format_table
+    value: 10
+    limit: 10
+    severity: warning
+modules:
+- path: src/redup/core/pipeline.py
+  lines: 183
+  classes: 0
+  methods: 3
+  cc_max: 20
+  inbound_deps: 2
+  exports:
+  - name: analyze
+    type: function
+    cc: 20
+    flag: split
+    fan_out: 21
+- path: src/redup/core/hasher.py
+  lines: 204
+  classes: 2
+  methods: 11
+  cc_max: 17
+  inbound_deps: 2
+  exports:
+  - name: HashedBlock
+    type: class
+    cc_avg: 0.0
+  - name: HashIndex
+    type: class
+    cc_avg: 0.0
+  - name: hash_block
+    type: function
+    cc: 1
+  - name: hash_block_structural
+    type: function
+    cc: 1
+  - name: build_hash_index
+    type: function
+    cc: 3
+  - name: find_exact_duplicates
+    type: function
+    cc: 1
+  - name: find_structural_duplicates
+    type: function
+    cc: 1
+- path: cli_utilities_demo.py
+  lines: 231
+  classes: 0
+  methods: 7
+  cc_max: 12
+  inbound_deps: 0
+  exports:
+  - name: show_vscode_tests
+    type: function
+    cc: 7
+  - name: show_status
+    type: function
+    cc: 5
+  - name: make_args_from_config
+    type: function
+    cc: 10
+  - name: confirm_action
+    type: function
+    cc: 5
+  - name: format_output
+    type: function
+    cc: 12
+    fan_out: 11
+  - name: format_table
+    type: function
+    cc: 12
+    fan_out: 10
+  - name: handle_error
+    type: function
+    cc: 4
+- path: src/redup/reporters/toon_reporter.py
+  lines: 75
+  classes: 0
+  methods: 1
+  cc_max: 12
+  inbound_deps: 2
+  exports:
+  - name: to_toon
+    type: function
+    cc: 12
+- path: src/redup/cli_app/main.py
+  lines: 165
+  classes: 1
+  methods: 3
+  cc_max: 9
+  inbound_deps: 0
+  exports:
+  - name: OutputFormat
+    type: class
+    cc_avg: 0.0
+  - name: scan
+    type: function
+    cc: 9
+    fan_out: 18
+  - name: info
+    type: function
+    cc: 3
+- path: src/redup/core/scanner.py
+  lines: 193
+  classes: 2
+  methods: 6
+  cc_max: 9
+  inbound_deps: 1
+  exports:
+  - name: CodeBlock
+    type: class
+    cc_avg: 0.0
+  - name: ScannedFile
+    type: class
+    cc_avg: 0.0
+  - name: scan_project
+    type: function
+    cc: 6
+    fan_out: 15
+- path: src/redup/core/planner.py
+  lines: 117
+  classes: 0
+  methods: 5
+  cc_max: 7
+  inbound_deps: 1
+  exports:
+  - name: generate_suggestions
+    type: function
+    cc: 6
+- path: src/redup/core/matcher.py
+  lines: 91
+  classes: 1
+  methods: 4
+  cc_max: 6
+  inbound_deps: 1
+  exports:
+  - name: MatchResult
+    type: class
+    cc_avg: 0.0
+  - name: sequence_similarity
+    type: function
+    cc: 3
+  - name: fuzzy_similarity
+    type: function
+    cc: 2
+  - name: match_candidates
+    type: function
+    cc: 5
+  - name: refine_structural_matches
+    type: function
+    cc: 6
+- path: refactored_frontend_demo.py
+  lines: 258
+  classes: 0
+  methods: 11
+  cc_max: 4
+  inbound_deps: 0
+  exports:
+  - name: dashboard_diag_helpers_jsx
+    type: function
+    cc: 1
+  - name: dashboard_diag_infrastructure_jsx
+    type: function
+    cc: 1
+  - name: dashboard_diag_config_jsx
+    type: function
+    cc: 1
+  - name: dashboard_diag_extensions_jsx
+    type: function
+    cc: 1
+  - name: dashboard_diag_agent_jsx
+    type: function
+    cc: 1
+  - name: favicon
+    type: function
+    cc: 1
+  - name: index
+    type: function
+    cc: 1
+  - name: config_json
+    type: function
+    cc: 1
+  - name: health_check
+    type: function
+    cc: 1
+- path: src/redup/reporters/yaml_reporter.py
+  lines: 34
+  classes: 0
+  methods: 1
+  cc_max: 4
+  inbound_deps: 1
+  exports:
+  - name: to_yaml
+    type: function
+    cc: 4
+- path: src/redup/reporters/json_reporter.py
+  lines: 66
+  classes: 0
+  methods: 3
+  cc_max: 3
+  inbound_deps: 3
+  exports:
+  - name: to_json
+    type: function
+    cc: 3
+- path: src/redup/core/models.py
+  lines: 152
+  classes: 9
+  methods: 1
+  cc_max: 1
+  inbound_deps: 0
+  exports:
+  - name: DuplicateType
+    type: class
+    cc_avg: 0.0
+  - name: RefactorAction
+    type: class
+    cc_avg: 0.0
+  - name: RiskLevel
+    type: class
+    cc_avg: 0.0
+  - name: ScanConfig
+    type: class
+    cc_avg: 0.0
+  - name: DuplicateFragment
+    type: class
+    cc_avg: 0.0
+  - name: DuplicateGroup
+    type: class
+    cc_avg: 0.0
+  - name: RefactorSuggestion
+    type: class
+    cc_avg: 0.0
+  - name: ScanStats
+    type: class
+    cc_avg: 0.0
+  - name: DuplicationMap
+    type: class
+    cc_avg: 1.0
+- path: project.sh
+  lines: 16
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: src/redup/__init__.py
+  lines: 25
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: src/redup/__main__.py
+  lines: 5
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: src/redup/cli_app/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: src/redup/core/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: src/redup/reporters/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+hotspots:
+- name: analyze
+  fan_out: 21
+  note: Analysis pipeline, 21 stages
+- name: scan
+  fan_out: 18
+  note: Scan a project for code duplicates and generate a refactoring map.
+- name: scan_project
+  fan_out: 15
+  note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
+    \ Tuple of ("
+- name: format_output
+  fan_out: 11
+  note: 11-way dispatch
+- name: format_table
+  fan_out: 10
+  note: 10-way dispatch
+refactoring:
+  priorities:
+  - action: Split analyze (CC=20 → target CC<10)
+    impact: medium
+    effort: low
+    module: pipeline.py
+  - action: Split _ast_to_normalized_string (CC=17 → target CC<10)
+    impact: medium
+    effort: low
+    module: hasher.py
+  - action: Reduce analyze fan-out (currently 21)
+    impact: medium
+    effort: medium
+  - action: Reduce scan fan-out (currently 18)
+    impact: medium
+    effort: medium
+  - action: Reduce scan_project fan-out (currently 15)
+    impact: medium
+    effort: medium
+evolution:
+- date: '2026-03-23'
+  cc_avg: 4.8
+  critical: 6
+  lines: 2895
+  note: Automated analysis

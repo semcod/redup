@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 clear
-.venv/bin/pip install redup --upgrade
+#.venv/bin/pip install redup --upgrade
 .venv/bin/pip install glon --upgrade
 .venv/bin/pip install goal --upgrade
 .venv/bin/pip install code2logic --upgrade
@@ -13,4 +13,4 @@ rm project/analysis.yaml
 
 .venv/bin/pip install code2docs --upgrade
 .venv/bin/code2docs ./ --readme-only
-#.venv/bin/redup scan . --format json --output ./project
+.venv/bin/redup scan . --format yaml --output ./project

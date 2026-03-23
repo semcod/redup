@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import difflib
+from collections.abc import Callable
 from dataclasses import dataclass
+import difflib
 
 from redup.core.hasher import HashedBlock, _normalize_text
 
@@ -39,6 +40,39 @@ def fuzzy_similarity(text_a: str, text_b: str) -> float:
         return sequence_similarity(text_a, text_b)
 
 
+def _compare_against_reference(
+    candidates: list[HashedBlock],
+    min_similarity: float,
+    similarity_fn: Callable[[str, str], float],
+    method_fn: Callable[[float], str],
+    skip_same_location: bool = False,
+) -> list[MatchResult]:
+    if len(candidates) < 2:
+        return []
+
+    results: list[MatchResult] = []
+    ref = candidates[0]
+
+    for other in candidates[1:]:
+        if skip_same_location and (
+            ref.block.file == other.block.file and ref.block.line_start == other.block.line_start
+        ):
+            continue
+
+        sim = similarity_fn(ref.block.text, other.block.text)
+        if sim >= min_similarity:
+            results.append(
+                MatchResult(
+                    block_a=ref,
+                    block_b=other,
+                    similarity=sim,
+                    method=method_fn(sim),
+                )
+            )
+
+    return results
+
+
 def match_candidates(
     candidates: list[HashedBlock],
     min_similarity: float = 0.85,
@@ -47,21 +81,12 @@ def match_candidates(
 
     Uses the first block as reference and compares all others against it.
     """
-    if len(candidates) < 2:
-        return []
-
-    results: list[MatchResult] = []
-    ref = candidates[0]
-
-    for other in candidates[1:]:
-        sim = fuzzy_similarity(ref.block.text, other.block.text)
-        if sim >= min_similarity:
-            method = "exact" if sim >= 0.999 else "fuzzy"
-            results.append(MatchResult(
-                block_a=ref, block_b=other, similarity=sim, method=method
-            ))
-
-    return results
+    return _compare_against_reference(
+        candidates,
+        min_similarity,
+        fuzzy_similarity,
+        lambda sim: "exact" if sim >= 0.999 else "fuzzy",
+    )
 
 
 def refine_structural_matches(
@@ -73,19 +98,10 @@ def refine_structural_matches(
     Structural hashes normalize variable names, so we use a lower threshold
     and verify the overall shape matches.
     """
-    if len(candidates) < 2:
-        return []
-
-    results: list[MatchResult] = []
-    ref = candidates[0]
-
-    for other in candidates[1:]:
-        if ref.block.file == other.block.file and ref.block.line_start == other.block.line_start:
-            continue
-        sim = sequence_similarity(ref.block.text, other.block.text)
-        if sim >= min_similarity:
-            results.append(MatchResult(
-                block_a=ref, block_b=other, similarity=sim, method="structural"
-            ))
-
-    return results
+    return _compare_against_reference(
+        candidates,
+        min_similarity,
+        sequence_similarity,
+        lambda _sim: "structural",
+        skip_same_location=True,
+    )

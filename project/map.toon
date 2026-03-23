@@ -1,0 +1,126 @@
+# redup | 19f 1876L | python:18,shell:1
+# Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
+M[19]:
+  cli_utilities_demo.py,231
+  examples/01_basic_usage.py,58
+  project.sh,16
+  refactored_frontend_demo.py,258
+  src/redup/__init__.py,25
+  src/redup/__main__.py,5
+  src/redup/cli_app/__init__.py,1
+  src/redup/cli_app/main.py,165
+  src/redup/core/__init__.py,1
+  src/redup/core/hasher.py,204
+  src/redup/core/matcher.py,91
+  src/redup/core/models.py,152
+  src/redup/core/pipeline.py,183
+  src/redup/core/planner.py,117
+  src/redup/core/scanner.py,193
+  src/redup/reporters/__init__.py,1
+  src/redup/reporters/json_reporter.py,66
+  src/redup/reporters/toon_reporter.py,75
+  src/redup/reporters/yaml_reporter.py,34
+D:
+  src/redup/core/pipeline.py:
+    e: _blocks_to_group,_deduplicate_groups,analyze
+    _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
+    _deduplicate_groups(groups)
+    analyze(config;function_level_only)
+  src/redup/core/hasher.py:
+    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_hash_text,hash_block,hash_block_structural,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
+    HashedBlock:  # A code block with its computed fingerprints...
+    HashIndex:  # Index mapping hashes to blocks for fast lookup...
+    _normalize_text(text)
+    _normalize_ast_text(text)
+    _ast_to_normalized_string(tree)
+    _hash_text(text;normalizer)
+    hash_block(text)
+    hash_block_structural(text)
+    build_hash_index(blocks;min_lines)
+    _find_duplicates(hash_dict)
+    find_exact_duplicates(index)
+    find_structural_duplicates(index)
+    _blocks_from_different_locations(blocks)
+  cli_utilities_demo.py:
+    e: show_vscode_tests,show_status,make_args_from_config,confirm_action,format_output,format_table,handle_error
+    show_vscode_tests(config;label)
+    show_status(config;label)
+    make_args_from_config(config;required_args)
+    confirm_action(message;default)
+    format_output(data;format_type)
+    format_table(headers;rows)
+    handle_error(error;context)
+  src/redup/reporters/toon_reporter.py:
+    e: to_toon
+    to_toon(dup_map)
+  src/redup/core/scanner.py:
+    e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_function_blocks_python,scan_project
+    CodeBlock:  # A contiguous block of source code lines...
+    ScannedFile:  # A file that has been read and split into blocks...
+    _should_exclude(path;patterns)
+    _collect_files(config)
+    _is_test_file(path)
+    _extract_blocks_sliding(lines;min_lines)
+    _extract_function_blocks_python(source;filepath)
+    scan_project(config)
+  src/redup/cli_app/main.py:
+    e: OutputFormat,_write_output,scan,info
+    OutputFormat(str,Enum):
+    _write_output(content;output;suffix)
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only)
+    info()
+  src/redup/core/planner.py:
+    e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
+    _common_prefix(paths)
+    _suggest_module_name(group)
+    _assess_risk(group)
+    _choose_action(group)
+    generate_suggestions(dup_map)
+  src/redup/core/matcher.py:
+    e: MatchResult,sequence_similarity,fuzzy_similarity,match_candidates,refine_structural_matches
+    MatchResult:  # Result of comparing two code blocks...
+    sequence_similarity(text_a;text_b)
+    fuzzy_similarity(text_a;text_b)
+    match_candidates(candidates;min_similarity)
+    refine_structural_matches(candidates;min_similarity)
+  examples/01_basic_usage.py:
+    e: main
+    main()
+  refactored_frontend_demo.py:
+    e: _serve_file,_create_dashboard_endpoint,dashboard_diag_helpers_jsx,dashboard_diag_infrastructure_jsx,dashboard_diag_config_jsx,dashboard_diag_extensions_jsx,dashboard_diag_agent_jsx,favicon,index,config_json,health_check
+    _serve_file(paths;media_type;charset_header)
+    _create_dashboard_endpoint(route;file_path;description)
+    dashboard_diag_helpers_jsx()
+    dashboard_diag_infrastructure_jsx()
+    dashboard_diag_config_jsx()
+    dashboard_diag_extensions_jsx()
+    dashboard_diag_agent_jsx()
+    favicon()
+    index()
+    config_json()
+    health_check()
+  src/redup/reporters/yaml_reporter.py:
+    e: to_yaml
+    to_yaml(dup_map)
+  src/redup/reporters/json_reporter.py:
+    e: _group_to_dict,_suggestion_to_dict,to_json
+    _group_to_dict(group)
+    _suggestion_to_dict(s)
+    to_json(dup_map;indent)
+  src/redup/core/models.py:
+    e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats,DuplicationMap
+    DuplicateType(str,Enum):  # How the duplicate was detected...
+    RefactorAction(str,Enum):  # Proposed refactoring action...
+    RiskLevel(str,Enum):  # Risk of the proposed refactoring...
+    ScanConfig:  # Configuration for project scanning...
+    DuplicateFragment:  # A single occurrence of a duplicated code fragment...
+    DuplicateGroup:  # A cluster of duplicated code fragments...
+    RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
+    ScanStats:  # Statistics from the scanning phase...
+    DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
+  src/redup/__init__.py:
+  src/redup/__main__.py:
+  src/redup/core/__init__.py:
+  src/redup/reporters/__init__.py:
+  src/redup/cli_app/__init__.py:
+  project.sh:

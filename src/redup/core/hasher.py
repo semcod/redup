@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from collections import defaultdict
+from collections.abc import Callable
+from dataclasses import dataclass, field
 import hashlib
 import re
-from collections import defaultdict
-from dataclasses import dataclass, field
 
 from redup.core.scanner import CodeBlock
 
@@ -61,6 +62,60 @@ def _ast_to_normalized_string(tree: object) -> str:
     """
     import ast
 
+    name_map: dict[str, str] = {}
+    counter = [0]
+    parts: list[str] = []
+    
+    for node in ast.walk(tree):
+        part = _process_ast_node(node, name_map, counter)
+        if part:
+            parts.append(part)
+    
+    return " ".join(parts)
+
+
+def _process_ast_node(
+    node, 
+    name_map: dict[str, str], 
+    counter: list[int]
+) -> str | None:
+    """Process a single AST node and return its normalized representation."""
+    import ast
+    
+    if isinstance(node, ast.Name):
+        return _get_placeholder(node.id, name_map, counter)
+    elif isinstance(node, ast.arg):
+        return _get_placeholder(node.arg, name_map, counter)
+    elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return f"DEF({_get_placeholder(node.name, name_map, counter)})"
+    elif isinstance(node, ast.ClassDef):
+        return f"CLASS({_get_placeholder(node.name, name_map, counter)})"
+    elif isinstance(node, ast.Constant):
+        return _normalize_constant(node.value)
+    elif isinstance(node, ast.If):
+        return "IF"
+    elif isinstance(node, ast.For):
+        return "FOR"
+    elif isinstance(node, ast.While):
+        return "WHILE"
+    elif isinstance(node, ast.Return):
+        return "RETURN"
+    elif isinstance(node, ast.Compare):
+        ops = [type(op).__name__ for op in node.ops]
+        return f"CMP({','.join(ops)})"
+    elif isinstance(node, ast.BinOp):
+        return f"BINOP({type(node.op).__name__})"
+    elif isinstance(node, ast.Call):
+        return "CALL"
+    return None
+
+
+def _get_placeholder(
+    name: str, 
+    name_map: dict[str, str], 
+    counter: list[int]
+) -> str:
+    """Get or create a placeholder for a name."""
     BUILTINS = {
         "print", "len", "range", "int", "float", "str", "list", "dict",
         "set", "tuple", "bool", "None", "True", "False", "type", "isinstance",
@@ -72,57 +127,28 @@ def _ast_to_normalized_string(tree: object) -> str:
         "class", "def", "pass", "break", "continue", "and", "or", "not",
         "in", "is", "lambda", "global", "nonlocal", "assert", "del",
     }
-
-    name_map: dict[str, str] = {}
-    counter = [0]
-
-    def _get_placeholder(name: str) -> str:
-        if name in BUILTINS:
-            return name
-        if name.startswith("__") and name.endswith("__"):
-            return name
-        if name not in name_map:
-            name_map[name] = f"_V{counter[0]}"
-            counter[0] += 1
-        return name_map[name]
-
-    parts: list[str] = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Name):
-            parts.append(_get_placeholder(node.id))
-        elif isinstance(node, ast.arg):
-            parts.append(_get_placeholder(node.arg))
-        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            parts.append(f"DEF({_get_placeholder(node.name)})")
-        elif isinstance(node, ast.ClassDef):
-            parts.append(f"CLASS({_get_placeholder(node.name)})")
-        elif isinstance(node, ast.Constant):
-            if isinstance(node.value, str):
-                parts.append("__STR__")
-            elif isinstance(node.value, (int, float)):
-                parts.append("__NUM__")
-            else:
-                parts.append(str(type(node.value).__name__))
-        elif isinstance(node, ast.If):
-            parts.append("IF")
-        elif isinstance(node, ast.For):
-            parts.append("FOR")
-        elif isinstance(node, ast.While):
-            parts.append("WHILE")
-        elif isinstance(node, ast.Return):
-            parts.append("RETURN")
-        elif isinstance(node, ast.Compare):
-            ops = [type(op).__name__ for op in node.ops]
-            parts.append(f"CMP({','.join(ops)})")
-        elif isinstance(node, ast.BinOp):
-            parts.append(f"BINOP({type(node.op).__name__})")
-        elif isinstance(node, ast.Call):
-            parts.append("CALL")
-
-    return " ".join(parts)
+    
+    if name in BUILTINS or (name.startswith("__") and name.endswith("__")):
+        return name
+    
+    if name not in name_map:
+        name_map[name] = f"_V{counter[0]}"
+        counter[0] += 1
+    
+    return name_map[name]
 
 
-def _hash_text(text: str, normalizer: callable) -> str:
+def _normalize_constant(value) -> str:
+    """Normalize constant values."""
+    if isinstance(value, str):
+        return "__STR__"
+    elif isinstance(value, (int, float)):
+        return "__NUM__"
+    else:
+        return str(type(value).__name__)
+
+
+def _hash_text(text: str, normalizer: Callable[[str], str]) -> str:
     """Generic SHA-256 hash function with configurable normalizer."""
     normalized = normalizer(text)
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
@@ -136,6 +162,14 @@ def hash_block(text: str) -> str:
 def hash_block_structural(text: str) -> str:
     """SHA-256 hash of deeply normalized text (variable names replaced)."""
     return _hash_text(text, _normalize_ast_text)
+
+
+def _hashed_block(block: CodeBlock) -> HashedBlock:
+    return HashedBlock(
+        block=block,
+        exact_hash=hash_block(block.text),
+        structural_hash=hash_block_structural(block.text),
+    )
 
 
 @dataclass
@@ -167,11 +201,7 @@ def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
         if block.line_count < min_lines:
             continue
 
-        hb = HashedBlock(
-            block=block,
-            exact_hash=hash_block(block.text),
-            structural_hash=hash_block_structural(block.text),
-        )
+        hb = _hashed_block(block)
 
         index.exact[hb.exact_hash].append(hb)
         index.structural[hb.structural_hash].append(hb)

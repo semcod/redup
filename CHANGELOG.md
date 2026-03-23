@@ -2,6 +2,31 @@
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-03-23
+
+### Docs
+- Update COMPLEXITY_REDUCTION_COMPLETE.md
+- Update CONTINUATION_PLAN.md
+- Update code2llm_output/README.md
+- Update code2llm_output/context.md
+- Update complexity_reduction_plan.md
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Other
+- Update VERSION
+- Update code2llm_output/analysis.toon
+- Update project.sh
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/dashboard.html
+- Update project/duplication.json
+- ... and 11 more files
+
 ## [0.1.2] - 2026-03-23
 
 ### Docs

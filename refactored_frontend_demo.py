@@ -34,17 +34,8 @@ def _serve_file(paths: list[str], media_type: str, charset_header: str | None = 
     return Response(content="File not found", status_code=404, media_type="text/plain")
 
 
-def _create_dashboard_endpoint(route: str, file_path: str, description: str):
-    """Generic factory for dashboard JS/JSX endpoints.
-    
-    Args:
-        route: The URL route pattern
-        file_path: Relative path from _SRC_ROOT to the file
-        description: Endpoint description for documentation
-        
-    Returns:
-        FastAPI endpoint function
-    """
+def _create_endpoint(route: str, file_path: str, description: str):
+    """Generic factory for all dashboard endpoints."""
     @router.get(route)
     async def endpoint():
         """Serve dashboard component."""
@@ -154,56 +145,25 @@ for route, (file_path, description) in DASHBOARD_ENDPOINTS.items():
     endpoint_name = f"dashboard_{route.replace('/', '_').replace('.', '_').replace('-', '_')}"
     
     # Create the endpoint using the factory function
-    endpoint_func = _create_dashboard_endpoint(route, file_path, description)
+    endpoint_func = _create_endpoint(route, file_path, description)
     
     # Add to module globals so it can be discovered by FastAPI
     globals()[endpoint_name] = endpoint_func
 
 
-# Additional diagnostic endpoints (different pattern)
-@router.get("/dashboard-diag-helpers.jsx")
-async def dashboard_diag_helpers_jsx():
-    """Serve diagnostic helper components."""
-    return _serve_file(
-        [os.path.join(_SRC_ROOT, "dashboard", "diag", "helpers.jsx")],
-        _MIME_JS, _MIME_JS_UTF8,
-    )
+# Diagnostic endpoints configuration
+DIAGNOSTIC_ENDPOINTS = {
+    "/dashboard-diag-helpers.jsx": ("dashboard/diag/helpers.jsx", "Serve diagnostic helper components."),
+    "/dashboard-diag-infrastructure.jsx": ("dashboard/diag/infrastructure.jsx", "Serve infrastructure diagnostic components."),
+    "/dashboard-diag-config.jsx": ("dashboard/diag/config.jsx", "Serve configuration diagnostic components."),
+    "/dashboard-diag-extensions.jsx": ("dashboard/diag/extensions.jsx", "Serve extensions diagnostic components."),
+    "/dashboard-diag-agent.jsx": ("dashboard/diag/agent.jsx", "Serve agent diagnostic components."),
+}
 
-
-@router.get("/dashboard-diag-infrastructure.jsx")
-async def dashboard_diag_infrastructure_jsx():
-    """Serve infrastructure diagnostic components."""
-    return _serve_file(
-        [os.path.join(_SRC_ROOT, "dashboard", "diag", "infrastructure.jsx")],
-        _MIME_JS, _MIME_JS_UTF8,
-    )
-
-
-@router.get("/dashboard-diag-config.jsx")
-async def dashboard_diag_config_jsx():
-    """Serve configuration diagnostic components."""
-    return _serve_file(
-        [os.path.join(_SRC_ROOT, "dashboard", "diag", "config.jsx")],
-        _MIME_JS, _MIME_JS_UTF8,
-    )
-
-
-@router.get("/dashboard-diag-extensions.jsx")
-async def dashboard_diag_extensions_jsx():
-    """Serve extensions diagnostic components."""
-    return _serve_file(
-        [os.path.join(_SRC_ROOT, "dashboard", "diag", "extensions.jsx")],
-        _MIME_JS, _MIME_JS_UTF8,
-    )
-
-
-@router.get("/dashboard-diag-agent.jsx")
-async def dashboard_diag_agent_jsx():
-    """Serve agent diagnostic components."""
-    return _serve_file(
-        [os.path.join(_SRC_ROOT, "dashboard", "diag", "agent.jsx")],
-        _MIME_JS, _MIME_JS_UTF8,
-    )
+# Register diagnostic endpoints
+for route, (file_path, description) in DIAGNOSTIC_ENDPOINTS.items():
+    endpoint_name = f"dashboard_{route.replace('/', '_').replace('.', '_').replace('-', '_')}"
+    globals()[endpoint_name] = _create_endpoint(route, file_path, description)
 
 
 # Legacy endpoints that don't follow the pattern

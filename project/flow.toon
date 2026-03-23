@@ -1,0 +1,182 @@
+# redup/flow | 57 func | 4 pipelines | 1 hub-types | 2026-03-23
+
+PIPELINES[4] (Core:3, NLP:1):
+  Src [Core]: ? → str
+              → main()                                  CC=5    IO ▶
+              → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=20   mutation  !!
+              → refine_structural_matches(candidates:list[HashedBlock], min_similarity:float) → list[MatchResult] CC=6    mutation
+              → sequence_similarity(text_a:str, text_b:str) → float CC=3    pure
+              → _normalize_text(text:str) → str         CC=6    mutation ■
+              PURITY: 1/5 pure  BOTTLENECK: analyze(CC=20)
+
+  Src [Core]: Path → str
+              → scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None CC=9    IO ▶
+              → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=20   mutation  !!
+              → refine_structural_matches(candidates:list[HashedBlock], min_similarity:float) → list[MatchResult] CC=6    mutation
+              → sequence_similarity(text_a:str, text_b:str) → float CC=3    pure
+              → _normalize_text(text:str) → str         CC=6    mutation ■
+              PURITY: 1/5 pure  BOTTLENECK: analyze(CC=20)
+
+  Src [Core]: ? → bool
+              → main()                                  CC=5    IO ▶
+              → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=20   mutation  !!
+              → scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats] CC=6    IO
+              → _collect_files(config:ScanConfig) → Iterator[Path] CC=7    pure
+              → _should_exclude(path:Path, patterns:list[str]) → bool CC=7    pure ■
+              PURITY: 2/5 pure  BOTTLENECK: analyze(CC=20)
+
+  Src [NLP]: list[HashedBlock] → str
+              → match_candidates(candidates:list[HashedBlock], min_similarity:float) → list[MatchResult] CC=5    mutation ▶
+              → fuzzy_similarity(text_a:str, text_b:str) → float CC=2    pure
+              → sequence_similarity(text_a:str, text_b:str) → float CC=3    pure
+              → _normalize_text(text:str) → str         CC=6    mutation ■
+              PURITY: 2/4 pure  BOTTLENECK: _normalize_text(CC=6)
+
+
+TRANSFORMS (fan-out ≥10):
+  analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap fan=21   !! side-effects
+  scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None fan=18   fan=18
+  scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats] fan=15   fan=15
+  format_output(data:Any, format_type:str) → str          fan=11   fan=11
+  format_table(headers:List[str], rows:List[List[str]]) → str fan=10   fan=10
+
+CONTRACTS:
+  Pipeline: Src
+    main()
+      IN:  ()
+      OUT: None
+      SIDE-EFFECT: IO(print, print, print)
+
+    analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap
+      IN:  config:ScanConfig | None, function_level_only:bool
+      OUT: DuplicationMap
+      SIDE-EFFECT: pure
+      SMELL: CC=20 → split
+
+    refine_structural_matches(candidates:list[HashedBlock], min_similarity:float) → list[MatchResult]
+      IN:  candidates:list[HashedBlock], min_similarity:float
+      OUT: list[MatchResult]
+      SIDE-EFFECT: pure
+      INVARIANT: confidence ∈ [0.0, 1.0]
+
+    sequence_similarity(text_a:str, text_b:str) → float
+      IN:  text_a:str, text_b:str
+      OUT: float
+
+    _normalize_text(text:str) → str
+      IN:  text:str
+      OUT: str
+      SIDE-EFFECT: pure
+      INVARIANT: len(output) <= len(input)
+
+  Pipeline: Src
+    scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None
+      IN:  path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool
+      OUT: None
+      SIDE-EFFECT: IO(mkdir, write_text)
+
+    analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap
+      IN:  config:ScanConfig | None, function_level_only:bool
+      OUT: DuplicationMap
+      SIDE-EFFECT: pure
+      SMELL: CC=20 → split
+
+    refine_structural_matches(candidates:list[HashedBlock], min_similarity:float) → list[MatchResult]
+      IN:  candidates:list[HashedBlock], min_similarity:float
+      OUT: list[MatchResult]
+      SIDE-EFFECT: pure
+      INVARIANT: confidence ∈ [0.0, 1.0]
+
+    sequence_similarity(text_a:str, text_b:str) → float
+      IN:  text_a:str, text_b:str
+      OUT: float
+
+    _normalize_text(text:str) → str
+      IN:  text:str
+      OUT: str
+      SIDE-EFFECT: pure
+      INVARIANT: len(output) <= len(input)
+
+  Pipeline: Src
+    main()
+      IN:  ()
+      OUT: None
+      SIDE-EFFECT: IO(print, print, print)
+
+    analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap
+      IN:  config:ScanConfig | None, function_level_only:bool
+      OUT: DuplicationMap
+      SIDE-EFFECT: pure
+      SMELL: CC=20 → split
+
+    scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats]
+      IN:  config:ScanConfig | None
+      OUT: tuple[list[ScannedFile], ScanStats]
+      SIDE-EFFECT: IO(read_text)
+
+    _collect_files(config:ScanConfig) → Iterator[Path]
+      IN:  config:ScanConfig
+      OUT: Iterator[Path]
+
+    _should_exclude(path:Path, patterns:list[str]) → bool
+      IN:  path:Path, patterns:list[str]
+      OUT: bool
+
+  Pipeline: Src
+    match_candidates(candidates:list[HashedBlock], min_similarity:float) → list[MatchResult]
+      IN:  candidates:list[HashedBlock], min_similarity:float
+      OUT: list[MatchResult]
+      SIDE-EFFECT: pure
+      INVARIANT: confidence ∈ [0.0, 1.0]
+
+    fuzzy_similarity(text_a:str, text_b:str) → float
+      IN:  text_a:str, text_b:str
+      OUT: float
+
+    sequence_similarity(text_a:str, text_b:str) → float
+      IN:  text_a:str, text_b:str
+      OUT: float
+
+    _normalize_text(text:str) → str
+      IN:  text:str
+      OUT: str
+      SIDE-EFFECT: pure
+      INVARIANT: len(output) <= len(input)
+
+
+DATA_TYPES (by cross-function usage) [47 annotated, 0 inferred / 57 functions]:
+  str                  consumed:27  produced:14   !! HUB-TYPE → split interface
+  bool                 consumed:4   produced:4  
+  float                consumed:4   produced:2  
+  DuplicationMap       consumed:4   produced:1  
+  int                  consumed:4   produced:0    narrow scope
+  list[str]            consumed:4   produced:0    narrow scope
+  list[HashedBlock]    consumed:4   produced:0    narrow scope
+  DuplicateGroup       consumed:3   produced:1    narrow scope
+  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
+  HashIndex            consumed:2   produced:1    narrow scope
+  Path                 consumed:3   produced:0    narrow scope
+  list[DuplicateGroup] consumed:1   produced:2    narrow scope
+  ScanConfig | None    consumed:2   produced:0    narrow scope
+  list[CodeBlock]      consumed:1   produced:1    narrow scope
+  list[MatchResult]    consumed:0   produced:2    narrow scope
+  Path | None          consumed:2   produced:0    narrow scope
+  dict                 consumed:0   produced:2    narrow scope
+  str | None           consumed:1   produced:0    narrow scope
+  tuple[list[ScannedFile], ScanStats] consumed:0   produced:1    narrow scope
+  Response             consumed:0   produced:1    narrow scope
+
+  HUB TYPES (consumed ≥10):
+    str → 27 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+
+SIDE_EFFECTS:
+  IO:        main, _serve_file, config_json, show_vscode_tests, show_status, confirm_action, format_output, handle_error, to_json, to_yaml
+  Mutation:  make_args_from_config, format_table, _common_prefix, generate_suggestions, _blocks_to_group, _deduplicate_groups, analyze, to_toon, _extract_blocks_sliding, _extract_function_blocks_python
+  Pure:      _create_dashboard_endpoint, dashboard_diag_helpers_jsx, dashboard_diag_infrastructure_jsx, dashboard_diag_config_jsx, dashboard_diag_extensions_jsx, dashboard_diag_agent_jsx, favicon, index, health_check, _suggest_module_name
+
+  PIPELINE PURITY:
+    Src             ░░░░ 20% pure
+    Src             ░░░░ 20% pure
+    Src             █░░░ 40% pure
+    Src             ██░░ 50% pure

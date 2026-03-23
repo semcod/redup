@@ -1,0 +1,23 @@
+# code2llm/evolution | 57 func | 13f | 2026-03-23
+
+NEXT[2] (ranked by impact):
+  [1] !  SPLIT-FUNC      analyze  CC=20  fan=21
+      WHY: CC=20 exceeds 15
+      EFFORT: ~1h  IMPACT: 420
+
+  [2] !  SPLIT-FUNC      _ast_to_normalized_string  CC=17  fan=9
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 153
+
+
+RISKS[0]: none
+
+METRICS-TARGET:
+  CC̄:          4.8 → ≤3.4
+  max-CC:      20 → ≤10
+  god-modules: 0 → 0
+  high-CC(≥15): 2 → ≤1
+  hub-types:   0 → ≤0
+
+HISTORY:
+  prev CC̄=4.8 → now CC̄=4.8

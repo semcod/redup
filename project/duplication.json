@@ -1,0 +1,156 @@
+{
+  "project_path": "/home/tom/github/semcod/redup",
+  "stats": {
+    "files_scanned": 18,
+    "total_lines": 1860,
+    "total_blocks": 54927,
+    "scan_time_ms": 524.1
+  },
+  "summary": {
+    "total_groups": 3,
+    "total_fragments": 9,
+    "total_saved_lines": 30
+  },
+  "groups": [
+    {
+      "id": "S0001",
+      "type": "structural",
+      "normalized_name": "dashboard_diag_helpers_jsx",
+      "similarity_score": 0.912,
+      "normalized_hash": "31f96c34051f8837",
+      "total_lines": 6,
+      "occurrences": 5,
+      "saved_lines_potential": 24,
+      "impact_score": 21.9,
+      "fragments": [
+        {
+          "file": "refactored_frontend_demo.py",
+          "line_start": 165,
+          "line_end": 170,
+          "function_name": "dashboard_diag_helpers_jsx",
+          "class_name": null
+        },
+        {
+          "file": "refactored_frontend_demo.py",
+          "line_start": 174,
+          "line_end": 179,
+          "function_name": "dashboard_diag_infrastructure_jsx",
+          "class_name": null
+        },
+        {
+          "file": "refactored_frontend_demo.py",
+          "line_start": 183,
+          "line_end": 188,
+          "function_name": "dashboard_diag_config_jsx",
+          "class_name": null
+        },
+        {
+          "file": "refactored_frontend_demo.py",
+          "line_start": 192,
+          "line_end": 197,
+          "function_name": "dashboard_diag_extensions_jsx",
+          "class_name": null
+        },
+        {
+          "file": "refactored_frontend_demo.py",
+          "line_start": 201,
+          "line_end": 206,
+          "function_name": "dashboard_diag_agent_jsx",
+          "class_name": null
+        }
+      ]
+    },
+    {
+      "id": "S0002",
+      "type": "structural",
+      "normalized_name": "hash_block",
+      "similarity_score": 0.908,
+      "normalized_hash": "017133ddab018c16",
+      "total_lines": 3,
+      "occurrences": 2,
+      "saved_lines_potential": 3,
+      "impact_score": 2.7,
+      "fragments": [
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 131,
+          "line_end": 133,
+          "function_name": "hash_block",
+          "class_name": null
+        },
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 136,
+          "line_end": 138,
+          "function_name": "hash_block_structural",
+          "class_name": null
+        }
+      ]
+    },
+    {
+      "id": "S0003",
+      "type": "structural",
+      "normalized_name": "find_exact_duplicates",
+      "similarity_score": 0.907,
+      "normalized_hash": "aa8b916c459287d0",
+      "total_lines": 3,
+      "occurrences": 2,
+      "saved_lines_potential": 3,
+      "impact_score": 2.7,
+      "fragments": [
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 191,
+          "line_end": 193,
+          "function_name": "find_exact_duplicates",
+          "class_name": null
+        },
+        {
+          "file": "src/redup/core/hasher.py",
+          "line_start": 196,
+          "line_end": 198,
+          "function_name": "find_structural_duplicates",
+          "class_name": null
+        }
+      ]
+    }
+  ],
+  "refactor_suggestions": [
+    {
+      "group_id": "S0001",
+      "priority": 1,
+      "action": "extract_function",
+      "new_module": "refactored_frontend_demo.py/utils/dashboard_diag_helpers_jsx.py",
+      "function_name": "dashboard_diag_helpers_jsx",
+      "original_files": [
+        "refactored_frontend_demo.py"
+      ],
+      "risk_level": "low",
+      "rationale": "5 occurrences of 6-line block across 1 files — saves 24 lines"
+    },
+    {
+      "group_id": "S0002",
+      "priority": 2,
+      "action": "extract_function",
+      "new_module": "src/redup/core/hasher.py/utils/hash_block.py",
+      "function_name": "hash_block",
+      "original_files": [
+        "src/redup/core/hasher.py"
+      ],
+      "risk_level": "low",
+      "rationale": "2 occurrences of 3-line block across 1 files — saves 3 lines"
+    },
+    {
+      "group_id": "S0003",
+      "priority": 3,
+      "action": "extract_function",
+      "new_module": "src/redup/core/hasher.py/utils/find_exact_duplicates.py",
+      "function_name": "find_exact_duplicates",
+      "original_files": [
+        "src/redup/core/hasher.py"
+      ],
+      "risk_level": "low",
+      "rationale": "2 occurrences of 3-line block across 1 files — saves 3 lines"
+    }
+  ]
+}

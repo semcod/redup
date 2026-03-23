@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>redup — Health Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  :root {
+    --bg: #0f172a; --surface: #1e293b; --border: #334155;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --green: #22c55e; --yellow: #eab308; --red: #ef4444; --blue: #3b82f6;
+    --orange: #f97316;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+      --text: #1e293b; --muted: #64748b;
+    }
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); padding:2rem; }
+  h1 { font-size:1.5rem; margin-bottom:.5rem; }
+  h2 { font-size:1.1rem; color:var(--muted); margin:1.5rem 0 .75rem; border-bottom:1px solid var(--border); padding-bottom:.25rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin:1rem 0; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:.5rem; padding:1rem; }
+  .card .value { font-size:1.8rem; font-weight:700; }
+  .card .label { color:var(--muted); font-size:.8rem; text-transform:uppercase; }
+  .chart-container { background:var(--surface); border:1px solid var(--border); border-radius:.5rem; padding:1rem; margin:1rem 0; }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  th { text-align:left; color:var(--muted); padding:.5rem; border-bottom:1px solid var(--border); white-space:nowrap; }
+  td { padding:.5rem; border-bottom:1px solid var(--border); }
+  .badge { padding:.15rem .5rem; border-radius:.25rem; font-size:.75rem; font-weight:600; }
+  .badge.critical { background:var(--red); color:#fff; }
+  .badge.error { background:var(--orange); color:#fff; }
+  .badge.warning { background:var(--yellow); color:#000; }
+  .badge.high { background:var(--red); color:#fff; }
+  .badge.medium { background:var(--yellow); color:#000; }
+  .badge.low { background:var(--green); color:#fff; }
+  tr.critical td { background:rgba(239,68,68,.08); }
+  tr.error td { background:rgba(249,115,22,.06); }
+  tr.warning td { background:rgba(234,179,8,.05); }
+  .health-indicator { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:.5rem; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+  .evo-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:.75rem; }
+  .evo-cards .card { text-align:center; }
+  .trend { font-size:.75rem; color:var(--muted); }
+  .lang-tag { display:inline-block; padding:.1rem .4rem; border-radius:.2rem; font-size:.7rem; font-weight:600; margin-right:.25rem; color:#fff; }
+  @media (max-width:768px) { .two-col,.three-col { grid-template-columns:1fr; } }
+  footer { margin-top:2rem; color:var(--muted); font-size:.75rem; text-align:center; }
+</style>
+</head>
+<body>
+<h1>
+  <span class="health-indicator" style="background:#22c55e"></span>
+  redup — Good
+</h1>
+<p style="color:var(--muted);font-size:.85rem;">
+  Analyzed 2026-03-23 by code2llm
+  &nbsp;·&nbsp; Primary language: <strong>python</strong>
+  &nbsp;·&nbsp; Python: 17, Shell: 1
+</p>
+
+<div class="grid">
+  <div class="card"><div class="value">56</div><div class="label">Functions</div></div>
+  <div class="card"><div class="value">15</div><div class="label">Classes</div></div>
+  <div class="card"><div class="value">12</div><div class="label">Files</div></div>
+  <div class="card"><div class="value">2,895</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">2</div><div class="label">Languages</div></div>
+  <div class="card"><div class="value">4.8</div><div class="label">Avg CC</div></div>
+  <div class="card"><div class="value">6</div><div class="label">Critical (CC≥10)</div></div>
+  <div class="card"><div class="value">0</div><div class="label">Duplicates</div></div>
+  <div class="card"><div class="value">0</div><div class="label">Cycles</div></div>
+</div>
+
+<div class="three-col">
+  <div class="chart-container">
+    <h2 style="border:none;margin:0 0 .5rem;">Language Distribution</h2>
+    <canvas id="langChart" height="200"></canvas>
+  </div>
+  <div class="chart-container">
+    <h2 style="border:none;margin:0 0 .5rem;">Largest Modules (lines)</h2>
+    <canvas id="modLinesChart" height="200"></canvas>
+  </div>
+  <div class="chart-container">
+    <h2 style="border:none;margin:0 0 .5rem;">Most Complex Modules (functions)</h2>
+    <canvas id="modFuncsChart" height="200"></canvas>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="chart-container">
+    <h2 style="border:none;margin:0 0 .5rem;">Evolution (2026-03-23)</h2>
+    <div class="evo-cards">
+      <div class="card"><div class="value">4.8</div><div class="label">CC̄ →</div></div>
+      <div class="card"><div class="value">6</div><div class="label">Critical →</div></div>
+      <div class="card"><div class="value">2895</div><div class="label">Lines</div></div>
+    </div>
+    <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
+  </div>
+  <div>
+    <h2>Top Modules (18)</h2>
+    <div class="card"><div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Path</th><th style="text-align:right">Lines</th><th style="text-align:right">Funcs</th><th style="text-align:right">Classes</th><th style="text-align:right">CC max</th></tr></thead>
+      <tbody>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>refactored_frontend_demo.py</td>
+                <td style="color:var(--muted);font-size:.75rem">.</td>
+                <td style="text-align:right">258</td>
+                <td style="text-align:right">11</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">4</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>cli_utilities_demo.py</td>
+                <td style="color:var(--muted);font-size:.75rem">.</td>
+                <td style="text-align:right">231</td>
+                <td style="text-align:right">7</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">12</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>hasher.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">204</td>
+                <td style="text-align:right">11</td>
+                <td style="text-align:right">2</td>
+                <td style="text-align:right">17</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>scanner.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">193</td>
+                <td style="text-align:right">6</td>
+                <td style="text-align:right">2</td>
+                <td style="text-align:right">9</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>pipeline.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">183</td>
+                <td style="text-align:right">3</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">20</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>main.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/cli_app</td>
+                <td style="text-align:right">165</td>
+                <td style="text-align:right">3</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">9</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>models.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">152</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">9</td>
+                <td style="text-align:right">1</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>planner.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">117</td>
+                <td style="text-align:right">5</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">7</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>matcher.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">91</td>
+                <td style="text-align:right">4</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">6</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>toon_reporter.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/reporters</td>
+                <td style="text-align:right">75</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">12</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>json_reporter.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/reporters</td>
+                <td style="text-align:right">66</td>
+                <td style="text-align:right">3</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">3</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>yaml_reporter.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/reporters</td>
+                <td style="text-align:right">34</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">4</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>__init__.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup</td>
+                <td style="text-align:right">25</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#89e051;margin-right:6px"></span>project.sh</td>
+                <td style="color:var(--muted);font-size:.75rem">.</td>
+                <td style="text-align:right">16</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>__main__.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup</td>
+                <td style="text-align:right">5</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>__init__.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/cli_app</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>__init__.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>__init__.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/reporters</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">0</td>
+            </tr></tbody>
+    </table>
+    </div></div>
+  </div>
+</div>
+
+<h2>Alerts (7)</h2>
+<div class="card"><div class="table-wrap">
+<table>
+  <thead><tr><th>Severity</th><th>Target</th><th>Type</th><th>Value</th><th>Limit</th></tr></thead>
+  <tbody>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>analyze</td>
+                <td>high_fan_out</td>
+                <td>21</td>
+                <td>10</td>
+            </tr>
+            <tr class="error">
+                <td><span class="badge error">error</span></td>
+                <td>analyze</td>
+                <td>cc_exceeded</td>
+                <td>20</td>
+                <td>15</td>
+            </tr>
+            <tr class="error">
+                <td><span class="badge error">error</span></td>
+                <td>scan</td>
+                <td>high_fan_out</td>
+                <td>18</td>
+                <td>10</td>
+            </tr>
+            <tr class="error">
+                <td><span class="badge error">error</span></td>
+                <td>scan_project</td>
+                <td>high_fan_out</td>
+                <td>15</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>_ast_to_normalized_string</td>
+                <td>cc_exceeded</td>
+                <td>17</td>
+                <td>15</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>format_output</td>
+                <td>high_fan_out</td>
+                <td>11</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>format_table</td>
+                <td>high_fan_out</td>
+                <td>10</td>
+                <td>10</td>
+            </tr></tbody>
+</table>
+</div></div>
+
+<div class="two-col">
+<div>
+<h2>Hotspots (5)</h2>
+<div class="card"><div class="table-wrap">
+<table>
+  <thead><tr><th>Function</th><th>Fan-out</th><th>Note</th></tr></thead>
+  <tbody>
+            <tr>
+                <td><strong>analyze</strong></td>
+                <td>21</td>
+                <td>Analysis pipeline, 21 stages</td>
+            </tr>
+            <tr>
+                <td><strong>scan</strong></td>
+                <td>18</td>
+                <td>Scan a project for code duplicates and generate a refactoring map.</td>
+            </tr>
+            <tr>
+                <td><strong>scan_project</strong></td>
+                <td>15</td>
+                <td>Scan a project and return files with their code blocks.
+
+Returns:
+    Tuple of (</td>
+            </tr>
+            <tr>
+                <td><strong>format_output</strong></td>
+                <td>11</td>
+                <td>11-way dispatch</td>
+            </tr>
+            <tr>
+                <td><strong>format_table</strong></td>
+                <td>10</td>
+                <td>10-way dispatch</td>
+            </tr></tbody>
+</table>
+</div></div>
+</div>
+
+<div>
+<h2>Refactoring Priorities (5)</h2>
+<div class="card"><div class="table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Action</th><th>Impact</th><th>Effort</th></tr></thead>
+  <tbody>
+            <tr>
+                <td>1</td>
+                <td>Split analyze (CC=20 → target CC<10)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>low</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Split _ast_to_normalized_string (CC=17 → target CC<10)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>low</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Reduce analyze fan-out (currently 21)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>medium</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Reduce scan fan-out (currently 18)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>medium</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Reduce scan_project fan-out (currently 15)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>medium</td>
+            </tr></tbody>
+</table>
+</div></div>
+</div>
+</div>
+
+<footer>Generated by code2llm on 2026-03-23 15:38</footer>
+
+<script>
+// Evolution chart disabled — fewer than 3 data points
+
+// Language distribution pie chart
+const langCtx = document.getElementById('langChart').getContext('2d');
+new Chart(langCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Python', 'Shell'],
+    datasets: [{
+      data: [17, 1],
+      backgroundColor: ['#3572A5', '#89e051'],
+      borderColor: 'var(--border)', borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'right', labels: { color: '#e2e8f0', font: {size: 11} } }
+    }
+  }
+});
+
+// Module lines bar chart
+const modLinesCtx = document.getElementById('modLinesChart').getContext('2d');
+new Chart(modLinesCtx, {
+  type: 'bar',
+  data: {
+    labels: ['refactored_frontend_demo.py', 'cli_utilities_demo.py', 'hasher.py', 'scanner.py', 'pipeline.py', 'main.py', 'models.py', 'planner.py', 'matcher.py', 'toon_reporter.py', 'json_reporter.py', 'yaml_reporter.py', '__init__.py', 'project.sh', '__main__.py'],
+    datasets: [{ label: 'Lines', data: [258, 231, 204, 193, 183, 165, 152, 117, 91, 75, 66, 34, 25, 16, 5],
+      backgroundColor: '#3b82f6'
+    }]
+  },
+  options: {
+    responsive: true, indexAxis: 'y',
+    scales: {
+      x: { grid:{color:'#334155'}, ticks:{color:'#94a3b8'} },
+      y: { grid:{color:'#334155'}, ticks:{color:'#94a3b8',font:{size:10}} }
+    },
+    plugins: { legend: { display:false } }
+  }
+});
+
+// Module functions bar chart
+const modFuncsCtx = document.getElementById('modFuncsChart').getContext('2d');
+new Chart(modFuncsCtx, {
+  type: 'bar',
+  data: {
+    labels: ['hasher.py', 'refactored_frontend_demo.py', 'cli_utilities_demo.py', 'scanner.py', 'planner.py', 'matcher.py', 'pipeline.py', 'main.py', 'json_reporter.py', 'toon_reporter.py', 'yaml_reporter.py', 'models.py', 'project.sh', '__init__.py', '__main__.py'],
+    datasets: [{ label: 'Functions', data: [11, 11, 7, 6, 5, 4, 3, 3, 3, 1, 1, 1, 0, 0, 0],
+      backgroundColor: '#22c55e'
+    }]
+  },
+  options: {
+    responsive: true, indexAxis: 'y',
+    scales: {
+      x: { grid:{color:'#334155'}, ticks:{color:'#94a3b8'} },
+      y: { grid:{color:'#334155'}, ticks:{color:'#94a3b8',font:{size:10}} }
+    },
+    plugins: { legend: { display:false } }
+  }
+});
+</script>
+</body>
+</html>
