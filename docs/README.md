@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redup
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-105-green)
-> **105** functions | **17** classes | **24** files | CC̄ = 4.3
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-107-green)
+> **107** functions | **17** classes | **25** files | CC̄ = 4.5
 
 > Auto-generated project documentation from source code analysis.
 
@@ -150,7 +150,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redup/
-        ├── __main__    ├── redup/            ├── config        ├── core/    ├── 01_basic_usage            ├── planner            ├── scanner            ├── parallel_scanner            ├── models            ├── pipeline    ├── sitecustomize            ├── hasher            ├── lsh_matcher            ├── ts_extractor        ├── reporters/            ├── matcher            ├── markdown_reporter            ├── json_reporter        ├── cli_app/            ├── yaml_reporter├── project            ├── differ            ├── toon_reporter            ├── main```
+    ├── redup/    ├── 01_basic_usage        ├── __main__├── benchmark        ├── core/            ├── config            ├── planner            ├── scanner            ├── parallel_scanner            ├── models            ├── pipeline    ├── sitecustomize            ├── lsh_matcher            ├── hasher            ├── matcher        ├── reporters/            ├── json_reporter            ├── ts_extractor            ├── markdown_reporter        ├── cli_app/            ├── yaml_reporter├── project            ├── toon_reporter            ├── differ            ├── main```
 
 ## API Overview
 
@@ -167,43 +167,45 @@ redup/
 - **`RefactorSuggestion`** — A concrete refactoring proposal for a duplicate group.
 - **`ScanStats`** — Statistics from the scanning phase.
 - **`DuplicationMap`** — Complete result of a reDUP analysis run.
+- **`LSHIndex`** — LSH index for efficient near-duplicate detection.
 - **`HashedBlock`** — A code block with its computed fingerprints.
 - **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
-- **`LSHIndex`** — LSH index for efficient near-duplicate detection.
 - **`MatchResult`** — Result of comparing two code blocks.
 - **`DiffResult`** — Result of comparing two reDUP scans.
 
 ### Functions
 
+- `main()` — —
+- `benchmark_sequential_vs_parallel()` — Compare sequential vs parallel scanning performance.
+- `benchmark_feature_performance()` — Test performance of different features.
 - `load_config()` — Load reDUP configuration from available sources.
 - `config_to_scan_config(config, path)` — Convert configuration dict to ScanConfig object.
 - `create_sample_redup_toml()` — Create a sample redup.toml configuration file content.
-- `main()` — —
 - `generate_suggestions(dup_map)` — Generate prioritized refactoring suggestions for all duplicate groups.
 - `scan_project(config)` — Scan a project and return files with their code blocks.
 - `scan_project_parallel(root, extensions, exclude_patterns, include_tests)` — Scan project files in parallel for better performance on large projects.
 - `analyze(config, function_level_only)` — Run the full reDUP analysis pipeline.
 - `analyze_parallel(config, function_level_only, max_workers)` — Run reDUP analysis with parallel scanning for large projects.
+- `build_lsh_index(blocks, threshold, min_lines)` — Build LSH index from code blocks.
+- `find_near_duplicates(blocks, threshold, min_lines)` — Find near-duplicate code blocks using LSH.
 - `hash_block(text)` — SHA-256 hash of normalized text.
 - `hash_block_structural(text)` — SHA-256 hash of deeply normalized text (variable names replaced).
 - `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
 - `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
 - `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
-- `build_lsh_index(blocks, threshold, min_lines)` — Build LSH index from code blocks.
-- `find_near_duplicates(blocks, threshold, min_lines)` — Find near-duplicate code blocks using LSH.
-- `extract_functions_treesitter(source, file_path)` — Extract functions using tree-sitter for multi-language support.
-- `get_supported_languages()` — Get list of supported languages for tree-sitter extraction.
-- `is_language_supported(file_path)` — Check if a file extension is supported by tree-sitter extraction.
 - `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
 - `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
 - `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
 - `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
-- `to_markdown(dup_map)` — Serialize a DuplicationMap to Markdown format.
 - `to_json(dup_map, indent, include_snippets)` — Serialize a DuplicationMap to JSON string.
+- `extract_functions_treesitter(source, file_path)` — Extract functions using tree-sitter for multi-language support.
+- `get_supported_languages()` — Get list of supported languages for tree-sitter extraction.
+- `is_language_supported(file_path)` — Check if a file extension is supported by tree-sitter extraction.
+- `to_markdown(dup_map)` — Serialize a DuplicationMap to Markdown format.
 - `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
+- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
 - `compare_scans(before_file, after_file)` — Compare two reDUP scan results and return the differences.
 - `format_diff_result(diff)` — Format a DiffResult as a human-readable string.
-- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
 - `scan(path, format, output, extensions)` — Scan a project for code duplicates and generate a refactoring map.
 - `diff(before, after)` — Compare two reDUP scans and show the differences.
 - `check(path, max_groups, max_saved_lines, extensions)` — Check project for duplicates and exit with non-zero code if thresholds exceeded.
@@ -213,6 +215,7 @@ redup/
 
 ## Project Structure
 
+📄 `benchmark` (2 functions)
 📄 `examples.01_basic_usage` (1 functions)
 📄 `project`
 📦 `src.redup`

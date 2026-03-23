@@ -5,6 +5,26 @@
 ## [0.3.2] - 2026-03-23
 
 ### Docs
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Other
+- Update VERSION
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/dashboard.html
+- Update project/evolution.toon
+- Update project/flow.mmd
+- Update project/flow.png
+- ... and 6 more files
+
+## [0.3.2] - 2026-03-23
+
+### Docs
 - Update README.md
 - Update docs/README.md
 - Update project/README.md

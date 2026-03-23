@@ -3,20 +3,40 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:29:39Z'
+  analyzed_at: '2026-03-23T16:36:27Z'
   tool: code2llm
   stats:
-    files: 16
-    lines: 4230
-    functions: 104
+    files: 17
+    lines: 4496
+    functions: 106
     classes: 17
 health:
-  cc_avg: 4.2
-  critical_count: 8
+  cc_avg: 4.5
+  critical_count: 9
   critical_limit: 10
   duplicates: 0
   cycles: 0
   alerts:
+  - type: cc_exceeded
+    target: _get_tree_sitter_language
+    value: 28
+    limit: 15
+    severity: critical
+  - type: high_fan_out
+    target: _get_tree_sitter_language
+    value: 26
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: extract_functions_treesitter
+    value: 20
+    limit: 10
+    severity: critical
+  - type: cc_exceeded
+    target: extract_functions_treesitter
+    value: 20
+    limit: 15
+    severity: error
   - type: high_fan_out
     target: scan_project
     value: 17
@@ -43,11 +63,6 @@ health:
     limit: 15
     severity: warning
   - type: high_fan_out
-    target: extract_functions_treesitter
-    value: 13
-    limit: 10
-    severity: warning
-  - type: high_fan_out
     target: compare_scans
     value: 13
     limit: 10
@@ -63,11 +78,34 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
+    target: check
+    value: 11
+    limit: 10
+    severity: warning
+  - type: high_fan_out
     target: config
     value: 11
     limit: 10
     severity: warning
 modules:
+- path: src/redup/core/ts_extractor.py
+  lines: 493
+  classes: 0
+  methods: 8
+  cc_max: 28
+  inbound_deps: 2
+  exports:
+  - name: extract_functions_treesitter
+    type: function
+    cc: 20
+    flag: split
+    fan_out: 20
+  - name: get_supported_languages
+    type: function
+    cc: 4
+  - name: is_language_supported
+    type: function
+    cc: 3
 - path: src/redup/core/differ.py
   lines: 246
   classes: 1
@@ -108,12 +146,36 @@ modules:
   - name: to_markdown
     type: function
     cc: 12
+- path: src/redup/cli_app/main.py
+  lines: 414
+  classes: 0
+  methods: 11
+  cc_max: 11
+  inbound_deps: 0
+  exports:
+  - name: scan
+    type: function
+    cc: 2
+  - name: diff
+    type: function
+    cc: 3
+  - name: check
+    type: function
+    cc: 11
+    fan_out: 11
+  - name: config
+    type: function
+    cc: 6
+    fan_out: 11
+  - name: info
+    type: function
+    cc: 3
 - path: src/redup/core/pipeline.py
   lines: 392
   classes: 0
   methods: 15
   cc_max: 11
-  inbound_deps: 2
+  inbound_deps: 3
   exports:
   - name: analyze
     type: function
@@ -121,23 +183,6 @@ modules:
   - name: analyze_parallel
     type: function
     cc: 1
-- path: src/redup/core/ts_extractor.py
-  lines: 353
-  classes: 0
-  methods: 8
-  cc_max: 11
-  inbound_deps: 2
-  exports:
-  - name: extract_functions_treesitter
-    type: function
-    cc: 11
-    fan_out: 13
-  - name: get_supported_languages
-    type: function
-    cc: 4
-  - name: is_language_supported
-    type: function
-    cc: 3
 - path: src/redup/core/lsh_matcher.py
   lines: 217
   classes: 2
@@ -160,29 +205,6 @@ modules:
   - name: find_near_duplicates
     type: function
     cc: 2
-- path: src/redup/cli_app/main.py
-  lines: 399
-  classes: 0
-  methods: 11
-  cc_max: 9
-  inbound_deps: 0
-  exports:
-  - name: scan
-    type: function
-    cc: 2
-  - name: diff
-    type: function
-    cc: 3
-  - name: check
-    type: function
-    cc: 5
-  - name: config
-    type: function
-    cc: 6
-    fan_out: 11
-  - name: info
-    type: function
-    cc: 3
 - path: src/redup/core/scanner.py
   lines: 201
   classes: 2
@@ -306,6 +328,19 @@ modules:
   - name: to_yaml
     type: function
     cc: 4
+- path: benchmark.py
+  lines: 111
+  classes: 0
+  methods: 2
+  cc_max: 3
+  inbound_deps: 0
+  exports:
+  - name: benchmark_sequential_vs_parallel
+    type: function
+    cc: 3
+  - name: benchmark_feature_performance
+    type: function
+    cc: 3
 - path: src/redup/core/models.py
   lines: 157
   classes: 9
@@ -383,6 +418,12 @@ modules:
   cc_max: 0
   inbound_deps: 0
 hotspots:
+- name: _get_tree_sitter_language
+  fan_out: 26
+  note: Get tree-sitter language parser.
+- name: extract_functions_treesitter
+  fan_out: 20
+  note: Extract functions using tree-sitter for multi-language support.
 - name: scan_project
   fan_out: 17
   note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
@@ -393,9 +434,6 @@ hotspots:
 - name: _load_duplication_map
   fan_out: 15
   note: Load a DuplicationMap from a JSON file.
-- name: extract_functions_treesitter
-  fan_out: 13
-  note: Extract functions using tree-sitter for multi-language support.
 - name: compare_scans
   fan_out: 13
   note: Compare two reDUP scan results and return the differences.
@@ -405,31 +443,42 @@ hotspots:
 - name: _write_results
   fan_out: 11
   note: Write scan results to output files.
+- name: check
+  fan_out: 11
+  note: Check project for duplicates and exit with non-zero code if thresholds exceeded.
 - name: config
   fan_out: 11
   note: Manage reDUP configuration.
 refactoring:
   priorities:
+  - action: Split _get_tree_sitter_language (CC=28 → target CC<10)
+    impact: high
+    effort: low
+    module: ts_extractor.py
   - action: Split scan_project_parallel (CC=16 → target CC<10)
     impact: medium
     effort: low
     module: parallel_scanner.py
+  - action: Split extract_functions_treesitter (CC=20 → target CC<10)
+    impact: medium
+    effort: low
+    module: ts_extractor.py
   - action: Split compare_scans (CC=18 → target CC<10)
     impact: medium
     effort: low
     module: differ.py
+  - action: Reduce _get_tree_sitter_language fan-out (currently 26)
+    impact: medium
+    effort: medium
+  - action: Reduce extract_functions_treesitter fan-out (currently 20)
+    impact: medium
+    effort: medium
   - action: Reduce scan_project fan-out (currently 17)
-    impact: medium
-    effort: medium
-  - action: Reduce scan_project_parallel fan-out (currently 17)
-    impact: medium
-    effort: medium
-  - action: Reduce _load_duplication_map fan-out (currently 15)
     impact: medium
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 4.2
-  critical: 8
-  lines: 4230
+  cc_avg: 4.5
+  critical: 9
+  lines: 4496
   note: Automated analysis

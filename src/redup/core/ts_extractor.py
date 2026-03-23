@@ -469,6 +469,262 @@ def extract_functions_treesitter(source: str, file_path: str) -> list[CodeBlock]
     return []
 
 
+def _extract_functions_c_sharp(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from C# using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type == "method_declaration":
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_scala(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from Scala using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type in ("function_definition", "method_definition"):
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_kotlin(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from Kotlin using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type in ("function_declaration", "method_declaration"):
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_swift(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from Swift using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type in ("function_declaration", "method_declaration"):
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_objc(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from Objective-C using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type in ("function_definition", "method_declaration"):
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_ruby(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from Ruby using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type in ("method", "singleton_method"):
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_php(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from PHP using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type in ("function_definition", "method_declaration"):
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_bash(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from Bash using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        if node_type == "function_definition":
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
 def get_supported_languages() -> list[str]:
     """Get list of supported languages for tree-sitter extraction."""
     if tree_sitter is None:

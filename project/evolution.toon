@@ -1,11 +1,19 @@
-# code2llm/evolution | 105 func | 17f | 2026-03-23
+# code2llm/evolution | 107 func | 18f | 2026-03-23
 
-NEXT[2] (ranked by impact):
-  [1] !  SPLIT-FUNC      scan_project_parallel  CC=16  fan=17
+NEXT[4] (ranked by impact):
+  [1] !! SPLIT-FUNC      _get_tree_sitter_language  CC=28  fan=26
+      WHY: CC=28 exceeds 15
+      EFFORT: ~1h  IMPACT: 728
+
+  [2] !  SPLIT-FUNC      extract_functions_treesitter  CC=20  fan=20
+      WHY: CC=20 exceeds 15
+      EFFORT: ~1h  IMPACT: 400
+
+  [3] !  SPLIT-FUNC      scan_project_parallel  CC=16  fan=17
       WHY: CC=16 exceeds 15
       EFFORT: ~1h  IMPACT: 272
 
-  [2] !  SPLIT-FUNC      compare_scans  CC=18  fan=13
+  [4] !  SPLIT-FUNC      compare_scans  CC=18  fan=13
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 234
 
@@ -13,11 +21,11 @@ NEXT[2] (ranked by impact):
 RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          4.3 → ≤3.0
-  max-CC:      18 → ≤9
+  CC̄:          4.5 → ≤3.1
+  max-CC:      28 → ≤14
   god-modules: 0 → 0
-  high-CC(≥15): 2 → ≤1
+  high-CC(≥15): 4 → ≤2
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=4.1 → now CC̄=4.3
+  prev CC̄=4.3 → now CC̄=4.5
