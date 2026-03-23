@@ -6,7 +6,6 @@ from redup.core.models import (
     DuplicateType,
     DuplicationMap,
     RefactorAction,
-    RiskLevel,
 )
 from redup.core.planner import generate_suggestions
 

@@ -5,11 +5,7 @@ from redup.core.models import (
     DuplicateGroup,
     DuplicateType,
     DuplicationMap,
-    RefactorSuggestion,
-    RefactorAction,
-    RiskLevel,
     ScanConfig,
-    ScanStats,
 )
 
 

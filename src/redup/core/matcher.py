@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import difflib
 from collections.abc import Callable
 from dataclasses import dataclass
-import difflib
 
 from redup.core.hasher import HashedBlock, _normalize_text
 

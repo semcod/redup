@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from redup.core.hasher import (
-    HashIndex,
     HashedBlock,
+    HashIndex,
     build_hash_index,
     find_exact_duplicates,
     find_structural_duplicates,
@@ -107,16 +107,16 @@ def analyze(
         A DuplicationMap with all duplicate groups and refactoring suggestions.
     """
     config = _ensure_config(config)
-    
+
     # Phase 1: Scan
     scanned_files, stats = _scan_phase(config)
-    
+
     # Phase 2: Process blocks
     all_blocks = _process_blocks(scanned_files, function_level_only)
-    
+
     # Phase 3: Hash and find duplicates
     groups = _find_duplicates_phase(all_blocks, config)
-    
+
     # Phase 4: Deduplicate and suggest
     final_groups = _deduplicate_phase(groups)
 
@@ -142,7 +142,7 @@ def _scan_phase(config: ScanConfig) -> tuple[list[ScannedFile], ScanStats]:
 
 
 def _process_blocks(
-    scanned_files: list[ScannedFile], 
+    scanned_files: list[ScannedFile],
     function_level_only: bool
 ) -> list[CodeBlock]:
     """Phase 2: Extract and filter code blocks."""
@@ -156,18 +156,18 @@ def _process_blocks(
 
 
 def _find_duplicates_phase(
-    all_blocks: list[CodeBlock], 
+    all_blocks: list[CodeBlock],
     config: ScanConfig
 ) -> list[DuplicateGroup]:
     """Phase 3: Hash and find duplicate groups."""
     index = build_hash_index(all_blocks, min_lines=config.min_block_lines)
-    
+
     # Find exact duplicates
     exact_groups = _find_exact_groups(index)
-    
+
     # Find structural duplicates
     structural_groups = _find_structural_groups(index, exact_groups)
-    
+
     return exact_groups + structural_groups
 
 
@@ -175,7 +175,7 @@ def _find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:
     """Find exact duplicate groups."""
     groups: list[DuplicateGroup] = []
     exact_groups = find_exact_duplicates(index)
-    
+
     for i, (h, blocks) in enumerate(exact_groups.items(), 1):
         func_blocks = [b for b in blocks if b.block.function_name]
         if len(func_blocks) >= 2:
@@ -187,12 +187,12 @@ def _find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:
             )
             if g.occurrences >= 2:
                 groups.append(g)
-    
+
     return groups
 
 
 def _find_structural_groups(
-    index: HashIndex, 
+    index: HashIndex,
     exact_groups_list: list[DuplicateGroup]
 ) -> list[DuplicateGroup]:
     """Find structural duplicate groups."""
@@ -200,13 +200,13 @@ def _find_structural_groups(
     exact_hashes: set[str] = set()
     for group in exact_groups_list:
         exact_hashes.add(group.normalized_hash)
-    
+
     structural_groups = find_structural_duplicates(index)
-    
+
     for i, (h, blocks) in enumerate(structural_groups.items(), 1):
         if h in exact_hashes:
             continue
-            
+
         func_blocks = [b for b in blocks if b.block.function_name]
         if len(func_blocks) >= 2:
             refined = refine_structural_matches(func_blocks)
@@ -221,7 +221,7 @@ def _find_structural_groups(
                 )
                 if g.occurrences >= 2:
                     groups.append(g)
-    
+
     return groups
 
 
@@ -253,4 +253,4 @@ def _calculate_similarity(matches: list[MatchResult]) -> float:
 
     return sum(match.similarity for match in matches) / len(matches)
 
-    
+

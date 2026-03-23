@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
+import re
 from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass, field
-import hashlib
-import re
 
 from redup.core.scanner import CodeBlock
 
@@ -65,23 +65,23 @@ def _ast_to_normalized_string(tree: object) -> str:
     name_map: dict[str, str] = {}
     counter = [0]
     parts: list[str] = []
-    
+
     for node in ast.walk(tree):
         part = _process_ast_node(node, name_map, counter)
         if part:
             parts.append(part)
-    
+
     return " ".join(parts)
 
 
 def _process_ast_node(
-    node, 
-    name_map: dict[str, str], 
+    node,
+    name_map: dict[str, str],
     counter: list[int]
 ) -> str | None:
     """Process a single AST node and return its normalized representation."""
     import ast
-    
+
     if isinstance(node, ast.Name):
         return _get_placeholder(node.id, name_map, counter)
     elif isinstance(node, ast.arg):
@@ -111,8 +111,8 @@ def _process_ast_node(
 
 
 def _get_placeholder(
-    name: str, 
-    name_map: dict[str, str], 
+    name: str,
+    name_map: dict[str, str],
     counter: list[int]
 ) -> str:
     """Get or create a placeholder for a name."""
@@ -127,14 +127,14 @@ def _get_placeholder(
         "class", "def", "pass", "break", "continue", "and", "or", "not",
         "in", "is", "lambda", "global", "nonlocal", "assert", "del",
     }
-    
+
     if name in BUILTINS or (name.startswith("__") and name.endswith("__")):
         return name
-    
+
     if name not in name_map:
         name_map[name] = f"_V{counter[0]}"
         counter[0] += 1
-    
+
     return name_map[name]
 
 

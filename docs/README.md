@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redup
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-66-green)
-> **66** functions | **15** classes | **20** files | CC̄ = 4.3
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-53-green)
+> **53** functions | **15** classes | **18** files | CC̄ = 4.2
 
 > Auto-generated project documentation from source code analysis.
 
@@ -150,7 +150,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redup/
-    ├── 01_basic_usage├── refactored_frontend_demo        ├── __main__    ├── redup/        ├── core/├── cli_utilities_demo            ├── planner            ├── scanner            ├── models            ├── pipeline        ├── reporters/            ├── json_reporter            ├── toon_reporter            ├── yaml_reporter        ├── cli_app/    ├── sitecustomize├── project            ├── hasher            ├── main            ├── matcher```
+        ├── __main__    ├── redup/        ├── core/    ├── 01_basic_usage            ├── planner            ├── scanner            ├── models            ├── matcher        ├── reporters/            ├── pipeline            ├── json_reporter            ├── yaml_reporter        ├── cli_app/    ├── sitecustomize├── project            ├── toon_reporter            ├── main            ├── hasher```
 
 ## API Overview
 
@@ -167,50 +167,37 @@ redup/
 - **`RefactorSuggestion`** — A concrete refactoring proposal for a duplicate group.
 - **`ScanStats`** — Statistics from the scanning phase.
 - **`DuplicationMap`** — Complete result of a reDUP analysis run.
+- **`MatchResult`** — Result of comparing two code blocks.
+- **`OutputFormat`** — —
 - **`HashedBlock`** — A code block with its computed fingerprints.
 - **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
-- **`OutputFormat`** — —
-- **`MatchResult`** — Result of comparing two code blocks.
 
 ### Functions
 
 - `main()` — —
-- `favicon()` — Serve favicon.
-- `index()` — Serve main dashboard HTML.
-- `config_json()` — Serve configuration as JSON.
-- `health_check()` — Health check endpoint.
-- `show_vscode_tests(config, label)` — Display VSCode tests for a configuration.
-- `show_status(config, label)` — Display status for a configuration.
-- `make_args_from_config(config, required_args)` — Generate command arguments from configuration.
-- `confirm_action(message, default)` — Get user confirmation for an action.
-- `format_output(data, format_type)` — Format data for CLI output.
-- `format_table(headers, rows)` — Format data as a table.
-- `handle_error(error, context)` — Handle and log errors consistently.
 - `generate_suggestions(dup_map)` — Generate prioritized refactoring suggestions for all duplicate groups.
 - `scan_project(config)` — Scan a project and return files with their code blocks.
+- `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
+- `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
+- `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
+- `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
 - `analyze(config, function_level_only)` — Run the full reDUP analysis pipeline.
 - `to_json(dup_map, indent)` — Serialize a DuplicationMap to JSON string.
-- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
 - `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
+- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
+- `scan(path, format, output, extensions)` — Scan a project for code duplicates and generate a refactoring map.
+- `info()` — Show reDUP version and configuration info.
 - `hash_block(text)` — SHA-256 hash of normalized text.
 - `hash_block_structural(text)` — SHA-256 hash of deeply normalized text (variable names replaced).
 - `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
 - `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
 - `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
-- `scan(path, format, output, extensions)` — Scan a project for code duplicates and generate a refactoring map.
-- `info()` — Show reDUP version and configuration info.
-- `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
-- `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
-- `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
-- `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
 
 
 ## Project Structure
 
-📄 `cli_utilities_demo` (7 functions)
 📄 `examples.01_basic_usage` (1 functions)
 📄 `project`
-📄 `refactored_frontend_demo` (6 functions)
 📦 `src.redup`
 📄 `src.redup.__main__`
 📦 `src.redup.cli_app`

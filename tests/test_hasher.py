@@ -1,11 +1,11 @@
 """Tests for reDUP hasher."""
 
 from redup.core.hasher import (
-    hash_block,
-    hash_block_structural,
     build_hash_index,
     find_exact_duplicates,
     find_structural_duplicates,
+    hash_block,
+    hash_block_structural,
 )
 from redup.core.scanner import CodeBlock
 

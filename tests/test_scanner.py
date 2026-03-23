@@ -5,10 +5,10 @@ from pathlib import Path
 
 from redup.core.models import ScanConfig
 from redup.core.scanner import (
-    scan_project,
-    _should_exclude,
-    _is_test_file,
     _extract_function_blocks_python,
+    _is_test_file,
+    _should_exclude,
+    scan_project,
 )
 
 

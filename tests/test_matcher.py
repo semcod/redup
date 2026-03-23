@@ -2,10 +2,10 @@
 
 from redup.core.hasher import HashedBlock
 from redup.core.matcher import (
-    sequence_similarity,
     fuzzy_similarity,
     match_candidates,
     refine_structural_matches,
+    sequence_similarity,
 )
 from redup.core.scanner import CodeBlock
 
