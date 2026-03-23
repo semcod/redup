@@ -1,30 +1,32 @@
-# code2llm | 22f 2837L | python:21,shell:1 | 2026-03-23
-# CC̄=4.1 | critical:7/99 | dups:0 | cycles:0
+# code2llm | 23f 3107L | python:22,shell:1 | 2026-03-23
+# CC̄=4.2 | critical:8/105 | dups:0 | cycles:0
 
-HEALTH[1]:
+HEALTH[2]:
+  🟡 CC    scan_project_parallel CC=16 (limit:15)
   🟡 CC    compare_scans CC=18 (limit:15)
 
 REFACTOR[1]:
-  1. split 1 high-CC methods  (CC>15)
+  1. split 2 high-CC methods  (CC>15)
 
 COUPLING: no cross-package imports detected
 
 LAYERS:
-  src/                            CC̄=4.1    ←in:0  →out:0
-  │ main                       381L  0C   11m  CC=8      ←0
-  │ !  ts_extractor               353L  0C    8m  CC=11     ←1
-  │ !  pipeline                   332L  0C   13m  CC=11     ←2
+  src/                            CC̄=4.2    ←in:0  →out:0
+  │ main                       399L  0C   11m  CC=9      ←0
+  │ !  pipeline                   392L  0C   15m  CC=11     ←2
+  │ !  ts_extractor               353L  0C    8m  CC=11     ←2
   │ !! differ                     246L  1C    5m  CC=18     ←1
   │ hasher                     229L  2C   15m  CC=6      ←3
   │ !  lsh_matcher                217L  2C   12m  CC=10     ←1
-  │ scanner                    201L  2C    6m  CC=9      ←1
+  │ scanner                    201L  2C    6m  CC=9      ←2
+  │ !! parallel_scanner           185L  0C    4m  CC=16     ←1
   │ models                     157L  9C    1m  CC=1      ←0
   │ config                     154L  0C    6m  CC=5      ←1
   │ planner                    110L  0C    5m  CC=7      ←1
   │ matcher                    107L  1C    5m  CC=7      ←1
   │ toon_reporter              106L  0C    6m  CC=8      ←2
   │ !  markdown_reporter           90L  0C    1m  CC=12     ←1
-  │ json_reporter               66L  0C    3m  CC=3      ←3
+  │ json_reporter               73L  0C    3m  CC=5      ←3
   │ yaml_reporter               34L  0C    1m  CC=4      ←1
   │ __init__                    25L  0C    0m  CC=0.0    ←0
   │ __main__                     5L  0C    0m  CC=0.0    ←0
@@ -39,8 +41,9 @@ LAYERS:
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 7 of 98):
+FUNCTIONS (CC≥10, 8 of 104):
    18.0  compare_scans                              19n   2exit  loops+cond+ret  !! split
+   16.0  scan_project_parallel                      16n   3exit  loops+cond+ret  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
    12.0  to_markdown                                12n   3exit  loops+cond+ret
    11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
@@ -49,20 +52,20 @@ FUNCTIONS (CC≥10, 7 of 98):
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
 
   summary:
-    critical(≥10): 7 | high(5-10): 28 | medium(2-5): 37 | low(<2): 26
-    7% CC≥10  36% CC≥5
+    critical(≥10): 8 | high(5-10): 32 | medium(2-5): 37 | low(<2): 27
+    8% CC≥10  38% CC≥5
 
 HOTSPOTS:
   #1  scan_project                         fan=17   "calls 17 functions"
-  #2  _load_duplication_map                fan=15   "calls 15 functions"
-  #3  extract_functions_treesitter         fan=13   "calls 13 functions"
-  #4  compare_scans                        fan=13   "calls 13 functions"
-  #5  _find_structural_groups              fan=11   "calls 11 functions"
-  #6  config                               fan=11   "calls 11 functions"
-  #7  generate_suggestions                 fan=9    "calls 9 functions"
-  #8  _find_near_duplicate_groups          fan=9    "calls 9 functions"
-  #9  to_markdown                          fan=9    "calls 9 functions"
-  #10 _write_results                       fan=9    "calls 9 functions"
+  #2  scan_project_parallel                fan=17   "calls 17 functions"
+  #3  _load_duplication_map                fan=15   "calls 15 functions"
+  #4  extract_functions_treesitter         fan=13   "calls 13 functions"
+  #5  compare_scans                        fan=13   "calls 13 functions"
+  #6  _find_structural_groups              fan=11   "calls 11 functions"
+  #7  _write_results                       fan=11   "calls 11 functions"
+  #8  config                               fan=11   "calls 11 functions"
+  #9  generate_suggestions                 fan=9    "calls 9 functions"
+  #10 _scan_file_worker                    fan=9    "calls 9 functions"
 
 CLASSES:
   LSHIndex                       ████████████████████████   5m  CC̄=5.6   max=10  
@@ -78,9 +81,9 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
+  MatchResult                                               0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
-  MatchResult                                               0m  CC̄=0.0   max=0.0 
   DiffResult                                                0m  CC̄=0.0   max=0.0 
 
 D:
@@ -92,16 +95,23 @@ D:
     _groups_match(group1,group2)
     compare_scans(before_file,after_file)
     format_diff_result(diff)
+  src/redup/core/parallel_scanner.py:
+    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel
+    _scan_file_worker(args)
+    _should_process_file(file_path,project_root,extensions,include_tests,max_file_size)
+    _is_test_file(file_path,project_root)
+    scan_project_parallel(root,extensions,exclude_patterns,include_tests,function_level_only,max_file_size,max_workers,min_files_for_parallel)
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
   src/redup/core/pipeline.py:
-    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups
+    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_parallel
     _blocks_to_group(group_id,blocks,dup_type,similarity,normalized_hash)
     _deduplicate_groups(groups)
     analyze(config,function_level_only)
     _ensure_config(config)
     _scan_phase(config)
+    _scan_phase_parallel(config,max_workers)
     _process_blocks(scanned_files,function_level_only)
     _find_duplicates_phase(all_blocks,config)
     _find_exact_groups(index)
@@ -110,6 +120,7 @@ D:
     _match_results_to_blocks(matches)
     _calculate_similarity(matches)
     _find_near_duplicate_groups(all_blocks,config)
+    analyze_parallel(config,function_level_only,max_workers)
   src/redup/core/ts_extractor.py:
     e: _get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,get_supported_languages,is_language_supported
     _get_tree_sitter_language(language_name)
@@ -141,14 +152,6 @@ D:
     _extract_blocks_sliding(lines,min_lines)
     _extract_function_blocks_python(source,filepath)
     scan_project(config)
-  src/redup/reporters/toon_reporter.py:
-    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
-    _render_header(dup_map)
-    _render_summary(dup_map)
-    _render_duplicates(groups)
-    _render_refactor(suggestions)
-    _render_metrics_target(dup_map,groups)
-    to_toon(dup_map)
   src/redup/cli_app/main.py:
     e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
     _write_output(content,output,suffix)
@@ -157,11 +160,19 @@ D:
     _print_scan_header(path,ext_list,min_lines,min_similarity)
     _print_scan_summary(dup_map)
     _write_results(dup_map,format,output,path)
-    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only)
+    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only,parallel,max_workers)
     diff(before,after)
     check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
     config(init,show)
     info()
+  src/redup/reporters/toon_reporter.py:
+    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
+    _render_header(dup_map)
+    _render_summary(dup_map)
+    _render_duplicates(groups)
+    _render_refactor(suggestions)
+    _render_metrics_target(dup_map,groups)
+    to_toon(dup_map)
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -196,9 +207,6 @@ D:
     find_exact_duplicates(index)
     find_structural_duplicates(index)
     _blocks_from_different_locations(blocks)
-  examples/01_basic_usage.py:
-    e: main
-    main()
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -207,14 +215,17 @@ D:
     load_config()
     config_to_scan_config(config,path)
     create_sample_redup_toml()
+  examples/01_basic_usage.py:
+    e: main
+    main()
+  src/redup/reporters/json_reporter.py:
+    e: _group_to_dict,_suggestion_to_dict,to_json
+    _group_to_dict(group,include_snippets)
+    _suggestion_to_dict(s)
+    to_json(dup_map,indent,include_snippets)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
-  src/redup/reporters/json_reporter.py:
-    e: _group_to_dict,_suggestion_to_dict,to_json
-    _group_to_dict(group)
-    _suggestion_to_dict(s)
-    to_json(dup_map,indent)
   src/redup/core/models.py:
     e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats,DuplicationMap
     DuplicateType  # How the duplicate was detected....
@@ -227,8 +238,8 @@ D:
     ScanStats  # Statistics from the scanning phase....
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
-  src/redup/__init__.py:
   src/redup/__main__.py:
+  src/redup/__init__.py:
   src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:

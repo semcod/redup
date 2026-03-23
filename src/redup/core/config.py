@@ -103,9 +103,9 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     return ScanConfig(
         root=path,
         extensions=ext_list,
-        min_block_lines=scan_config.get("min_lines", 3),
-        min_similarity=scan_config.get("min_similarity", 0.85),
-        include_tests=scan_config.get("include_tests", False),
+        min_block_lines=config.get("min_lines", scan_config.get("min_lines", 3)),
+        min_similarity=config.get("min_similarity", scan_config.get("min_similarity", 0.85)),
+        include_tests=config.get("include_tests", scan_config.get("include_tests", False)),
         lsh_enabled=lsh_config.get("enabled", True),
         lsh_min_lines=lsh_config.get("min_lines", 50),
         lsh_threshold=lsh_config.get("threshold", 0.8),

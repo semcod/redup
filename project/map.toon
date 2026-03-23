@@ -1,12 +1,12 @@
-# redup | 23f 2895L | python:22,shell:1
+# redup | 24f 3165L | python:23,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[23]:
+M[24]:
   examples/01_basic_usage.py,58
   project.sh,17
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,381
+  src/redup/cli_app/main.py,399
   src/redup/core/__init__.py,1
   src/redup/core/config.py,154
   src/redup/core/differ.py,246
@@ -14,12 +14,13 @@ M[23]:
   src/redup/core/lsh_matcher.py,217
   src/redup/core/matcher.py,107
   src/redup/core/models.py,157
-  src/redup/core/pipeline.py,332
+  src/redup/core/parallel_scanner.py,185
+  src/redup/core/pipeline.py,392
   src/redup/core/planner.py,110
   src/redup/core/scanner.py,201
   src/redup/core/ts_extractor.py,353
   src/redup/reporters/__init__.py,1
-  src/redup/reporters/json_reporter.py,66
+  src/redup/reporters/json_reporter.py,73
   src/redup/reporters/markdown_reporter.py,90
   src/redup/reporters/toon_reporter.py,106
   src/redup/reporters/yaml_reporter.py,34
@@ -33,16 +34,23 @@ D:
     _groups_match(group1;group2)
     compare_scans(before_file;after_file)
     format_diff_result(diff)
+  src/redup/core/parallel_scanner.py:
+    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel
+    _scan_file_worker(args)
+    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
+    _is_test_file(file_path;project_root)
+    scan_project_parallel(root;extensions;exclude_patterns;include_tests;function_level_only;max_file_size;max_workers;min_files_for_parallel)
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
   src/redup/core/pipeline.py:
-    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups
+    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_parallel
     _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
     _deduplicate_groups(groups)
     analyze(config;function_level_only)
     _ensure_config(config)
     _scan_phase(config)
+    _scan_phase_parallel(config;max_workers)
     _process_blocks(scanned_files;function_level_only)
     _find_duplicates_phase(all_blocks;config)
     _find_exact_groups(index)
@@ -51,6 +59,7 @@ D:
     _match_results_to_blocks(matches)
     _calculate_similarity(matches)
     _find_near_duplicate_groups(all_blocks;config)
+    analyze_parallel(config;function_level_only;max_workers)
   src/redup/core/ts_extractor.py:
     e: _get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,get_supported_languages,is_language_supported
     _get_tree_sitter_language(language_name)
@@ -80,14 +89,6 @@ D:
     _extract_blocks_sliding(lines;min_lines)
     _extract_function_blocks_python(source;filepath)
     scan_project(config)
-  src/redup/reporters/toon_reporter.py:
-    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
-    _render_header(dup_map)
-    _render_summary(dup_map)
-    _render_duplicates(groups)
-    _render_refactor(suggestions)
-    _render_metrics_target(dup_map;groups)
-    to_toon(dup_map)
   src/redup/cli_app/main.py:
     e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
     _write_output(content;output;suffix)
@@ -96,11 +97,19 @@ D:
     _print_scan_header(path;ext_list;min_lines;min_similarity)
     _print_scan_summary(dup_map)
     _write_results(dup_map;format;output;path)
-    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only)
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers)
     diff(before;after)
     check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config(init;show)
     info()
+  src/redup/reporters/toon_reporter.py:
+    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
+    _render_header(dup_map)
+    _render_summary(dup_map)
+    _render_duplicates(groups)
+    _render_refactor(suggestions)
+    _render_metrics_target(dup_map;groups)
+    to_toon(dup_map)
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -135,9 +144,6 @@ D:
     find_exact_duplicates(index)
     find_structural_duplicates(index)
     _blocks_from_different_locations(blocks)
-  examples/01_basic_usage.py:
-    e: main
-    main()
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -146,14 +152,17 @@ D:
     load_config()
     config_to_scan_config(config;path)
     create_sample_redup_toml()
+  examples/01_basic_usage.py:
+    e: main
+    main()
+  src/redup/reporters/json_reporter.py:
+    e: _group_to_dict,_suggestion_to_dict,to_json
+    _group_to_dict(group;include_snippets)
+    _suggestion_to_dict(s)
+    to_json(dup_map;indent;include_snippets)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
-  src/redup/reporters/json_reporter.py:
-    e: _group_to_dict,_suggestion_to_dict,to_json
-    _group_to_dict(group)
-    _suggestion_to_dict(s)
-    to_json(dup_map;indent)
   src/redup/core/models.py:
     e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats,DuplicationMap
     DuplicateType(str,Enum):  # How the duplicate was detected...
@@ -165,8 +174,8 @@ D:
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
-  src/redup/__init__.py:
   src/redup/__main__.py:
+  src/redup/__init__.py:
   src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:

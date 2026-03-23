@@ -1,6 +1,6 @@
-# redup/flow | 99 func | 10 pipelines | 5 hub-types | 2026-03-23
+# redup/flow | 105 func | 11 pipelines | 7 hub-types | 2026-03-23
 
-PIPELINES[10] (Core:7, NLP:3):
+PIPELINES[11] (Core:8, NLP:3):
   Src [Core]: ? → str
               → main()                                  CC=5    IO ▶
               → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=1    pure
@@ -14,7 +14,7 @@ PIPELINES[10] (Core:7, NLP:3):
               PURITY: 3/9 pure  BOTTLENECK: _find_near_duplicate_groups(CC=11)
 
   Src [Core]: Path → str
-              → scan(path:Path, format:str, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None CC=1    pure ▶
+              → scan(path:Path, format:str, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool, parallel:bool, max_workers:int) → None CC=2    pure ▶
               → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=1    pure
               → _find_duplicates_phase(all_blocks:list[CodeBlock], config:ScanConfig) → list[DuplicateGroup] CC=1    pure
               → _find_near_duplicate_groups(all_blocks:list[CodeBlock], config:ScanConfig) → list[DuplicateGroup] CC=11   mutation
@@ -67,17 +67,23 @@ PIPELINES[10] (Core:7, NLP:3):
               → _load_toml_file(file_path:Path) → dict[str, Any] CC=4    IO ■
               PURITY: 1/4 pure  BOTTLENECK: config(CC=6)
 
-  Src [Core]: str → str | None
-              → _normalize_ast_text(text:str) → str     CC=2    pure ▶
-              → _ast_to_normalized_string(tree:object) → str CC=3    mutation
-              → _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None CC=2    pure ■
-              PURITY: 2/3 pure  BOTTLENECK: _ast_to_normalized_string(CC=3)
+  Src [Core]: tuple[Path, str, list[str], bool, bool, int] → list[CodeBlock]
+              → _scan_file_worker(args:tuple[Path, str, list[str], bool, bool, int]) → ScannedFile CC=6    IO ▶
+              → extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock] CC=11   pure
+              → _extract_functions_java(node:Any, source_lines:list[str], file_path:str) → list[CodeBlock] CC=1    mutation ■
+              PURITY: 1/3 pure  BOTTLENECK: extract_functions_treesitter(CC=11)
 
   Src [NLP]: str → str
               → fuzzy_similarity(text_a:str, text_b:str) → float CC=2    pure ▶
               → sequence_similarity(text_a:str, text_b:str) → float CC=3    pure
               → _normalize_text(text:str) → str         CC=6    mutation ■
               PURITY: 2/3 pure  BOTTLENECK: _normalize_text(CC=6)
+
+  Src [Core]: str → str | None
+              → _normalize_ast_text(text:str) → str     CC=2    pure ▶
+              → _ast_to_normalized_string(tree:object) → str CC=3    mutation
+              → _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None CC=2    pure ■
+              PURITY: 2/3 pure  BOTTLENECK: _ast_to_normalized_string(CC=3)
 
   Src [Core]: Path → bool
               → diff(before:Path, after:Path) → None    CC=3    pure ▶
@@ -88,10 +94,12 @@ PIPELINES[10] (Core:7, NLP:3):
 
 TRANSFORMS (fan-out ≥10):
   scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats] fan=17   fan=17
+  scan_project_parallel(root:Path, extensions:list[str], exclude_patterns:list[str] | None, include_tests:bool, function_level_only:bool, max_file_size:int, max_workers:int | None, min_files_for_parallel:int) → tuple[list[ScannedFile], Any] fan=17   fan=17
   _load_duplication_map(file_path:Path) → DuplicationMap  fan=15   fan=15
   extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock] fan=13   fan=13
   compare_scans(before_file:Path, after_file:Path) → DiffResult fan=13   fan=13
   _find_structural_groups(index:HashIndex, exact_groups_list:list[DuplicateGroup]) → list[DuplicateGroup] fan=11   fan=11
+  _write_results(dup_map:DuplicationMap, format:str, output:Path | None, path:Path) → None fan=11   fan=11
   config(init:bool, show:bool) → None                     fan=11   fan=11
 
 CONTRACTS:
@@ -140,8 +148,8 @@ CONTRACTS:
       INVARIANT: len(output) <= len(input)
 
   Pipeline: Src
-    scan(path:Path, format:str, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None
-      IN:  path:Path, format:str, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool
+    scan(path:Path, format:str, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool, parallel:bool, max_workers:int) → None
+      IN:  path:Path, format:str, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool, parallel:bool, max_workers:int
       OUT: None
 
     analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap
@@ -318,20 +326,19 @@ CONTRACTS:
       SIDE-EFFECT: IO(open, load)
 
   Pipeline: Src
-    _normalize_ast_text(text:str) → str
-      IN:  text:str
-      OUT: str
-      INVARIANT: len(output) <= len(input)
+    _scan_file_worker(args:tuple[Path, str, list[str], bool, bool, int]) → ScannedFile
+      IN:  args:tuple[Path, str, list[str], bool, bool, int]
+      OUT: ScannedFile
+      SIDE-EFFECT: IO(open, read)
 
-    _ast_to_normalized_string(tree:object) → str
-      IN:  tree:object
-      OUT: str
+    extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock]
+      IN:  source:str, file_path:str
+      OUT: list[CodeBlock]
+
+    _extract_functions_java(node:Any, source_lines:list[str], file_path:str) → list[CodeBlock]
+      IN:  node:Any, source_lines:list[str], file_path:str
+      OUT: list[CodeBlock]
       SIDE-EFFECT: pure
-      INVARIANT: len(output) <= len(input)
-
-    _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None
-      IN:  node, name_map:dict[str, str], counter:list[int]
-      OUT: str | None
 
   Pipeline: Src
     fuzzy_similarity(text_a:str, text_b:str) → float
@@ -349,6 +356,22 @@ CONTRACTS:
       INVARIANT: len(output) <= len(input)
 
   Pipeline: Src
+    _normalize_ast_text(text:str) → str
+      IN:  text:str
+      OUT: str
+      INVARIANT: len(output) <= len(input)
+
+    _ast_to_normalized_string(tree:object) → str
+      IN:  tree:object
+      OUT: str
+      SIDE-EFFECT: pure
+      INVARIANT: len(output) <= len(input)
+
+    _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None
+      IN:  node, name_map:dict[str, str], counter:list[int]
+      OUT: str | None
+
+  Pipeline: Src
     diff(before:Path, after:Path) → None
       IN:  before:Path, after:Path
       OUT: None
@@ -364,34 +387,38 @@ CONTRACTS:
       OUT: bool
 
 
-DATA_TYPES (by cross-function usage) [98 annotated, 0 inferred / 99 functions]:
+DATA_TYPES (by cross-function usage) [104 annotated, 0 inferred / 105 functions]:
   str                  consumed:32  produced:16   !! HUB-TYPE → split interface
-  int                  consumed:17  produced:0    !! HUB-TYPE → split interface
-  list[str]            consumed:9   produced:7  
-  Path                 consumed:15  produced:0    !! HUB-TYPE → split interface
+  bool                 consumed:16  produced:7    !! HUB-TYPE → split interface
+  int                  consumed:21  produced:0    !! HUB-TYPE → split interface
+  Path                 consumed:20  produced:0    !! HUB-TYPE → split interface
+  list[str]            consumed:11  produced:7    !! HUB-TYPE → split interface
   float                consumed:11  produced:4    !! HUB-TYPE → split interface
-  bool                 consumed:9   produced:5  
+  DuplicationMap       consumed:10  produced:3    !! HUB-TYPE → split interface
   list[CodeBlock]      consumed:5   produced:7  
-  DuplicationMap       consumed:10  produced:2    !! HUB-TYPE → split interface
   list[DuplicateGroup] consumed:4   produced:7  
-  ScanConfig           consumed:4   produced:4  
-  list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
+  ScanConfig           consumed:5   produced:4  
   DuplicateGroup       consumed:5   produced:1    input-heavy (read-only flow)
+  list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
   list[MatchResult]    consumed:2   produced:3  
-  HashIndex            consumed:4   produced:1  
   dict[str, Any]       consumed:1   produced:4  
-  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
+  HashIndex            consumed:4   produced:1  
   CodeBlock            consumed:4   produced:0    narrow scope
-  ScanConfig | None    consumed:3   produced:0    narrow scope
-  list                 consumed:3   produced:0    narrow scope
+  ScanConfig | None    consumed:4   produced:0    narrow scope
+  int | None           consumed:4   produced:0    narrow scope
+  dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
   Path | None          consumed:3   produced:0    narrow scope
 
   HUB TYPES (consumed ≥10):
     str → 32 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
-    int → 17 consumers → split into:
+    bool → 16 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
-    Path → 15 consumers → split into:
+    int → 21 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+    Path → 20 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+    list[str] → 11 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
     float → 11 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
@@ -399,7 +426,7 @@ DATA_TYPES (by cross-function usage) [98 annotated, 0 inferred / 99 functions]:
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        main, _load_toml_file, scan_project, to_json, to_yaml, _load_duplication_map, _write_output, _write_results, config
+  IO:        _load_toml_file, main, scan_project, _scan_file_worker, scan_project_parallel, to_json, to_yaml, _load_duplication_map, _write_output, _write_results
   Mutation:  load_config, generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, _blocks_to_group, _deduplicate_groups, _process_blocks, _find_exact_groups, _find_structural_groups, _match_results_to_blocks
   Pure:      _get_config_from_pyproject, _get_config_from_redup_toml, config_to_scan_config, create_sample_redup_toml, _common_prefix, _suggest_module_name, _assess_risk, _choose_action, _should_exclude, _collect_files
 
@@ -411,6 +438,7 @@ SIDE_EFFECTS:
     Src             █░░░ 25% pure
     Src             ██░░ 50% pure
     Src             █░░░ 25% pure
+    Src             █░░░ 33% pure
     Src             ██░░ 66% pure
     Src             ██░░ 66% pure
     Src             ██░░ 66% pure

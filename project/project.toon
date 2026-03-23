@@ -1,11 +1,11 @@
-# redup | 31f 4039L | python:31
+# redup | 32f 4303L | python:32
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[31]:
+M[32]:
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,316
+  src/redup/cli_app/main.py,333
   src/redup/core/__init__.py,1
   src/redup/core/config.py,107
   src/redup/core/differ.py,181
@@ -13,7 +13,8 @@ M[31]:
   src/redup/core/lsh_matcher.py,144
   src/redup/core/matcher.py,84
   src/redup/core/models.py,118
-  src/redup/core/pipeline.py,243
+  src/redup/core/parallel_scanner.py,122
+  src/redup/core/pipeline.py,284
   src/redup/core/planner.py,82
   src/redup/core/scanner.py,157
   src/redup/core/ts_extractor.py,252
@@ -106,17 +107,24 @@ D:
     RiskLevel:   # Risk of the proposed refactoring.
     ScanConfig:   # Configuration for project scanning.
     DuplicateFragment: line_count(0)  # A single occurrence of a duplicated c...
+  src/redup/core/parallel_scanner.py:
+    i: os,concurrent.futures.{ProcessPoolExecutor,as_completed},pathlib.Path,redup.core.hasher.hash_block,redup.core.scanner.{CodeBlock,ScannedFile,scan_project},redup.core.ts_extractor.extract_functions_treesitter,typing.Any
+    e: scan_project_parallel
+    _scan_file_worker(args:tuple[Path;str;list[str];bool;bool;int])->ScannedFile
+    _should_process_file(file_path:Path;project_root:Path;extensions:list[str];include_tests:bool;max_file_size:int)->bool
+    _is_test_file(file_path:Path;project_root:Path)->bool
+    scan_project_parallel(root:Path;extensions:list[str];exclude_patterns:Any=None;include_tests:bool=False;function_level_only:bool=False;max_file_size:int=1024;...+1)->tuple[list[ScannedFile], Any]
   src/redup/core/pipeline.py:
-    i: redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.lsh_matcher.find_near_duplicates,redup.core.matcher.{MatchResult,refine_structural_matches},redup.core.models.{DuplicateFragment,DuplicateGroup}
-    e: analyze
+    i: redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.lsh_matcher.find_near_duplicates,redup.core.matcher.{MatchResult,refine_structural_matches},redup.core.models.DuplicateFragment,redup.core.parallel_scanner.scan_project_parallel
+    e: analyze,analyze_parallel
     _blocks_to_group(group_id:str;blocks:list[HashedBlock];dup_type:DuplicateType;similarity:float=1.0;normalized_hash:str='')->DuplicateGroup
     _deduplicate_groups(groups:list[DuplicateGroup])->list[DuplicateGroup]
     analyze(config:Any=None;function_level_only:bool=False)->DuplicationMap
     _ensure_config(config:Any)->ScanConfig
     _scan_phase(config:ScanConfig)->tuple[list[ScannedFile], ScanStats]
+    _scan_phase_parallel(config:ScanConfig;max_workers:Any=None)->tuple[list[ScannedFile], ScanStats]
     _process_blocks(scanned_files:list[ScannedFile];function_level_only:bool)->list[CodeBlock]
     _find_duplicates_phase(all_blocks:list[CodeBlock];config:ScanConfig)->list[DuplicateGroup]
-    _find_exact_groups(index:HashIndex)->list[DuplicateGroup]
   src/redup/core/planner.py:
     i: os,redup.core.models.{DuplicateGroup,DuplicationMap,RefactorAction,RefactorSuggestion,RiskLevel}
     e: generate_suggestions

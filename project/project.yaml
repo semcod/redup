@@ -3,22 +3,27 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:25:57Z'
+  analyzed_at: '2026-03-23T16:29:39Z'
   tool: code2llm
   stats:
-    files: 15
-    lines: 3960
-    functions: 98
+    files: 16
+    lines: 4230
+    functions: 104
     classes: 17
 health:
-  cc_avg: 4.1
-  critical_count: 7
+  cc_avg: 4.2
+  critical_count: 8
   critical_limit: 10
   duplicates: 0
   cycles: 0
   alerts:
   - type: high_fan_out
     target: scan_project
+    value: 17
+    limit: 10
+    severity: error
+  - type: high_fan_out
+    target: scan_project_parallel
     value: 17
     limit: 10
     severity: error
@@ -30,6 +35,11 @@ health:
   - type: cc_exceeded
     target: compare_scans
     value: 18
+    limit: 15
+    severity: warning
+  - type: cc_exceeded
+    target: scan_project_parallel
+    value: 16
     limit: 15
     severity: warning
   - type: high_fan_out
@@ -44,6 +54,11 @@ health:
     severity: warning
   - type: high_fan_out
     target: _find_structural_groups
+    value: 11
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _write_results
     value: 11
     limit: 10
     severity: warning
@@ -71,6 +86,18 @@ modules:
   - name: format_diff_result
     type: function
     cc: 14
+- path: src/redup/core/parallel_scanner.py
+  lines: 185
+  classes: 0
+  methods: 4
+  cc_max: 16
+  inbound_deps: 1
+  exports:
+  - name: scan_project_parallel
+    type: function
+    cc: 16
+    flag: split
+    fan_out: 17
 - path: src/redup/reporters/markdown_reporter.py
   lines: 90
   classes: 0
@@ -82,13 +109,16 @@ modules:
     type: function
     cc: 12
 - path: src/redup/core/pipeline.py
-  lines: 332
+  lines: 392
   classes: 0
-  methods: 13
+  methods: 15
   cc_max: 11
   inbound_deps: 2
   exports:
   - name: analyze
+    type: function
+    cc: 1
+  - name: analyze_parallel
     type: function
     cc: 1
 - path: src/redup/core/ts_extractor.py
@@ -96,7 +126,7 @@ modules:
   classes: 0
   methods: 8
   cc_max: 11
-  inbound_deps: 1
+  inbound_deps: 2
   exports:
   - name: extract_functions_treesitter
     type: function
@@ -130,33 +160,16 @@ modules:
   - name: find_near_duplicates
     type: function
     cc: 2
-- path: src/redup/core/scanner.py
-  lines: 201
-  classes: 2
-  methods: 6
-  cc_max: 9
-  inbound_deps: 1
-  exports:
-  - name: CodeBlock
-    type: class
-    cc_avg: 0.0
-  - name: ScannedFile
-    type: class
-    cc_avg: 0.0
-  - name: scan_project
-    type: function
-    cc: 8
-    fan_out: 17
 - path: src/redup/cli_app/main.py
-  lines: 381
+  lines: 399
   classes: 0
   methods: 11
-  cc_max: 8
+  cc_max: 9
   inbound_deps: 0
   exports:
   - name: scan
     type: function
-    cc: 1
+    cc: 2
   - name: diff
     type: function
     cc: 3
@@ -170,6 +183,23 @@ modules:
   - name: info
     type: function
     cc: 3
+- path: src/redup/core/scanner.py
+  lines: 201
+  classes: 2
+  methods: 6
+  cc_max: 9
+  inbound_deps: 2
+  exports:
+  - name: CodeBlock
+    type: class
+    cc_avg: 0.0
+  - name: ScannedFile
+    type: class
+    cc_avg: 0.0
+  - name: scan_project
+    type: function
+    cc: 8
+    fan_out: 17
 - path: src/redup/reporters/toon_reporter.py
   lines: 106
   classes: 0
@@ -256,6 +286,16 @@ modules:
   - name: create_sample_redup_toml
     type: function
     cc: 1
+- path: src/redup/reporters/json_reporter.py
+  lines: 73
+  classes: 0
+  methods: 3
+  cc_max: 5
+  inbound_deps: 3
+  exports:
+  - name: to_json
+    type: function
+    cc: 3
 - path: src/redup/reporters/yaml_reporter.py
   lines: 34
   classes: 0
@@ -266,16 +306,6 @@ modules:
   - name: to_yaml
     type: function
     cc: 4
-- path: src/redup/reporters/json_reporter.py
-  lines: 66
-  classes: 0
-  methods: 3
-  cc_max: 3
-  inbound_deps: 3
-  exports:
-  - name: to_json
-    type: function
-    cc: 3
 - path: src/redup/core/models.py
   lines: 157
   classes: 9
@@ -357,6 +387,9 @@ hotspots:
   fan_out: 17
   note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
     \ Tuple of ("
+- name: scan_project_parallel
+  fan_out: 17
+  note: Scan project files in parallel for better performance on large projects.
 - name: _load_duplication_map
   fan_out: 15
   note: Load a DuplicationMap from a JSON file.
@@ -369,11 +402,18 @@ hotspots:
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
+- name: _write_results
+  fan_out: 11
+  note: Write scan results to output files.
 - name: config
   fan_out: 11
   note: Manage reDUP configuration.
 refactoring:
   priorities:
+  - action: Split scan_project_parallel (CC=16 → target CC<10)
+    impact: medium
+    effort: low
+    module: parallel_scanner.py
   - action: Split compare_scans (CC=18 → target CC<10)
     impact: medium
     effort: low
@@ -381,12 +421,15 @@ refactoring:
   - action: Reduce scan_project fan-out (currently 17)
     impact: medium
     effort: medium
+  - action: Reduce scan_project_parallel fan-out (currently 17)
+    impact: medium
+    effort: medium
   - action: Reduce _load_duplication_map fan-out (currently 15)
     impact: medium
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 4.1
-  critical: 7
-  lines: 3960
+  cc_avg: 4.2
+  critical: 8
+  lines: 4230
   note: Automated analysis

@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.3.1-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.3.2-green.svg)](https://pypi.org/project/redup/)
 
 reDUP scans codebases for duplicated functions, blocks, and structural patterns — then builds a prioritized refactoring map that LLMs can consume to eliminate redundancy systematically.
 
@@ -13,14 +13,18 @@ reDUP scans codebases for duplicated functions, blocks, and structural patterns 
 
 - **Exact duplicate detection** via SHA-256 block hashing
 - **Structural clone detection** — same AST shape, different variable names
+- **LSH near-duplicate detection** for large code blocks (>50 lines)
+- **Multi-language support** — Python, JavaScript, TypeScript, Go, Rust, Java, C/C++
+- **Parallel scanning** for large projects (2x+ performance improvement)
 - **Fuzzy near-duplicate matching** via SequenceMatcher / rapidfuzz
-- **Function-level analysis** using Python AST extraction
+- **Function-level analysis** using Python AST and tree-sitter extraction
 - **Impact scoring** — prioritizes duplicates by `saved_lines × similarity`
 - **Refactoring planner** — generates concrete extract/inline suggestions
-- **Three output formats**: JSON (tooling), YAML (humans), TOON (LLMs)
-- **CLI** with `typer` + `rich` for interactive use
+- **Multiple output formats**: JSON, YAML, TOON, Markdown
+- **Configuration system** — TOML files and environment variables
+- **CLI commands**: `scan`, `diff`, `check`, `config`, `info`
+- **CI integration** with configurable quality gates
 - **Clean output** — no syntax warnings from external libraries
-- **Optimized performance** — reduced complexity and improved maintainability
 
 ## Installation
 
@@ -48,6 +52,23 @@ redup scan .
 # Scan with JSON output saved to file
 redup scan ./src --format json --output ./reports/
 
+# Parallel scanning for large projects
+redup scan . --parallel --max-workers 4
+
+# Multi-language scanning
+redup scan . --ext ".py,.js,.ts,.go"
+
+# CI gate with thresholds
+redup check . --max-groups 10 --max-lines 100
+
+# Compare two scans
+redup diff before.json after.json
+
+# Initialize configuration
+redup config --init
+```
+
+```bash
 # Scan with all formats
 redup scan . --format all --output ./redup_output/
 
@@ -60,6 +81,37 @@ redup scan . --min-lines 5 --min-sim 0.9
 # Show installed optional dependencies
 redup info
 ```
+
+### Configuration
+
+Create a `redup.toml` file:
+
+```toml
+[scan]
+extensions = ".py,.js,.ts,.go,.rs,.java"
+min_lines = 3
+min_similarity = 0.85
+include_tests = false
+
+[lsh]
+enabled = true
+min_lines = 50
+threshold = 0.8
+
+[check]
+max_groups = 10
+max_lines = 100
+
+[output]
+format = "toon"
+output = "redup_output"
+
+[reporting]
+include_snippets = true
+generate_suggestions = true
+```
+
+Or use `[tool.redup]` in `pyproject.toml`. Environment variables with `REDUP_` prefix override file settings.
 
 ### Python API
 

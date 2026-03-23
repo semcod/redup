@@ -1,18 +1,18 @@
-# redup/duplication | 4 groups | 22f 2886L | 2026-03-23
+# redup/duplication | 4 groups | 23f 3148L | 2026-03-23
 
 SUMMARY:
-  files_scanned: 22
-  total_lines:   2886
+  files_scanned: 23
+  total_lines:   3148
   dup_groups:    4
   dup_fragments: 8
   saved_lines:   100
-  scan_ms:       821
+  scan_ms:       932
 
 DUPLICATES[4] (ranked by impact):
-  [S5107] ! STRU  _extract_functions_go  L=50 N=2 saved=50 sim=0.99
+  [S6226] ! STRU  _extract_functions_go  L=50 N=2 saved=50 sim=0.99
       src/redup/core/ts_extractor.py:136-185  (_extract_functions_go)
       src/redup/core/ts_extractor.py:188-237  (_extract_functions_rust)
-  [S5108] ! STRU  traverse  L=44 N=2 saved=44 sim=0.99
+  [S6227] ! STRU  traverse  L=44 N=2 saved=44 sim=0.99
       src/redup/core/ts_extractor.py:140-183  (traverse)
       src/redup/core/ts_extractor.py:192-235  (traverse)
   [S0947]   STRU  hash_block  L=3 N=2 saved=3 sim=0.91

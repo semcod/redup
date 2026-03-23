@@ -28,7 +28,7 @@ app = typer.Typer(
 )
 
 
-OutputFormat = Literal["json", "yaml", "toon", "all"]
+OutputFormat = Literal["json", "yaml", "toon", "markdown", "all"]
 
 
 DEFAULT_PATH = Path(".")
@@ -92,14 +92,12 @@ def _build_config_with_file_support(
 
 def _print_scan_header(
     path: Path,
-    ext_list: list[str],
-    min_lines: int,
-    min_similarity: float,
+    config: ScanConfig,
 ) -> None:
     """Print scan configuration header."""
     typer.echo(f"reDUP v{redup.__version__} — scanning {path.resolve()}")
-    typer.echo(f"  extensions: {', '.join(ext_list)}")
-    typer.echo(f"  min_lines: {min_lines}, min_similarity: {min_similarity}")
+    typer.echo(f"  extensions: {', '.join(config.extensions)}")
+    typer.echo(f"  min_lines: {config.min_block_lines}, min_similarity: {config.min_similarity}")
     typer.echo("")
 
 
@@ -172,25 +170,25 @@ def scan(
         "--output", "-o",
         help="Output directory or file path. Defaults to stdout.",
     ),
-    extensions: str = typer.Option(
-        ".py",
+    extensions: str | None = typer.Option(
+        None,
         "--ext", "-e",
-        help="Comma-separated file extensions to scan.",
+        help="Comma-separated file extensions to scan. Overrides config.",
     ),
-    min_lines: int = typer.Option(
-        3,
+    min_lines: int | None = typer.Option(
+        None,
         "--min-lines",
-        help="Minimum block size (lines) to consider as duplicate.",
+        help="Minimum block size (lines). Overrides config.",
     ),
-    min_similarity: float = typer.Option(
-        0.85,
+    min_similarity: float | None = typer.Option(
+        None,
         "--min-sim",
-        help="Minimum similarity score (0.0-1.0) for fuzzy matches.",
+        help="Minimum similarity score (0.0-1.0). Overrides config.",
     ),
-    include_tests: bool = typer.Option(
-        False,
+    include_tests: bool | None = typer.Option(
+        None,
         "--include-tests",
-        help="Include test files in analysis.",
+        help="Include test files. Overrides config.",
     ),
     functions_only: bool = typer.Option(
         False,
@@ -209,9 +207,9 @@ def scan(
     ),
 ) -> None:
     """Scan a project for code duplicates and generate a refactoring map."""
-    config = _build_config(path, extensions, min_lines, min_similarity, include_tests)
+    config = _build_config_with_file_support(path, extensions, min_lines, min_similarity, include_tests)
 
-    _print_scan_header(path, config.extensions, min_lines, min_similarity)
+    _print_scan_header(path, config)
 
     # Choose analysis method
     if parallel:
@@ -270,61 +268,78 @@ def check(
         dir_okay=True,
         file_okay=False,
     ),
-    max_groups: int = typer.Option(
-        10,
+    max_groups: int | None = typer.Option(
+        None,
         "--max-groups",
-        help="Maximum allowed duplicate groups (default: 10).",
+        help="Maximum allowed duplicate groups. Overrides config.",
     ),
-    max_saved_lines: int = typer.Option(
-        100,
+    max_saved_lines: int | None = typer.Option(
+        None,
         "--max-lines",
-        help="Maximum allowed recoverable lines (default: 100).",
+        help="Maximum allowed recoverable lines. Overrides config.",
     ),
-    extensions: str = typer.Option(
-        ".py",
+    extensions: str | None = typer.Option(
+        None,
         "--ext", "-e",
-        help="Comma-separated file extensions to scan.",
+        help="Comma-separated file extensions to scan. Overrides config.",
     ),
-    min_lines: int = typer.Option(
-        3,
+    min_lines: int | None = typer.Option(
+        None,
         "--min-lines",
-        help="Minimum block size (lines) to consider as duplicate.",
+        help="Minimum block size (lines). Overrides config.",
     ),
-    min_similarity: float = typer.Option(
-        0.85,
+    min_similarity: float | None = typer.Option(
+        None,
         "--min-sim",
-        help="Minimum similarity score (0.0-1.0) for fuzzy matches.",
+        help="Minimum similarity score (0.0-1.0). Overrides config.",
     ),
-    include_tests: bool = typer.Option(
-        False,
+    include_tests: bool | None = typer.Option(
+        None,
         "--include-tests",
-        help="Include test files in analysis.",
+        help="Include test files. Overrides config.",
     ),
 ) -> None:
     """Check project for duplicates and exit with non-zero code if thresholds exceeded."""
-    config = _build_config(path, extensions, min_lines, min_similarity, include_tests)
+    file_config = load_config()
+    
+    # Override with CLI arguments
+    if extensions is not None:
+        file_config["extensions"] = extensions
+    if min_lines is not None:
+        file_config["min_lines"] = min_lines
+    if min_similarity is not None:
+        file_config["min_similarity"] = min_similarity
+    if include_tests is not None:
+        file_config["include_tests"] = include_tests
+    
+    config = config_to_scan_config(file_config, path)
+    
+    # Get thresholds from config or CLI
+    check_config = file_config.get("check", {})
+    threshold_groups = max_groups if max_groups is not None else check_config.get("max_groups", 10)
+    threshold_lines = max_saved_lines if max_saved_lines is not None else check_config.get("max_lines", 100)
     
     dup_map = analyze(config=config, function_level_only=True)
     
     # Check thresholds
-    groups_exceeded = dup_map.total_groups > max_groups
-    lines_exceeded = dup_map.total_saved_lines > max_saved_lines
+    groups_exceeded = dup_map.total_groups > threshold_groups
+    lines_exceeded = dup_map.total_saved_lines > threshold_lines
     
     if groups_exceeded or lines_exceeded:
         typer.echo(f"❌ reDUP check FAILED - thresholds exceeded:", err=True)
-        typer.echo(f"  Duplicate groups: {dup_map.total_groups} (max: {max_groups})", err=True)
-        typer.echo(f"  Recoverable lines: {dup_map.total_saved_lines} (max: {max_saved_lines})", err=True)
+        typer.echo(f"  Duplicate groups: {dup_map.total_groups} (max: {threshold_groups})", err=True)
+        typer.echo(f"  Recoverable lines: {dup_map.total_saved_lines} (max: {threshold_lines})", err=True)
         
         if groups_exceeded:
-            typer.echo(f"  ❌ Too many duplicate groups ({dup_map.total_groups} > {max_groups})", err=True)
+            typer.echo(f"  ❌ Too many duplicate groups ({dup_map.total_groups} > {threshold_groups})", err=True)
         if lines_exceeded:
-            typer.echo(f"  ❌ Too many duplicate lines ({dup_map.total_saved_lines} > {max_saved_lines})", err=True)
+            typer.echo(f"  ❌ Too many duplicate lines ({dup_map.total_saved_lines} > {threshold_lines})", err=True)
         
         raise typer.Exit(1)
     else:
         typer.echo(f"✅ reDUP check PASSED")
-        typer.echo(f"  Duplicate groups: {dup_map.total_groups}/{max_groups}")
-        typer.echo(f"  Recoverable lines: {dup_map.total_saved_lines}/{max_saved_lines}")
+        typer.echo(f"  Duplicate groups: {dup_map.total_groups}/{threshold_groups}")
+        typer.echo(f"  Recoverable lines: {dup_map.total_saved_lines}/{threshold_lines}")
         # Don't exit - just return normally (exit code 0)
         return
 
