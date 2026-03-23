@@ -1,12 +1,12 @@
-# redup/duplication | 4 groups | 33f 6665L | 2026-03-23
+# redup/duplication | 4 groups | 31f 6496L | 2026-03-23
 
 SUMMARY:
-  files_scanned: 33
-  total_lines:   6665
+  files_scanned: 31
+  total_lines:   6496
   dup_groups:    4
   dup_fragments: 13
   saved_lines:   206
-  scan_ms:       582
+  scan_ms:       188
 
 DUPLICATES[4] (ranked by impact):
   [b81251efea6aa448] !! EXAC  traverse  L=31 N=6 saved=155 sim=1.00

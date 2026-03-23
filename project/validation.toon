@@ -1,11 +1,11 @@
 Using .gitignore from .
-Excluded 25773 files by .gitignore
-# vallm batch | 0f | 55✓ 54✗
+Excluded 25814 files by .gitignore
+# vallm batch | 0f | 55✓ 52✗
 
 SUMMARY:
   total: 0
   passed: 55
-  failed: 54
+  failed: 52
   success: 0.0%
 
 FILES:
@@ -232,12 +232,8 @@ FAILED:
   ✗ code2llm_output/context.md: Unable to process file (unsupported format or binary)
   ✗ code2llm_output/README.md: Unable to process file (unsupported format or binary)
   ✗ code2llm_output/analysis.toon: Unable to process file (unsupported format or binary)
-  ✗ .idea/misc.xml: Unable to process file (unsupported format or binary)
-  ✗ .idea/workspace.xml: Unable to process file (unsupported format or binary)
-  ✗ .idea/redup.iml: Unable to process file (unsupported format or binary)
-  ✗ .idea/vcs.xml: Unable to process file (unsupported format or binary)
-  ✗ .idea/modules.xml: Unable to process file (unsupported format or binary)
   ✗ .idea/.gitignore: Unable to process file (unsupported format or binary)
+  ✗ .pytest_cache/.gitignore: Unable to process file (unsupported format or binary)
   ✗ project/validation.toon: Unable to process file (unsupported format or binary)
   ✗ project/project.toon: Unable to process file (unsupported format or binary)
   ✗ project/compact_flow.mmd: Unable to process file (unsupported format or binary)
@@ -258,9 +254,11 @@ FAILED:
   ✗ project/analysis.toon: Unable to process file (unsupported format or binary)
   ✗ project/duplication.toon: Unable to process file (unsupported format or binary)
   ✗ proxy_analysis/duplication.toon: Unable to process file (unsupported format or binary)
+  ✗ .ruff_cache/.gitignore: Unable to process file (unsupported format or binary)
+  ✗ .mypy_cache/.gitignore: Unable to process file (unsupported format or binary)
+  ✗ .venv/.gitignore: Unable to process file (unsupported format or binary)
+  ✗ venv/.gitignore: Unable to process file (unsupported format or binary)
   ✗ .redup/cache/hash_cache.db: Binary file (skipped)
-  ✗ .idea/inspectionProfiles/Project_Default.xml: Unable to process file (unsupported format or binary)
-  ✗ .idea/inspectionProfiles/profiles_settings.xml: Unable to process file (unsupported format or binary)
   ✗ src/redup/core/hasher.py: Validation fail
   ✗ src/redup/core/scanner.py.backup: Unable to process file (unsupported format or binary)
   ✗ src/redup/core/utils/function_extractor.py: Validation fail
