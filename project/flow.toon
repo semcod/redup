@@ -1,6 +1,6 @@
-# redup/flow | 53 func | 5 pipelines | 1 hub-types | 2026-03-23
+# redup/flow | 77 func | 7 pipelines | 2 hub-types | 2026-03-23
 
-PIPELINES[5] (Core:4, NLP:1):
+PIPELINES[7] (Core:6, NLP:1):
   Src [Core]: ? → bool
               → main()                                  CC=5    IO ▶
               → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=1    pure
@@ -12,14 +12,24 @@ PIPELINES[5] (Core:4, NLP:1):
               PURITY: 5/7 pure  BOTTLENECK: _find_structural_groups(CC=9)
 
   Src [Core]: Path → bool
-              → scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None CC=9    IO ▶
+              → scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None CC=1    pure ▶
               → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=1    pure
               → _find_duplicates_phase(all_blocks:list[CodeBlock], config:ScanConfig) → list[DuplicateGroup] CC=1    pure
               → _find_structural_groups(index:HashIndex, exact_groups_list:list[DuplicateGroup]) → list[DuplicateGroup] CC=9    mutation
               → find_structural_duplicates(index:HashIndex) → dict[str, list[HashedBlock]] CC=1    pure
               → _find_duplicates(hash_dict:dict[str, list[HashedBlock]]) → dict[str, list[HashedBlock]] CC=4    pure
               → _blocks_from_different_locations(blocks:list[HashedBlock]) → bool CC=2    pure ■
-              PURITY: 5/7 pure  BOTTLENECK: scan(CC=9)
+              PURITY: 6/7 pure  BOTTLENECK: _find_structural_groups(CC=9)
+
+  Src [Core]: Path → bool
+              → check(path:Path, max_groups:int, max_saved_lines:int, extensions:str, min_lines:int, min_similarity:float, include_tests:bool) → None CC=5    pure ▶
+              → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=1    pure
+              → _find_duplicates_phase(all_blocks:list[CodeBlock], config:ScanConfig) → list[DuplicateGroup] CC=1    pure
+              → _find_structural_groups(index:HashIndex, exact_groups_list:list[DuplicateGroup]) → list[DuplicateGroup] CC=9    mutation
+              → find_structural_duplicates(index:HashIndex) → dict[str, list[HashedBlock]] CC=1    pure
+              → _find_duplicates(hash_dict:dict[str, list[HashedBlock]]) → dict[str, list[HashedBlock]] CC=4    pure
+              → _blocks_from_different_locations(blocks:list[HashedBlock]) → bool CC=2    pure ■
+              PURITY: 6/7 pure  BOTTLENECK: _find_structural_groups(CC=9)
 
   Src [Core]: ? → str
               → main()                                  CC=5    IO ▶
@@ -31,23 +41,30 @@ PIPELINES[5] (Core:4, NLP:1):
               → _hash_text(text:str, normalizer:Callable[[str], str]) → str CC=1    pure ■
               PURITY: 6/7 pure  BOTTLENECK: main(CC=5)
 
-  Src [Core]: str → str
-              → _normalize_ast_text(text:str) → str     CC=2    pure ▶
-              → _ast_to_normalized_string(tree:object) → str CC=3    mutation
-              → _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None CC=14   pure
-              → _normalize_constant(value:Any) → str    CC=3    pure ■
-              PURITY: 3/4 pure  BOTTLENECK: _process_ast_node(CC=14)
-
   Src [NLP]: str → str
               → fuzzy_similarity(text_a:str, text_b:str) → float CC=2    pure ▶
               → sequence_similarity(text_a:str, text_b:str) → float CC=3    pure
               → _normalize_text(text:str) → str         CC=6    mutation ■
               PURITY: 2/3 pure  BOTTLENECK: _normalize_text(CC=6)
 
+  Src [Core]: str → str | None
+              → _normalize_ast_text(text:str) → str     CC=2    pure ▶
+              → _ast_to_normalized_string(tree:object) → str CC=3    mutation
+              → _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None CC=2    pure ■
+              PURITY: 2/3 pure  BOTTLENECK: _ast_to_normalized_string(CC=3)
+
+  Src [Core]: Path → bool
+              → diff(before:Path, after:Path) → None    CC=3    pure ▶
+              → compare_scans(before_file:Path, after_file:Path) → DiffResult CC=18   mutation  !!
+              → _groups_match(group1:DuplicateGroup, group2:DuplicateGroup) → bool CC=7    pure ■
+              PURITY: 2/3 pure  BOTTLENECK: compare_scans(CC=18)
+
 
 TRANSFORMS (fan-out ≥10):
-  scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None fan=18   fan=18
-  scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats] fan=15   fan=15
+  scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats] fan=17   fan=17
+  _load_duplication_map(file_path:Path) → DuplicationMap  fan=15   fan=15
+  extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock] fan=13   fan=13
+  compare_scans(before_file:Path, after_file:Path) → DiffResult fan=13   fan=13
   _find_structural_groups(index:HashIndex, exact_groups_list:list[DuplicateGroup]) → list[DuplicateGroup] fan=11   fan=11
 
 CONTRACTS:
@@ -86,7 +103,37 @@ CONTRACTS:
     scan(path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool) → None
       IN:  path:Path, format:OutputFormat, output:Path | None, extensions:str, min_lines:int, min_similarity:float, include_tests:bool, functions_only:bool
       OUT: None
-      SIDE-EFFECT: IO(mkdir, write_text)
+
+    analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap
+      IN:  config:ScanConfig | None, function_level_only:bool
+      OUT: DuplicationMap
+
+    _find_duplicates_phase(all_blocks:list[CodeBlock], config:ScanConfig) → list[DuplicateGroup]
+      IN:  all_blocks:list[CodeBlock], config:ScanConfig
+      OUT: list[DuplicateGroup]
+
+    _find_structural_groups(index:HashIndex, exact_groups_list:list[DuplicateGroup]) → list[DuplicateGroup]
+      IN:  index:HashIndex, exact_groups_list:list[DuplicateGroup]
+      OUT: list[DuplicateGroup]
+      SIDE-EFFECT: pure
+
+    find_structural_duplicates(index:HashIndex) → dict[str, list[HashedBlock]]
+      IN:  index:HashIndex
+      OUT: dict[str, list[HashedBlock]]
+
+    _find_duplicates(hash_dict:dict[str, list[HashedBlock]]) → dict[str, list[HashedBlock]]
+      IN:  hash_dict:dict[str, list[HashedBlock]]
+      OUT: dict[str, list[HashedBlock]]
+
+    _blocks_from_different_locations(blocks:list[HashedBlock]) → bool
+      IN:  blocks:list[HashedBlock]
+      OUT: bool
+
+  Pipeline: Src
+    check(path:Path, max_groups:int, max_saved_lines:int, extensions:str, min_lines:int, min_similarity:float, include_tests:bool) → None
+      IN:  path:Path, max_groups:int, max_saved_lines:int, extensions:str, min_lines:int, min_similarity:float, include_tests:bool
+      OUT: None
+      INVARIANT: raises on invalid input
 
     analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap
       IN:  config:ScanConfig | None, function_level_only:bool
@@ -144,6 +191,21 @@ CONTRACTS:
       OUT: str
 
   Pipeline: Src
+    fuzzy_similarity(text_a:str, text_b:str) → float
+      IN:  text_a:str, text_b:str
+      OUT: float
+
+    sequence_similarity(text_a:str, text_b:str) → float
+      IN:  text_a:str, text_b:str
+      OUT: float
+
+    _normalize_text(text:str) → str
+      IN:  text:str
+      OUT: str
+      SIDE-EFFECT: pure
+      INVARIANT: len(output) <= len(input)
+
+  Pipeline: Src
     _normalize_ast_text(text:str) → str
       IN:  text:str
       OUT: str
@@ -159,61 +221,60 @@ CONTRACTS:
       IN:  node, name_map:dict[str, str], counter:list[int]
       OUT: str | None
 
-    _normalize_constant(value:Any) → str
-      IN:  value:Any
-      OUT: str
-      INVARIANT: len(output) <= len(input)
-
   Pipeline: Src
-    fuzzy_similarity(text_a:str, text_b:str) → float
-      IN:  text_a:str, text_b:str
-      OUT: float
+    diff(before:Path, after:Path) → None
+      IN:  before:Path, after:Path
+      OUT: None
 
-    sequence_similarity(text_a:str, text_b:str) → float
-      IN:  text_a:str, text_b:str
-      OUT: float
-
-    _normalize_text(text:str) → str
-      IN:  text:str
-      OUT: str
+    compare_scans(before_file:Path, after_file:Path) → DiffResult
+      IN:  before_file:Path, after_file:Path
+      OUT: DiffResult
       SIDE-EFFECT: pure
-      INVARIANT: len(output) <= len(input)
+      SMELL: CC=18 → split
+
+    _groups_match(group1:DuplicateGroup, group2:DuplicateGroup) → bool
+      IN:  group1:DuplicateGroup, group2:DuplicateGroup
+      OUT: bool
 
 
-DATA_TYPES (by cross-function usage) [52 annotated, 0 inferred / 53 functions]:
-  str                  consumed:17  produced:13   !! HUB-TYPE → split interface
-  list[DuplicateGroup] consumed:3   produced:6  
-  bool                 consumed:5   produced:3  
-  float                consumed:5   produced:3  
+DATA_TYPES (by cross-function usage) [76 annotated, 0 inferred / 77 functions]:
+  str                  consumed:27  produced:14   !! HUB-TYPE → split interface
+  list[str]            consumed:8   produced:6  
+  Path                 consumed:12  produced:0    !! HUB-TYPE → split interface
+  bool                 consumed:7   produced:5  
+  DuplicationMap       consumed:9   produced:2  
+  float                consumed:8   produced:3  
+  list[DuplicateGroup] consumed:4   produced:6  
+  list[CodeBlock]      consumed:2   produced:7  
+  int                  consumed:9   produced:0    input-heavy (read-only flow)
   list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
-  DuplicationMap       consumed:4   produced:1  
-  list[MatchResult]    consumed:2   produced:3  
+  DuplicateGroup       consumed:5   produced:1    input-heavy (read-only flow)
+  ScanConfig           consumed:3   produced:2  
   HashIndex            consumed:4   produced:1  
-  list[CodeBlock]      consumed:2   produced:2    narrow scope
-  int                  consumed:4   produced:0    narrow scope
+  list[MatchResult]    consumed:2   produced:3  
   dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
-  ScanConfig           consumed:3   produced:1    narrow scope
-  DuplicateGroup       consumed:3   produced:1    narrow scope
-  Path                 consumed:3   produced:0    narrow scope
-  list[str]            consumed:3   produced:0    narrow scope
+  Path | None          consumed:3   produced:0    narrow scope
+  list                 consumed:3   produced:0    narrow scope
   ScanConfig | None    consumed:3   produced:0    narrow scope
-  dict                 consumed:0   produced:2    narrow scope
+  dict[str, str]       consumed:2   produced:0    narrow scope
   tuple[list[ScannedFile], ScanStats] consumed:0   produced:2    narrow scope
-  Path | None          consumed:2   produced:0    narrow scope
-  list[int]            consumed:2   produced:0    narrow scope
 
   HUB TYPES (consumed ≥10):
-    str → 17 consumers → split into:
+    str → 27 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+    Path → 12 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        main, scan_project, to_json, to_yaml, _write_output, scan
-  Mutation:  generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, _blocks_to_group, _deduplicate_groups, _process_blocks, _find_exact_groups, _find_structural_groups, _match_results_to_blocks, to_toon
+  IO:        main, scan_project, to_json, to_yaml, _load_duplication_map, _write_output, _write_results
+  Mutation:  generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, _blocks_to_group, _deduplicate_groups, _process_blocks, _find_exact_groups, _find_structural_groups, _match_results_to_blocks, _extract_functions_javascript
   Pure:      _common_prefix, _suggest_module_name, _assess_risk, _choose_action, _should_exclude, _collect_files, _is_test_file, DuplicationMap.sorted_by_impact, analyze, _ensure_config
 
   PIPELINE PURITY:
     Src             ██░░ 71% pure
-    Src             ██░░ 71% pure
     Src             ███░ 85% pure
-    Src             ███░ 75% pure
+    Src             ███░ 85% pure
+    Src             ███░ 85% pure
+    Src             ██░░ 66% pure
+    Src             ██░░ 66% pure
     Src             ██░░ 66% pure

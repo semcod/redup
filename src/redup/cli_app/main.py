@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import warnings
 from collections.abc import Callable
-from enum import Enum
+from typing import Literal
 from pathlib import Path
 
 import typer
@@ -13,9 +13,11 @@ import typer
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 import redup  # noqa: E402
+from redup.core.config import config_to_scan_config, create_sample_redup_toml, load_config  # noqa: E402
 from redup.core.models import DuplicationMap, ScanConfig  # noqa: E402
 from redup.core.pipeline import analyze  # noqa: E402
 from redup.reporters.json_reporter import to_json  # noqa: E402
+from redup.reporters.markdown_reporter import to_markdown  # noqa: E402
 from redup.reporters.toon_reporter import to_toon  # noqa: E402
 from redup.reporters.yaml_reporter import to_yaml  # noqa: E402
 
@@ -26,15 +28,11 @@ app = typer.Typer(
 )
 
 
-class OutputFormat(str, Enum):
-    json = "json"
-    yaml = "yaml"
-    toon = "toon"
-    all = "all"
+OutputFormat = Literal["json", "yaml", "toon", "all"]
 
 
 DEFAULT_PATH = Path(".")
-DEFAULT_FORMAT = OutputFormat.toon
+DEFAULT_FORMAT: OutputFormat = "toon"
 DEFAULT_OUTPUT: Path | None = None
 
 
@@ -68,6 +66,30 @@ def _build_config(
     )
 
 
+def _build_config_with_file_support(
+    path: Path,
+    extensions: str | None,
+    min_lines: int | None,
+    min_similarity: float | None,
+    include_tests: bool | None
+) -> ScanConfig:
+    """Build scan configuration supporting config files and CLI overrides."""
+    # Load configuration from files
+    file_config = load_config()
+    
+    # Use CLI arguments to override file config (if provided)
+    if extensions is not None:
+        file_config["extensions"] = extensions
+    if min_lines is not None:
+        file_config["min_lines"] = min_lines
+    if min_similarity is not None:
+        file_config["min_similarity"] = min_similarity
+    if include_tests is not None:
+        file_config["include_tests"] = include_tests
+    
+    return config_to_scan_config(file_config, path)
+
+
 def _print_scan_header(
     path: Path,
     ext_list: list[str],
@@ -94,14 +116,14 @@ def _print_scan_summary(dup_map: DuplicationMap) -> None:
 
 def _write_results(
     dup_map: DuplicationMap,
-    format: OutputFormat,
+    format: str,
     output: Path | None,
     path: Path,
 ) -> None:
     """Write scan results to output files."""
     output_dir = output
 
-    if format == OutputFormat.all:
+    if format == "all":
         if output_dir is None:
             output_dir = path / "redup_output"
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -110,18 +132,21 @@ def _write_results(
             ("JSON", to_json, "json"),
             ("YAML", to_yaml, "yaml"),
             ("TOON", to_toon, "toon"),
+            ("Markdown", to_markdown, "md"),
         ]
         for _fmt, renderer, suffix in renderers:
             content = renderer(dup_map)
             target = output_dir / f"duplication.{suffix}"
             target.write_text(content, encoding="utf-8")
             typer.echo(f"  → {target}")
-    elif format == OutputFormat.json:
+    elif format == "json":
         _write_output(to_json(dup_map), output_dir, "json")
-    elif format == OutputFormat.yaml:
+    elif format == "yaml":
         _write_output(to_yaml(dup_map), output_dir, "yaml")
-    elif format == OutputFormat.toon:
+    elif format == "toon":
         _write_output(to_toon(dup_map), output_dir, "toon")
+    elif format == "markdown":
+        _write_output(to_markdown(dup_map), output_dir, "md")
 
 
 @app.command()
@@ -133,10 +158,10 @@ def scan(
         dir_okay=True,
         file_okay=False,
     ),
-    format: OutputFormat = typer.Option(
-        DEFAULT_FORMAT,
+    format: str = typer.Option(
+        "toon",
         "--format", "-f",
-        help="Output format.",
+        help="Output format (json, yaml, toon, markdown, all).",
     ),
     output: Path | None = typer.Option(
         DEFAULT_OUTPUT,
@@ -284,6 +309,50 @@ def check(
         typer.echo(f"  Recoverable lines: {dup_map.total_saved_lines}/{max_saved_lines}")
         # Don't exit - just return normally (exit code 0)
         return
+
+
+@app.command()
+def config(
+    init: bool = typer.Option(
+        False,
+        "--init",
+        help="Create a sample redup.toml configuration file.",
+    ),
+    show: bool = typer.Option(
+        False,
+        "--show",
+        help="Show current configuration (files + env vars).",
+    ),
+) -> None:
+    """Manage reDUP configuration."""
+    if init:
+        config_file = Path.cwd() / "redup.toml"
+        if config_file.exists():
+            typer.echo(f"❌ Configuration file already exists: {config_file}")
+            raise typer.Exit(1)
+        
+        content = create_sample_redup_toml()
+        config_file.write_text(content, encoding="utf-8")
+        typer.echo(f"✅ Created sample configuration: {config_file}")
+        typer.echo("Edit the file to customize reDUP settings.")
+        return
+    
+    if show:
+        config = load_config()
+        typer.echo("Current reDUP configuration:")
+        typer.echo("=" * 40)
+        
+        if not config:
+            typer.echo("No configuration found (using defaults)")
+            return
+        
+        for key, value in sorted(config.items()):
+            typer.echo(f"  {key}: {value}")
+        return
+    
+    # Default: show help
+    typer.echo("Use --init to create a sample configuration file.")
+    typer.echo("Use --show to display current configuration.")
 
 
 @app.command()

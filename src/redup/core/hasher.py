@@ -149,12 +149,12 @@ def _hash_text(text: str, normalizer: Callable[[str], str]) -> str:
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
 
 
-def hash_block(text: str) -> str:
+def hash_block(text: str) -> str:  # nodup: accepted thin API wrapper
     """SHA-256 hash of normalized text."""
     return _hash_text(text, _normalize_text)
 
 
-def hash_block_structural(text: str) -> str:
+def hash_block_structural(text: str) -> str:  # nodup: accepted thin API wrapper
     """SHA-256 hash of deeply normalized text (variable names replaced)."""
     return _hash_text(text, _normalize_ast_text)
 
@@ -213,12 +213,12 @@ def _find_duplicates(hash_dict: dict[str, list[HashedBlock]]) -> dict[str, list[
     }
 
 
-def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
+def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:  # nodup: accepted thin API wrapper
     """Find groups of blocks with identical normalized text."""
     return _find_duplicates(index.exact)
 
 
-def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
+def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:  # nodup: accepted thin API wrapper
     """Find groups of blocks with identical structure (names may differ)."""
     return _find_duplicates(index.structural)
 

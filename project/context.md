@@ -4,12 +4,12 @@
 
 - **Project**: redup
 - **Language**: python
-- **Files**: 10
-- **Lines**: 2574
-- **Functions**: 52
-- **Classes**: 15
-- **Avg CC**: 4.1
-- **Critical (CC≥10)**: 2
+- **Files**: 12
+- **Lines**: 3350
+- **Functions**: 76
+- **Classes**: 16
+- **Avg CC**: 4.0
+- **Critical (CC≥10)**: 4
 
 ## Architecture
 
@@ -26,45 +26,49 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 170L, 3 functions)
+### src/redup/cli_app/ (2 files, 313L, 9 functions)
 
-- `main.py` — 169L, 3 methods, CC↑9
+- `main.py` — 312L, 9 methods, CC↑7
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (7 files, 1054L, 44 functions)
+### src/redup/core/ (9 files, 1656L, 57 functions)
 
-- `hasher.py` — 235L, 15 methods, CC↑14
-- `pipeline.py` — 256L, 12 methods, CC↑9
-- `scanner.py` — 193L, 6 methods, CC↑9
+- `differ.py` — 246L, 5 methods, CC↑18
+- `ts_extractor.py` — 353L, 8 methods, CC↑11
+- `pipeline.py` — 257L, 12 methods, CC↑9
+- `scanner.py` — 201L, 6 methods, CC↑9
 - `matcher.py` — 107L, 5 methods, CC↑7
-- `planner.py` — 110L, 5 methods, CC↑7
-- _2 more files_
+- _4 more files_
 
-### src/redup/reporters/ (4 files, 176L, 5 functions)
+### src/redup/reporters/ (4 files, 207L, 10 functions)
 
-- `toon_reporter.py` — 75L, 1 methods, CC↑12
+- `toon_reporter.py` — 106L, 6 methods, CC↑8
 - `yaml_reporter.py` — 34L, 1 methods, CC↑4
 - `json_reporter.py` — 66L, 3 methods, CC↑3
 - `__init__.py` — 1L, 0 methods, CC↑0
 
 ## Key Exports
 
+- **compare_scans** (function, CC=18) ⚠ split
 
 ## Hotspots (High Fan-Out)
 
-- **scan** — fan-out=18: Scan a project for code duplicates and generate a refactoring map.
-- **scan_project** — fan-out=15: Scan a project and return files with their code blocks.
+- **scan_project** — fan-out=17: Scan a project and return files with their code blocks.
 
 Returns:
     Tuple of (
+- **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
+- **extract_functions_treesitter** — fan-out=13: Extract functions using tree-sitter for multi-language support.
+- **compare_scans** — fan-out=13: Compare two reDUP scan results and return the differences.
 - **_find_structural_groups** — fan-out=11: Find structural duplicate groups.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Reduce scan fan-out (currently 18) | medium | medium |
-| 2 | Reduce scan_project fan-out (currently 15) | medium | medium |
+| 1 | Split compare_scans (CC=18 → target CC<10) | medium | low |
+| 2 | Reduce scan_project fan-out (currently 17) | medium | medium |
+| 3 | Reduce _load_duplication_map fan-out (currently 15) | medium | medium |
 
 ## Context for LLM
 

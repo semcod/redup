@@ -60,17 +60,17 @@
 <p style="color:var(--muted);font-size:.85rem;">
   Analyzed 2026-03-23 by code2llm
   &nbsp;·&nbsp; Primary language: <strong>python</strong>
-  &nbsp;·&nbsp; Python: 16, Shell: 1
+  &nbsp;·&nbsp; Python: 18, Shell: 1
 </p>
 
 <div class="grid">
-  <div class="card"><div class="value">52</div><div class="label">Functions</div></div>
-  <div class="card"><div class="value">15</div><div class="label">Classes</div></div>
-  <div class="card"><div class="value">10</div><div class="label">Files</div></div>
-  <div class="card"><div class="value">2,574</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">76</div><div class="label">Functions</div></div>
+  <div class="card"><div class="value">16</div><div class="label">Classes</div></div>
+  <div class="card"><div class="value">12</div><div class="label">Files</div></div>
+  <div class="card"><div class="value">3,350</div><div class="label">Lines</div></div>
   <div class="card"><div class="value">2</div><div class="label">Languages</div></div>
-  <div class="card"><div class="value">4.1</div><div class="label">Avg CC</div></div>
-  <div class="card"><div class="value">2</div><div class="label">Critical (CC≥10)</div></div>
+  <div class="card"><div class="value">4.0</div><div class="label">Avg CC</div></div>
+  <div class="card"><div class="value">4</div><div class="label">Critical (CC≥10)</div></div>
   <div class="card"><div class="value">0</div><div class="label">Duplicates</div></div>
   <div class="card"><div class="value">0</div><div class="label">Cycles</div></div>
 </div>
@@ -94,48 +94,64 @@
   <div class="chart-container">
     <h2 style="border:none;margin:0 0 .5rem;">Evolution (2026-03-23)</h2>
     <div class="evo-cards">
-      <div class="card"><div class="value">4.1</div><div class="label">CC̄ →</div></div>
-      <div class="card"><div class="value">2</div><div class="label">Critical →</div></div>
-      <div class="card"><div class="value">2574</div><div class="label">Lines</div></div>
+      <div class="card"><div class="value">4.0</div><div class="label">CC̄ →</div></div>
+      <div class="card"><div class="value">4</div><div class="label">Critical →</div></div>
+      <div class="card"><div class="value">3350</div><div class="label">Lines</div></div>
     </div>
     <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
   </div>
   <div>
-    <h2>Top Modules (17)</h2>
+    <h2>Top Modules (19)</h2>
     <div class="card"><div class="table-wrap">
     <table>
       <thead><tr><th>Module</th><th>Path</th><th style="text-align:right">Lines</th><th style="text-align:right">Funcs</th><th style="text-align:right">Classes</th><th style="text-align:right">CC max</th></tr></thead>
       <tbody>
             <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>ts_extractor.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">353</td>
+                <td style="text-align:right">8</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">11</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>main.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/cli_app</td>
+                <td style="text-align:right">312</td>
+                <td style="text-align:right">9</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">7</td>
+            </tr>
+            <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>pipeline.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">256</td>
+                <td style="text-align:right">257</td>
                 <td style="text-align:right">12</td>
                 <td style="text-align:right">0</td>
                 <td style="text-align:right">9</td>
             </tr>
             <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>differ.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">246</td>
+                <td style="text-align:right">5</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">18</td>
+            </tr>
+            <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>hasher.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">235</td>
+                <td style="text-align:right">229</td>
                 <td style="text-align:right">15</td>
                 <td style="text-align:right">2</td>
-                <td style="text-align:right">14</td>
+                <td style="text-align:right">6</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>scanner.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">193</td>
+                <td style="text-align:right">201</td>
                 <td style="text-align:right">6</td>
                 <td style="text-align:right">2</td>
-                <td style="text-align:right">9</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>main.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/cli_app</td>
-                <td style="text-align:right">169</td>
-                <td style="text-align:right">3</td>
-                <td style="text-align:right">1</td>
                 <td style="text-align:right">9</td>
             </tr>
             <tr>
@@ -165,10 +181,10 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>toon_reporter.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/reporters</td>
-                <td style="text-align:right">75</td>
-                <td style="text-align:right">1</td>
+                <td style="text-align:right">106</td>
+                <td style="text-align:right">6</td>
                 <td style="text-align:right">0</td>
-                <td style="text-align:right">12</td>
+                <td style="text-align:right">8</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>json_reporter.py</td>
@@ -247,23 +263,44 @@
   </div>
 </div>
 
-<h2>Alerts (3)</h2>
+<h2>Alerts (6)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>Severity</th><th>Target</th><th>Type</th><th>Value</th><th>Limit</th></tr></thead>
   <tbody>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
-                <td>scan</td>
+                <td>scan_project</td>
                 <td>high_fan_out</td>
-                <td>18</td>
+                <td>17</td>
                 <td>10</td>
             </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
-                <td>scan_project</td>
+                <td>_load_duplication_map</td>
                 <td>high_fan_out</td>
                 <td>15</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>compare_scans</td>
+                <td>cc_exceeded</td>
+                <td>18</td>
+                <td>15</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>extract_functions_treesitter</td>
+                <td>high_fan_out</td>
+                <td>13</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>compare_scans</td>
+                <td>high_fan_out</td>
+                <td>13</td>
                 <td>10</td>
             </tr>
             <tr class="warning">
@@ -278,23 +315,33 @@
 
 <div class="two-col">
 <div>
-<h2>Hotspots (3)</h2>
+<h2>Hotspots (5)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>Function</th><th>Fan-out</th><th>Note</th></tr></thead>
   <tbody>
             <tr>
-                <td><strong>scan</strong></td>
-                <td>18</td>
-                <td>Scan a project for code duplicates and generate a refactoring map.</td>
-            </tr>
-            <tr>
                 <td><strong>scan_project</strong></td>
-                <td>15</td>
+                <td>17</td>
                 <td>Scan a project and return files with their code blocks.
 
 Returns:
     Tuple of (</td>
+            </tr>
+            <tr>
+                <td><strong>_load_duplication_map</strong></td>
+                <td>15</td>
+                <td>Load a DuplicationMap from a JSON file.</td>
+            </tr>
+            <tr>
+                <td><strong>extract_functions_treesitter</strong></td>
+                <td>13</td>
+                <td>Extract functions using tree-sitter for multi-language support.</td>
+            </tr>
+            <tr>
+                <td><strong>compare_scans</strong></td>
+                <td>13</td>
+                <td>Compare two reDUP scan results and return the differences.</td>
             </tr>
             <tr>
                 <td><strong>_find_structural_groups</strong></td>
@@ -306,20 +353,26 @@ Returns:
 </div>
 
 <div>
-<h2>Refactoring Priorities (2)</h2>
+<h2>Refactoring Priorities (3)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>#</th><th>Action</th><th>Impact</th><th>Effort</th></tr></thead>
   <tbody>
             <tr>
                 <td>1</td>
-                <td>Reduce scan fan-out (currently 18)</td>
+                <td>Split compare_scans (CC=18 → target CC<10)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>low</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Reduce scan_project fan-out (currently 17)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr>
             <tr>
-                <td>2</td>
-                <td>Reduce scan_project fan-out (currently 15)</td>
+                <td>3</td>
+                <td>Reduce _load_duplication_map fan-out (currently 15)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr></tbody>
@@ -328,7 +381,7 @@ Returns:
 </div>
 </div>
 
-<footer>Generated by code2llm on 2026-03-23 16:03</footer>
+<footer>Generated by code2llm on 2026-03-23 16:14</footer>
 
 <script>
 // Evolution chart disabled — fewer than 3 data points
@@ -340,7 +393,7 @@ new Chart(langCtx, {
   data: {
     labels: ['Python', 'Shell'],
     datasets: [{
-      data: [16, 1],
+      data: [18, 1],
       backgroundColor: ['#3572A5', '#89e051'],
       borderColor: 'var(--border)', borderWidth: 1
     }]
@@ -358,8 +411,8 @@ const modLinesCtx = document.getElementById('modLinesChart').getContext('2d');
 new Chart(modLinesCtx, {
   type: 'bar',
   data: {
-    labels: ['pipeline.py', 'hasher.py', 'scanner.py', 'main.py', 'models.py', 'planner.py', 'matcher.py', 'toon_reporter.py', 'json_reporter.py', 'yaml_reporter.py', '__init__.py', 'project.sh', '__main__.py', 'sitecustomize.py', '__init__.py'],
-    datasets: [{ label: 'Lines', data: [256, 235, 193, 169, 152, 110, 107, 75, 66, 34, 25, 17, 5, 4, 1],
+    labels: ['ts_extractor.py', 'main.py', 'pipeline.py', 'differ.py', 'hasher.py', 'scanner.py', 'models.py', 'planner.py', 'matcher.py', 'toon_reporter.py', 'json_reporter.py', 'yaml_reporter.py', '__init__.py', 'project.sh', '__main__.py'],
+    datasets: [{ label: 'Lines', data: [353, 312, 257, 246, 229, 201, 152, 110, 107, 106, 66, 34, 25, 17, 5],
       backgroundColor: '#3b82f6'
     }]
   },
@@ -378,8 +431,8 @@ const modFuncsCtx = document.getElementById('modFuncsChart').getContext('2d');
 new Chart(modFuncsCtx, {
   type: 'bar',
   data: {
-    labels: ['hasher.py', 'pipeline.py', 'scanner.py', 'matcher.py', 'planner.py', 'main.py', 'json_reporter.py', 'toon_reporter.py', 'yaml_reporter.py', 'models.py', 'project.sh', '__init__.py', '__main__.py', '__init__.py', '__init__.py'],
-    datasets: [{ label: 'Functions', data: [15, 12, 6, 5, 5, 3, 3, 1, 1, 1, 0, 0, 0, 0, 0],
+    labels: ['hasher.py', 'pipeline.py', 'main.py', 'ts_extractor.py', 'scanner.py', 'toon_reporter.py', 'differ.py', 'matcher.py', 'planner.py', 'json_reporter.py', 'yaml_reporter.py', 'models.py', 'project.sh', '__init__.py', '__main__.py'],
+    datasets: [{ label: 'Functions', data: [15, 12, 9, 8, 6, 6, 5, 5, 5, 3, 1, 1, 0, 0, 0],
       backgroundColor: '#22c55e'
     }]
   },

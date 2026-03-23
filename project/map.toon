@@ -1,47 +1,45 @@
-# redup | 18f 1509L | python:17,shell:1
+# redup | 20f 2285L | python:19,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[18]:
+M[20]:
   examples/01_basic_usage.py,58
   project.sh,17
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,169
+  src/redup/cli_app/main.py,312
   src/redup/core/__init__.py,1
-  src/redup/core/hasher.py,235
+  src/redup/core/differ.py,246
+  src/redup/core/hasher.py,229
   src/redup/core/matcher.py,107
   src/redup/core/models.py,152
-  src/redup/core/pipeline.py,256
+  src/redup/core/pipeline.py,257
   src/redup/core/planner.py,110
-  src/redup/core/scanner.py,193
+  src/redup/core/scanner.py,201
+  src/redup/core/ts_extractor.py,353
   src/redup/reporters/__init__.py,1
   src/redup/reporters/json_reporter.py,66
-  src/redup/reporters/toon_reporter.py,75
+  src/redup/reporters/toon_reporter.py,106
   src/redup/reporters/yaml_reporter.py,34
   src/sitecustomize.py,4
 D:
-  src/redup/core/hasher.py:
-    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,_hashed_block,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
-    HashedBlock:  # A code block with its computed fingerprints...
-    HashIndex:  # Index mapping hashes to blocks for fast lookup...
-    _normalize_text(text)
-    _normalize_ast_text(text)
-    _ast_to_normalized_string(tree)
-    _process_ast_node(node;name_map;counter)
-    _get_placeholder(name;name_map;counter)
-    _normalize_constant(value)
-    _hash_text(text;normalizer)
-    hash_block(text)
-    hash_block_structural(text)
-    _hashed_block(block)
-    build_hash_index(blocks;min_lines)
-    _find_duplicates(hash_dict)
-    find_exact_duplicates(index)
-    find_structural_duplicates(index)
-    _blocks_from_different_locations(blocks)
-  src/redup/reporters/toon_reporter.py:
-    e: to_toon
-    to_toon(dup_map)
+  src/redup/core/differ.py:
+    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
+    DiffResult:  # Result of comparing two reDUP scans...
+    _load_duplication_map(file_path)
+    _group_by_id(groups)
+    _groups_match(group1;group2)
+    compare_scans(before_file;after_file)
+    format_diff_result(diff)
+  src/redup/core/ts_extractor.py:
+    e: _get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,get_supported_languages,is_language_supported
+    _get_tree_sitter_language(language_name)
+    _extract_functions_javascript(node;source_lines;file_path)
+    _extract_functions_go(node;source_lines;file_path)
+    _extract_functions_rust(node;source_lines;file_path)
+    _extract_functions_java(node;source_lines;file_path)
+    extract_functions_treesitter(source;file_path)
+    get_supported_languages()
+    is_language_supported(file_path)
   src/redup/core/scanner.py:
     e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_function_blocks_python,scan_project
     CodeBlock:  # A contiguous block of source code lines...
@@ -66,12 +64,14 @@ D:
     _deduplicate_phase(groups)
     _match_results_to_blocks(matches)
     _calculate_similarity(matches)
-  src/redup/cli_app/main.py:
-    e: OutputFormat,_write_output,scan,info
-    OutputFormat(str,Enum):
-    _write_output(content;output;suffix)
-    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only)
-    info()
+  src/redup/reporters/toon_reporter.py:
+    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
+    _render_header(dup_map)
+    _render_summary(dup_map)
+    _render_duplicates(groups)
+    _render_refactor(suggestions)
+    _render_metrics_target(dup_map;groups)
+    to_toon(dup_map)
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -87,6 +87,37 @@ D:
     _compare_against_reference(candidates;min_similarity;similarity_fn;method_fn;skip_same_location)
     match_candidates(candidates;min_similarity)
     refine_structural_matches(candidates;min_similarity)
+  src/redup/cli_app/main.py:
+    e: OutputFormat,_write_output,_build_config,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,info
+    OutputFormat(str,Enum):
+    _write_output(content;output;suffix)
+    _build_config(path;extensions;min_lines;min_similarity;include_tests)
+    _print_scan_header(path;ext_list;min_lines;min_similarity)
+    _print_scan_summary(dup_map)
+    _write_results(dup_map;format;output;path)
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only)
+    diff(before;after)
+    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
+    info()
+  src/redup/core/hasher.py:
+    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,_hashed_block,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
+    HashedBlock:  # A code block with its computed fingerprints...
+    HashIndex:  # Index mapping hashes to blocks for fast lookup...
+    _normalize_text(text)
+    _normalize_ast_text(text)
+    _ast_to_normalized_string(tree)
+    _process_ast_node(node;name_map;counter)
+    _get_placeholder(name;name_map;counter)
+    _normalize_constant(value)
+    _hash_text(text;normalizer)
+    hash_block(text)
+    hash_block_structural(text)
+    _hashed_block(block)
+    build_hash_index(blocks;min_lines)
+    _find_duplicates(hash_dict)
+    find_exact_duplicates(index)
+    find_structural_duplicates(index)
+    _blocks_from_different_locations(blocks)
   examples/01_basic_usage.py:
     e: main
     main()
@@ -112,7 +143,7 @@ D:
   src/redup/__init__.py:
   src/redup/core/__init__.py:
   src/redup/__main__.py:
-  src/redup/reporters/__init__.py:
   src/sitecustomize.py:
+  src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:
   project.sh:

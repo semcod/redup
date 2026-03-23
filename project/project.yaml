@@ -3,93 +3,88 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:03:50Z'
+  analyzed_at: '2026-03-23T16:14:10Z'
   tool: code2llm
   stats:
-    files: 10
-    lines: 2574
-    functions: 52
-    classes: 15
+    files: 12
+    lines: 3350
+    functions: 76
+    classes: 16
 health:
-  cc_avg: 4.1
-  critical_count: 2
+  cc_avg: 4.0
+  critical_count: 4
   critical_limit: 10
   duplicates: 0
   cycles: 0
   alerts:
   - type: high_fan_out
-    target: scan
-    value: 18
+    target: scan_project
+    value: 17
     limit: 10
     severity: error
   - type: high_fan_out
-    target: scan_project
+    target: _load_duplication_map
     value: 15
     limit: 10
     severity: error
+  - type: cc_exceeded
+    target: compare_scans
+    value: 18
+    limit: 15
+    severity: warning
+  - type: high_fan_out
+    target: extract_functions_treesitter
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: compare_scans
+    value: 13
+    limit: 10
+    severity: warning
   - type: high_fan_out
     target: _find_structural_groups
     value: 11
     limit: 10
     severity: warning
 modules:
-- path: src/redup/core/hasher.py
-  lines: 235
-  classes: 2
-  methods: 15
-  cc_max: 14
-  inbound_deps: 2
-  exports:
-  - name: HashedBlock
-    type: class
-    cc_avg: 0.0
-  - name: HashIndex
-    type: class
-    cc_avg: 0.0
-  - name: hash_block
-    type: function
-    cc: 1
-  - name: hash_block_structural
-    type: function
-    cc: 1
-  - name: build_hash_index
-    type: function
-    cc: 3
-  - name: find_exact_duplicates
-    type: function
-    cc: 1
-  - name: find_structural_duplicates
-    type: function
-    cc: 1
-- path: src/redup/reporters/toon_reporter.py
-  lines: 75
-  classes: 0
-  methods: 1
-  cc_max: 12
-  inbound_deps: 2
-  exports:
-  - name: to_toon
-    type: function
-    cc: 12
-- path: src/redup/cli_app/main.py
-  lines: 169
+- path: src/redup/core/differ.py
+  lines: 246
   classes: 1
-  methods: 3
-  cc_max: 9
-  inbound_deps: 0
+  methods: 5
+  cc_max: 18
+  inbound_deps: 1
   exports:
-  - name: OutputFormat
+  - name: DiffResult
     type: class
     cc_avg: 0.0
-  - name: scan
+  - name: compare_scans
     type: function
-    cc: 9
-    fan_out: 18
-  - name: info
+    cc: 18
+    flag: split
+    fan_out: 13
+  - name: format_diff_result
+    type: function
+    cc: 14
+- path: src/redup/core/ts_extractor.py
+  lines: 353
+  classes: 0
+  methods: 8
+  cc_max: 11
+  inbound_deps: 1
+  exports:
+  - name: extract_functions_treesitter
+    type: function
+    cc: 11
+    fan_out: 13
+  - name: get_supported_languages
+    type: function
+    cc: 4
+  - name: is_language_supported
     type: function
     cc: 3
 - path: src/redup/core/pipeline.py
-  lines: 256
+  lines: 257
   classes: 0
   methods: 12
   cc_max: 9
@@ -99,7 +94,7 @@ modules:
     type: function
     cc: 1
 - path: src/redup/core/scanner.py
-  lines: 193
+  lines: 201
   classes: 2
   methods: 6
   cc_max: 9
@@ -113,8 +108,40 @@ modules:
     cc_avg: 0.0
   - name: scan_project
     type: function
-    cc: 6
-    fan_out: 15
+    cc: 8
+    fan_out: 17
+- path: src/redup/reporters/toon_reporter.py
+  lines: 106
+  classes: 0
+  methods: 6
+  cc_max: 8
+  inbound_deps: 2
+  exports:
+  - name: to_toon
+    type: function
+    cc: 3
+- path: src/redup/cli_app/main.py
+  lines: 312
+  classes: 1
+  methods: 9
+  cc_max: 7
+  inbound_deps: 0
+  exports:
+  - name: OutputFormat
+    type: class
+    cc_avg: 0.0
+  - name: scan
+    type: function
+    cc: 1
+  - name: diff
+    type: function
+    cc: 3
+  - name: check
+    type: function
+    cc: 5
+  - name: info
+    type: function
+    cc: 3
 - path: src/redup/core/matcher.py
   lines: 107
   classes: 1
@@ -147,6 +174,34 @@ modules:
   - name: generate_suggestions
     type: function
     cc: 6
+- path: src/redup/core/hasher.py
+  lines: 229
+  classes: 2
+  methods: 15
+  cc_max: 6
+  inbound_deps: 2
+  exports:
+  - name: HashedBlock
+    type: class
+    cc_avg: 0.0
+  - name: HashIndex
+    type: class
+    cc_avg: 0.0
+  - name: hash_block
+    type: function
+    cc: 1
+  - name: hash_block_structural
+    type: function
+    cc: 1
+  - name: build_hash_index
+    type: function
+    cc: 3
+  - name: find_exact_duplicates
+    type: function
+    cc: 1
+  - name: find_structural_duplicates
+    type: function
+    cc: 1
 - path: src/redup/reporters/yaml_reporter.py
   lines: 34
   classes: 0
@@ -244,27 +299,37 @@ modules:
   cc_max: 0
   inbound_deps: 0
 hotspots:
-- name: scan
-  fan_out: 18
-  note: Scan a project for code duplicates and generate a refactoring map.
 - name: scan_project
-  fan_out: 15
+  fan_out: 17
   note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
     \ Tuple of ("
+- name: _load_duplication_map
+  fan_out: 15
+  note: Load a DuplicationMap from a JSON file.
+- name: extract_functions_treesitter
+  fan_out: 13
+  note: Extract functions using tree-sitter for multi-language support.
+- name: compare_scans
+  fan_out: 13
+  note: Compare two reDUP scan results and return the differences.
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
 refactoring:
   priorities:
-  - action: Reduce scan fan-out (currently 18)
+  - action: Split compare_scans (CC=18 → target CC<10)
+    impact: medium
+    effort: low
+    module: differ.py
+  - action: Reduce scan_project fan-out (currently 17)
     impact: medium
     effort: medium
-  - action: Reduce scan_project fan-out (currently 15)
+  - action: Reduce _load_duplication_map fan-out (currently 15)
     impact: medium
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 4.1
-  critical: 2
-  lines: 2574
+  cc_avg: 4.0
+  critical: 4
+  lines: 3350
   note: Automated analysis

@@ -13,6 +13,7 @@ class DuplicateType(str, Enum):
     EXACT = "exact"
     STRUCTURAL = "structural"
     FUZZY = "fuzzy"
+    NEAR_DUPLICATE = "near_duplicate"
 
 
 class RefactorAction(str, Enum):
@@ -48,6 +49,10 @@ class ScanConfig:
     min_similarity: float = 0.85
     max_file_size_kb: int = 1024
     include_tests: bool = False
+    # LSH configuration
+    lsh_enabled: bool = True
+    lsh_min_lines: int = 50
+    lsh_threshold: float = 0.8
 
 
 @dataclass

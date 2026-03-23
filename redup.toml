@@ -1,0 +1,29 @@
+# reDUP Configuration File
+# See https://github.com/semcod/redup for documentation
+
+[scan]
+# File extensions to scan (comma-separated)
+extensions = ".py,.js,.ts,.go,.rs,.java"
+# Minimum block size in lines to consider as duplicate
+min_lines = 3
+# Minimum similarity score (0.0-1.0) for fuzzy matches
+min_similarity = 0.85
+# Include test files in analysis
+include_tests = false
+
+[check]
+# CI gate thresholds
+max_groups = 10
+max_lines = 100
+
+[output]
+# Default output format
+format = "toon"
+# Default output directory (relative to project root)
+output = "redup_output"
+
+[reporting]
+# Include code snippets in JSON output
+include_snippets = false
+# Generate suggestions for refactoring
+generate_suggestions = true

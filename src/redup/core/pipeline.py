@@ -9,6 +9,7 @@ from redup.core.hasher import (
     find_exact_duplicates,
     find_structural_duplicates,
 )
+from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.matcher import MatchResult, refine_structural_matches
 from redup.core.models import (
     DuplicateFragment,
@@ -168,8 +169,11 @@ def _find_duplicates_phase(
 
     # Find structural duplicates
     structural_groups = _find_structural_groups(index, exact_groups)
+    
+    # Find near-duplicates using LSH (for larger blocks)
+    near_duplicate_groups = _find_near_duplicate_groups(all_blocks, config)
 
-    return exact_groups + structural_groups
+    return exact_groups + structural_groups + near_duplicate_groups
 
 
 def _find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:
@@ -253,5 +257,76 @@ def _calculate_similarity(matches: list[MatchResult]) -> float:
         return 1.0
 
     return sum(match.similarity for match in matches) / len(matches)
+
+
+def _find_near_duplicate_groups(
+    all_blocks: list[CodeBlock],
+    config: ScanConfig
+) -> list[DuplicateGroup]:
+    """Find near-duplicate groups using LSH."""
+    groups: list[DuplicateGroup] = []
+    
+    # Check if LSH is enabled
+    if not getattr(config, 'lsh_enabled', True):
+        return groups
+    
+    # Only use LSH for blocks larger than configured threshold
+    lsh_min_lines = getattr(config, 'lsh_min_lines', 50)
+    lsh_threshold = getattr(config, 'lsh_threshold', 0.8)
+    
+    # Filter blocks for LSH
+    lsh_blocks = [b for b in all_blocks if b.line_count >= lsh_min_lines]
+    
+    if not lsh_blocks:
+        return groups
+    
+    try:
+        # Find near-duplicates
+        near_dup_groups = find_near_duplicates(
+            lsh_blocks, 
+            threshold=lsh_threshold, 
+            min_lines=lsh_min_lines
+        )
+        
+        for i, (group_id, block_similarities) in enumerate(near_dup_groups.items(), 1):
+            if len(block_similarities) < 2:
+                continue
+            
+            # Convert to DuplicateGroup format
+            fragments = []
+            avg_similarity = 0.0
+            
+            for block, similarity in block_similarities:
+                fragments.append(DuplicateFragment(
+                    file=block.file,
+                    line_start=block.line_start,
+                    line_end=block.line_end,
+                    text=block.text,
+                    function_name=block.function_name,
+                    class_name=block.class_name,
+                ))
+                avg_similarity += similarity
+            
+            if len(fragments) >= 2:
+                avg_similarity /= len(fragments)
+                
+                # Use function name if available
+                name = fragments[0].function_name if fragments[0].function_name else None
+                
+                group = DuplicateGroup(
+                    id=f"L{i:04d}",
+                    duplicate_type=DuplicateType.NEAR_DUPLICATE,
+                    fragments=fragments,
+                    similarity_score=avg_similarity,
+                    normalized_hash=f"lsh_{group_id}",
+                    normalized_name=name,
+                )
+                groups.append(group)
+    
+    except Exception:
+        # Silently fail if LSH is not available or has issues
+        pass
+    
+    return groups
 
 
