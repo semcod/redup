@@ -64,10 +64,10 @@
 </p>
 
 <div class="grid">
-  <div class="card"><div class="value">195</div><div class="label">Functions</div></div>
+  <div class="card"><div class="value">197</div><div class="label">Functions</div></div>
   <div class="card"><div class="value">26</div><div class="label">Classes</div></div>
   <div class="card"><div class="value">27</div><div class="label">Files</div></div>
-  <div class="card"><div class="value">6,543</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">6,669</div><div class="label">Lines</div></div>
   <div class="card"><div class="value">2</div><div class="label">Languages</div></div>
   <div class="card"><div class="value">3.5</div><div class="label">Avg CC</div></div>
   <div class="card"><div class="value">10</div><div class="label">Critical (CC≥10)</div></div>
@@ -96,7 +96,7 @@
     <div class="evo-cards">
       <div class="card"><div class="value">3.5</div><div class="label">CC̄ →</div></div>
       <div class="card"><div class="value">10</div><div class="label">Critical →</div></div>
-      <div class="card"><div class="value">6543</div><div class="label">Lines</div></div>
+      <div class="card"><div class="value">6669</div><div class="label">Lines</div></div>
     </div>
     <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
   </div>
@@ -115,20 +115,20 @@
                 <td style="text-align:right">7</td>
             </tr>
             <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>pipeline.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">518</td>
+                <td style="text-align:right">17</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">11</td>
+            </tr>
+            <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>main.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/cli_app</td>
-                <td style="text-align:right">440</td>
+                <td style="text-align:right">459</td>
                 <td style="text-align:right">11</td>
                 <td style="text-align:right">0</td>
                 <td style="text-align:right">14</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>pipeline.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">411</td>
-                <td style="text-align:right">15</td>
-                <td style="text-align:right">0</td>
-                <td style="text-align:right">11</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>enhanced_reporter.py</td>
@@ -271,7 +271,7 @@
   </div>
 </div>
 
-<h2>Alerts (10)</h2>
+<h2>Alerts (13)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>Severity</th><th>Target</th><th>Type</th><th>Value</th><th>Limit</th></tr></thead>
@@ -285,7 +285,7 @@
             </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
-                <td>_load_duplication_map</td>
+                <td>_find_duplicates_phase_lazy</td>
                 <td>high_fan_out</td>
                 <td>15</td>
                 <td>10</td>
@@ -297,11 +297,25 @@
                 <td>15</td>
                 <td>10</td>
             </tr>
+            <tr class="error">
+                <td><span class="badge error">error</span></td>
+                <td>_load_duplication_map</td>
+                <td>high_fan_out</td>
+                <td>15</td>
+                <td>10</td>
+            </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
                 <td>scan_project_parallel</td>
                 <td>high_fan_out</td>
                 <td>13</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>analyze_optimized</td>
+                <td>high_fan_out</td>
+                <td>12</td>
                 <td>10</td>
             </tr>
             <tr class="warning">
@@ -345,6 +359,13 @@
                 <td>high_fan_out</td>
                 <td>10</td>
                 <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>scan</td>
+                <td>high_fan_out</td>
+                <td>10</td>
+                <td>10</td>
             </tr></tbody>
 </table>
 </div></div>
@@ -365,9 +386,9 @@ Returns:
     Tuple of (</td>
             </tr>
             <tr>
-                <td><strong>_load_duplication_map</strong></td>
+                <td><strong>_find_duplicates_phase_lazy</strong></td>
                 <td>15</td>
-                <td>Load a DuplicationMap from a JSON file.</td>
+                <td>Phase 3: Hash and find duplicates with caching and lazy evaluation.</td>
             </tr>
             <tr>
                 <td><strong>_write_results</strong></td>
@@ -375,9 +396,19 @@ Returns:
                 <td>Write scan results to output files.</td>
             </tr>
             <tr>
+                <td><strong>_load_duplication_map</strong></td>
+                <td>15</td>
+                <td>Load a DuplicationMap from a JSON file.</td>
+            </tr>
+            <tr>
                 <td><strong>scan_project_parallel</strong></td>
                 <td>13</td>
                 <td>Scan project files in parallel for better performance on large projects.</td>
+            </tr>
+            <tr>
+                <td><strong>analyze_optimized</strong></td>
+                <td>12</td>
+                <td>Analysis pipeline, 12 stages</td>
             </tr>
             <tr>
                 <td><strong>_find_structural_groups</strong></td>
@@ -400,47 +431,43 @@ Strips comments, normalizes whitespace, low</td>
                 <td><strong>config</strong></td>
                 <td>11</td>
                 <td>Manage reDUP configuration.</td>
-            </tr>
-            <tr>
-                <td><strong>_find_files_optimized</strong></td>
-                <td>10</td>
-                <td>Optimized file discovery using set lookups and compiled patterns.</td>
-            </tr>
-            <tr>
-                <td><strong>extract_functions_treesitter</strong></td>
-                <td>10</td>
-                <td>Extract functions using tree-sitter for multi-language support.</td>
             </tr></tbody>
 </table>
 </div></div>
 </div>
 
 <div>
-<h2>Refactoring Priorities (4)</h2>
+<h2>Refactoring Priorities (5)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>#</th><th>Action</th><th>Impact</th><th>Effort</th></tr></thead>
   <tbody>
             <tr>
                 <td>1</td>
-                <td>Split god module src/redup/core/ts_extractor.py (765L, 1 classes)</td>
+                <td>Split god module src/redup/core/pipeline.py (518L, 0 classes)</td>
                 <td><span class="badge high">high</span></td>
                 <td>high</td>
             </tr>
             <tr>
                 <td>2</td>
+                <td>Split god module src/redup/core/ts_extractor.py (765L, 1 classes)</td>
+                <td><span class="badge high">high</span></td>
+                <td>high</td>
+            </tr>
+            <tr>
+                <td>3</td>
                 <td>Reduce scan_project fan-out (currently 18)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr>
             <tr>
-                <td>3</td>
-                <td>Reduce _load_duplication_map fan-out (currently 15)</td>
+                <td>4</td>
+                <td>Reduce _find_duplicates_phase_lazy fan-out (currently 15)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr>
             <tr>
-                <td>4</td>
+                <td>5</td>
                 <td>Reduce _write_results fan-out (currently 15)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
@@ -450,7 +477,7 @@ Strips comments, normalizes whitespace, low</td>
 </div>
 </div>
 
-<footer>Generated by code2llm on 2026-03-23 18:28</footer>
+<footer>Generated by code2llm on 2026-03-23 18:29</footer>
 
 <script>
 // Evolution chart disabled — fewer than 3 data points
@@ -480,8 +507,8 @@ const modLinesCtx = document.getElementById('modLinesChart').getContext('2d');
 new Chart(modLinesCtx, {
   type: 'bar',
   data: {
-    labels: ['ts_extractor.py', 'main.py', 'pipeline.py', 'enhanced_reporter.py', 'hasher.py', 'cache.py', 'scanner.py', 'parallel_scanner.py', 'lsh_matcher.py', 'differ.py', 'code2llm_reporter.py', 'models.py', 'lazy_grouper.py', 'config.py', 'function_extractor.py'],
-    datasets: [{ label: 'Lines', data: [765, 440, 411, 274, 270, 267, 249, 234, 217, 209, 209, 161, 155, 154, 148],
+    labels: ['ts_extractor.py', 'pipeline.py', 'main.py', 'enhanced_reporter.py', 'hasher.py', 'cache.py', 'scanner.py', 'parallel_scanner.py', 'lsh_matcher.py', 'differ.py', 'code2llm_reporter.py', 'models.py', 'lazy_grouper.py', 'config.py', 'function_extractor.py'],
+    datasets: [{ label: 'Lines', data: [765, 518, 459, 274, 270, 267, 249, 234, 217, 209, 209, 161, 155, 154, 148],
       backgroundColor: '#3b82f6'
     }]
   },
@@ -500,8 +527,8 @@ const modFuncsCtx = document.getElementById('modFuncsChart').getContext('2d');
 new Chart(modFuncsCtx, {
   type: 'bar',
   data: {
-    labels: ['ts_extractor.py', 'enhanced_reporter.py', 'pipeline.py', 'hasher.py', 'lsh_matcher.py', 'main.py', 'cache.py', 'hash_cache.py', 'diff_helpers.py', 'scanner.py', 'lazy_grouper.py', 'parallel_scanner.py', 'code2llm_reporter.py', 'toon_reporter.py', 'config.py'],
-    datasets: [{ label: 'Functions', data: [24, 17, 15, 15, 12, 11, 10, 10, 8, 7, 7, 6, 6, 6, 6],
+    labels: ['ts_extractor.py', 'pipeline.py', 'enhanced_reporter.py', 'hasher.py', 'lsh_matcher.py', 'main.py', 'cache.py', 'hash_cache.py', 'diff_helpers.py', 'scanner.py', 'lazy_grouper.py', 'parallel_scanner.py', 'code2llm_reporter.py', 'toon_reporter.py', 'config.py'],
+    datasets: [{ label: 'Functions', data: [24, 17, 17, 15, 12, 11, 10, 10, 8, 7, 7, 6, 6, 6, 6],
       backgroundColor: '#22c55e'
     }]
   },

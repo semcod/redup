@@ -3,12 +3,12 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T18:28:14Z'
+  analyzed_at: '2026-03-23T18:29:05Z'
   tool: code2llm
   stats:
     files: 27
-    lines: 6543
-    functions: 195
+    lines: 6669
+    functions: 197
     classes: 26
 health:
   cc_avg: 3.5
@@ -23,7 +23,7 @@ health:
     limit: 10
     severity: error
   - type: high_fan_out
-    target: _load_duplication_map
+    target: _find_duplicates_phase_lazy
     value: 15
     limit: 10
     severity: error
@@ -33,8 +33,18 @@ health:
     limit: 10
     severity: error
   - type: high_fan_out
+    target: _load_duplication_map
+    value: 15
+    limit: 10
+    severity: error
+  - type: high_fan_out
     target: scan_project_parallel
     value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: analyze_optimized
+    value: 12
     limit: 10
     severity: warning
   - type: high_fan_out
@@ -67,9 +77,14 @@ health:
     value: 10
     limit: 10
     severity: warning
+  - type: high_fan_out
+    target: scan
+    value: 10
+    limit: 10
+    severity: warning
 modules:
 - path: src/redup/cli_app/main.py
-  lines: 440
+  lines: 459
   classes: 0
   methods: 11
   cc_max: 14
@@ -77,7 +92,8 @@ modules:
   exports:
   - name: scan
     type: function
-    cc: 2
+    cc: 4
+    fan_out: 10
   - name: diff
     type: function
     cc: 3
@@ -130,15 +146,19 @@ modules:
     cc: 11
     fan_out: 13
 - path: src/redup/core/pipeline.py
-  lines: 411
+  lines: 518
   classes: 0
-  methods: 15
+  methods: 17
   cc_max: 11
   inbound_deps: 3
   exports:
   - name: analyze
     type: function
     cc: 1
+  - name: analyze_optimized
+    type: function
+    cc: 5
+    fan_out: 12
   - name: analyze_parallel
     type: function
     cc: 1
@@ -250,7 +270,7 @@ modules:
   classes: 1
   methods: 7
   cc_max: 7
-  inbound_deps: 0
+  inbound_deps: 1
   exports:
   - name: DuplicateGroupCollector
     type: class
@@ -334,7 +354,7 @@ modules:
   classes: 1
   methods: 10
   cc_max: 5
-  inbound_deps: 0
+  inbound_deps: 1
   exports:
   - name: HashCache
     type: class
@@ -531,15 +551,21 @@ hotspots:
   fan_out: 18
   note: "Scan a project and return files with their code blocks.\n\nReturns:\n   \
     \ Tuple of ("
-- name: _load_duplication_map
+- name: _find_duplicates_phase_lazy
   fan_out: 15
-  note: Load a DuplicationMap from a JSON file.
+  note: 'Phase 3: Hash and find duplicates with caching and lazy evaluation.'
 - name: _write_results
   fan_out: 15
   note: Write scan results to output files.
+- name: _load_duplication_map
+  fan_out: 15
+  note: Load a DuplicationMap from a JSON file.
 - name: scan_project_parallel
   fan_out: 13
   note: Scan project files in parallel for better performance on large projects.
+- name: analyze_optimized
+  fan_out: 12
+  note: Analysis pipeline, 12 stages
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
@@ -555,21 +581,18 @@ hotspots:
 - name: config
   fan_out: 11
   note: Manage reDUP configuration.
-- name: _find_files_optimized
-  fan_out: 10
-  note: Optimized file discovery using set lookups and compiled patterns.
-- name: extract_functions_treesitter
-  fan_out: 10
-  note: Extract functions using tree-sitter for multi-language support.
 refactoring:
   priorities:
+  - action: Split god module src/redup/core/pipeline.py (518L, 0 classes)
+    impact: high
+    effort: high
   - action: Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
     impact: high
     effort: high
   - action: Reduce scan_project fan-out (currently 18)
     impact: medium
     effort: medium
-  - action: Reduce _load_duplication_map fan-out (currently 15)
+  - action: Reduce _find_duplicates_phase_lazy fan-out (currently 15)
     impact: medium
     effort: medium
   - action: Reduce _write_results fan-out (currently 15)
@@ -579,5 +602,5 @@ evolution:
 - date: '2026-03-23'
   cc_avg: 3.5
   critical: 10
-  lines: 6543
+  lines: 6669
   note: Automated analysis

@@ -1,4 +1,4 @@
-# redup | 36f 5253L | python:35,shell:1
+# redup | 36f 5379L | python:35,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[36]:
   benchmark.py,111
@@ -7,7 +7,7 @@ M[36]:
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,440
+  src/redup/cli_app/main.py,459
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,267
   src/redup/core/config.py,154
@@ -19,7 +19,7 @@ M[36]:
   src/redup/core/matcher.py,107
   src/redup/core/models.py,161
   src/redup/core/parallel_scanner.py,234
-  src/redup/core/pipeline.py,411
+  src/redup/core/pipeline.py,518
   src/redup/core/planner.py,110
   src/redup/core/scanner.py,249
   src/redup/core/ts_extractor.py,765
@@ -38,19 +38,11 @@ M[36]:
   src/redup/reporters/yaml_reporter.py,34
   src/sitecustomize.py,4
 D:
-  src/redup/core/differ.py:
-    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
-    DiffResult:  # Result of comparing two reDUP scans...
-    _load_duplication_map(file_path)
-    _group_by_id(groups)
-    _groups_match(group1;group2)
-    compare_scans(before_file;after_file)
-    format_diff_result(diff)
   src/redup/cli_app/main.py:
     e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
     _write_output(content;output;suffix)
     _build_config(path;extensions;min_lines;min_similarity;include_tests)
-    _build_config_with_file_support(path;extensions;min_lines;min_similarity;include_tests)
+    _build_config_with_file_support(path;extensions;min_lines;min_similarity;include_tests;parallel;max_workers;incremental)
     _print_scan_header(path;ext_list;min_lines;min_similarity)
     _print_scan_summary(dup_map)
     _write_results(dup_map;format;output;path)
@@ -59,6 +51,14 @@ D:
     check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config(init;show)
     info()
+  src/redup/core/differ.py:
+    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
+    DiffResult:  # Result of comparing two reDUP scans...
+    _load_duplication_map(file_path)
+    _group_by_id(groups)
+    _groups_match(group1;group2)
+    compare_scans(before_file;after_file)
+    format_diff_result(diff)
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
@@ -71,15 +71,17 @@ D:
     _find_files_optimized(root;extensions;exclude_patterns)
     _is_test_file_cached(relative_path;test_parts)
   src/redup/core/pipeline.py:
-    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_parallel
+    e: _blocks_to_group,_deduplicate_groups,analyze,analyze_optimized,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase_optimized,_find_duplicates_phase_lazy,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_parallel
     _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
     _deduplicate_groups(groups)
     analyze(config;function_level_only)
+    analyze_optimized(config;function_level_only)
     _ensure_config(config)
     _scan_phase(config)
     _scan_phase_parallel(config;max_workers)
     _process_blocks(scanned_files;function_level_only)
-    _find_duplicates_phase(all_blocks;config)
+    _find_duplicates_phase_optimized(all_blocks;config)
+    _find_duplicates_phase_lazy(all_blocks;config;cache)
     _find_exact_groups(index)
     _find_structural_groups(index;exact_groups_list)
     _deduplicate_phase(groups)
@@ -198,6 +200,9 @@ A...
     e: GroupMatcher,DiffCalculator
     GroupMatcher: __init__(2),_find_all_matches(0),_groups_match(2),get_resolved_groups(0),get_new_groups(0),get_unchanged_groups(0)  # Helper class to find matching groups between scans...
     DiffCalculator: calculate_lines(0),calculate_diff_stats(2)  # Helper class to calculate diff statistics...
+  examples/01_basic_usage.py:
+    e: main
+    main()
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -206,9 +211,6 @@ A...
     load_config()
     config_to_scan_config(config;path)
     create_sample_redup_toml()
-  examples/01_basic_usage.py:
-    e: main
-    main()
   src/redup/core/cache.py:
     e: HashCache,hash_block_with_cache,build_hash_index_with_cache
     HashCache: __init__(1),_init_tables(0),_get_file_hash(2),is_file_unchanged(2),get_cached_block_hashes(2),store_file_hashes(3),cleanup_old_entries(1),get_stats(0)  # SQLite-based cache for file and block hashes.
@@ -231,14 +233,14 @@ Provides ~10x...
   src/redup/core/utils/language_dispatcher.py:
     e: LanguageDispatcher
     LanguageDispatcher: __init__(0),register_extractor(2),register_group(2),get_extractor(1),extract_functions(4)  # Dispatches function extraction to appropriate language-speci...
-  benchmark.py:
-    e: benchmark_sequential_vs_parallel,benchmark_feature_performance
-    benchmark_sequential_vs_parallel()
-    benchmark_feature_performance()
   src/redup/core/hash_cache.py:
     e: HashCache,_config_to_hash
     HashCache: __init__(1),_load(0),save(0),get_file_hash(1),is_unchanged(2),update(3),invalidate(1),get_cached_results(1),clear(0)  # Cache for file hashes to enable incremental scanning...
     _config_to_hash(config)
+  benchmark.py:
+    e: benchmark_sequential_vs_parallel,benchmark_feature_performance
+    benchmark_sequential_vs_parallel()
+    benchmark_feature_performance()
   src/redup/core/utils/hash_utils.py:
     e: create_hash_function
     create_hash_function(normalizer)

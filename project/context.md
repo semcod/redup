@@ -5,8 +5,8 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 27
-- **Lines**: 6543
-- **Functions**: 195
+- **Lines**: 6669
+- **Functions**: 197
 - **Classes**: 26
 - **Avg CC**: 3.5
 - **Critical (CC≥10)**: 10
@@ -27,16 +27,16 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 441L, 11 functions)
+### src/redup/cli_app/ (2 files, 460L, 11 functions)
 
-- `main.py` — 440L, 11 methods, CC↑14
+- `main.py` — 459L, 11 methods, CC↑14
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (15 files, 3414L, 128 functions)
+### src/redup/core/ (15 files, 3521L, 130 functions)
 
 - `differ.py` — 209L, 5 methods, CC↑14
 - `parallel_scanner.py` — 234L, 6 methods, CC↑11
-- `pipeline.py` — 411L, 15 methods, CC↑11
+- `pipeline.py` — 518L, 17 methods, CC↑11
 - `lsh_matcher.py` — 217L, 12 methods, CC↑10
 - `scanner.py` — 249L, 7 methods, CC↑10
 - _10 more files_
@@ -69,23 +69,22 @@
 
 Returns:
     Tuple of (
-- **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
+- **_find_duplicates_phase_lazy** — fan-out=15: Phase 3: Hash and find duplicates with caching and lazy evaluation.
 - **_write_results** — fan-out=15: Write scan results to output files.
+- **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
 - **scan_project_parallel** — fan-out=13: Scan project files in parallel for better performance on large projects.
+- **analyze_optimized** — fan-out=12: Analysis pipeline, 12 stages
 - **_find_structural_groups** — fan-out=11: Find structural duplicate groups.
-- **_normalize_text** — fan-out=11: Normalize code text for comparison.
-
-Strips comments, normalizes whitespace, low
-- **check** — fan-out=11: Check project for duplicates and exit with non-zero code if thresholds exceeded.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
-| 2 | Reduce scan_project fan-out (currently 18) | medium | medium |
-| 3 | Reduce _load_duplication_map fan-out (currently 15) | medium | medium |
-| 4 | Reduce _write_results fan-out (currently 15) | medium | medium |
+| 1 | Split god module src/redup/core/pipeline.py (518L, 0 classes) | high | high |
+| 2 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
+| 3 | Reduce scan_project fan-out (currently 18) | medium | medium |
+| 4 | Reduce _find_duplicates_phase_lazy fan-out (currently 15) | medium | medium |
+| 5 | Reduce _write_results fan-out (currently 15) | medium | medium |
 
 ## Context for LLM
 

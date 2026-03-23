@@ -1,4 +1,4 @@
-# redup | 45f 6690L | python:45
+# redup | 45f 6755L | python:45
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[45]:
   benchmark.py,83
@@ -6,7 +6,7 @@ M[45]:
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,368
+  src/redup/cli_app/main.py,383
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,205
   src/redup/core/config.py,107
@@ -18,7 +18,7 @@ M[45]:
   src/redup/core/matcher.py,84
   src/redup/core/models.py,121
   src/redup/core/parallel_scanner.py,155
-  src/redup/core/pipeline.py,337
+  src/redup/core/pipeline.py,367
   src/redup/core/planner.py,82
   src/redup/core/scanner.py,190
   src/redup/core/ts_extractor.py,550
@@ -61,7 +61,7 @@ D:
     e: DEFAULT_PATH,DEFAULT_FORMAT,DEFAULT_OUTPUT,scan,diff,check,config,info
     _write_output(content:str;output:Any;suffix:str)->None
     _build_config(path:Path;extensions:str;min_lines:int;min_similarity:float;include_tests:bool)->ScanConfig
-    _build_config_with_file_support(path:Path;extensions:Any;min_lines:Any;min_similarity:Any;include_tests:Any)->ScanConfig
+    _build_config_with_file_support(path:Path;extensions:Any;min_lines:Any;min_similarity:Any;include_tests:Any;parallel:bool=False;...+1)->ScanConfig
     _print_scan_header(path:Path;ext_list:list[str];min_lines:int;min_similarity:float)->None
     _print_scan_summary(dup_map:DuplicationMap)->None
     _write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
