@@ -1,67 +1,66 @@
-# code2llm | 18f 1818L | python:17,shell:1 | 2026-03-23
-# CC̄=4.8 | critical:6/57 | dups:0 | cycles:0
+# code2llm | 19f 1901L | python:18,shell:1 | 2026-03-23
+# CC̄=4.3 | critical:5/66 | dups:0 | cycles:0
 
-HEALTH[2]:
-  🟡 CC    analyze CC=20 (limit:15)
-  🟡 CC    _ast_to_normalized_string CC=17 (limit:15)
+HEALTH[0]: ok
 
-REFACTOR[1]:
-  1. split 2 high-CC methods  (CC>15)
+REFACTOR[0]: none needed
 
 COUPLING: no cross-package imports detected
 
 LAYERS:
-  src/                            CC̄=5.2    ←in:0  →out:0
-  │ !! hasher                     204L  2C   11m  CC=17     ←2
+  ./                              CC̄=4.9    ←in:0  →out:0
+  │ !  cli_utilities_demo         231L  0C    7m  CC=12     ←0
+  │ refactored_frontend_demo   218L  0C    6m  CC=4      ←0
+  │ project.sh                  16L  0C    0m  CC=0.0    ←0
+  │
+  src/                            CC̄=4.2    ←in:0  →out:0
+  │ pipeline                   256L  0C   12m  CC=9      ←2
+  │ !  hasher                     234L  2C   15m  CC=14     ←2
   │ scanner                    193L  2C    6m  CC=9      ←1
-  │ !! pipeline                   183L  0C    3m  CC=20     ←2
   │ main                       165L  1C    3m  CC=9      ←0
   │ models                     152L  9C    1m  CC=1      ←0
   │ planner                    117L  0C    5m  CC=7      ←1
-  │ matcher                     91L  1C    4m  CC=6      ←1
+  │ matcher                    107L  1C    5m  CC=7      ←1
   │ !  toon_reporter               75L  0C    1m  CC=12     ←2
   │ json_reporter               66L  0C    3m  CC=3      ←3
   │ yaml_reporter               34L  0C    1m  CC=4      ←1
   │ __init__                    25L  0C    0m  CC=0.0    ←0
   │ __main__                     5L  0C    0m  CC=0.0    ←0
+  │ sitecustomize                4L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
-  │
-  ./                              CC̄=3.8    ←in:0  →out:0
-  │ refactored_frontend_demo   258L  0C   11m  CC=4      ←0
-  │ !  cli_utilities_demo         231L  0C    7m  CC=12     ←0
-  │ project.sh                  16L  0C    0m  CC=0.0    ←0
   │
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 6 of 56):
-   20.0  analyze                                    23n   2exit  loops+cond+ret  !! split
-   17.0  _ast_to_normalized_string                  10n   2exit  loops+cond+ret  !! split
+FUNCTIONS (CC≥10, 5 of 65):
+   14.0  _process_ast_node                          17n   6exit  cond+ret
    12.0  format_output                              17n   6exit  cond+ret
    12.0  format_table                               14n   3exit  loops+cond+ret
    12.0  to_toon                                    14n   2exit  loops+cond+ret
    10.0  make_args_from_config                      10n   2exit  loops+cond+ret
 
   summary:
-    critical(≥10): 6 | high(5-10): 20 | medium(2-5): 13 | low(<2): 17
-    11% CC≥10  46% CC≥5
+    critical(≥10): 5 | high(5-10): 23 | medium(2-5): 19 | low(<2): 18
+    8% CC≥10  43% CC≥5
 
 HOTSPOTS:
-  #1  analyze                              fan=21   "analysis pipeline, 21 stages"
-  #2  scan                                 fan=18   "calls 18 functions"
-  #3  scan_project                         fan=15   "calls 15 functions"
-  #4  format_output                        fan=11   "11-way dispatch"
+  #1  scan                                 fan=18   "calls 18 functions"
+  #2  scan_project                         fan=15   "calls 15 functions"
+  #3  format_output                        fan=11   "11-way dispatch"
+  #4  _find_structural_groups              fan=11   "calls 11 functions"
   #5  format_table                         fan=10   "10-way dispatch"
   #6  generate_suggestions                 fan=9    "calls 9 functions"
-  #7  _ast_to_normalized_string            fan=9    "calls 9 functions"
-  #8  to_toon                              fan=8    "calls 8 functions"
+  #7  to_toon                              fan=8    "calls 8 functions"
+  #8  analyze                              fan=8    "analysis pipeline, 8 stages"
   #9  _extract_blocks_sliding              fan=7    "calls 7 functions"
   #10 _extract_function_blocks_python      fan=7    "calls 7 functions"
 
 CLASSES:
   DuplicationMap                 ████████████████████████   1m  CC̄=1.0   max=1   
+  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
+  ScannedFile                                               0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
   RiskLevel                                                 0m  CC̄=0.0   max=0.0 
@@ -70,29 +69,26 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
-  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
-  ScannedFile                                               0m  CC̄=0.0   max=0.0 
   OutputFormat                                              0m  CC̄=0.0   max=0.0 
   MatchResult                                               0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
 
 D:
-  src/redup/core/pipeline.py:
-    e: _blocks_to_group,_deduplicate_groups,analyze
-    _blocks_to_group(group_id,blocks,dup_type,similarity,normalized_hash)
-    _deduplicate_groups(groups)
-    analyze(config,function_level_only)
   src/redup/core/hasher.py:
-    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_hash_text,hash_block,hash_block_structural,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
+    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,_hashed_block,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
     HashedBlock  # A code block with its computed fingerprints....
     HashIndex  # Index mapping hashes to blocks for fast lookup....
     _normalize_text(text)
     _normalize_ast_text(text)
     _ast_to_normalized_string(tree)
+    _process_ast_node(node,name_map,counter)
+    _get_placeholder(name,name_map,counter)
+    _normalize_constant(value)
     _hash_text(text,normalizer)
     hash_block(text)
     hash_block_structural(text)
+    _hashed_block(block)
     build_hash_index(blocks,min_lines)
     _find_duplicates(hash_dict)
     find_exact_duplicates(index)
@@ -126,6 +122,20 @@ D:
     _write_output(content,output,suffix)
     scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only)
     info()
+  src/redup/core/pipeline.py:
+    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity
+    _blocks_to_group(group_id,blocks,dup_type,similarity,normalized_hash)
+    _deduplicate_groups(groups)
+    analyze(config,function_level_only)
+    _ensure_config(config)
+    _scan_phase(config)
+    _process_blocks(scanned_files,function_level_only)
+    _find_duplicates_phase(all_blocks,config)
+    _find_exact_groups(index)
+    _find_structural_groups(index,exact_groups_list)
+    _deduplicate_phase(groups)
+    _match_results_to_blocks(matches)
+    _calculate_similarity(matches)
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -134,24 +144,20 @@ D:
     _choose_action(group)
     generate_suggestions(dup_map)
   src/redup/core/matcher.py:
-    e: MatchResult,sequence_similarity,fuzzy_similarity,match_candidates,refine_structural_matches
+    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
     MatchResult  # Result of comparing two code blocks....
     sequence_similarity(text_a,text_b)
     fuzzy_similarity(text_a,text_b)
+    _compare_against_reference(candidates,min_similarity,similarity_fn,method_fn,skip_same_location)
     match_candidates(candidates,min_similarity)
     refine_structural_matches(candidates,min_similarity)
   examples/01_basic_usage.py:
     e: main
     main()
   refactored_frontend_demo.py:
-    e: _serve_file,_create_dashboard_endpoint,dashboard_diag_helpers_jsx,dashboard_diag_infrastructure_jsx,dashboard_diag_config_jsx,dashboard_diag_extensions_jsx,dashboard_diag_agent_jsx,favicon,index,config_json,health_check
+    e: _serve_file,_create_endpoint,favicon,index,config_json,health_check
     _serve_file(paths,media_type,charset_header)
-    _create_dashboard_endpoint(route,file_path,description)
-    dashboard_diag_helpers_jsx()
-    dashboard_diag_infrastructure_jsx()
-    dashboard_diag_config_jsx()
-    dashboard_diag_extensions_jsx()
-    dashboard_diag_agent_jsx()
+    _create_endpoint(route,file_path,description)
     favicon()
     index()
     config_json()
@@ -179,6 +185,7 @@ D:
   src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:
   project.sh:

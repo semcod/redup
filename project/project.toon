@@ -1,24 +1,25 @@
-# redup | 27f 2964L | python:27
+# redup | 28f 3048L | python:28
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[27]:
+M[28]:
   cli_utilities_demo.py,165
   examples/01_basic_usage.py,39
-  refactored_frontend_demo.py,206
+  refactored_frontend_demo.py,174
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
   src/redup/cli_app/main.py,140
   src/redup/core/__init__.py,1
-  src/redup/core/hasher.py,156
-  src/redup/core/matcher.py,68
+  src/redup/core/hasher.py,176
+  src/redup/core/matcher.py,84
   src/redup/core/models.py,114
-  src/redup/core/pipeline.py,139
+  src/redup/core/pipeline.py,191
   src/redup/core/planner.py,89
   src/redup/core/scanner.py,150
   src/redup/reporters/__init__.py,1
   src/redup/reporters/json_reporter.py,57
   src/redup/reporters/toon_reporter.py,58
   src/redup/reporters/yaml_reporter.py,27
+  src/sitecustomize.py,3
   tests/__init__.py,0
   tests/test_e2e.py,332
   tests/test_hasher.py,48
@@ -45,15 +46,13 @@ D:
     main()
   refactored_frontend_demo.py:
     i: os,structlog,fastapi.APIRouter,fastapi.responses.Response,proxym.config.get_settings,typing.{Dict,Tuple}
-    e: _HERE,_SRC_ROOT,_MIME_JS,_MIME_JS_UTF8,DASHBOARD_ENDPOINTS,dashboard_diag_helpers_jsx,dashboard_diag_infrastructure_jsx,dashboard_diag_config_jsx
+    e: _HERE,_SRC_ROOT,_MIME_JS,_MIME_JS_UTF8,DASHBOARD_ENDPOINTS,DIAGNOSTIC_ENDPOINTS,favicon,index
     _serve_file(paths:list[str];media_type:str;charset_header:Any=None)->Response
-    _create_dashboard_endpoint(route:str;file_path:str;description:str)
-    dashboard_diag_helpers_jsx()
-    dashboard_diag_infrastructure_jsx()
-    dashboard_diag_config_jsx()
-    dashboard_diag_extensions_jsx()
-    dashboard_diag_agent_jsx()
+    _create_endpoint(route:str;file_path:str;description:str)
     favicon()
+    index()
+    config_json()
+    health_check()
   src/redup/cli_app/main.py:
     i: typer,redup,enum.Enum,pathlib.Path,redup.core.models.ScanConfig,redup.core.pipeline.analyze,redup.reporters.json_reporter.to_json,redup.reporters.toon_reporter.to_toon,redup.reporters.yaml_reporter.to_yaml
     e: OutputFormat,DEFAULT_PATH,DEFAULT_FORMAT,DEFAULT_OUTPUT,scan,info
@@ -62,24 +61,25 @@ D:
     scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:OutputFormat=typer.Option(DEFAULT_FORMAT; '--format'; '-f'; help='Output format.');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:str=typer.Option('.py'; '--ext'; '-e'; help='Comma-separated file extensions to scan.');min_lines:int=typer.Option(3; '--min-lines'; help='Minimum block size (lines) to consider as duplicate.');min_similarity:float=typer.Option(0.85; '--min-sim'; help='Minimum similarity score (0.0-1.0) for fuzzy matches.');...+1)->None
     info()->None
   src/redup/core/hasher.py:
-    i: hashlib,re,collections.defaultdict,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock
+    i: hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock
     e: hash_block,hash_block_structural,HashedBlock,HashIndex,build_hash_index,find_exact_duplicates,find_structural_duplicates
     HashedBlock:   # A code block with its computed finger...
     HashIndex:   # Index mapping hashes to blocks for fa...
     _normalize_text(text:str)->str
     _normalize_ast_text(text:str)->str
     _ast_to_normalized_string(tree:object)->str
-    _hash_text(text:str;normalizer:callable)->str
+    _process_ast_node(node;name_map:dict[str;str];counter:list[int])->str | None
+    _get_placeholder(name:str;name_map:dict[str;str];counter:list[int])->str
+    _normalize_constant(value)->str
+    _hash_text(text:str;normalizer:Callable[Any;str])->str
     hash_block(text:str)->str
-    hash_block_structural(text:str)->str
-    build_hash_index(blocks:list[CodeBlock];min_lines:int=3)->HashIndex
-    _find_duplicates(hash_dict:dict[str;list[HashedBlock]])->dict[str, list[HashedBlock]]
   src/redup/core/matcher.py:
-    i: difflib,dataclasses.dataclass,redup.core.hasher.{HashedBlock,_normalize_text}
+    i: difflib,collections.abc.Callable,dataclasses.dataclass,redup.core.hasher.{HashedBlock,_normalize_text}
     e: MatchResult,sequence_similarity,fuzzy_similarity,match_candidates,refine_structural_matches
     MatchResult:   # Result of comparing two code blocks.
     sequence_similarity(text_a:str;text_b:str)->float
     fuzzy_similarity(text_a:str;text_b:str)->float
+    _compare_against_reference(candidates:list[HashedBlock];min_similarity:float;similarity_fn:Callable[Any;float];method_fn:Callable[Any;str];skip_same_location:bool=False)->list[MatchResult]
     match_candidates(candidates:list[HashedBlock];min_similarity:float=0.85)->list[MatchResult]
     refine_structural_matches(candidates:list[HashedBlock];min_similarity:float=0.8)->list[MatchResult]
   src/redup/core/models.py:
@@ -91,11 +91,16 @@ D:
     ScanConfig:   # Configuration for project scanning.
     DuplicateFragment: line_count(0)  # A single occurrence of a duplicated c...
   src/redup/core/pipeline.py:
-    i: redup.core.hasher.{HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.matcher.refine_structural_matches,redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType,DuplicationMap,ScanConfig}
+    i: redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.matcher.{MatchResult,refine_structural_matches},redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType}
     e: analyze
     _blocks_to_group(group_id:str;blocks:list[HashedBlock];dup_type:DuplicateType;similarity:float=1.0;normalized_hash:str='')->DuplicateGroup
     _deduplicate_groups(groups:list[DuplicateGroup])->list[DuplicateGroup]
     analyze(config:Any=None;function_level_only:bool=False)->DuplicationMap
+    _ensure_config(config:Any)->ScanConfig
+    _scan_phase(config:ScanConfig)->tuple[list[ScannedFile], ScanStats]
+    _process_blocks(scanned_files:list[ScannedFile];function_level_only:bool)->list[CodeBlock]
+    _find_duplicates_phase(all_blocks:list[CodeBlock];config:ScanConfig)->list[DuplicateGroup]
+    _find_exact_groups(index:HashIndex)->list[DuplicateGroup]
   src/redup/core/planner.py:
     i: os,redup.core.models.{DuplicateGroup,DuplicationMap,RefactorAction,RefactorSuggestion,RiskLevel}
     e: generate_suggestions

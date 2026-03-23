@@ -17,7 +17,7 @@ def _common_prefix(paths: list[str]) -> str:
     """Find the common directory prefix of a list of file paths."""
     if not paths:
         return ""
-    parts_list = [p.split(os.sep) for p in paths]
+    parts_list = [os.path.dirname(p).split(os.sep) for p in paths]
     prefix: list[str] = []
     for segments in zip(*parts_list, strict=True):
         if len(set(segments)) == 1:

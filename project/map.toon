@@ -1,41 +1,41 @@
-# redup | 19f 1876L | python:18,shell:1
+# redup | 20f 1959L | python:19,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[19]:
+M[20]:
   cli_utilities_demo.py,231
   examples/01_basic_usage.py,58
   project.sh,16
-  refactored_frontend_demo.py,258
+  refactored_frontend_demo.py,218
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
   src/redup/cli_app/main.py,165
   src/redup/core/__init__.py,1
-  src/redup/core/hasher.py,204
-  src/redup/core/matcher.py,91
+  src/redup/core/hasher.py,234
+  src/redup/core/matcher.py,107
   src/redup/core/models.py,152
-  src/redup/core/pipeline.py,183
+  src/redup/core/pipeline.py,256
   src/redup/core/planner.py,117
   src/redup/core/scanner.py,193
   src/redup/reporters/__init__.py,1
   src/redup/reporters/json_reporter.py,66
   src/redup/reporters/toon_reporter.py,75
   src/redup/reporters/yaml_reporter.py,34
+  src/sitecustomize.py,4
 D:
-  src/redup/core/pipeline.py:
-    e: _blocks_to_group,_deduplicate_groups,analyze
-    _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
-    _deduplicate_groups(groups)
-    analyze(config;function_level_only)
   src/redup/core/hasher.py:
-    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_hash_text,hash_block,hash_block_structural,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
+    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,_hashed_block,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
     HashedBlock:  # A code block with its computed fingerprints...
     HashIndex:  # Index mapping hashes to blocks for fast lookup...
     _normalize_text(text)
     _normalize_ast_text(text)
     _ast_to_normalized_string(tree)
+    _process_ast_node(node;name_map;counter)
+    _get_placeholder(name;name_map;counter)
+    _normalize_constant(value)
     _hash_text(text;normalizer)
     hash_block(text)
     hash_block_structural(text)
+    _hashed_block(block)
     build_hash_index(blocks;min_lines)
     _find_duplicates(hash_dict)
     find_exact_duplicates(index)
@@ -69,6 +69,20 @@ D:
     _write_output(content;output;suffix)
     scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only)
     info()
+  src/redup/core/pipeline.py:
+    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity
+    _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
+    _deduplicate_groups(groups)
+    analyze(config;function_level_only)
+    _ensure_config(config)
+    _scan_phase(config)
+    _process_blocks(scanned_files;function_level_only)
+    _find_duplicates_phase(all_blocks;config)
+    _find_exact_groups(index)
+    _find_structural_groups(index;exact_groups_list)
+    _deduplicate_phase(groups)
+    _match_results_to_blocks(matches)
+    _calculate_similarity(matches)
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -77,24 +91,20 @@ D:
     _choose_action(group)
     generate_suggestions(dup_map)
   src/redup/core/matcher.py:
-    e: MatchResult,sequence_similarity,fuzzy_similarity,match_candidates,refine_structural_matches
+    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
     MatchResult:  # Result of comparing two code blocks...
     sequence_similarity(text_a;text_b)
     fuzzy_similarity(text_a;text_b)
+    _compare_against_reference(candidates;min_similarity;similarity_fn;method_fn;skip_same_location)
     match_candidates(candidates;min_similarity)
     refine_structural_matches(candidates;min_similarity)
   examples/01_basic_usage.py:
     e: main
     main()
   refactored_frontend_demo.py:
-    e: _serve_file,_create_dashboard_endpoint,dashboard_diag_helpers_jsx,dashboard_diag_infrastructure_jsx,dashboard_diag_config_jsx,dashboard_diag_extensions_jsx,dashboard_diag_agent_jsx,favicon,index,config_json,health_check
+    e: _serve_file,_create_endpoint,favicon,index,config_json,health_check
     _serve_file(paths;media_type;charset_header)
-    _create_dashboard_endpoint(route;file_path;description)
-    dashboard_diag_helpers_jsx()
-    dashboard_diag_infrastructure_jsx()
-    dashboard_diag_config_jsx()
-    dashboard_diag_extensions_jsx()
-    dashboard_diag_agent_jsx()
+    _create_endpoint(route;file_path;description)
     favicon()
     index()
     config_json()
@@ -121,6 +131,7 @@ D:
   src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:
   project.sh:

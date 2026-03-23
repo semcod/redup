@@ -3,30 +3,20 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T15:37:59Z'
+  analyzed_at: '2026-03-23T15:46:19Z'
   tool: code2llm
   stats:
     files: 12
-    lines: 2895
-    functions: 56
+    lines: 2978
+    functions: 65
     classes: 15
 health:
-  cc_avg: 4.8
-  critical_count: 6
+  cc_avg: 4.3
+  critical_count: 5
   critical_limit: 10
   duplicates: 0
   cycles: 0
   alerts:
-  - type: high_fan_out
-    target: analyze
-    value: 21
-    limit: 10
-    severity: critical
-  - type: cc_exceeded
-    target: analyze
-    value: 20
-    limit: 15
-    severity: error
   - type: high_fan_out
     target: scan
     value: 18
@@ -37,13 +27,13 @@ health:
     value: 15
     limit: 10
     severity: error
-  - type: cc_exceeded
-    target: _ast_to_normalized_string
-    value: 17
-    limit: 15
-    severity: warning
   - type: high_fan_out
     target: format_output
+    value: 11
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _find_structural_groups
     value: 11
     limit: 10
     severity: warning
@@ -53,23 +43,11 @@ health:
     limit: 10
     severity: warning
 modules:
-- path: src/redup/core/pipeline.py
-  lines: 183
-  classes: 0
-  methods: 3
-  cc_max: 20
-  inbound_deps: 2
-  exports:
-  - name: analyze
-    type: function
-    cc: 20
-    flag: split
-    fan_out: 21
 - path: src/redup/core/hasher.py
-  lines: 204
+  lines: 234
   classes: 2
-  methods: 11
-  cc_max: 17
+  methods: 15
+  cc_max: 14
   inbound_deps: 2
   exports:
   - name: HashedBlock
@@ -150,6 +128,16 @@ modules:
   - name: info
     type: function
     cc: 3
+- path: src/redup/core/pipeline.py
+  lines: 256
+  classes: 0
+  methods: 12
+  cc_max: 9
+  inbound_deps: 2
+  exports:
+  - name: analyze
+    type: function
+    cc: 1
 - path: src/redup/core/scanner.py
   lines: 193
   classes: 2
@@ -167,21 +155,11 @@ modules:
     type: function
     cc: 6
     fan_out: 15
-- path: src/redup/core/planner.py
-  lines: 117
-  classes: 0
+- path: src/redup/core/matcher.py
+  lines: 107
+  classes: 1
   methods: 5
   cc_max: 7
-  inbound_deps: 1
-  exports:
-  - name: generate_suggestions
-    type: function
-    cc: 6
-- path: src/redup/core/matcher.py
-  lines: 91
-  classes: 1
-  methods: 4
-  cc_max: 6
   inbound_deps: 1
   exports:
   - name: MatchResult
@@ -195,32 +173,27 @@ modules:
     cc: 2
   - name: match_candidates
     type: function
-    cc: 5
+    cc: 2
   - name: refine_structural_matches
+    type: function
+    cc: 1
+- path: src/redup/core/planner.py
+  lines: 117
+  classes: 0
+  methods: 5
+  cc_max: 7
+  inbound_deps: 1
+  exports:
+  - name: generate_suggestions
     type: function
     cc: 6
 - path: refactored_frontend_demo.py
-  lines: 258
+  lines: 218
   classes: 0
-  methods: 11
+  methods: 6
   cc_max: 4
   inbound_deps: 0
   exports:
-  - name: dashboard_diag_helpers_jsx
-    type: function
-    cc: 1
-  - name: dashboard_diag_infrastructure_jsx
-    type: function
-    cc: 1
-  - name: dashboard_diag_config_jsx
-    type: function
-    cc: 1
-  - name: dashboard_diag_extensions_jsx
-    type: function
-    cc: 1
-  - name: dashboard_diag_agent_jsx
-    type: function
-    cc: 1
   - name: favicon
     type: function
     cc: 1
@@ -323,10 +296,13 @@ modules:
   methods: 0
   cc_max: 0
   inbound_deps: 0
+- path: src/sitecustomize.py
+  lines: 4
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
 hotspots:
-- name: analyze
-  fan_out: 21
-  note: Analysis pipeline, 21 stages
 - name: scan
   fan_out: 18
   note: Scan a project for code duplicates and generate a refactoring map.
@@ -337,22 +313,14 @@ hotspots:
 - name: format_output
   fan_out: 11
   note: 11-way dispatch
+- name: _find_structural_groups
+  fan_out: 11
+  note: Find structural duplicate groups.
 - name: format_table
   fan_out: 10
   note: 10-way dispatch
 refactoring:
   priorities:
-  - action: Split analyze (CC=20 → target CC<10)
-    impact: medium
-    effort: low
-    module: pipeline.py
-  - action: Split _ast_to_normalized_string (CC=17 → target CC<10)
-    impact: medium
-    effort: low
-    module: hasher.py
-  - action: Reduce analyze fan-out (currently 21)
-    impact: medium
-    effort: medium
   - action: Reduce scan fan-out (currently 18)
     impact: medium
     effort: medium
@@ -361,7 +329,7 @@ refactoring:
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 4.8
-  critical: 6
-  lines: 2895
+  cc_avg: 4.3
+  critical: 5
+  lines: 2978
   note: Automated analysis
