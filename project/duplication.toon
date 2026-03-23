@@ -1,9 +1,54 @@
-# redup/duplication | 0 groups | 0f 0L | 2026-03-23
+# redup/duplication | 5 groups | 36f 6214L | 2026-03-23
 
 SUMMARY:
-  files_scanned: 0
-  total_lines:   0
-  dup_groups:    0
-  dup_fragments: 0
-  saved_lines:   0
-  scan_ms:       423
+  files_scanned: 36
+  total_lines:   6214
+  dup_groups:    5
+  dup_fragments: 17
+  saved_lines:   63
+  scan_ms:       573
+
+DUPLICATES[5] (ranked by impact):
+  [a0a9c971b75569ad]   STRU  find_exact_duplicates_lazy  L=26 N=2 saved=26 sim=1.00
+      src/redup/core/lazy_grouper.py:12-37  (find_exact_duplicates_lazy)
+      src/redup/core/lazy_grouper.py:40-56  (find_structural_duplicates_lazy)
+  [a36dc0ba1701034a]   STRU  _extract_functions_go  L=3 N=8 saved=21 sim=1.00
+      src/redup/core/ts_extractor.py:300-302  (_extract_functions_go)
+      src/redup/core/ts_extractor.py:305-307  (_extract_functions_rust)
+      src/redup/core/ts_extractor.py:310-312  (_extract_functions_java)
+      src/redup/core/ts_extractor.py:513-515  (_extract_functions_lua)
+      src/redup/core/ts_extractor.py:578-580  (_extract_functions_scala)
+      src/redup/core/ts_extractor.py:583-585  (_extract_functions_kotlin)
+      src/redup/core/ts_extractor.py:588-590  (_extract_functions_swift)
+      src/redup/core/ts_extractor.py:593-595  (_extract_functions_objc)
+  [e0693beaa37dd603]   EXAC  handle_interrupt  L=4 N=3 saved=8 sim=1.00
+      src/redup/core/pipeline.py:175-178  (handle_interrupt)
+      src/redup/core/pipeline.py:545-548  (handle_interrupt)
+      src/redup/core/pipeline.py:618-621  (handle_interrupt)
+  [5dd94726a6d68273]   STRU  hash_block  L=4 N=2 saved=4 sim=1.00
+      src/redup/core/hasher.py:192-195  (hash_block)
+      src/redup/core/hasher.py:198-201  (hash_block_structural)
+  [c7f37c387e590d4a]   STRU  find_exact_duplicates  L=4 N=2 saved=4 sim=1.00
+      src/redup/core/hasher.py:204-207  (find_exact_duplicates)
+      src/redup/core/hasher.py:210-213  (find_structural_duplicates)
+
+REFACTOR[5] (ranked by priority):
+  [1] ○ extract_function   → src/redup/core/utils/find_exact_duplicates_lazy.py
+      WHY: 2 occurrences of 26-line block across 1 files — saves 26 lines
+      FILES: src/redup/core/lazy_grouper.py
+  [2] ○ extract_function   → src/redup/core/utils/_extract_functions_go.py
+      WHY: 8 occurrences of 3-line block across 1 files — saves 21 lines
+      FILES: src/redup/core/ts_extractor.py
+  [3] ○ extract_function   → src/redup/core/utils/handle_interrupt.py
+      WHY: 3 occurrences of 4-line block across 1 files — saves 8 lines
+      FILES: src/redup/core/pipeline.py
+  [4] ○ extract_function   → src/redup/core/utils/hash_block.py
+      WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
+      FILES: src/redup/core/hasher.py
+  [5] ○ extract_function   → src/redup/core/utils/find_exact_duplicates.py
+      WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
+      FILES: src/redup/core/hasher.py
+
+METRICS-TARGET:
+  dup_groups:  5 → 0
+  saved_lines: 63 lines recoverable

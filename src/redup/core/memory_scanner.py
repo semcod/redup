@@ -144,16 +144,18 @@ def scan_project_memory_optimized(
                     func_blocks = []
                 class_blocks = []
             
-            # Also extract sliding-window blocks
-            from redup.core.scanner import _extract_blocks_sliding
-            lines = content.splitlines()
-            sliding = _extract_blocks_sliding(lines, config.min_block_lines)
-            line_blocks = [
-                CodeBlock(file=rel_path, line_start=s, line_end=e, text=t)
-                for s, e, t in sliding
-            ]
-            
-            all_blocks = func_blocks + class_blocks + line_blocks
+            # Add sliding window blocks only if not functions_only
+            all_blocks = func_blocks + class_blocks
+            if not (config.functions_only or getattr(config, 'functions_only', False)):
+                # Also extract sliding-window blocks
+                from redup.core.scanner import _extract_blocks_sliding
+                lines = content.splitlines()
+                sliding = _extract_blocks_sliding(lines, config.min_block_lines)
+                line_blocks = [
+                    CodeBlock(file=rel_path, line_start=s, line_end=e, text=t)
+                    for s, e, t in sliding
+                ]
+                all_blocks.extend(line_blocks)
             
             sf = ScannedFile(path=rel_path, lines=lines, blocks=all_blocks)
             scanned.append(sf)
@@ -202,22 +204,18 @@ def scan_project_parallel_memory_optimized(
     if len(files) < 10 or workers == 1:
         return scan_project_memory_optimized(config, max_cache_mb)
     
-    # Initialize shared memory cache for workers
+    # Initialize memory cache and preload files in main process
     cache = MemoryFileCache(max_cache_mb)
-    
-    # Preload files into cache
     cache.preload_files(files)
     print(f"📁 Preloaded {cache.get_stats()['cached_files']} files for parallel processing")
     
     scanned: list[ScannedFile] = []
     
-    def process_file_cached(filepath: Path) -> ScannedFile:
-        """Worker function that uses cached content."""
+    def process_file_with_content(args: tuple[Path, bytes]) -> ScannedFile:
+        """Worker function that receives content directly."""
+        filepath, content_bytes = args
         try:
-            content_bytes = cache.get_file_content(filepath)
             content = content_bytes.decode('utf-8', errors='replace')
-            
-            # Use existing _process_file logic but with cached content
             rel_path = str(filepath.relative_to(config.root.resolve()))
             
             # Extract blocks
@@ -226,6 +224,7 @@ def scan_project_parallel_memory_optimized(
                 func_blocks = _extract_function_blocks_python(content, rel_path)
                 class_blocks = _extract_class_blocks_python(content, rel_path)
             else:
+                # Try tree-sitter for other languages
                 try:
                     from redup.core.ts_extractor import extract_functions_treesitter, is_language_supported
                     if is_language_supported(rel_path):
@@ -236,27 +235,32 @@ def scan_project_parallel_memory_optimized(
                     func_blocks = []
                 class_blocks = []
             
-            # Sliding window blocks
-            from redup.core.scanner import _extract_blocks_sliding
+            # Add sliding window blocks only if not functions_only
+            all_blocks = func_blocks + class_blocks
             lines = content.splitlines()
-            sliding = _extract_blocks_sliding(lines, config.min_block_lines)
-            line_blocks = [
-                CodeBlock(file=rel_path, line_start=s, line_end=e, text=t)
-                for s, e, t in sliding
-            ]
-            
-            all_blocks = func_blocks + class_blocks + line_blocks
+            if not (config.functions_only or getattr(config, 'functions_only', False)):
+                # Sliding window blocks for line-level duplicates
+                from redup.core.scanner import _extract_blocks_sliding
+                sliding = _extract_blocks_sliding(lines, config.min_block_lines)
+                line_blocks = [
+                    CodeBlock(file=rel_path, line_start=s, line_end=e, text=t)
+                    for s, e, t in sliding
+                ]
+                all_blocks.extend(line_blocks)
             
             return ScannedFile(path=rel_path, lines=lines, blocks=all_blocks)
             
         except (OSError, PermissionError):
             return ScannedFile(path=str(filepath), lines=[], blocks=[])
     
-    # Process files in parallel using cached content
+    # Prepare (filepath, content) pairs from cache
+    file_content_pairs = [(f, cache.get_file_content(f)) for f in files]
+    
+    # Process files in parallel using cached content passed as arguments
     with ProcessPoolExecutor(max_workers=workers) as executor:
         future_to_file = {
-            executor.submit(process_file_cached, filepath): filepath
-            for filepath in files
+            executor.submit(process_file_with_content, pair): pair[0]
+            for pair in file_content_pairs
         }
         
         for future in as_completed(future_to_file):

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.3.18] - 2026-03-23
+
+### Other
+- Update project/duplication.toon
+
 ## [0.3.17] - 2026-03-23
 
 ### Docs

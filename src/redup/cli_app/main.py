@@ -100,8 +100,10 @@ def _build_config_with_file_support(
     # Apply performance options
     if parallel:
         config.parallel_workers = max_workers
+        config._parallel_enabled = True
     elif max_workers is not None:
         config.parallel_workers = max_workers
+        config._parallel_enabled = True
     
     if incremental:
         config.enable_cache = True
@@ -241,9 +243,9 @@ def scan(
         help="Only analyze function-level duplicates (default: enabled for speed).",
     ),
     parallel: bool = typer.Option(
-        True,
+        False,
         "--parallel/--no-parallel",
-        help="Use parallel scanning for large projects (default: enabled).",
+        help="Use parallel scanning for large projects (default: disabled due to issues).",
     ),
     max_workers: int = typer.Option(
         None,
@@ -251,9 +253,9 @@ def scan(
         help="Number of parallel workers (default: CPU count).",
     ),
     incremental: bool = typer.Option(
-        True,
+        False,
         "--incremental/--no-incremental",
-        help="Use hash cache to skip unchanged files (default: enabled).",
+        help="Use hash cache to skip unchanged files (default: disabled due to issues).",
     ),
     memory_cache: bool = typer.Option(
         True,
@@ -268,13 +270,13 @@ def scan(
 ) -> None:
     """Scan a project for code duplicates and generate a refactoring map.
     
-    Performance optimizations are enabled by default:
-    - ✅ --functions-only: Faster function-level analysis
-    - ✅ --parallel: Multi-core processing  
-    - ✅ --incremental: Skip unchanged files
-    - ✅ --memory-cache: RAM preload for speed
+    Performance optimizations:
+    - ✅ --functions-only: Faster function-level analysis (enabled)
+    - ⚠️ --parallel: Multi-core processing (disabled due to issues)
+    - ⚠️ --incremental: Skip unchanged files (disabled due to issues) 
+    - ✅ --memory-cache: RAM preload for speed (enabled)
     
-    Use --no-* flags to disable specific optimizations.
+    Use --parallel and/or --incremental when needed.
     """
     try:
         config = _build_config_with_file_support(
@@ -285,16 +287,19 @@ def scan(
         _print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
 
         # Choose analysis method based on optimization flags
-        if parallel or incremental:
+        if parallel and not incremental:
+            # Pure parallel mode (no cache)
+            dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
+        elif parallel or incremental:
+            # Optimized mode with cache and/or parallel
             dup_map = analyze_optimized(
                 config=config, 
                 function_level_only=functions_only,
                 use_memory_cache=getattr(config, '_memory_cache', True),
                 max_cache_mb=getattr(config, '_max_cache_mb', 512)
             )
-        elif parallel:
-            dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
         else:
+            # Standard mode
             dup_map = analyze(config=config, function_level_only=functions_only)
 
         _print_scan_summary(dup_map)

@@ -30,7 +30,6 @@ from redup.core.scanner import CodeBlock, ScannedFile, scan_project
 from redup.core.cache import HashCache, build_hash_index_with_cache
 from redup.core.lazy_grouper import find_all_duplicates_lazy, DuplicateGroupCollector
 from redup.core.memory_scanner import scan_project_memory_optimized, scan_project_parallel_memory_optimized
-from redup.core.ultra_fast_scanner import scan_project_ultra_fast
 
 
 def _blocks_to_group(
@@ -184,12 +183,23 @@ def analyze_optimized(
     try:
         # Phase 1: Optimized scanning with memory cache
         if config.parallel_workers and config.parallel_workers > 1:
+            # Explicit worker count specified
             if use_memory_cache:
                 scanned_files, stats = scan_project_parallel_memory_optimized(
                     config, config.parallel_workers, max_cache_mb
                 )
             else:
                 scanned_files, stats = _scan_phase_parallel(config, config.parallel_workers)
+        elif config.parallel_workers is None and (getattr(config, '_parallel_enabled', False) or config.parallel_workers is None):
+            # Auto-detect CPU count when parallel_workers is None (default behavior)
+            import multiprocessing as mp
+            auto_workers = mp.cpu_count()
+            if use_memory_cache:
+                scanned_files, stats = scan_project_parallel_memory_optimized(
+                    config, auto_workers, max_cache_mb
+                )
+            else:
+                scanned_files, stats = _scan_phase_parallel(config, auto_workers)
         elif use_memory_cache:
             scanned_files, stats = scan_project_memory_optimized(config, max_cache_mb)
         else:
@@ -243,11 +253,8 @@ def _ensure_config(config: ScanConfig | None) -> ScanConfig:
 
 
 def _scan_phase(config: ScanConfig, function_level_only: bool = False) -> tuple[list[ScannedFile], ScanStats]:
-    """Phase 1: Scan project files with ultra-fast optimization."""
-    # Use ultra-fast scanner by default for 4x speedup
-    if getattr(config, 'use_ultra_fast_scanner', False):
-        return scan_project_ultra_fast(config)
-    # Use optimized scan_project with RAM preload
+    """Phase 1: Scan project files."""
+    # Use standard scan_project (ultra_fast_scanner disabled - doesn't extract function names)
     return scan_project(config, function_level_only=function_level_only)
 
 

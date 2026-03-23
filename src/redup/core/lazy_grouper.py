@@ -74,11 +74,15 @@ def _create_duplicate_group(
         for hb in blocks
     ]
     
+    # Extract function name from first fragment if available
+    normalized_name = fragments[0].function_name if fragments and fragments[0].function_name else None
+    
     return DuplicateGroup(
         id=hash_val,
         duplicate_type=duplicate_type,
         fragments=fragments,
         normalized_hash=hash_val,
+        normalized_name=normalized_name,
     )
 
 
