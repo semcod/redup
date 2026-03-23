@@ -265,6 +265,9 @@ def _lazy_read_files(files: list[Path]) -> dict[Path, str]:
         
         def __getitem__(self, file_path: Path) -> str:
             return self.get(file_path)
+        
+        def keys(self):
+            return self.files
     
     return LazyFileReader(files)
 
@@ -567,7 +570,7 @@ def scan_project(
     files = _collect_files(config)
     
     if not files:
-        return [], ScanStats(files_scanned=0, total_lines=0, scan_time_ms=0)
+        return [], ScanStats(files_scanned=0, files_skipped=0, total_lines=0, total_blocks=0, scan_time_ms=0.0)
     
     # Choose file reading strategy
     if strategy.preload_to_ram:

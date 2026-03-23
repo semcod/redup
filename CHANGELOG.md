@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+## [0.3.26] - 2026-03-23
+
+### Docs
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Test
+- Update tests/test_e2e.py
+- Update tests/test_scanner.py
+
+### Other
+- Update .gitignore
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/dashboard.html
+- Update project/duplication.toon
+- Update project/evolution.toon
+- Update project/flow.mmd
+- Update project/flow.png
+- Update project/flow.toon
+- ... and 6 more files
+
 ## [0.3.25] - 2026-03-23
 
 ### Docs

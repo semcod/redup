@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redup
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-246-green)
-> **246** functions | **33** classes | **40** files | CC̄ = 3.4
+> **246** functions | **33** classes | **40** files | CC̄ = 3.5
 
 > Auto-generated project documentation from source code analysis.
 
@@ -150,7 +150,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redup/
-    ├── 01_basic_usage        ├── __main__    ├── redup/            ├── config├── benchmark            ├── hash_cache            ├── lazy_grouper        ├── core/            ├── universal_fuzzy            ├── planner            ├── scanner            ├── hasher            ├── matcher            ├── lsh_matcher            ├── ts_extractor            ├── models            ├── cache    ├── sitecustomize            ├── differ            ├── markdown_reporter            ├── fuzzy_similarity        ├── reporters/            ├── json_reporter            ├── code2llm_reporter            ├── yaml_reporter            ├── enhanced_reporter            ├── toon_reporter        ├── cli_app/            ├── scan_helpers            ├── output_writer            ├── scan_commands            ├── main            ├── utils/                ├── hash_utils                ├── duplicate_finders                ├── function_extractor├── project                ├── language_dispatcher            ├── pipeline            ├── fuzzy_similarity```
+    ├── redup/        ├── __main__    ├── 01_basic_usage├── benchmark            ├── config            ├── hash_cache            ├── lazy_grouper        ├── core/            ├── universal_fuzzy            ├── planner            ├── scanner            ├── hasher            ├── matcher            ├── lsh_matcher            ├── ts_extractor            ├── fuzzy_similarity            ├── models            ├── cache    ├── sitecustomize            ├── differ            ├── markdown_reporter        ├── reporters/            ├── json_reporter            ├── code2llm_reporter            ├── yaml_reporter            ├── toon_reporter            ├── enhanced_reporter        ├── cli_app/            ├── output_writer            ├── scan_helpers            ├── scan_commands            ├── main            ├── utils/                ├── hash_utils                ├── duplicate_finders                ├── function_extractor├── project            ├── fuzzy_similarity                ├── language_dispatcher            ├── pipeline```
 
 ## API Overview
 
@@ -169,6 +169,10 @@ redup/
 - **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
 - **`MatchResult`** — Result of comparing two code blocks.
 - **`LSHIndex`** — LSH index for efficient near-duplicate detection.
+- **`ComponentSignature`** — Semantic signature of a component for fuzzy matching.
+- **`HTMLComponentExtractor`** — Extract HTML components with semantic normalization for fuzzy matching.
+- **`CSSComponentExtractor`** — Extract CSS components with semantic normalization for fuzzy matching.
+- **`FuzzySimilarityDetector`** — Detect fuzzy similarity between HTML/CSS components.
 - **`DuplicateType`** — How the duplicate was detected.
 - **`RefactorAction`** — Proposed refactoring action.
 - **`RiskLevel`** — Risk of the proposed refactoring.
@@ -180,10 +184,6 @@ redup/
 - **`DuplicationMap`** — Complete result of a reDUP analysis run.
 - **`HashCache`** — SQLite-based cache for file and block hashes.
 - **`DiffResult`** — Result of comparing two reDUP scans.
-- **`ComponentSignature`** — Semantic signature of a component for fuzzy matching.
-- **`HTMLComponentExtractor`** — Extract HTML components with semantic normalization for fuzzy matching.
-- **`CSSComponentExtractor`** — Extract CSS components with semantic normalization for fuzzy matching.
-- **`FuzzySimilarityDetector`** — Detect fuzzy similarity between HTML/CSS components.
 - **`EnhancedReporter`** — Enhanced reporter with detailed metrics and visualizations.
 - **`FunctionExtractor`** — Generic function extractor that can be configured for different languages.
 - **`LanguageDispatcher`** — Dispatches function extraction to appropriate language-specific extractors.
@@ -191,11 +191,11 @@ redup/
 ### Functions
 
 - `main()` — —
+- `benchmark_sequential_vs_parallel()` — Compare sequential vs parallel scanning performance.
+- `benchmark_feature_performance()` — Test performance of different features.
 - `load_config()` — Load reDUP configuration from available sources.
 - `config_to_scan_config(config, path)` — Convert configuration dict to ScanConfig object.
 - `create_sample_redup_toml()` — Create a sample redup.toml configuration file content.
-- `benchmark_sequential_vs_parallel()` — Compare sequential vs parallel scanning performance.
-- `benchmark_feature_performance()` — Test performance of different features.
 - `find_exact_duplicates_lazy(index, min_lines)` — Find exact duplicate groups with lazy evaluation and early exit.
 - `find_structural_duplicates_lazy(index, min_lines)` — Find structural duplicate groups with lazy evaluation and early exit.
 - `find_all_duplicates_lazy(index, min_lines, include_exact, include_structural)` — Find all duplicate groups with lazy evaluation.
@@ -230,11 +230,11 @@ redup/
 - `export_code2llm(dup_map, output_dir, files_scanned, total_lines)` — Export both code2llm files to the specified directory.
 - `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
 - `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
+- `write_output(content, output, suffix)` — Write content to file or stdout.
+- `write_results(dup_map, format, output, path)` — Write analysis results in specified format.
 - `print_scan_header(path, ext_list, min_lines, min_similarity)` — Print scan operation header.
 - `print_scan_summary(dup_map)` — Print scan operation summary.
 - `apply_fuzzy_similarity(dup_map, threshold)` — Apply fuzzy similarity detection.
-- `write_output(content, output, suffix)` — Write content to file or stdout.
-- `write_results(dup_map, format, output, path)` — Write analysis results in specified format.
 - `scan_command(path, format, output, extensions)` — Scan a project for code duplicates.
 - `diff_command(before, after)` — Compare two reDUP analysis results.
 - `check_command(path, max_groups, max_saved_lines, extensions)` — Quick check for duplicates with summary report.

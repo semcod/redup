@@ -10,7 +10,7 @@ When you run `code2llm ./ -f all`, the following files are created:
 
 | File | Format | Purpose | Key Insights |
 |------|--------|---------|--------------|
-| `analysis.toon` | **TOON** | **🔥 Health diagnostics** - Complexity, god modules, coupling | 12 critical functions, 1 god modules |
+| `analysis.toon` | **TOON** | **🔥 Health diagnostics** - Complexity, god modules, coupling | 13 critical functions, 1 god modules |
 | `evolution.toon` | **TOON** | **📋 Refactoring queue** - Prioritized improvements | 0 refactoring actions needed |
 | `flow.toon` | **TOON** | **🔄 Data flow analysis** - Pipelines, contracts, types | Data dependencies and side effects |
 | `map.toon` | **TOON** | **🗺️ Structural map** - Modules, imports, signatures | Project architecture overview |

@@ -67,10 +67,10 @@
   <div class="card"><div class="value">245</div><div class="label">Functions</div></div>
   <div class="card"><div class="value">33</div><div class="label">Classes</div></div>
   <div class="card"><div class="value">31</div><div class="label">Files</div></div>
-  <div class="card"><div class="value">8,603</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">8,615</div><div class="label">Lines</div></div>
   <div class="card"><div class="value">2</div><div class="label">Languages</div></div>
   <div class="card"><div class="value">3.4</div><div class="label">Avg CC</div></div>
-  <div class="card"><div class="value">12</div><div class="label">Critical (CC≥10)</div></div>
+  <div class="card"><div class="value">13</div><div class="label">Critical (CC≥10)</div></div>
   <div class="card"><div class="value">1</div><div class="label">Duplicates</div></div>
   <div class="card"><div class="value">0</div><div class="label">Cycles</div></div>
 </div>
@@ -95,8 +95,8 @@
     <h2 style="border:none;margin:0 0 .5rem;">Evolution (2026-03-23)</h2>
     <div class="evo-cards">
       <div class="card"><div class="value">3.4</div><div class="label">CC̄ →</div></div>
-      <div class="card"><div class="value">12</div><div class="label">Critical →</div></div>
-      <div class="card"><div class="value">8603</div><div class="label">Lines</div></div>
+      <div class="card"><div class="value">13</div><div class="label">Critical →</div></div>
+      <div class="card"><div class="value">8615</div><div class="label">Lines</div></div>
     </div>
     <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
   </div>
@@ -125,7 +125,7 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>scanner.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">647</td>
+                <td style="text-align:right">642</td>
                 <td style="text-align:right">20</td>
                 <td style="text-align:right">4</td>
                 <td style="text-align:right">12</td>
@@ -271,7 +271,7 @@
   </div>
 </div>
 
-<h2>Alerts (18)</h2>
+<h2>Alerts (17)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>Severity</th><th>Target</th><th>Type</th><th>Value</th><th>Limit</th></tr></thead>
@@ -295,13 +295,6 @@
                 <td>scan_project</td>
                 <td>high_fan_out</td>
                 <td>16</td>
-                <td>10</td>
-            </tr>
-            <tr class="error">
-                <td><span class="badge error">error</span></td>
-                <td>_extract_function_blocks_python</td>
-                <td>high_fan_out</td>
-                <td>15</td>
                 <td>10</td>
             </tr>
             <tr class="error">
@@ -334,13 +327,6 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>analyze_optimized</td>
-                <td>high_fan_out</td>
-                <td>14</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
                 <td>write_results</td>
                 <td>high_fan_out</td>
                 <td>14</td>
@@ -348,14 +334,21 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>analyze_parallel</td>
+                <td>analyze_optimized</td>
+                <td>high_fan_out</td>
+                <td>14</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>scan_command</td>
                 <td>high_fan_out</td>
                 <td>13</td>
                 <td>10</td>
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>scan_command</td>
+                <td>analyze_parallel</td>
                 <td>high_fan_out</td>
                 <td>13</td>
                 <td>10</td>
@@ -369,6 +362,13 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
+                <td>config_command</td>
+                <td>high_fan_out</td>
+                <td>11</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
                 <td>_find_structural_groups</td>
                 <td>high_fan_out</td>
                 <td>11</td>
@@ -376,9 +376,9 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>config_command</td>
+                <td>_scan_file_worker</td>
                 <td>high_fan_out</td>
-                <td>11</td>
+                <td>10</td>
                 <td>10</td>
             </tr></tbody>
 </table>
@@ -411,11 +411,6 @@ Args:
 </td>
             </tr>
             <tr>
-                <td><strong>_extract_function_blocks_python</strong></td>
-                <td>15</td>
-                <td>Extract function blocks from Python code using AST.</td>
-            </tr>
-            <tr>
                 <td><strong>_find_duplicates_phase_lazy</strong></td>
                 <td>15</td>
                 <td>Phase 3: Hash and find duplicates with caching and lazy evaluation.</td>
@@ -431,14 +426,19 @@ Args:
                 <td>Scan files in parallel using ProcessPoolExecutor.</td>
             </tr>
             <tr>
+                <td><strong>write_results</strong></td>
+                <td>14</td>
+                <td>Write analysis results in specified format.</td>
+            </tr>
+            <tr>
                 <td><strong>analyze_optimized</strong></td>
                 <td>14</td>
                 <td>Analysis pipeline, 14 stages</td>
             </tr>
             <tr>
-                <td><strong>write_results</strong></td>
-                <td>14</td>
-                <td>Write analysis results in specified format.</td>
+                <td><strong>scan_command</strong></td>
+                <td>13</td>
+                <td>Scan a project for code duplicates.</td>
             </tr>
             <tr>
                 <td><strong>analyze_parallel</strong></td>
@@ -457,7 +457,7 @@ Args:
   <tbody>
             <tr>
                 <td>1</td>
-                <td>Split god module src/redup/core/scanner.py (647L, 4 classes)</td>
+                <td>Split god module src/redup/core/scanner.py (642L, 4 classes)</td>
                 <td><span class="badge high">high</span></td>
                 <td>high</td>
             </tr>
@@ -502,7 +502,7 @@ Args:
 </div>
 </div>
 
-<footer>Generated by code2llm on 2026-03-23 20:20</footer>
+<footer>Generated by code2llm on 2026-03-23 20:22</footer>
 
 <script>
 // Evolution chart disabled — fewer than 3 data points
@@ -533,7 +533,7 @@ new Chart(modLinesCtx, {
   type: 'bar',
   data: {
     labels: ['ts_extractor.py', 'pipeline.py', 'scanner.py', 'universal_fuzzy.py', 'fuzzy_similarity.py', 'enhanced_reporter.py', 'hasher.py', 'cache.py', 'lsh_matcher.py', 'main.py', 'differ.py', 'code2llm_reporter.py', 'models.py', 'scan_commands.py', 'fuzzy_similarity.py'],
-    datasets: [{ label: 'Lines', data: [765, 660, 647, 454, 408, 274, 273, 267, 225, 219, 209, 209, 169, 163, 160],
+    datasets: [{ label: 'Lines', data: [765, 660, 642, 454, 408, 274, 273, 267, 225, 219, 209, 209, 169, 163, 160],
       backgroundColor: '#3b82f6'
     }]
   },

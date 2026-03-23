@@ -5,11 +5,11 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 31
-- **Lines**: 8603
+- **Lines**: 8615
 - **Functions**: 245
 - **Classes**: 33
 - **Avg CC**: 3.4
-- **Critical (CC≥10)**: 12
+- **Critical (CC≥10)**: 13
 
 ## Architecture
 
@@ -36,10 +36,10 @@
 - `scan_helpers.py` — 34L, 3 methods, CC↑1
 - _1 more files_
 
-### src/redup/core/ (16 files, 4712L, 173 functions)
+### src/redup/core/ (16 files, 4707L, 173 functions)
 
 - `differ.py` — 209L, 5 methods, CC↑14
-- `scanner.py` — 647L, 20 methods, CC↑12
+- `scanner.py` — 642L, 20 methods, CC↑12
 - `pipeline.py` — 660L, 17 methods, CC↑11
 - `universal_fuzzy.py` — 454L, 16 methods, CC↑11
 - `fuzzy_similarity.py` — 408L, 20 methods, CC↑10
@@ -78,16 +78,16 @@
 Args:
     config: Scan configuration
 
-- **_extract_function_blocks_python** — fan-out=15: Extract function blocks from Python code using AST.
 - **_find_duplicates_phase_lazy** — fan-out=15: Phase 3: Hash and find duplicates with caching and lazy evaluation.
 - **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
 - **_scan_parallel** — fan-out=14: Scan files in parallel using ProcessPoolExecutor.
+- **write_results** — fan-out=14: Write analysis results in specified format.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/core/scanner.py (647L, 4 classes) | high | high |
+| 1 | Split god module src/redup/core/scanner.py (642L, 4 classes) | high | high |
 | 2 | Split god module src/redup/core/pipeline.py (660L, 0 classes) | high | high |
 | 3 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
 | 4 | Split write_results (CC=15 → target CC<10) | medium | low |

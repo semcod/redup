@@ -3,16 +3,16 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T20:20:03Z'
+  analyzed_at: '2026-03-23T20:22:36Z'
   tool: code2llm
   stats:
     files: 31
-    lines: 8603
+    lines: 8615
     functions: 245
     classes: 33
 health:
   cc_avg: 3.4
-  critical_count: 12
+  critical_count: 13
   critical_limit: 10
   duplicates: 1
   cycles: 0
@@ -30,11 +30,6 @@ health:
   - type: high_fan_out
     target: scan_project
     value: 16
-    limit: 10
-    severity: error
-  - type: high_fan_out
-    target: _extract_function_blocks_python
-    value: 15
     limit: 10
     severity: error
   - type: high_fan_out
@@ -58,22 +53,22 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: analyze_optimized
-    value: 14
-    limit: 10
-    severity: warning
-  - type: high_fan_out
     target: write_results
     value: 14
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: analyze_parallel
-    value: 13
+    target: analyze_optimized
+    value: 14
     limit: 10
     severity: warning
   - type: high_fan_out
     target: scan_command
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: analyze_parallel
     value: 13
     limit: 10
     severity: warning
@@ -83,12 +78,12 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: _find_structural_groups
+    target: config_command
     value: 11
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: config_command
+    target: _find_structural_groups
     value: 11
     limit: 10
     severity: warning
@@ -140,7 +135,7 @@ modules:
     type: function
     cc: 14
 - path: src/redup/core/scanner.py
-  lines: 647
+  lines: 642
   classes: 4
   methods: 20
   cc_max: 12
@@ -682,9 +677,6 @@ hotspots:
 - name: scan_project
   fan_out: 16
   note: "UNIFIED entry point for project scanning.\n\nArgs:\n    config: Scan configuration\n"
-- name: _extract_function_blocks_python
-  fan_out: 15
-  note: Extract function blocks from Python code using AST.
 - name: _find_duplicates_phase_lazy
   fan_out: 15
   note: 'Phase 3: Hash and find duplicates with caching and lazy evaluation.'
@@ -694,18 +686,21 @@ hotspots:
 - name: _scan_parallel
   fan_out: 14
   note: Scan files in parallel using ProcessPoolExecutor.
-- name: analyze_optimized
-  fan_out: 14
-  note: Analysis pipeline, 14 stages
 - name: write_results
   fan_out: 14
   note: Write analysis results in specified format.
+- name: analyze_optimized
+  fan_out: 14
+  note: Analysis pipeline, 14 stages
+- name: scan_command
+  fan_out: 13
+  note: Scan a project for code duplicates.
 - name: analyze_parallel
   fan_out: 13
   note: Analysis pipeline, 13 stages
 refactoring:
   priorities:
-  - action: Split god module src/redup/core/scanner.py (647L, 4 classes)
+  - action: Split god module src/redup/core/scanner.py (642L, 4 classes)
     impact: high
     effort: high
   - action: Split god module src/redup/core/pipeline.py (660L, 0 classes)
@@ -730,6 +725,6 @@ refactoring:
 evolution:
 - date: '2026-03-23'
   cc_avg: 3.4
-  critical: 12
-  lines: 8603
+  critical: 13
+  lines: 8615
   note: Automated analysis

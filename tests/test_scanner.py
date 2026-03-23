@@ -68,6 +68,6 @@ def test_scan_project_real_dir():
 
         assert stats.files_scanned == 2
         assert stats.files_skipped == 0
-        paths = {f.path for f in files}
+        paths = {Path(f.path).name for f in files}
         assert "a.py" in paths
         assert "b.py" in paths

@@ -2,8 +2,8 @@
 
 NEXT[4] (ranked by impact):
   [1] !! SPLIT           src/redup/core/scanner.py
-      WHY: 647L, 4 classes, max CC=12
-      EFFORT: ~4h  IMPACT: 7764
+      WHY: 642L, 4 classes, max CC=12
+      EFFORT: ~4h  IMPACT: 7704
 
   [2] !! SPLIT           src/redup/core/pipeline.py
       WHY: 660L, 0 classes, max CC=11
@@ -24,11 +24,11 @@ RISKS[3]:
   ⚠ Splitting src/redup/core/scanner.py may break 20 import paths
 
 METRICS-TARGET:
-  CC̄:          3.4 → ≤2.4
+  CC̄:          3.5 → ≤2.4
   max-CC:      15 → ≤7
   god-modules: 3 → 0
   high-CC(≥15): 1 → ≤0
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=3.7 → now CC̄=3.4
+  prev CC̄=3.4 → now CC̄=3.5

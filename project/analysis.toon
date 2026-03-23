@@ -1,8 +1,8 @@
-# code2llm | 39f 6613L | python:38,shell:1 | 2026-03-23
-# CC̄=3.4 | critical:12/246 | dups:0 | cycles:0
+# code2llm | 39f 6608L | python:38,shell:1 | 2026-03-23
+# CC̄=3.4 | critical:13/246 | dups:0 | cycles:0
 
 HEALTH[2]:
-  🔴 GOD   src/redup/core/scanner.py = 647L, 4 classes, 20m, max CC=12
+  🔴 GOD   src/redup/core/scanner.py = 642L, 4 classes, 20m, max CC=12
   🟡 CC    write_results CC=15 (limit:15)
 
 REFACTOR[2]:
@@ -19,7 +19,7 @@ LAYERS:
   src/                            CC̄=3.4    ←in:0  →out:0
   │ !! ts_extractor               765L  1C   24m  CC=7      ←1
   │ !! pipeline                   660L  0C   17m  CC=11     ←3
-  │ !! scanner                    647L  4C   20m  CC=12     ←1
+  │ !! scanner                    642L  4C   20m  CC=12     ←1
   │ !  universal_fuzzy            454L  3C   16m  CC=11     ←0
   │ !  fuzzy_similarity           408L  4C   20m  CC=10     ←0
   │ enhanced_reporter          274L  1C   17m  CC=8      ←0
@@ -62,34 +62,35 @@ LAYERS:
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 12 of 245):
+FUNCTIONS (CC≥10, 13 of 245):
    15.0  write_results                              12n   1exit  cond  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
    12.0  _preload_files                              9n   3exit  loops+cond+ret
-   12.0  _extract_function_blocks_python             3n   2exit  ret
    12.0  to_markdown                                12n   3exit  loops+cond+ret
    11.0  UniversalFuzzyExtractor._extract_metadata   23n   2exit  cond+ret
    11.0  to_code2llm_context                        15n   2exit  loops+cond+ret
    11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
    10.0  UniversalFuzzyDetector._compute_metadata_similarity   20n   6exit  loops+cond+ret
+   10.0  _scan_sequential                            4n   2exit  loops+ret
+   10.0  _scan_parallel                              6n   3exit  cond+ret
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
    10.0  CSSComponentExtractor._detect_css_component_type   16n   5exit  cond+ret
    10.0  FuzzySimilarityDetector._compute_attribute_similarity   20n   6exit  loops+cond+ret
 
   summary:
-    critical(≥10): 12 | high(5-10): 57 | medium(2-5): 90 | low(<2): 86
-    5% CC≥10  28% CC≥5
+    critical(≥10): 13 | high(5-10): 57 | medium(2-5): 89 | low(<2): 86
+    5% CC≥10  29% CC≥5
 
 HOTSPOTS:
   #1  _preload_files                       fan=20   "calls 20 functions"
   #2  _scan_sequential                     fan=16   "calls 16 functions"
   #3  scan_project                         fan=16   "calls 16 functions"
-  #4  _extract_function_blocks_python      fan=15   "calls 15 functions"
-  #5  _find_duplicates_phase_lazy          fan=15   "calls 15 functions"
-  #6  _load_duplication_map                fan=15   "calls 15 functions"
-  #7  _scan_parallel                       fan=14   "calls 14 functions"
+  #4  _find_duplicates_phase_lazy          fan=15   "calls 15 functions"
+  #5  _load_duplication_map                fan=15   "calls 15 functions"
+  #6  _scan_parallel                       fan=14   "calls 14 functions"
+  #7  write_results                        fan=14   "calls 14 functions"
   #8  analyze_optimized                    fan=14   "analysis pipeline, 14 stages"
-  #9  write_results                        fan=14   "calls 14 functions"
+  #9  scan_command                         fan=13   "calls 13 functions"
   #10 analyze_parallel                     fan=13   "analysis pipeline, 13 stages"
 
 CLASSES:
@@ -113,9 +114,9 @@ CLASSES:
   CodeBlock                                                 0m  CC̄=0.0   max=0.0 
   ScannedFile                                               0m  CC̄=0.0   max=0.0 
   ScanStrategy                                              0m  CC̄=0.0   max=0.0 
+  MatchResult                                               0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
-  MatchResult                                               0m  CC̄=0.0   max=0.0 
   ComponentSignature                                        0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
@@ -310,6 +311,9 @@ A...
     check_command(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
     config_command(init,show)
     info_command()
+  examples/01_basic_usage.py:
+    e: main
+    main()
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -318,9 +322,6 @@ A...
     load_config()
     config_to_scan_config(config,path)
     create_sample_redup_toml()
-  examples/01_basic_usage.py:
-    e: main
-    main()
   src/redup/core/cache.py:
     e: HashCache,hash_block_with_cache,build_hash_index_with_cache
     HashCache  # SQLite-based cache for file and block hashes.
@@ -398,8 +399,8 @@ Provides ~10x...
     check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
     config(init,show)
     info()
-  src/redup/__init__.py:
   src/redup/__main__.py:
+  src/redup/__init__.py:
   src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
