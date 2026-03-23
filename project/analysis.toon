@@ -1,8 +1,8 @@
-# code2llm | 29f 4206L | python:28,shell:1 | 2026-03-23
+# code2llm | 29f 4208L | python:28,shell:1 | 2026-03-23
 # CC̄=3.9 | critical:10/147 | dups:0 | cycles:0
 
 HEALTH[2]:
-  🟡 CC    extract_functions_treesitter CC=23 (limit:15)
+  🟡 CC    extract_functions_treesitter CC=24 (limit:15)
   🟡 CC    compare_scans CC=18 (limit:15)
 
 REFACTOR[1]:
@@ -16,7 +16,7 @@ COUPLING:
 
 LAYERS:
   src/                            CC̄=3.9    ←in:0  →out:0
-  │ !! ts_extractor               757L  1C   22m  CC=23     ←2
+  │ !! ts_extractor               759L  1C   22m  CC=24     ←2
   │ !  main                       422L  0C   11m  CC=12     ←0
   │ !  pipeline                   409L  0C   15m  CC=11     ←3
   │ enhanced_reporter          274L  1C   17m  CC=8      ←0
@@ -52,13 +52,13 @@ LAYERS:
 DUPLICATES[0]: none
 
 FUNCTIONS (CC≥10, 10 of 146):
-   23.0  extract_functions_treesitter               29n  10exit  cond+ret  !! split
+   24.0  extract_functions_treesitter               29n  10exit  cond+ret  !! split
    18.0  compare_scans                              19n   2exit  loops+cond+ret  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
    12.0  to_markdown                                12n   3exit  loops+cond+ret
    12.0  _write_results                             17n   1exit  loops+cond
-   11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
    11.0  scan_project_parallel                       8n   3exit  cond+ret
+   11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
    11.0  check                                      17n   2exit  cond+ret
    10.0  _find_files_optimized                      13n   2exit  loops+cond+ret
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
@@ -68,7 +68,7 @@ FUNCTIONS (CC≥10, 10 of 146):
     7% CC≥10  34% CC≥5
 
 HOTSPOTS:
-  #1  extract_functions_treesitter         fan=24   "calls 24 functions"
+  #1  extract_functions_treesitter         fan=25   "calls 25 functions"
   #2  scan_project                         fan=17   "calls 17 functions"
   #3  _load_duplication_map                fan=15   "calls 15 functions"
   #4  scan_project_parallel                fan=13   "calls 13 functions"
@@ -83,10 +83,9 @@ CLASSES:
   EnhancedReporter               ████████████████████████  17m  CC̄=3.5   max=8   
   LSHIndex                       ███████                    5m  CC̄=5.6   max=10  
   FunctionExtractor              █████                      4m  CC̄=1.5   max=2   
-  _LanguageRegistry              ██                         2m  CC̄=3.0   max=5   
   _SimpleMinHash                 ██                         2m  CC̄=3.5   max=4   
+  _LanguageRegistry              ██                         2m  CC̄=3.0   max=5   
   DuplicationMap                 █                          1m  CC̄=1.0   max=1   
-  MatchResult                                               0m  CC̄=0.0   max=0.0 
   CodeBlock                                                 0m  CC̄=0.0   max=0.0 
   ScannedFile                                               0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
@@ -99,6 +98,7 @@ CLASSES:
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
+  MatchResult                                               0m  CC̄=0.0   max=0.0 
   DiffResult                                                0m  CC̄=0.0   max=0.0 
 
 D:
@@ -150,6 +150,14 @@ D:
     check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
     config(init,show)
     info()
+  src/redup/core/parallel_scanner.py:
+    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
+    _scan_file_worker(args)
+    _should_process_file(file_path,project_root,extensions,include_tests,max_file_size)
+    _is_test_file(file_path,project_root)
+    scan_project_parallel(root,extensions,exclude_patterns,include_tests,function_level_only,max_file_size,max_workers,min_files_for_parallel,use_threading)
+    _find_files_optimized(root,extensions,exclude_patterns)
+    _is_test_file_cached(relative_path,test_parts)
   src/redup/core/pipeline.py:
     e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_parallel
     _blocks_to_group(group_id,blocks,dup_type,similarity,normalized_hash)
@@ -167,14 +175,6 @@ D:
     _calculate_similarity(matches)
     _find_near_duplicate_groups(all_blocks,config)
     analyze_parallel(config,function_level_only,max_workers)
-  src/redup/core/parallel_scanner.py:
-    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
-    _scan_file_worker(args)
-    _should_process_file(file_path,project_root,extensions,include_tests,max_file_size)
-    _is_test_file(file_path,project_root)
-    scan_project_parallel(root,extensions,exclude_patterns,include_tests,function_level_only,max_file_size,max_workers,min_files_for_parallel,use_threading)
-    _find_files_optimized(root,extensions,exclude_patterns)
-    _is_test_file_cached(relative_path,test_parts)
   src/redup/core/lsh_matcher.py:
     e: _SimpleMinHash,LSHIndex,_create_minhash,_text_to_minhash_features,_create_simple_minhash,build_lsh_index,find_near_duplicates
     _SimpleMinHash  # Simple MinHash implementation for fallback without datasketc...
@@ -196,10 +196,6 @@ D:
     _extract_blocks_sliding(lines,min_lines)
     _extract_function_blocks_python(source,filepath)
     scan_project(config)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
-      __init__(1)  CC=1.0
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -208,6 +204,10 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map,groups)
     to_toon(dup_map)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
+      __init__(1)  CC=1.0
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -289,8 +289,8 @@ D:
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
   src/redup/__main__.py:
-  src/redup/core/__init__.py:
   src/redup/__init__.py:
+  src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

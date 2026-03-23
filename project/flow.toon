@@ -1,6 +1,6 @@
 # redup/flow | 147 func | 12 pipelines | 7 hub-types | 2026-03-23
 
-PIPELINES[12] (Core:7, IO:2, NLP:3):
+PIPELINES[12] (Core:8, IO:2, NLP:2):
   Src [Core]: ? → str
               → main()                                  CC=5    IO ▶
               → analyze(config:ScanConfig | None, function_level_only:bool) → DuplicationMap CC=1    pure
@@ -70,19 +70,19 @@ PIPELINES[12] (Core:7, IO:2, NLP:3):
               → _normalize_text(text:str) → str         CC=6    mutation ■
               PURITY: 1/6 pure  BOTTLENECK: find_near_duplicates(CC=10)
 
-  Src [IO]: Path → Dict[str, Any]
-              → save_enhanced_report(output_path:Path) → None CC=2    IO ▶
-              → generate_visualization_data() → Dict[str, Any] CC=1    pure
-              → _get_file_chart_data() → Dict[str, Any] CC=3    pure
-              → _get_file_metrics() → Dict[str, Any]    CC=4    pure ■
-              PURITY: 3/4 pure  BOTTLENECK: _get_file_metrics(CC=4)
-
   Src [NLP]: CodeBlock → str
               → add(block:CodeBlock) → None             CC=4    mutation ▶
               → _create_simple_minhash(text:str, num_perm:int) → _SimpleMinHash CC=1    pure
               → _text_to_minhash_features(text:str, num_features:int) → list[str] CC=5    mutation
               → _normalize_text(text:str) → str         CC=6    mutation ■
               PURITY: 1/4 pure  BOTTLENECK: _normalize_text(CC=6)
+
+  Src [IO]: Path → Dict[str, Any]
+              → save_enhanced_report(output_path:Path) → None CC=2    IO ▶
+              → generate_visualization_data() → Dict[str, Any] CC=1    pure
+              → _get_file_chart_data() → Dict[str, Any] CC=3    pure
+              → _get_file_metrics() → Dict[str, Any]    CC=4    pure ■
+              PURITY: 3/4 pure  BOTTLENECK: _get_file_metrics(CC=4)
 
   Src [Core]: bool → dict[str, Any]
               → config(init:bool, show:bool) → None     CC=6    IO ▶
@@ -98,21 +98,21 @@ PIPELINES[12] (Core:7, IO:2, NLP:3):
               → _bucket_similarities(similarities:List[float]) → Dict[str, int] CC=6    pure ■
               PURITY: 3/4 pure  BOTTLENECK: _get_duplication_metrics(CC=7)
 
-  Src [NLP]: str → str
-              → fuzzy_similarity(text_a:str, text_b:str) → float CC=2    pure ▶
-              → sequence_similarity(text_a:str, text_b:str) → float CC=3    pure
-              → _normalize_text(text:str) → str         CC=6    mutation ■
-              PURITY: 2/3 pure  BOTTLENECK: _normalize_text(CC=6)
-
   Src [Core]: tuple[Path, str, list[str], bool, bool, int] → list[CodeBlock]
               → _scan_file_worker(args:tuple[Path, str, list[str], bool, bool, int]) → ScannedFile CC=6    IO ▶
-              → extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock] CC=23   pure  !!
+              → extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock] CC=24   pure  !!
               → _extract_blocks_sql(node:Any, source_lines:list[str], file_path:str) → list[CodeBlock] CC=1    mutation ■
-              PURITY: 1/3 pure  BOTTLENECK: extract_functions_treesitter(CC=23)
+              PURITY: 1/3 pure  BOTTLENECK: extract_functions_treesitter(CC=24)
+
+  Src [Core]: str → str | None
+              → _normalize_ast_text(text:str) → str     CC=2    pure ▶
+              → _ast_to_normalized_string(tree:object) → str CC=3    mutation
+              → _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None CC=2    pure ■
+              PURITY: 2/3 pure  BOTTLENECK: _ast_to_normalized_string(CC=3)
 
 
 TRANSFORMS (fan-out ≥10):
-  extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock] fan=24   !! side-effects
+  extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock] fan=25   !! side-effects
   scan_project(config:ScanConfig | None) → tuple[list[ScannedFile], ScanStats] fan=17   fan=17
   _load_duplication_map(file_path:Path) → DuplicationMap  fan=15   fan=15
   scan_project_parallel(root:Path, extensions:list[str], exclude_patterns:list[str] | None, include_tests:bool, function_level_only:bool, max_file_size:int, max_workers:int | None, min_files_for_parallel:int, use_threading:bool) → tuple[list[ScannedFile], Any] fan=13   fan=13
@@ -380,24 +380,6 @@ CONTRACTS:
       INVARIANT: len(output) <= len(input)
 
   Pipeline: Src
-    save_enhanced_report(output_path:Path) → None
-      IN:  output_path:Path
-      OUT: None
-      SIDE-EFFECT: IO(open, dump)
-
-    generate_visualization_data() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
-
-    _get_file_chart_data() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
-
-    _get_file_metrics() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
-
-  Pipeline: Src
     add(block:CodeBlock) → None
       IN:  block:CodeBlock
       OUT: None
@@ -417,6 +399,24 @@ CONTRACTS:
       OUT: str
       SIDE-EFFECT: pure
       INVARIANT: len(output) <= len(input)
+
+  Pipeline: Src
+    save_enhanced_report(output_path:Path) → None
+      IN:  output_path:Path
+      OUT: None
+      SIDE-EFFECT: IO(open, dump)
+
+    generate_visualization_data() → Dict[str, Any]
+      IN:  ()
+      OUT: Dict[str, Any]
+
+    _get_file_chart_data() → Dict[str, Any]
+      IN:  ()
+      OUT: Dict[str, Any]
+
+    _get_file_metrics() → Dict[str, Any]
+      IN:  ()
+      OUT: Dict[str, Any]
 
   Pipeline: Src
     config(init:bool, show:bool) → None
@@ -457,21 +457,6 @@ CONTRACTS:
       OUT: Dict[str, int]
 
   Pipeline: Src
-    fuzzy_similarity(text_a:str, text_b:str) → float
-      IN:  text_a:str, text_b:str
-      OUT: float
-
-    sequence_similarity(text_a:str, text_b:str) → float
-      IN:  text_a:str, text_b:str
-      OUT: float
-
-    _normalize_text(text:str) → str
-      IN:  text:str
-      OUT: str
-      SIDE-EFFECT: pure
-      INVARIANT: len(output) <= len(input)
-
-  Pipeline: Src
     _scan_file_worker(args:tuple[Path, str, list[str], bool, bool, int]) → ScannedFile
       IN:  args:tuple[Path, str, list[str], bool, bool, int]
       OUT: ScannedFile
@@ -480,12 +465,28 @@ CONTRACTS:
     extract_functions_treesitter(source:str, file_path:str) → list[CodeBlock]
       IN:  source:str, file_path:str
       OUT: list[CodeBlock]
-      SMELL: CC=23 → split
+      SMELL: CC=24 → split
 
     _extract_blocks_sql(node:Any, source_lines:list[str], file_path:str) → list[CodeBlock]
       IN:  node:Any, source_lines:list[str], file_path:str
       OUT: list[CodeBlock]
       SIDE-EFFECT: pure
+
+  Pipeline: Src
+    _normalize_ast_text(text:str) → str
+      IN:  text:str
+      OUT: str
+      INVARIANT: len(output) <= len(input)
+
+    _ast_to_normalized_string(tree:object) → str
+      IN:  tree:object
+      OUT: str
+      SIDE-EFFECT: pure
+      INVARIANT: len(output) <= len(input)
+
+    _process_ast_node(node, name_map:dict[str, str], counter:list[int]) → str | None
+      IN:  node, name_map:dict[str, str], counter:list[int]
+      OUT: str | None
 
 
 DATA_TYPES (by cross-function usage) [143 annotated, 0 inferred / 147 functions]:
@@ -504,9 +505,9 @@ DATA_TYPES (by cross-function usage) [143 annotated, 0 inferred / 147 functions]
   CodeBlock            consumed:4   produced:3  
   DuplicateGroup       consumed:5   produced:1    input-heavy (read-only flow)
   list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
-  list[MatchResult]    consumed:2   produced:3  
-  dict[str, Any]       consumed:1   produced:4  
   HashIndex            consumed:4   produced:1  
+  dict[str, Any]       consumed:1   produced:4  
+  list[MatchResult]    consumed:2   produced:3  
   dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
   ScanConfig | None    consumed:4   produced:0    narrow scope
 
@@ -527,10 +528,10 @@ DATA_TYPES (by cross-function usage) [143 annotated, 0 inferred / 147 functions]
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        main, benchmark_sequential_vs_parallel, benchmark_feature_performance, _load_toml_file, scan_project, _find_duplicates_phase, _scan_file_worker, scan_project_parallel, EnhancedReporter.save_enhanced_report, to_json
+  IO:        main, _load_toml_file, benchmark_sequential_vs_parallel, benchmark_feature_performance, scan_project, _scan_file_worker, scan_project_parallel, _find_duplicates_phase, to_json, to_yaml
   Cache:     _should_process_file, _is_test_file_cached
-  Mutation:  load_config, generate_suggestions, _compare_against_reference, _extract_blocks_sliding, _extract_function_blocks_python, _blocks_to_group, _deduplicate_groups, _process_blocks, _find_exact_groups, _find_structural_groups
-  Pure:      _get_config_from_pyproject, _get_config_from_redup_toml, config_to_scan_config, create_sample_redup_toml, _common_prefix, _suggest_module_name, _assess_risk, _choose_action, sequence_similarity, fuzzy_similarity
+  Mutation:  load_config, generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, _find_files_optimized, _blocks_to_group, _deduplicate_groups, _process_blocks, _find_exact_groups, _find_structural_groups
+  Pure:      _get_config_from_pyproject, _get_config_from_redup_toml, config_to_scan_config, create_sample_redup_toml, _common_prefix, _suggest_module_name, _assess_risk, _choose_action, _should_exclude, _collect_files
 
   PIPELINE PURITY:
     Src             ░░░░ 22% pure
@@ -539,9 +540,9 @@ SIDE_EFFECTS:
     Src             █░░░ 33% pure
     Src             █░░░ 33% pure
     Src             ░░░░ 16% pure
-    Src             ███░ 75% pure
-    Src             █░░░ 25% pure
     Src             █░░░ 25% pure
     Src             ███░ 75% pure
-    Src             ██░░ 66% pure
+    Src             █░░░ 25% pure
+    Src             ███░ 75% pure
     Src             █░░░ 33% pure
+    Src             ██░░ 66% pure

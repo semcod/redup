@@ -1,4 +1,4 @@
-# redup | 30f 4264L | python:29,shell:1
+# redup | 30f 4266L | python:29,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[30]:
   benchmark.py,111
@@ -19,7 +19,7 @@ M[30]:
   src/redup/core/pipeline.py,409
   src/redup/core/planner.py,110
   src/redup/core/scanner.py,201
-  src/redup/core/ts_extractor.py,757
+  src/redup/core/ts_extractor.py,759
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,36
   src/redup/core/utils/function_extractor.py,143
@@ -79,6 +79,14 @@ D:
     check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config(init;show)
     info()
+  src/redup/core/parallel_scanner.py:
+    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
+    _scan_file_worker(args)
+    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
+    _is_test_file(file_path;project_root)
+    scan_project_parallel(root;extensions;exclude_patterns;include_tests;function_level_only;max_file_size;max_workers;min_files_for_parallel;use_threading)
+    _find_files_optimized(root;extensions;exclude_patterns)
+    _is_test_file_cached(relative_path;test_parts)
   src/redup/core/pipeline.py:
     e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_parallel
     _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
@@ -96,14 +104,6 @@ D:
     _calculate_similarity(matches)
     _find_near_duplicate_groups(all_blocks;config)
     analyze_parallel(config;function_level_only;max_workers)
-  src/redup/core/parallel_scanner.py:
-    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
-    _scan_file_worker(args)
-    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
-    _is_test_file(file_path;project_root)
-    scan_project_parallel(root;extensions;exclude_patterns;include_tests;function_level_only;max_file_size;max_workers;min_files_for_parallel;use_threading)
-    _find_files_optimized(root;extensions;exclude_patterns)
-    _is_test_file_cached(relative_path;test_parts)
   src/redup/core/lsh_matcher.py:
     e: _SimpleMinHash,LSHIndex,_create_minhash,_text_to_minhash_features,_create_simple_minhash,build_lsh_index,find_near_duplicates
     _SimpleMinHash: __init__(2),jaccard(1)  # Simple MinHash implementation for fallback without datasketc...
@@ -123,9 +123,6 @@ D:
     _extract_blocks_sliding(lines;min_lines)
     _extract_function_blocks_python(source;filepath)
     scan_project(config)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -134,6 +131,9 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map;groups)
     to_toon(dup_map)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -213,8 +213,8 @@ D:
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
   src/redup/__main__.py:
-  src/redup/core/__init__.py:
   src/redup/__init__.py:
+  src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

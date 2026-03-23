@@ -5,7 +5,7 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 21
-- **Lines**: 5329
+- **Lines**: 5331
 - **Functions**: 146
 - **Classes**: 20
 - **Avg CC**: 3.9
@@ -32,9 +32,9 @@
 - `main.py` — 422L, 11 methods, CC↑12
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (12 files, 2826L, 98 functions)
+### src/redup/core/ (12 files, 2828L, 98 functions)
 
-- `ts_extractor.py` — 757L, 22 methods, CC↑23
+- `ts_extractor.py` — 759L, 22 methods, CC↑24
 - `differ.py` — 246L, 5 methods, CC↑18
 - `parallel_scanner.py` — 234L, 6 methods, CC↑11
 - `pipeline.py` — 409L, 15 methods, CC↑11
@@ -59,13 +59,13 @@
 
 ## Key Exports
 
-- **extract_functions_treesitter** (function, CC=23) ⚠ split
+- **extract_functions_treesitter** (function, CC=24) ⚠ split
 - **compare_scans** (function, CC=18) ⚠ split
 - **LSHIndex** (class, CC̄=5.6)
 
 ## Hotspots (High Fan-Out)
 
-- **extract_functions_treesitter** — fan-out=24: Extract functions using tree-sitter for multi-language support.
+- **extract_functions_treesitter** — fan-out=25: Extract functions using tree-sitter for multi-language support.
 - **scan_project** — fan-out=17: Scan a project and return files with their code blocks.
 
 Returns:
@@ -80,10 +80,10 @@ Returns:
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/core/ts_extractor.py (757L, 1 classes) | high | high |
-| 2 | Split extract_functions_treesitter (CC=23 → target CC<10) | medium | low |
+| 1 | Split god module src/redup/core/ts_extractor.py (759L, 1 classes) | high | high |
+| 2 | Split extract_functions_treesitter (CC=24 → target CC<10) | medium | low |
 | 3 | Split compare_scans (CC=18 → target CC<10) | medium | low |
-| 4 | Reduce extract_functions_treesitter fan-out (currently 24) | medium | medium |
+| 4 | Reduce extract_functions_treesitter fan-out (currently 25) | medium | medium |
 | 5 | Reduce scan_project fan-out (currently 17) | medium | medium |
 | 6 | Reduce _load_duplication_map fan-out (currently 15) | medium | medium |
 

@@ -3,11 +3,11 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:47:22Z'
+  analyzed_at: '2026-03-23T16:49:55Z'
   tool: code2llm
   stats:
     files: 21
-    lines: 5329
+    lines: 5331
     functions: 146
     classes: 20
 health:
@@ -19,12 +19,12 @@ health:
   alerts:
   - type: high_fan_out
     target: extract_functions_treesitter
-    value: 24
+    value: 25
     limit: 10
     severity: critical
   - type: cc_exceeded
     target: extract_functions_treesitter
-    value: 23
+    value: 24
     limit: 15
     severity: error
   - type: high_fan_out
@@ -79,10 +79,10 @@ health:
     severity: warning
 modules:
 - path: src/redup/core/ts_extractor.py
-  lines: 757
+  lines: 759
   classes: 1
   methods: 22
-  cc_max: 23
+  cc_max: 24
   inbound_deps: 2
   exports:
   - name: _LanguageRegistry
@@ -90,9 +90,9 @@ modules:
     cc_avg: 3.0
   - name: extract_functions_treesitter
     type: function
-    cc: 23
+    cc: 24
     flag: split
-    fan_out: 24
+    fan_out: 25
   - name: get_supported_languages
     type: function
     cc: 4
@@ -457,7 +457,7 @@ modules:
   inbound_deps: 0
 hotspots:
 - name: extract_functions_treesitter
-  fan_out: 24
+  fan_out: 25
   note: Extract functions using tree-sitter for multi-language support.
 - name: scan_project
   fan_out: 17
@@ -489,10 +489,10 @@ hotspots:
   note: Optimized file discovery using set lookups and compiled patterns.
 refactoring:
   priorities:
-  - action: Split god module src/redup/core/ts_extractor.py (757L, 1 classes)
+  - action: Split god module src/redup/core/ts_extractor.py (759L, 1 classes)
     impact: high
     effort: high
-  - action: Split extract_functions_treesitter (CC=23 → target CC<10)
+  - action: Split extract_functions_treesitter (CC=24 → target CC<10)
     impact: medium
     effort: low
     module: ts_extractor.py
@@ -500,7 +500,7 @@ refactoring:
     impact: medium
     effort: low
     module: differ.py
-  - action: Reduce extract_functions_treesitter fan-out (currently 24)
+  - action: Reduce extract_functions_treesitter fan-out (currently 25)
     impact: medium
     effort: medium
   - action: Reduce scan_project fan-out (currently 17)
@@ -513,5 +513,5 @@ evolution:
 - date: '2026-03-23'
   cc_avg: 3.9
   critical: 10
-  lines: 5329
+  lines: 5331
   note: Automated analysis

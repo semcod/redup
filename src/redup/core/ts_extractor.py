@@ -345,8 +345,8 @@ def extract_functions_treesitter(source: str, file_path: str) -> list[CodeBlock]
         return _extract_blocks_css(tree.root_node, source_lines, file_path)
     elif language_name == "sql":
         return _extract_blocks_sql(tree.root_node, source_lines, file_path)
-    elif language_name in ("json", "yaml", "toml", "markdown", "embedded_template", "regex"):
-        # Data formats and markup languages don't have functions in the traditional sense
+    elif language_name in ("json", "yaml", "toml", "markdown", "embedded_template", "regex", "graphql", "dockerfile", "make", "vim", "nginx", "svelte", "vue"):
+        # Data formats, markup languages, config files, and template languages don't have functions in the traditional sense
         return []
     
     return []
@@ -502,6 +502,39 @@ def _extract_blocks_sql(node: Any, source_lines: list[str], file_path: str) -> l
                     function_name=node_type.replace("_", " "),
                     class_name=None,
                 ))
+        
+        for child in node.children:
+            traverse(child, depth + 1)
+    
+    return blocks
+
+
+def _extract_functions_lua(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+    """Extract functions from Lua using tree-sitter."""
+    blocks = []
+    
+    def traverse(node: Any, depth: int = 0) -> None:
+        if depth > 50:
+            return
+        
+        node_type = node.type
+        
+        # Function declarations (local function, function)
+        if node_type in ("function_declaration", "local_function"):
+            start_line = node.start_point[0] + 1
+            end_line = node.end_point[0] + 1
+            
+            name_node = node.child_by_field_name("name")
+            function_name = name_node.text.decode() if name_node else "anonymous"
+            
+            blocks.append(CodeBlock(
+                file=file_path,
+                line_start=start_line,
+                line_end=end_line,
+                text="\n".join(source_lines[start_line-1:end_line]),
+                function_name=function_name,
+                class_name=None,
+            ))
         
         for child in node.children:
             traverse(child, depth + 1)
