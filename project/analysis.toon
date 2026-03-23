@@ -1,5 +1,5 @@
-# code2llm | 30f 4485L | python:29,shell:1 | 2026-03-23
-# CC̄=3.9 | critical:11/155 | dups:0 | cycles:0
+# code2llm | 31f 4593L | python:30,shell:1 | 2026-03-23
+# CC̄=3.8 | critical:11/165 | dups:0 | cycles:0
 
 HEALTH[2]:
   🟡 CC    compare_scans CC=18 (limit:15)
@@ -15,13 +15,13 @@ COUPLING:
   CYCLES: none
 
 LAYERS:
-  src/                            CC̄=3.9    ←in:0  →out:0
+  src/                            CC̄=3.8    ←in:0  →out:0
   │ !! ts_extractor               767L  1C   23m  CC=24     ←2
   │ !  main                       435L  0C   11m  CC=14     ←0
   │ !  pipeline                   409L  0C   15m  CC=11     ←3
   │ enhanced_reporter          274L  1C   17m  CC=8      ←0
+  │ scanner                    247L  2C    7m  CC=9      ←2
   │ !! differ                     246L  1C    5m  CC=18     ←1
-  │ scanner                    243L  2C    7m  CC=9      ←2
   │ !  parallel_scanner           234L  0C    6m  CC=11     ←1
   │ hasher                     233L  2C   15m  CC=6      ←5
   │ !  lsh_matcher                217L  2C   12m  CC=10     ←1
@@ -32,6 +32,7 @@ LAYERS:
   │ planner                    110L  0C    5m  CC=7      ←1
   │ matcher                    107L  1C    5m  CC=7      ←1
   │ toon_reporter              106L  0C    6m  CC=8      ←2
+  │ hash_cache                 104L  1C   10m  CC=3      ←0
   │ !  markdown_reporter           90L  0C    1m  CC=12     ←1
   │ json_reporter               73L  0C    3m  CC=5      ←3
   │ hash_utils                  37L  0C    1m  CC=3      ←0
@@ -52,7 +53,7 @@ LAYERS:
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 11 of 154):
+FUNCTIONS (CC≥10, 11 of 164):
    24.0  extract_functions_treesitter               29n  10exit  cond+ret  !! split
    18.0  compare_scans                              19n   2exit  loops+cond+ret  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
@@ -66,8 +67,8 @@ FUNCTIONS (CC≥10, 11 of 154):
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
 
   summary:
-    critical(≥10): 11 | high(5-10): 41 | medium(2-5): 49 | low(<2): 53
-    7% CC≥10  34% CC≥5
+    critical(≥10): 11 | high(5-10): 41 | medium(2-5): 58 | low(<2): 54
+    7% CC≥10  32% CC≥5
 
 HOTSPOTS:
   #1  extract_functions_treesitter         fan=25   "calls 25 functions"
@@ -83,6 +84,7 @@ HOTSPOTS:
 
 CLASSES:
   EnhancedReporter               ████████████████████████  17m  CC̄=3.5   max=8   
+  HashCache                      ████████████               9m  CC̄=2.2   max=3   
   LSHIndex                       ███████                    5m  CC̄=5.6   max=10  
   FunctionExtractor              █████                      4m  CC̄=1.5   max=2   
   _SimpleMinHash                 ██                         2m  CC̄=3.5   max=4   
@@ -90,6 +92,10 @@ CLASSES:
   DuplicationMap                 █                          1m  CC̄=1.0   max=1   
   CodeBlock                                                 0m  CC̄=0.0   max=0.0 
   ScannedFile                                               0m  CC̄=0.0   max=0.0 
+  MatchResult                                               0m  CC̄=0.0   max=0.0 
+  HashedBlock                                               0m  CC̄=0.0   max=0.0 
+  HashIndex                                                 0m  CC̄=0.0   max=0.0 
+  DiffResult                                                0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
   RiskLevel                                                 0m  CC̄=0.0   max=0.0 
@@ -98,10 +104,6 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
-  MatchResult                                               0m  CC̄=0.0   max=0.0 
-  DiffResult                                                0m  CC̄=0.0   max=0.0 
-  HashedBlock                                               0m  CC̄=0.0   max=0.0 
-  HashIndex                                                 0m  CC̄=0.0   max=0.0 
 
 D:
   src/redup/core/ts_extractor.py:
@@ -208,6 +210,10 @@ D:
     _extract_class_blocks_python(source,filepath)
     _extract_function_blocks_python(source,filepath)
     scan_project(config)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
+      __init__(1)  CC=1.0
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -216,10 +222,6 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map,groups)
     to_toon(dup_map)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
-      __init__(1)  CC=1.0
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -282,6 +284,12 @@ D:
     e: benchmark_sequential_vs_parallel,benchmark_feature_performance
     benchmark_sequential_vs_parallel()
     benchmark_feature_performance()
+  src/redup/core/hash_cache.py:
+    e: HashCache,_config_to_hash
+    HashCache  # Cache for file hashes to enable incremental scanning....
+      __init__(1)  CC=2.0
+        → _load(0)  CC=3.0
+    _config_to_hash(config)
   src/redup/core/utils/hash_utils.py:
     e: create_hash_function
     create_hash_function(normalizer)
@@ -300,9 +308,9 @@ D:
     ScanStats  # Statistics from the scanning phase....
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
-  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/redup/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

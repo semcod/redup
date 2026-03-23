@@ -1,6 +1,6 @@
-# redup | 40f 5914L | python:40
+# redup | 41f 6023L | python:41
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[40]:
+M[41]:
   benchmark.py,83
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
@@ -10,6 +10,7 @@ M[40]:
   src/redup/core/__init__.py,1
   src/redup/core/config.py,107
   src/redup/core/differ.py,181
+  src/redup/core/hash_cache.py,82
   src/redup/core/hasher.py,172
   src/redup/core/lsh_matcher.py,144
   src/redup/core/matcher.py,84
@@ -17,7 +18,7 @@ M[40]:
   src/redup/core/parallel_scanner.py,155
   src/redup/core/pipeline.py,296
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,190
+  src/redup/core/scanner.py,193
   src/redup/core/ts_extractor.py,559
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,24
@@ -80,6 +81,11 @@ D:
     _groups_match(group1:DuplicateGroup;group2:DuplicateGroup)->bool
     compare_scans(before_file:Path;after_file:Path)->DiffResult
     format_diff_result(diff:DiffResult)->str
+  src/redup/core/hash_cache.py:
+    i: hashlib,json,pathlib.Path,typing.Any
+    e: HashCache
+    HashCache: __init__(1),_load(0),save(0),get_file_hash(1),is_unchanged(2)  # Cache for file hashes to enable incre...
+    _config_to_hash(config:Any)->str
   src/redup/core/hasher.py:
     i: ast,hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock,typing.Any
     e: _AST_HANDLERS,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,HashedBlock,HashIndex,build_hash_index
@@ -149,11 +155,11 @@ D:
     _choose_action(group:DuplicateGroup)->RefactorAction
     generate_suggestions(dup_map:DuplicationMap)->list[RefactorSuggestion]
   src/redup/core/scanner.py:
-    i: fnmatch,time,collections.abc.Iterator,dataclasses.{dataclass,field},pathlib.Path,redup.core.models.{ScanConfig,ScanStats}
+    i: fnmatch,functools,time,collections.abc.Iterator,dataclasses.{dataclass,field},pathlib.Path,redup.core.models.{ScanConfig,ScanStats}
     e: CodeBlock,ScannedFile,scan_project
     CodeBlock: line_count(0)  # A contiguous block of source code lines.
     ScannedFile: line_count(0)  # A file that has been read and split i...
-    _should_exclude(path:Path;patterns:list[str])->bool
+    _should_exclude(path:Path;patterns:tuple[str;Ellipsis])->bool
     _collect_files(config:ScanConfig)->Iterator[Path]
     _is_test_file(path:Path)->bool
     _extract_blocks_sliding(lines:list[str];min_lines:int)->list[tuple[int, int, str]]

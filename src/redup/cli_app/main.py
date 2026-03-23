@@ -226,6 +226,11 @@ def scan(
         "--max-workers",
         help="Number of parallel workers (default: CPU count).",
     ),
+    incremental: bool = typer.Option(
+        False,
+        "--incremental",
+        help="Use hash cache to skip unchanged files (creates .redup_cache.json).",
+    ),
 ) -> None:
     """Scan a project for code duplicates and generate a refactoring map."""
     config = _build_config_with_file_support(path, extensions, min_lines, min_similarity, include_tests)

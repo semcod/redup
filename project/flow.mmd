@@ -13,6 +13,16 @@ flowchart TD
         src__redup__core__config__load_config["load_config"]
         src__redup__core__config__config_to_scan_config["config_to_scan_config"]
         src__redup__core__config__create_sample_redup_toml["create_sample_redup_toml"]
+        src__redup__core__hash_cache__HashCache____init__["__init__"]
+        src__redup__core__hash_cache__HashCache___load["_load"]
+        src__redup__core__hash_cache__HashCache__save["save"]
+        src__get_file_hash["get_file_hash"]
+        src__is_unchanged["is_unchanged"]
+        src__redup__core__hash_cache__HashCache__update["update"]
+        src__invalidate["invalidate"]
+        src__get_cached_results["get_cached_results"]
+        src__redup__core__hash_cache__HashCache__clear["clear"]
+        src__redup__core__hash_cache___config_to_hash["_config_to_hash"]
         src__redup__core__planner___common_prefix["_common_prefix"]
         src__redup__core__planner___suggest_module_name["_suggest_module_name"]
         src__redup__core__planner___assess_risk["_assess_risk"]
@@ -31,7 +41,6 @@ flowchart TD
         src__scan_project_parallel("scan_project_parallel CC=11")
         src___find_files_optimized("_find_files_optimized CC=10")
         src___is_test_file_cached["_is_test_file_cached"]
-        src__sorted_by_impact["sorted_by_impact"]
         src__redup__core__pipeline___blocks_to_group["_blocks_to_group"]
         src__redup__core__pipeline___deduplicate_groups["_deduplicate_groups"]
         src__redup__core__pipeline__analyze["analyze"]
@@ -58,22 +67,13 @@ flowchart TD
         src____init__["__init__"]
         src__jaccard["jaccard"]
         src__redup__core__lsh_matcher__LSHIndex____init__["__init__"]
-        src__redup__core__lsh_matcher__LSHIndex__add["add"]
-        src__find_near_duplicates("find_near_duplicates CC=10")
-        src___find_near_duplicates_simple["_find_near_duplicates_simple"]
-        src__find_all_near_duplicates("find_all_near_duplicates CC=8")
-        src__redup__core__lsh_matcher__build_lsh_index["build_lsh_index"]
-        src__find_near_duplicates["find_near_duplicates"]
-        src__to_markdown("to_markdown CC=12")
-        src__redup__core__differ___load_duplication_map["_load_duplication_map"]
-        src__redup__core__differ___group_by_id["_group_by_id"]
     end
-    examples__01_basic_usage__main --> src__redup__core__pipeline__analyze
-    examples__01_basic_usage__main --> src__redup__reporters__toon_reporter__to_toon
-    examples__01_basic_usage__main --> src__redup__reporters__json_reporter__to_json
     benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze
     benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze_parallel
     benchmark__benchmark_feature_performance --> src__redup__core__pipeline__analyze_parallel
+    examples__01_basic_usage__main --> src__redup__core__pipeline__analyze
+    examples__01_basic_usage__main --> src__redup__reporters__toon_reporter__to_toon
+    examples__01_basic_usage__main --> src__redup__reporters__json_reporter__to_json
     src___get_config_from_pyproject --> src__redup__core__config___load_toml_file
     src___get_config_from_redup_toml --> src__redup__core__config___load_toml_file
     src__redup__core__config__load_config --> src___get_config_from_redup_toml
@@ -134,15 +134,6 @@ flowchart TD
     src__find_near_duplicates --> src__redup__core__lsh_matcher___create_minhash
     src___find_near_duplicates_simple --> src___create_simple_minhash
     src__find_near_duplicates --> src__redup__core__lsh_matcher__build_lsh_index
-    src__redup__core__differ__compare_scans --> src__redup__core__differ___load_duplication_map
-    src__redup__core__differ__compare_scans --> src__redup__core__differ___group_by_id
-    src___get_layers --> src___calculate_avg_cc
-    src__to_code2llm_toon --> src___calculate_avg_cc
-    src__to_code2llm_toon --> src___count_critical_functions
-    src__export_code2llm --> src__to_code2llm_toon
-    src__export_code2llm --> src__to_code2llm_context
-    src__redup__reporters__json_reporter__to_json --> src___group_to_dict
-    src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
     src__redup__core__hasher___normalize_ast_text --> src__redup__core__hasher___normalize_text
     src__redup__core__hasher___normalize_ast_text --> src___ast_to_normalized_string
     src___ast_to_normalized_string --> src__redup__core__hasher___process_ast_node
@@ -150,15 +141,8 @@ flowchart TD
     src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block_structural
     src__redup__core__hasher__build_hash_index --> src__redup__core__hasher___hashed_block
     src__redup__core__hasher___find_duplicates --> src___blocks_from_different_locations
-    src__redup__reporters__yaml_reporter__to_yaml --> src___group_to_dict
-    src__redup__reporters__yaml_reporter__to_yaml --> src___suggestion_to_dict
-    src__redup__reporters__toon_reporter__to_toon --> src___render_header
-    src__redup__reporters__toon_reporter__to_toon --> src___render_summary
-    src__redup__reporters__toon_reporter__to_toon --> src___render_duplicates
-    src__redup__reporters__toon_reporter__to_toon --> src___render_refactor
-    src__redup__reporters__toon_reporter__to_toon --> src___render_metrics_target
-    src__create_hash_function --> src__redup__core__hasher___hash_text
-    src__create_duplicate_finder --> src__redup__core__hasher___find_duplicates
+    src__redup__core__differ__compare_scans --> src__redup__core__differ___load_duplication_map
+    src__redup__core__differ__compare_scans --> src__redup__core__differ___group_by_id
     src__extract_functions_treesitter --> src___get_tree_sitter_language
     src__extract_functions_treesitter --> src___extract_functions_javascript
     src__extract_functions_treesitter --> src___extract_functions_go
@@ -169,6 +153,22 @@ flowchart TD
     src__extract_functions_treesitter --> src___extract_functions_kotlin
     src__get_supported_languages --> src___get_tree_sitter_language
     src__is_language_supported --> src___get_tree_sitter_language
+    src___get_layers --> src___calculate_avg_cc
+    src__to_code2llm_toon --> src___calculate_avg_cc
+    src__to_code2llm_toon --> src___count_critical_functions
+    src__export_code2llm --> src__to_code2llm_toon
+    src__export_code2llm --> src__to_code2llm_context
+    src__redup__reporters__json_reporter__to_json --> src___group_to_dict
+    src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
+    src__redup__reporters__toon_reporter__to_toon --> src___render_header
+    src__redup__reporters__toon_reporter__to_toon --> src___render_summary
+    src__redup__reporters__toon_reporter__to_toon --> src___render_duplicates
+    src__redup__reporters__toon_reporter__to_toon --> src___render_refactor
+    src__redup__reporters__toon_reporter__to_toon --> src___render_metrics_target
+    src__redup__reporters__yaml_reporter__to_yaml --> src___group_to_dict
+    src__redup__reporters__yaml_reporter__to_yaml --> src___suggestion_to_dict
+    src__create_hash_function --> src__redup__core__hasher___hash_text
+    src__create_duplicate_finder --> src__redup__core__hasher___find_duplicates
     src___build_config_with_file_support --> src__redup__core__config__load_config
     src___build_config_with_file_support --> src__redup__core__config__config_to_scan_config
     src__redup__cli_app__main___write_results --> src__redup__cli_app__main___write_output
@@ -190,4 +190,4 @@ flowchart TD
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
     class src__redup__core__differ__compare_scans,src__extract_functions_treesitter highCC
-    class src___extract_function_blocks_python,src__redup__core__scanner__scan_project,src__scan_project_parallel,src___find_files_optimized,src___find_structural_groups,src___find_near_duplicate_groups,src__find_near_duplicates,src__find_all_near_duplicates,src__to_markdown,src__redup__core__differ__format_diff_result,src__to_code2llm_context,src___render_duplicates,src___get_refactoring_metrics,src__redup__cli_app__main___write_results,src__redup__cli_app__main__check medCC
+    class src___extract_function_blocks_python,src__redup__core__scanner__scan_project,src__scan_project_parallel,src___find_files_optimized,src___find_structural_groups,src___find_near_duplicate_groups,src__find_near_duplicates,src__find_all_near_duplicates,src__redup__core__differ__format_diff_result,src__to_code2llm_context,src___get_refactoring_metrics,src___render_duplicates,src__to_markdown,src__redup__cli_app__main___write_results,src__redup__cli_app__main__check medCC

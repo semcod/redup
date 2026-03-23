@@ -1,6 +1,6 @@
-# redup | 31f 4543L | python:30,shell:1
+# redup | 32f 4651L | python:31,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[31]:
+M[32]:
   benchmark.py,111
   examples/01_basic_usage.py,58
   project.sh,17
@@ -11,6 +11,7 @@ M[31]:
   src/redup/core/__init__.py,1
   src/redup/core/config.py,154
   src/redup/core/differ.py,246
+  src/redup/core/hash_cache.py,104
   src/redup/core/hasher.py,233
   src/redup/core/lsh_matcher.py,217
   src/redup/core/matcher.py,107
@@ -18,7 +19,7 @@ M[31]:
   src/redup/core/parallel_scanner.py,234
   src/redup/core/pipeline.py,409
   src/redup/core/planner.py,110
-  src/redup/core/scanner.py,243
+  src/redup/core/scanner.py,247
   src/redup/core/ts_extractor.py,767
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,36
@@ -134,6 +135,9 @@ D:
     _extract_class_blocks_python(source;filepath)
     _extract_function_blocks_python(source;filepath)
     scan_project(config)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -142,9 +146,6 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map;groups)
     to_toon(dup_map)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -206,6 +207,10 @@ D:
     e: benchmark_sequential_vs_parallel,benchmark_feature_performance
     benchmark_sequential_vs_parallel()
     benchmark_feature_performance()
+  src/redup/core/hash_cache.py:
+    e: HashCache,_config_to_hash
+    HashCache: __init__(1),_load(0),save(0),get_file_hash(1),is_unchanged(2),update(3),invalidate(1),get_cached_results(1),clear(0)  # Cache for file hashes to enable incremental scanning...
+    _config_to_hash(config)
   src/redup/core/utils/hash_utils.py:
     e: create_hash_function
     create_hash_function(normalizer)
@@ -223,9 +228,9 @@ D:
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
-  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/redup/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

@@ -3,15 +3,15 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T17:17:09Z'
+  analyzed_at: '2026-03-23T17:50:01Z'
   tool: code2llm
   stats:
-    files: 22
-    lines: 5833
-    functions: 154
-    classes: 20
+    files: 23
+    lines: 5941
+    functions: 164
+    classes: 21
 health:
-  cc_avg: 3.9
+  cc_avg: 3.8
   critical_count: 11
   critical_limit: 10
   duplicates: 0
@@ -214,7 +214,7 @@ modules:
     type: function
     cc: 2
 - path: src/redup/core/scanner.py
-  lines: 243
+  lines: 247
   classes: 2
   methods: 7
   cc_max: 9
@@ -369,6 +369,16 @@ modules:
   - name: benchmark_feature_performance
     type: function
     cc: 3
+- path: src/redup/core/hash_cache.py
+  lines: 104
+  classes: 1
+  methods: 10
+  cc_max: 3
+  inbound_deps: 0
+  exports:
+  - name: HashCache
+    type: class
+    cc_avg: 2.2
 - path: src/redup/core/utils/duplicate_finders.py
   lines: 36
   classes: 0
@@ -527,7 +537,7 @@ refactoring:
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 3.9
+  cc_avg: 3.8
   critical: 11
-  lines: 5833
+  lines: 5941
   note: Automated analysis

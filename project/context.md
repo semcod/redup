@@ -4,11 +4,11 @@
 
 - **Project**: redup
 - **Language**: python
-- **Files**: 22
-- **Lines**: 5833
-- **Functions**: 154
-- **Classes**: 20
-- **Avg CC**: 3.9
+- **Files**: 23
+- **Lines**: 5941
+- **Functions**: 164
+- **Classes**: 21
+- **Avg CC**: 3.8
 - **Critical (CC≥10)**: 11
 
 ## Architecture
@@ -32,14 +32,14 @@
 - `main.py` — 435L, 11 methods, CC↑14
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (12 files, 2878L, 100 functions)
+### src/redup/core/ (13 files, 2986L, 110 functions)
 
 - `ts_extractor.py` — 767L, 23 methods, CC↑24
 - `differ.py` — 246L, 5 methods, CC↑18
 - `parallel_scanner.py` — 234L, 6 methods, CC↑11
 - `pipeline.py` — 409L, 15 methods, CC↑11
 - `lsh_matcher.py` — 217L, 12 methods, CC↑10
-- _7 more files_
+- _8 more files_
 
 ### src/redup/core/utils/ (4 files, 222L, 7 functions)
 
