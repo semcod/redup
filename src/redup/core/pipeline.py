@@ -16,7 +16,7 @@ from redup.core.hasher import (
 )
 from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.matcher import MatchResult, refine_structural_matches
-from redup.core.parallel_scanner import scan_project_parallel
+from redup.core.scanner import scan_project, ScanStrategy
 from redup.core.models import (
     DuplicateFragment,
     DuplicateGroup,
@@ -26,10 +26,9 @@ from redup.core.models import (
     ScanStats,
 )
 from redup.core.planner import generate_suggestions
-from redup.core.scanner import CodeBlock, ScannedFile, scan_project
+from redup.core.scanner import CodeBlock, ScannedFile
 from redup.core.cache import HashCache, build_hash_index_with_cache
 from redup.core.lazy_grouper import find_all_duplicates_lazy, DuplicateGroupCollector
-from redup.core.memory_scanner import scan_project_memory_optimized, scan_project_parallel_memory_optimized
 
 
 def _blocks_to_group(
@@ -184,26 +183,29 @@ def analyze_optimized(
         # Phase 1: Optimized scanning with memory cache
         if config.parallel_workers and config.parallel_workers > 1:
             # Explicit worker count specified
-            if use_memory_cache:
-                scanned_files, stats = scan_project_parallel_memory_optimized(
-                    config, config.parallel_workers, max_cache_mb
-                )
-            else:
-                scanned_files, stats = _scan_phase_parallel(config, config.parallel_workers)
+            strategy = ScanStrategy(
+                parallel=True, 
+                max_workers=config.parallel_workers,
+                memory_cache=use_memory_cache,
+                max_cache_mb=max_cache_mb if use_memory_cache else 256
+            )
+            scanned_files, stats = scan_project(config, strategy, function_level_only=True)
         elif config.parallel_workers is None and (getattr(config, '_parallel_enabled', False) or config.parallel_workers is None):
             # Auto-detect CPU count when parallel_workers is None (default behavior)
             import multiprocessing as mp
             auto_workers = mp.cpu_count()
-            if use_memory_cache:
-                scanned_files, stats = scan_project_parallel_memory_optimized(
-                    config, auto_workers, max_cache_mb
-                )
-            else:
-                scanned_files, stats = _scan_phase_parallel(config, auto_workers)
+            strategy = ScanStrategy(
+                parallel=True,
+                max_workers=auto_workers,
+                memory_cache=use_memory_cache,
+                max_cache_mb=max_cache_mb if use_memory_cache else 256
+            )
+            scanned_files, stats = scan_project(config, strategy, function_level_only=True)
         elif use_memory_cache:
-            scanned_files, stats = scan_project_memory_optimized(config, max_cache_mb)
+            strategy = ScanStrategy(memory_cache=True, max_cache_mb=max_cache_mb)
+            scanned_files, stats = scan_project(config, strategy, function_level_only=True)
         else:
-            scanned_files, stats = _scan_phase(config)
+            scanned_files, stats = scan_project(config, function_level_only=True)
 
         # Phase 2: Process blocks
         all_blocks = _process_blocks(scanned_files, function_level_only)

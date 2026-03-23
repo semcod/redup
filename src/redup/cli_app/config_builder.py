@@ -30,7 +30,9 @@ def build_config_with_file_support(
     incremental: bool = False,
     memory_cache: bool = False,
     max_cache_mb: int = 512,
-    functions_only: bool = False
+    functions_only: bool = False,
+    fuzzy: bool = False,
+    fuzzy_threshold: float = 0.8
 ) -> ScanConfig:
     """Build scan configuration with advanced options."""
     config = load_config()
@@ -40,12 +42,16 @@ def build_config_with_file_support(
     if extensions is not None:
         scan_config.extensions = [e.strip() for e in extensions.split(',')]
     if min_lines is not None:
-        scan_config.min_lines = min_lines
+        scan_config.min_block_lines = min_lines
     if min_similarity is not None:
         scan_config.min_similarity = min_similarity
     if include_tests is not None:
         scan_config.include_tests = include_tests
     if functions_only:
-        scan_config.function_level_only = functions_only
+        scan_config.functions_only = functions_only
+    
+    # Add fuzzy support
+    scan_config.fuzzy_enabled = fuzzy
+    scan_config.fuzzy_threshold = fuzzy_threshold
     
     return scan_config

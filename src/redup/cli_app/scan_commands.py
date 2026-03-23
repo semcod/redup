@@ -33,16 +33,16 @@ def scan_command(
     """Scan a project for code duplicates."""
     
     # Build configuration
-    if any([extensions, min_lines, min_similarity, include_tests, functions_only, parallel, max_workers, incremental, memory_cache, max_cache_mb]):
+    if any([extensions, min_lines, min_similarity, include_tests, functions_only, parallel, max_workers, incremental, memory_cache, max_cache_mb, fuzzy]):
         config = build_config_with_file_support(
             path, extensions, min_lines, min_similarity, include_tests,
-            parallel, max_workers, incremental, memory_cache, max_cache_mb, functions_only
+            parallel, max_workers, incremental, memory_cache, max_cache_mb, functions_only, fuzzy, fuzzy_threshold
         )
     else:
         config = build_config(path, extensions, min_lines, min_similarity, include_tests)
     
     # Print scan header
-    print_scan_header(path, config.extensions, config.min_lines, config.min_similarity)
+    print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
     
     # Run analysis
     if parallel and max_workers and max_workers > 1:
@@ -92,7 +92,7 @@ def check_command(
         path, extensions, min_lines, min_similarity, include_tests
     )
     
-    print_scan_header(path, config.extensions, config.min_lines, config.min_similarity)
+    print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
     
     dup_map = analyze(config)
     print_scan_summary(dup_map)

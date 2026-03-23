@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.3.24] - 2026-03-23
+
+### Other
+- Update project/validation.toon
+- Update src/redup/core/scanner.py.backup
+
 ## [0.3.23] - 2026-03-23
 
 ### Docs
