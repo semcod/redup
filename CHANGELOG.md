@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.3.15] - 2026-03-23
+
+### Docs
+- Update BUGFIX_SUMMARY.md
+- Update MEMORY_OPTIMIZATION.md
+
+### Other
+- Update .redup/cache/hash_cache.db
+- Update project.sh
+- Update project/duplication.toon
+
 ## [0.3.14] - 2026-03-23
 
 ### Other

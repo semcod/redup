@@ -57,6 +57,9 @@ class ScanConfig:
     parallel_workers: int | None = None  # None = auto-detect CPU count
     enable_cache: bool = False
     cache_dir: Path = field(default_factory=lambda: Path(".redup/cache"))
+    # Ultra-fast scanner options
+    functions_only: bool = False
+    use_ultra_fast_scanner: bool = True
 
 
 @dataclass

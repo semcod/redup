@@ -77,6 +77,9 @@ def _build_config_with_file_support(
     parallel: bool = False,
     max_workers: int | None = None,
     incremental: bool = False,
+    memory_cache: bool = True,
+    max_cache_mb: int = 512,
+    functions_only: bool = False,
 ) -> ScanConfig:
     """Build scan configuration supporting config files and CLI overrides."""
     # Load configuration from files
@@ -102,6 +105,13 @@ def _build_config_with_file_support(
     
     if incremental:
         config.enable_cache = True
+    
+    # Store memory cache options for pipeline
+    config._memory_cache = memory_cache
+    config._max_cache_mb = max_cache_mb
+    
+    # Set functions_only flag for ultra-fast scanner
+    config.functions_only = functions_only
     
     return config
 
@@ -226,14 +236,14 @@ def scan(
         help="Include test files. Overrides config.",
     ),
     functions_only: bool = typer.Option(
-        False,
-        "--functions-only",
-        help="Only analyze function-level duplicates (faster).",
+        True,
+        "--functions-only/--no-functions-only",
+        help="Only analyze function-level duplicates (default: enabled for speed).",
     ),
     parallel: bool = typer.Option(
-        False,
-        "--parallel",
-        help="Use parallel scanning for large projects.",
+        True,
+        "--parallel/--no-parallel",
+        help="Use parallel scanning for large projects (default: enabled).",
     ),
     max_workers: int = typer.Option(
         None,
@@ -241,29 +251,61 @@ def scan(
         help="Number of parallel workers (default: CPU count).",
     ),
     incremental: bool = typer.Option(
-        False,
-        "--incremental",
-        help="Use hash cache to skip unchanged files (creates .redup_cache.json).",
+        True,
+        "--incremental/--no-incremental",
+        help="Use hash cache to skip unchanged files (default: enabled).",
+    ),
+    memory_cache: bool = typer.Option(
+        True,
+        "--memory-cache/--no-memory-cache",
+        help="Load files into RAM for faster processing (default: enabled).",
+    ),
+    max_cache_mb: int = typer.Option(
+        512,
+        "--max-cache-mb",
+        help="Maximum memory for file caching in MB (default: 512).",
     ),
 ) -> None:
-    """Scan a project for code duplicates and generate a refactoring map."""
-    config = _build_config_with_file_support(
-        path, extensions, min_lines, min_similarity, include_tests, 
-        parallel, max_workers, incremental
-    )
+    """Scan a project for code duplicates and generate a refactoring map.
+    
+    Performance optimizations are enabled by default:
+    - ✅ --functions-only: Faster function-level analysis
+    - ✅ --parallel: Multi-core processing  
+    - ✅ --incremental: Skip unchanged files
+    - ✅ --memory-cache: RAM preload for speed
+    
+    Use --no-* flags to disable specific optimizations.
+    """
+    try:
+        config = _build_config_with_file_support(
+            path, extensions, min_lines, min_similarity, include_tests, 
+            parallel, max_workers, incremental, memory_cache, max_cache_mb, functions_only
+        )
 
-    _print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
+        _print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
 
-    # Choose analysis method based on optimization flags
-    if parallel or incremental:
-        dup_map = analyze_optimized(config=config, function_level_only=functions_only)
-    elif parallel:
-        dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
-    else:
-        dup_map = analyze(config=config, function_level_only=functions_only)
+        # Choose analysis method based on optimization flags
+        if parallel or incremental:
+            dup_map = analyze_optimized(
+                config=config, 
+                function_level_only=functions_only,
+                use_memory_cache=getattr(config, '_memory_cache', True),
+                max_cache_mb=getattr(config, '_max_cache_mb', 512)
+            )
+        elif parallel:
+            dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
+        else:
+            dup_map = analyze(config=config, function_level_only=functions_only)
 
-    _print_scan_summary(dup_map)
-    _write_results(dup_map, format, output, path)
+        _print_scan_summary(dup_map)
+        _write_results(dup_map, format, output, path)
+        
+    except KeyboardInterrupt:
+        typer.echo("\n⚠️  Scan cancelled by user", err=True)
+        raise typer.Exit(130)  # Standard exit code for Ctrl+C
+    except Exception as e:
+        typer.echo(f"❌ Error during scan: {e}", err=True)
+        raise typer.Exit(1)
 
 
 @app.command()
