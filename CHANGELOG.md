@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+## [0.3.8] - 2026-03-23
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+- Update docs/README.md
+- Update project/context.md
+
+### Test
+- Update tests/test_ts_extractor.py
+
+### Other
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/dashboard.html
+- Update project/duplication.toon
+- Update project/evolution.toon
+- Update project/flow.mmd
+- Update project/flow.png
+- Update project/flow.toon
+- Update project/index.html
+- ... and 3 more files
+
 ## [0.3.7] - 2026-03-23
 
 ### Docs
@@ -22,6 +46,16 @@
 - ... and 2 more files
 
 ## [0.3.6] - 2026-03-23
+
+### Features
+- **Expanded multi-language support** — 35+ languages via tree-sitter
+  - Web: HTML, CSS, Svelte, Vue
+  - Programming: C/C++, C#, Ruby, PHP, Bash, Lua, Scala, Kotlin, Swift, Objective-C
+  - Data/Config: JSON, YAML, TOML, XML, Markdown
+  - SQL: SQL, DDL, DML
+  - DSL/Framework: GraphQL, Dockerfile, Makefile, Nginx, Vim
+  - Templates: ERB, EJS, Handlebars
+  - Regex: .regex files
 
 ### Docs
 - Update docs/README.md

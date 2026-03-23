@@ -1,29 +1,30 @@
-# redup/duplication | 2 groups | 29f 4284L | 2026-03-23
+# redup/duplication | 2 groups | 29f 4262L | 2026-03-23
 
 SUMMARY:
   files_scanned: 29
-  total_lines:   4284
+  total_lines:   4262
   dup_groups:    2
-  dup_fragments: 9
-  saved_lines:   22
-  scan_ms:       1130
+  dup_fragments: 10
+  saved_lines:   25
+  scan_ms:       1179
 
 DUPLICATES[2] (ranked by impact):
-  [S6897]   STRU  _extract_functions_go  L=3 N=7 saved=18 sim=0.96
-      src/redup/core/ts_extractor.py:269-271  (_extract_functions_go)
-      src/redup/core/ts_extractor.py:274-276  (_extract_functions_rust)
-      src/redup/core/ts_extractor.py:279-281  (_extract_functions_java)
-      src/redup/core/ts_extractor.py:607-609  (_extract_functions_scala)
-      src/redup/core/ts_extractor.py:612-614  (_extract_functions_kotlin)
-      src/redup/core/ts_extractor.py:617-619  (_extract_functions_swift)
-      src/redup/core/ts_extractor.py:622-624  (_extract_functions_objc)
+  [S6897]   STRU  _extract_functions_go  L=3 N=8 saved=21 sim=0.97
+      src/redup/core/ts_extractor.py:270-272  (_extract_functions_go)
+      src/redup/core/ts_extractor.py:275-277  (_extract_functions_rust)
+      src/redup/core/ts_extractor.py:280-282  (_extract_functions_java)
+      src/redup/core/ts_extractor.py:515-517  (_extract_functions_lua)
+      src/redup/core/ts_extractor.py:580-582  (_extract_functions_scala)
+      src/redup/core/ts_extractor.py:585-587  (_extract_functions_kotlin)
+      src/redup/core/ts_extractor.py:590-592  (_extract_functions_swift)
+      src/redup/core/ts_extractor.py:595-597  (_extract_functions_objc)
   [S1289]   STRU  hash_block  L=4 N=2 saved=4 sim=0.84
       src/redup/core/hasher.py:152-155  (hash_block)
       src/redup/core/hasher.py:158-161  (hash_block_structural)
 
 REFACTOR[2] (ranked by priority):
   [1] ○ extract_function   → src/redup/core/utils/_extract_functions_go.py
-      WHY: 7 occurrences of 3-line block across 1 files — saves 18 lines
+      WHY: 8 occurrences of 3-line block across 1 files — saves 21 lines
       FILES: src/redup/core/ts_extractor.py
   [2] ○ extract_function   → src/redup/core/utils/hash_block.py
       WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
@@ -31,4 +32,4 @@ REFACTOR[2] (ranked by priority):
 
 METRICS-TARGET:
   dup_groups:  2 → 0
-  saved_lines: 22 lines recoverable
+  saved_lines: 25 lines recoverable

@@ -1,9 +1,9 @@
-# code2llm | 29f 4243L | python:28,shell:1 | 2026-03-23
+# code2llm | 29f 4221L | python:28,shell:1 | 2026-03-23
 # CC̄=3.9 | critical:10/148 | dups:0 | cycles:0
 
 HEALTH[2]:
-  🟡 CC    compare_scans CC=18 (limit:15)
   🟡 CC    extract_functions_treesitter CC=24 (limit:15)
+  🟡 CC    compare_scans CC=18 (limit:15)
 
 REFACTOR[1]:
   1. split 2 high-CC methods  (CC>15)
@@ -16,7 +16,7 @@ COUPLING:
 
 LAYERS:
   src/                            CC̄=3.9    ←in:0  →out:0
-  │ !! ts_extractor               794L  1C   23m  CC=24     ←2
+  │ !! ts_extractor               767L  1C   23m  CC=24     ←2
   │ !  main                       422L  0C   11m  CC=12     ←0
   │ !  pipeline                   409L  0C   15m  CC=11     ←3
   │ enhanced_reporter          274L  1C   17m  CC=8      ←0
@@ -27,7 +27,7 @@ LAYERS:
   │ scanner                    201L  2C    6m  CC=9      ←2
   │ models                     157L  9C    1m  CC=1      ←0
   │ config                     154L  0C    6m  CC=5      ←1
-  │ function_extractor         143L  1C    5m  CC=5      ←0
+  │ function_extractor         148L  1C    5m  CC=5      ←0
   │ planner                    110L  0C    5m  CC=7      ←1
   │ matcher                    107L  1C    5m  CC=7      ←1
   │ toon_reporter              106L  0C    6m  CC=8      ←2
@@ -197,6 +197,10 @@ D:
     _extract_blocks_sliding(lines,min_lines)
     _extract_function_blocks_python(source,filepath)
     scan_project(config)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
+      __init__(1)  CC=1.0
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -205,10 +209,6 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map,groups)
     to_toon(dup_map)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
-      __init__(1)  CC=1.0
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -243,9 +243,6 @@ D:
     build_hash_index(blocks,min_lines)
     _find_duplicates(hash_dict)
     _blocks_from_different_locations(blocks)
-  examples/01_basic_usage.py:
-    e: main
-    main()
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -254,6 +251,9 @@ D:
     load_config()
     config_to_scan_config(config,path)
     create_sample_redup_toml()
+  examples/01_basic_usage.py:
+    e: main
+    main()
   src/redup/reporters/json_reporter.py:
     e: _group_to_dict,_suggestion_to_dict,to_json
     _group_to_dict(group,include_snippets)
@@ -289,9 +289,9 @@ D:
     ScanStats  # Statistics from the scanning phase....
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
-  src/redup/__init__.py:
   src/redup/__main__.py:
   src/redup/core/__init__.py:
+  src/redup/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

@@ -106,6 +106,46 @@ def _extract_blocks_sliding(lines: list[str], min_lines: int) -> list[tuple[int,
     return blocks
 
 
+def _extract_class_blocks_python(source: str, filepath: str) -> list[CodeBlock]:
+    """Extract class-level blocks from Python source using ast.
+    
+    This enables detection of duplicate classes across files.
+    """
+    import ast
+
+    blocks: list[CodeBlock] = []
+    try:
+        tree = ast.parse(source)
+    except SyntaxError:
+        return blocks
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef):
+            start = node.lineno
+            end = node.end_lineno or start
+            lines = source.splitlines()
+            text = "\n".join(lines[start - 1 : end])
+
+            # Get method names for context
+            method_names = [
+                n.name for n in ast.walk(node)
+                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+            ]
+
+            blocks.append(
+                CodeBlock(
+                    file=filepath,
+                    line_start=start,
+                    line_end=end,
+                    text=text,
+                    function_name=None,  # It's a class, not a function
+                    class_name=node.name,
+                )
+            )
+
+    return blocks
+
+
 def _extract_function_blocks_python(source: str, filepath: str) -> list[CodeBlock]:
     """Extract function/method-level blocks from Python source using ast."""
     import ast
@@ -171,6 +211,7 @@ def scan_project(config: ScanConfig | None = None) -> tuple[list[ScannedFile], S
         # Extract function-level blocks for Python and other supported languages
         if filepath.suffix == ".py":
             func_blocks = _extract_function_blocks_python(source, rel_path)
+            class_blocks = _extract_class_blocks_python(source, rel_path)
         else:
             # Try tree-sitter extraction for other languages
             try:
@@ -181,6 +222,7 @@ def scan_project(config: ScanConfig | None = None) -> tuple[list[ScannedFile], S
                     func_blocks = []
             except ImportError:
                 func_blocks = []
+            class_blocks = []
 
         # Also extract sliding-window blocks for line-level matching
         sliding = _extract_blocks_sliding(lines, config.min_block_lines)
@@ -189,7 +231,7 @@ def scan_project(config: ScanConfig | None = None) -> tuple[list[ScannedFile], S
             for s, e, t in sliding
         ]
 
-        all_blocks = func_blocks + line_blocks
+        all_blocks = func_blocks + class_blocks + line_blocks
 
         sf = ScannedFile(path=rel_path, lines=lines, blocks=all_blocks)
         scanned.append(sf)

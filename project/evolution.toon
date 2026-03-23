@@ -2,8 +2,8 @@
 
 NEXT[3] (ranked by impact):
   [1] !! SPLIT           src/redup/core/ts_extractor.py
-      WHY: 794L, 1 classes, max CC=24
-      EFFORT: ~4h  IMPACT: 19056
+      WHY: 767L, 1 classes, max CC=24
+      EFFORT: ~4h  IMPACT: 18408
 
   [2] !  SPLIT-FUNC      extract_functions_treesitter  CC=24  fan=25
       WHY: CC=24 exceeds 15

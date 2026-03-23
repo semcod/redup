@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.3.7-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.3.8-green.svg)](https://pypi.org/project/redup/)
 
 reDUP scans codebases for duplicated functions, blocks, and structural patterns — then builds a prioritized refactoring map that LLMs can consume to eliminate redundancy systematically.
 
@@ -14,7 +14,7 @@ reDUP scans codebases for duplicated functions, blocks, and structural patterns 
 - **Exact duplicate detection** via SHA-256 block hashing
 - **Structural clone detection** — same AST shape, different variable names
 - **LSH near-duplicate detection** for large code blocks (>50 lines)
-- **Multi-language support** — Python, JavaScript, TypeScript, Go, Rust, Java, C/C++
+- **Multi-language support** — 35+ languages via tree-sitter (Python, JavaScript, TypeScript, Go, Rust, Java, C/C++, C#, Ruby, PHP, Bash, SQL, HTML, CSS, Lua, Scala, Kotlin, Swift, Objective-C, JSON, YAML, TOML, XML, Markdown, GraphQL, Dockerfile, Makefile, Nginx, Vim, Svelte, Vue, and more)
 - **Parallel scanning** for large projects (2x+ performance improvement)
 - **Fuzzy near-duplicate matching** via SequenceMatcher / rapidfuzz
 - **Function-level analysis** using Python AST and tree-sitter extraction
@@ -55,8 +55,8 @@ redup scan ./src --format json --output ./reports/
 # Parallel scanning for large projects
 redup scan . --parallel --max-workers 4
 
-# Multi-language scanning
-redup scan . --ext ".py,.js,.ts,.go"
+# Multi-language scanning with 35+ supported languages
+redup scan . --ext ".py,.js,.ts,.go,.rs,.java,.rb,.php,.html,.css,.sql,.lua,.scala,.kt,.swift,.m,.json,.yaml,.toml,.xml,.md,.graphql,.dockerfile,.svelte,.vue"
 
 # CI gate with thresholds
 redup check . --max-groups 10 --max-lines 100
@@ -88,7 +88,7 @@ Create a `redup.toml` file:
 
 ```toml
 [scan]
-extensions = ".py,.js,.ts,.go,.rs,.java"
+extensions = ".py,.js,.ts,.go,.rs,.java,.rb,.php,.html,.css,.sql,.lua,.scala,.kt,.swift,.m,.json,.yaml,.toml,.xml,.md,.graphql,.dockerfile,.svelte,.vue"
 min_lines = 3
 min_similarity = 0.85
 include_tests = false
@@ -123,7 +123,7 @@ from redup.reporters.json_reporter import to_json
 
 config = ScanConfig(
     root=Path("./my_project"),
-    extensions=[".py"],
+    extensions=[".py", ".js", ".ts", ".go", ".rs", ".java", ".rb", ".php", ".html", ".css"],
     min_block_lines=3,
     min_similarity=0.85,
 )

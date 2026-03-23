@@ -70,6 +70,13 @@ PIPELINES[12] (Core:7, IO:2, NLP:3):
               → _normalize_text(text:str) → str         CC=6    mutation ■
               PURITY: 1/6 pure  BOTTLENECK: find_near_duplicates(CC=10)
 
+  Src [IO]: Path → Dict[str, Any]
+              → save_enhanced_report(output_path:Path) → None CC=2    IO ▶
+              → generate_visualization_data() → Dict[str, Any] CC=1    pure
+              → _get_file_chart_data() → Dict[str, Any] CC=3    pure
+              → _get_file_metrics() → Dict[str, Any]    CC=4    pure ■
+              PURITY: 3/4 pure  BOTTLENECK: _get_file_metrics(CC=4)
+
   Src [NLP]: CodeBlock → str
               → add(block:CodeBlock) → None             CC=4    mutation ▶
               → _create_simple_minhash(text:str, num_perm:int) → _SimpleMinHash CC=1    pure
@@ -83,13 +90,6 @@ PIPELINES[12] (Core:7, IO:2, NLP:3):
               → _get_config_from_pyproject() → dict[str, Any] CC=1    pure
               → _load_toml_file(file_path:Path) → dict[str, Any] CC=4    IO ■
               PURITY: 1/4 pure  BOTTLENECK: config(CC=6)
-
-  Src [IO]: Path → Dict[str, Any]
-              → save_enhanced_report(output_path:Path) → None CC=2    IO ▶
-              → generate_visualization_data() → Dict[str, Any] CC=1    pure
-              → _get_file_chart_data() → Dict[str, Any] CC=3    pure
-              → _get_file_metrics() → Dict[str, Any]    CC=4    pure ■
-              PURITY: 3/4 pure  BOTTLENECK: _get_file_metrics(CC=4)
 
   Src [IO]: Path → Dict[str, int]
               → save_enhanced_report(output_path:Path) → None CC=2    IO ▶
@@ -380,6 +380,24 @@ CONTRACTS:
       INVARIANT: len(output) <= len(input)
 
   Pipeline: Src
+    save_enhanced_report(output_path:Path) → None
+      IN:  output_path:Path
+      OUT: None
+      SIDE-EFFECT: IO(open, dump)
+
+    generate_visualization_data() → Dict[str, Any]
+      IN:  ()
+      OUT: Dict[str, Any]
+
+    _get_file_chart_data() → Dict[str, Any]
+      IN:  ()
+      OUT: Dict[str, Any]
+
+    _get_file_metrics() → Dict[str, Any]
+      IN:  ()
+      OUT: Dict[str, Any]
+
+  Pipeline: Src
     add(block:CodeBlock) → None
       IN:  block:CodeBlock
       OUT: None
@@ -419,24 +437,6 @@ CONTRACTS:
       IN:  file_path:Path
       OUT: dict[str, Any]
       SIDE-EFFECT: IO(open, load)
-
-  Pipeline: Src
-    save_enhanced_report(output_path:Path) → None
-      IN:  output_path:Path
-      OUT: None
-      SIDE-EFFECT: IO(open, dump)
-
-    generate_visualization_data() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
-
-    _get_file_chart_data() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
-
-    _get_file_metrics() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
 
   Pipeline: Src
     save_enhanced_report(output_path:Path) → None
@@ -504,11 +504,11 @@ DATA_TYPES (by cross-function usage) [144 annotated, 0 inferred / 148 functions]
   CodeBlock            consumed:4   produced:3  
   DuplicateGroup       consumed:5   produced:1    input-heavy (read-only flow)
   list[HashedBlock]    consumed:5   produced:1    input-heavy (read-only flow)
-  list[MatchResult]    consumed:2   produced:3  
   dict[str, Any]       consumed:1   produced:4  
   HashIndex            consumed:4   produced:1  
-  ScanConfig | None    consumed:4   produced:0    narrow scope
+  list[MatchResult]    consumed:2   produced:3  
   dict[str, list[HashedBlock]] consumed:1   produced:3    narrow scope
+  str | None           consumed:3   produced:1    narrow scope
 
   HUB TYPES (consumed ≥10):
     str → 55 consumers → split into:
@@ -527,9 +527,9 @@ DATA_TYPES (by cross-function usage) [144 annotated, 0 inferred / 148 functions]
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        benchmark_sequential_vs_parallel, benchmark_feature_performance, main, _load_toml_file, scan_project, _scan_file_worker, scan_project_parallel, _find_duplicates_phase, to_json, _load_duplication_map
+  IO:        benchmark_sequential_vs_parallel, benchmark_feature_performance, _load_toml_file, main, scan_project, _scan_file_worker, scan_project_parallel, _find_duplicates_phase, EnhancedReporter.save_enhanced_report, to_json
   Cache:     _should_process_file, _is_test_file_cached
-  Mutation:  load_config, generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, _find_files_optimized, _blocks_to_group, _deduplicate_groups, _process_blocks, _find_exact_groups, _find_structural_groups
+  Mutation:  load_config, generate_suggestions, _extract_blocks_sliding, _extract_function_blocks_python, _find_files_optimized, _compare_against_reference, _normalize_text, _ast_to_normalized_string, _blocks_to_group, _deduplicate_groups
   Pure:      _get_config_from_pyproject, _get_config_from_redup_toml, config_to_scan_config, create_sample_redup_toml, _common_prefix, _suggest_module_name, _assess_risk, _choose_action, _should_exclude, _collect_files
 
   PIPELINE PURITY:
@@ -539,9 +539,9 @@ SIDE_EFFECTS:
     Src             █░░░ 33% pure
     Src             █░░░ 33% pure
     Src             ░░░░ 16% pure
-    Src             █░░░ 25% pure
-    Src             █░░░ 25% pure
     Src             ███░ 75% pure
+    Src             █░░░ 25% pure
+    Src             █░░░ 25% pure
     Src             ███░ 75% pure
     Src             █░░░ 33% pure
     Src             ██░░ 66% pure

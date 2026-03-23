@@ -1,4 +1,4 @@
-# redup | 38f 5445L | python:38
+# redup | 38f 5423L | python:38
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[38]:
   benchmark.py,83
@@ -18,10 +18,10 @@ M[38]:
   src/redup/core/pipeline.py,296
   src/redup/core/planner.py,82
   src/redup/core/scanner.py,157
-  src/redup/core/ts_extractor.py,578
+  src/redup/core/ts_extractor.py,559
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,24
-  src/redup/core/utils/function_extractor.py,107
+  src/redup/core/utils/function_extractor.py,111
   src/redup/core/utils/hash_utils.py,25
   src/redup/reporters/__init__.py,1
   src/redup/reporters/enhanced_reporter.py,229

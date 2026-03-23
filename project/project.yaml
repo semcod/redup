@@ -3,11 +3,11 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:56:23Z'
+  analyzed_at: '2026-03-23T16:59:39Z'
   tool: code2llm
   stats:
     files: 21
-    lines: 5366
+    lines: 5344
     functions: 147
     classes: 20
 health:
@@ -79,7 +79,7 @@ health:
     severity: warning
 modules:
 - path: src/redup/core/ts_extractor.py
-  lines: 794
+  lines: 767
   classes: 1
   methods: 23
   cc_max: 24
@@ -311,7 +311,7 @@ modules:
     type: function
     cc: 1
 - path: src/redup/core/utils/function_extractor.py
-  lines: 143
+  lines: 148
   classes: 1
   methods: 5
   cc_max: 5
@@ -489,17 +489,17 @@ hotspots:
   note: Optimized file discovery using set lookups and compiled patterns.
 refactoring:
   priorities:
-  - action: Split god module src/redup/core/ts_extractor.py (794L, 1 classes)
+  - action: Split god module src/redup/core/ts_extractor.py (767L, 1 classes)
     impact: high
     effort: high
-  - action: Split compare_scans (CC=18 → target CC<10)
-    impact: medium
-    effort: low
-    module: differ.py
   - action: Split extract_functions_treesitter (CC=24 → target CC<10)
     impact: medium
     effort: low
     module: ts_extractor.py
+  - action: Split compare_scans (CC=18 → target CC<10)
+    impact: medium
+    effort: low
+    module: differ.py
   - action: Reduce extract_functions_treesitter fan-out (currently 25)
     impact: medium
     effort: medium
@@ -513,5 +513,5 @@ evolution:
 - date: '2026-03-23'
   cc_avg: 3.9
   critical: 10
-  lines: 5366
+  lines: 5344
   note: Automated analysis

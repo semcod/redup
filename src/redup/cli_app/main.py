@@ -20,6 +20,7 @@ from redup.reporters.json_reporter import to_json  # noqa: E402
 from redup.reporters.markdown_reporter import to_markdown  # noqa: E402
 from redup.reporters.toon_reporter import to_toon  # noqa: E402
 from redup.reporters.yaml_reporter import to_yaml  # noqa: E402
+from redup.reporters.code2llm_reporter import export_code2llm, to_code2llm_context, to_code2llm_toon  # noqa: E402
 from redup.reporters.enhanced_reporter import EnhancedReporter  # noqa: E402
 
 app = typer.Typer(
@@ -29,7 +30,7 @@ app = typer.Typer(
 )
 
 
-OutputFormat = Literal["json", "yaml", "toon", "markdown", "all", "enhanced"]
+OutputFormat = Literal["json", "yaml", "toon", "markdown", "all", "enhanced", "code2llm"]
 
 
 DEFAULT_PATH = Path(".")
@@ -157,6 +158,18 @@ def _write_results(
         target = output_dir if output_dir and output_dir.suffix else output_dir / "duplication.enhanced.json"
         reporter.save_enhanced_report(target)
         typer.echo(f"  → {target}")
+    elif format == "code2llm":
+        # Export code2llm format (analysis.toon + context.md)
+        if output_dir is None:
+            output_dir = Path("code2llm_output")
+        toon_path, context_path = export_code2llm(
+            dup_map,
+            output_dir,
+            files_scanned=dup_map.stats.files_scanned,
+            total_lines=dup_map.stats.total_lines,
+        )
+        typer.echo(f"  → {toon_path}")
+        typer.echo(f"  → {context_path}")
 
 
 @app.command()
@@ -171,7 +184,7 @@ def scan(
     format: str = typer.Option(
         "toon",
         "--format", "-f",
-        help="Output format (json, yaml, toon, markdown, all, enhanced).",
+        help="Output format (json, yaml, toon, markdown, code2llm, all, enhanced).",
     ),
     output: Path | None = typer.Option(
         DEFAULT_OUTPUT,
