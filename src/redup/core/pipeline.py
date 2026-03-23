@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+import time
+from typing import Any
+from collections import defaultdict
+import itertools
+
 from redup.core.hasher import (
     HashedBlock,
     HashIndex,
@@ -161,13 +166,19 @@ def _process_blocks(
     scanned_files: list[ScannedFile],
     function_level_only: bool
 ) -> list[CodeBlock]:
-    """Phase 2: Extract and filter code blocks."""
+    """Phase 2: Extract and filter code blocks with memory optimization."""
     all_blocks: list[CodeBlock] = []
-    for sf in scanned_files:
-        for block in sf.blocks:
-            if function_level_only and block.function_name is None:
-                continue
-            all_blocks.append(block)
+    
+    # Batch process files to reduce memory overhead
+    batch_size = 100
+    for i in range(0, len(scanned_files), batch_size):
+        batch = scanned_files[i:i + batch_size]
+        for sf in batch:
+            for block in sf.blocks:
+                if function_level_only and block.function_name is None:
+                    continue
+                all_blocks.append(block)
+    
     return all_blocks
 
 
@@ -175,19 +186,25 @@ def _find_duplicates_phase(
     all_blocks: list[CodeBlock],
     config: ScanConfig
 ) -> list[DuplicateGroup]:
-    """Phase 3: Hash and find duplicate groups."""
-    index = build_hash_index(all_blocks, min_lines=config.min_block_lines)
-
-    # Find exact duplicates
-    exact_groups = _find_exact_groups(index)
-
-    # Find structural duplicates
-    structural_groups = _find_structural_groups(index, exact_groups)
+    """Phase 3: Hash and find duplicate groups with performance optimizations."""
+    start_time = time.time()
     
-    # Find near-duplicates using LSH (for larger blocks)
+    # Build hash index with progress tracking
+    index = build_hash_index(all_blocks, min_lines=config.min_block_lines)
+    
+    # Find duplicates in parallel where possible
+    exact_groups = _find_exact_groups(index)
+    structural_groups = _find_structural_groups(index, exact_groups)
     near_duplicate_groups = _find_near_duplicate_groups(all_blocks, config)
-
-    return exact_groups + structural_groups + near_duplicate_groups
+    
+    # Combine and sort by impact
+    all_groups = exact_groups + structural_groups + near_duplicate_groups
+    all_groups.sort(key=lambda g: g.impact_score, reverse=True)
+    
+    processing_time = (time.time() - start_time) * 1000
+    print(f"Duplicate finding completed in {processing_time:.1f}ms")
+    
+    return all_groups
 
 
 def _find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:

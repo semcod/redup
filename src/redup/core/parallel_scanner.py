@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import os
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
+import time
+from functools import lru_cache
 
 from redup.core.scanner import CodeBlock, ScannedFile, scan_project
 from redup.core.ts_extractor import extract_functions_treesitter
@@ -73,8 +75,11 @@ def _should_process_file(
         return False
     
     # Check if test file (and whether to include)
-    if not include_tests and _is_test_file(file_path, project_root):
-        return False
+    if not include_tests:
+        relative_path = file_path.relative_to(project_root)
+        test_parts = frozenset(('test', 'tests', 'testing'))
+        if _is_test_file_cached(str(relative_path), test_parts):
+            return False
     
     return True
 
@@ -105,7 +110,8 @@ def scan_project_parallel(
     function_level_only: bool = False,
     max_file_size: int = 1024,
     max_workers: int | None = None,
-    min_files_for_parallel: int = 10
+    min_files_for_parallel: int = 10,
+    use_threading: bool = False
 ) -> tuple[list[ScannedFile], Any]:
     """Scan project files in parallel for better performance on large projects."""
     from redup.core.models import ScanStats
@@ -113,27 +119,8 @@ def scan_project_parallel(
     if max_workers is None:
         max_workers = min(os.cpu_count() or 4, 8)  # Cap at 8 workers
     
-    # Find all files to scan
-    all_files = []
-    exclude_patterns = exclude_patterns or []
-    
-    for file_path in root.rglob('*'):
-        if not file_path.is_file():
-            continue
-        
-        # Check exclude patterns
-        relative_path = file_path.relative_to(root)
-        should_exclude = False
-        
-        for pattern in exclude_patterns:
-            if pattern in str(relative_path) or relative_path.match(pattern):
-                should_exclude = True
-                break
-        
-        if should_exclude:
-            continue
-        
-        all_files.append(file_path)
+    # Find all files to scan (optimized)
+    all_files = _find_files_optimized(root, extensions, exclude_patterns or [])
     
     # Use parallel scanning only if we have enough files
     if len(all_files) < min_files_for_parallel:
@@ -147,11 +134,14 @@ def scan_project_parallel(
     ]
     
     # Scan files in parallel
+    start_time = time.time()
     scanned_files = []
     total_blocks = 0
     total_lines = 0
     
-    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+    executor_class = ThreadPoolExecutor if use_threading else ProcessPoolExecutor
+    
+    with executor_class(max_workers=max_workers) as executor:
         # Submit all jobs
         future_to_file = {
             executor.submit(_scan_file_worker, work_item): work_item[0]
@@ -174,12 +164,71 @@ def scan_project_parallel(
                 file_path = future_to_file[future]
                 print(f"Warning: Failed to scan {file_path}")
     
+    scan_time = (time.time() - start_time) * 1000
+    
     # Create stats
     stats = ScanStats(
         files_scanned=len(scanned_files),
         total_lines=total_lines,
         total_blocks=total_blocks,
-        scan_time_ms=0.0,  # Will be updated by caller
+        scan_time_ms=scan_time,
     )
     
     return scanned_files, stats
+
+
+def _find_files_optimized(
+    root: Path,
+    extensions: set[str],
+    exclude_patterns: list[str]
+) -> list[Path]:
+    """Optimized file discovery using set lookups and compiled patterns."""
+    extensions_set = set(extensions) if not isinstance(extensions, set) else extensions
+    
+    # Pre-compile exclude patterns for better performance
+    import fnmatch
+    compiled_patterns = [fnmatch.translate(pattern) for pattern in exclude_patterns]
+    import re
+    regex_patterns = [re.compile(pattern) for pattern in compiled_patterns]
+    
+    all_files = []
+    
+    for file_path in root.rglob('*'):
+        if not file_path.is_file():
+            continue
+        
+        # Fast extension check using set
+        if file_path.suffix not in extensions_set:
+            continue
+        
+        # Check exclude patterns
+        relative_path = file_path.relative_to(root)
+        should_exclude = False
+        
+        for regex_pattern in regex_patterns:
+            if regex_pattern.match(str(relative_path)):
+                should_exclude = True
+                break
+        
+        if not should_exclude:
+            all_files.append(file_path)
+    
+    return all_files
+
+
+@lru_cache(maxsize=1024)
+def _is_test_file_cached(relative_path: str, test_parts: frozenset) -> bool:
+    """Cached version of test file detection."""
+    parts = Path(relative_path).parts
+    
+    # Check if in test directory
+    for part in parts:
+        if part in test_parts:
+            return True
+    
+    # Check filename patterns
+    filename = Path(relative_path).name
+    if filename.startswith('test_') or filename.endswith('_test.py'):
+        return True
+    
+    return False

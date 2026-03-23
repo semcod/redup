@@ -149,14 +149,28 @@ def _hash_text(text: str, normalizer: Callable[[str], str]) -> str:
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
 
 
-def hash_block(text: str) -> str:  # nodup: accepted thin API wrapper
+def hash_block(text: str) -> str:
     """SHA-256 hash of normalized text."""
-    return _hash_text(text, _normalize_text)
+    from .utils.hash_utils import hash_block as _hash_block
+    return _hash_block(text)
 
 
-def hash_block_structural(text: str) -> str:  # nodup: accepted thin API wrapper
+def hash_block_structural(text: str) -> str:
     """SHA-256 hash of deeply normalized text (variable names replaced)."""
-    return _hash_text(text, _normalize_ast_text)
+    from .utils.hash_utils import hash_block_structural as _hash_block_structural
+    return _hash_block_structural(text)
+
+
+def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
+    """Find groups of blocks with identical normalized text."""
+    from .utils.duplicate_finders import find_exact_duplicates as _find_exact_duplicates
+    return _find_exact_duplicates(index)
+
+
+def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
+    """Find groups of blocks with identical structure (names may differ)."""
+    from .utils.duplicate_finders import find_structural_duplicates as _find_structural_duplicates
+    return _find_structural_duplicates(index)
 
 
 def _hashed_block(block: CodeBlock) -> HashedBlock:
@@ -211,16 +225,6 @@ def _find_duplicates(hash_dict: dict[str, list[HashedBlock]]) -> dict[str, list[
         for h, blocks in hash_dict.items()
         if len(blocks) > 1 and _blocks_from_different_locations(blocks)
     }
-
-
-def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:  # nodup: accepted thin API wrapper
-    """Find groups of blocks with identical normalized text."""
-    return _find_duplicates(index.exact)
-
-
-def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:  # nodup: accepted thin API wrapper
-    """Find groups of blocks with identical structure (names may differ)."""
-    return _find_duplicates(index.structural)
 
 
 def _blocks_from_different_locations(blocks: list[HashedBlock]) -> bool:

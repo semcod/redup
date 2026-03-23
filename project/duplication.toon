@@ -1,24 +1,24 @@
-# redup/duplication | 4 groups | 23f 3148L | 2026-03-23
+# redup/duplication | 4 groups | 24f 3414L | 2026-03-23
 
 SUMMARY:
-  files_scanned: 23
-  total_lines:   3148
+  files_scanned: 24
+  total_lines:   3414
   dup_groups:    4
   dup_fragments: 8
   saved_lines:   100
-  scan_ms:       932
+  scan_ms:       927
 
 DUPLICATES[4] (ranked by impact):
-  [S6226] ! STRU  _extract_functions_go  L=50 N=2 saved=50 sim=0.99
-      src/redup/core/ts_extractor.py:136-185  (_extract_functions_go)
-      src/redup/core/ts_extractor.py:188-237  (_extract_functions_rust)
-  [S6227] ! STRU  traverse  L=44 N=2 saved=44 sim=0.99
-      src/redup/core/ts_extractor.py:140-183  (traverse)
-      src/redup/core/ts_extractor.py:192-235  (traverse)
-  [S0947]   STRU  hash_block  L=3 N=2 saved=3 sim=0.91
+  [S6568] ! STRU  _extract_functions_go  L=50 N=2 saved=50 sim=0.99
+      src/redup/core/ts_extractor.py:258-307  (_extract_functions_go)
+      src/redup/core/ts_extractor.py:310-359  (_extract_functions_rust)
+  [S6569] ! STRU  traverse  L=44 N=2 saved=44 sim=0.99
+      src/redup/core/ts_extractor.py:262-305  (traverse)
+      src/redup/core/ts_extractor.py:314-357  (traverse)
+  [S1289]   STRU  hash_block  L=3 N=2 saved=3 sim=0.91
       src/redup/core/hasher.py:152-154  (hash_block)
       src/redup/core/hasher.py:157-159  (hash_block_structural)
-  [S0948]   STRU  find_exact_duplicates  L=3 N=2 saved=3 sim=0.91
+  [S1290]   STRU  find_exact_duplicates  L=3 N=2 saved=3 sim=0.91
       src/redup/core/hasher.py:216-218  (find_exact_duplicates)
       src/redup/core/hasher.py:221-223  (find_structural_duplicates)
 

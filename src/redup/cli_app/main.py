@@ -20,6 +20,7 @@ from redup.reporters.json_reporter import to_json  # noqa: E402
 from redup.reporters.markdown_reporter import to_markdown  # noqa: E402
 from redup.reporters.toon_reporter import to_toon  # noqa: E402
 from redup.reporters.yaml_reporter import to_yaml  # noqa: E402
+from redup.reporters.enhanced_reporter import EnhancedReporter  # noqa: E402
 
 app = typer.Typer(
     name="redup",
@@ -28,7 +29,7 @@ app = typer.Typer(
 )
 
 
-OutputFormat = Literal["json", "yaml", "toon", "markdown", "all"]
+OutputFormat = Literal["json", "yaml", "toon", "markdown", "all", "enhanced"]
 
 
 DEFAULT_PATH = Path(".")
@@ -92,12 +93,14 @@ def _build_config_with_file_support(
 
 def _print_scan_header(
     path: Path,
-    config: ScanConfig,
+    ext_list: list[str],
+    min_lines: int,
+    min_similarity: float,
 ) -> None:
     """Print scan configuration header."""
     typer.echo(f"reDUP v{redup.__version__} — scanning {path.resolve()}")
-    typer.echo(f"  extensions: {', '.join(config.extensions)}")
-    typer.echo(f"  min_lines: {config.min_block_lines}, min_similarity: {config.min_similarity}")
+    typer.echo(f"  extensions: {', '.join(ext_list)}")
+    typer.echo(f"  min_lines: {min_lines}, min_similarity: {min_similarity}")
     typer.echo("")
 
 
@@ -149,6 +152,11 @@ def _write_results(
         _write_output(to_toon(dup_map), output_dir, "toon")
     elif format == "markdown":
         _write_output(to_markdown(dup_map), output_dir, "md")
+    elif format == "enhanced":
+        reporter = EnhancedReporter(dup_map)
+        target = output_dir if output_dir and output_dir.suffix else output_dir / "duplication.enhanced.json"
+        reporter.save_enhanced_report(target)
+        typer.echo(f"  → {target}")
 
 
 @app.command()
@@ -163,7 +171,7 @@ def scan(
     format: str = typer.Option(
         "toon",
         "--format", "-f",
-        help="Output format (json, yaml, toon, markdown, all).",
+        help="Output format (json, yaml, toon, markdown, all, enhanced).",
     ),
     output: Path | None = typer.Option(
         DEFAULT_OUTPUT,
@@ -209,7 +217,7 @@ def scan(
     """Scan a project for code duplicates and generate a refactoring map."""
     config = _build_config_with_file_support(path, extensions, min_lines, min_similarity, include_tests)
 
-    _print_scan_header(path, config)
+    _print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
 
     # Choose analysis method
     if parallel:
