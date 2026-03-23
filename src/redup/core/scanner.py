@@ -175,6 +175,10 @@ def _is_test_file(path: Path) -> bool:
     name = path.name.lower()
     dir_parts = [part.lower() for part in path.parts]
     
+    # Skip pytest temp directories
+    if any("pytest-" in part for part in dir_parts):
+        return False
+    
     # Check filename patterns
     test_patterns = [
         "test_", "_test.", "tests.", "spec_", "_spec."
@@ -183,8 +187,8 @@ def _is_test_file(path: Path) -> bool:
     if any(pattern in name for pattern in test_patterns):
         return True
     
-    # Check directory patterns
-    if any("test" in part for part in dir_parts):
+    # Check directory patterns (but not pytest temp dirs)
+    if any("test" in part and "pytest-" not in part for part in dir_parts):
         return True
     
     return False

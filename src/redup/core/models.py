@@ -41,21 +41,16 @@ class ScanConfig:
     extensions: list[str] = field(default_factory=lambda: [".py"])
     exclude_patterns: list[str] = field(
         default_factory=lambda: [
-            # Universal system files
-            ".*",
-            "!.*.py", "!.*.js", "!.*.ts", "!.*.java", "!.*.cpp", "!.*.c",
-            "!.*.h", "!.*.hpp", "!.*.rs", "!.*.go", "!.*.rb", "!.*.php",
-            "!.*.sh", "!.*.bat", "!.*.ps1", "!.*.yaml", "!.*.yml", "!.*.toml",
-            "!.*.json", "!.*.xml", "!.*.html", "!.*.css", "!.*.md", "!.*.txt",
-            "!.*.sql", "!.*.dockerfile", "!.*.makefile", "!.*.cmake",
-            "!.*.gitignore", "!.*.editorconfig",
+            # Universal system files (but not normal code files)
+            ".git/", ".svn/", ".hg/", "__pycache__/", ".pytest_cache/", ".mypy_cache/",
+            ".ruff_cache/", ".tox/", ".nox/", ".coverage", "htmlcov/", ".DS_Store",
+            "Thumbs.db", "*.swp", "*.swo", "*~", ".vscode/", ".idea/",
             
             # Python specific
-            "__pycache__", "*.pyc", "*.pyo", "*.pyd", "$py.class",
+            "*.pyc", "*.pyo", "*.pyd", "$py.class",
             "python*/", "python3*/", "Python*/",
             "venv*/", "env*/", ".venv*/", ".env*/",
-            ".tox/", ".nox/", ".pytest_cache/", ".mypy_cache/", ".ruff_cache/",
-            ".coverage", "htmlcov/", "*.egg-info/", "*.egg", "build/", "dist/",
+            "*.egg-info/", "*.egg", "build/", "dist/",
             ".installer/", ".eggs/", "lib/", "lib64/", "parts/", "sdist/", "var/", "wheels/",
             
             # Node.js/JavaScript
@@ -78,9 +73,6 @@ class ScanConfig:
             
             # Mobile
             "android/app/build/", "ios/build/", "*.apk", "*.ipa", "*.xcarchive",
-            
-            # IDE/Editors
-            ".vscode/", ".idea/", "*.swp", "*.swo", "*~", ".DS_Store", "Thumbs.db",
             
             # Database
             "*.db", "*.sqlite", "*.sqlite3", "data/", "logs/",

@@ -21,7 +21,7 @@ def scan_command(
     min_lines: Any = typer.Option(None, "--min-lines", help="Minimum block size (lines). Overrides config."),
     min_similarity: Any = typer.Option(None, "--min-sim", help="Minimum similarity score (0.0-1.0). Overrides config."),
     include_tests: bool = typer.Option(False, "--include-tests", help="Include test files in analysis."),
-    functions_only: bool = typer.Option(False, "--functions-only", help="Only analyze function-level duplicates."),
+    functions_only: bool = typer.Option(True, "--functions-only/--no-functions-only", help="Only analyze function-level duplicates (default: enabled for speed)."),
     parallel: bool = typer.Option(False, "--parallel", help="Use parallel processing for faster analysis."),
     max_workers: Any = typer.Option(None, "--max-workers", help="Maximum number of parallel workers."),
     incremental: bool = typer.Option(False, "--incremental", help="Use incremental scanning (cache-based)."),
