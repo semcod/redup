@@ -119,6 +119,10 @@ def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
     for pattern in patterns:
         if fnmatch.fnmatch(name, pattern) or fnmatch.fnmatch(str_path, pattern):
             return True
+        # Check if any parent directory matches
+        for part in path.parts:
+            if fnmatch.fnmatch(part, pattern):
+                return True
     
     return False
 
@@ -143,7 +147,7 @@ def _collect_files(config: ScanConfig) -> list[Path]:
             
             # Check file size
             try:
-                if file_path.stat().st_size > config.max_file_size:
+                if file_path.stat().st_size > config.max_file_size_kb * 1024:
                     continue
             except OSError:
                 continue
@@ -317,8 +321,10 @@ def _scan_sequential(
     scan_time = time.time() - start_time
     stats = ScanStats(
         files_scanned=len(scanned_files),
+        files_skipped=0,
         total_lines=total_lines,
-        scan_time_ms=int(scan_time * 1000)
+        total_blocks=sum(len(f.blocks) for f in scanned_files),
+        scan_time_ms=scan_time
     )
     
     return scanned_files, stats
@@ -341,7 +347,7 @@ def _scan_parallel(
     files = list(sources.keys()) if hasattr(sources, 'keys') else []
     work_items = [
         (file_path, str(config.root), list(config.extensions), config.include_tests, 
-         function_level_only, config.max_file_size)
+         function_level_only, config.max_file_size_kb)
         for file_path in files
     ]
     
@@ -374,8 +380,10 @@ def _scan_parallel(
     scan_time = time.time() - start_time
     stats = ScanStats(
         files_scanned=len(scanned_files),
+        files_skipped=0,
         total_lines=total_lines,
-        scan_time_ms=int(scan_time * 1000)
+        total_blocks=sum(len(f.blocks) for f in scanned_files),
+        scan_time_ms=scan_time
     )
     
     return scanned_files, stats
@@ -434,17 +442,21 @@ def _should_process_file(
     if file_path.suffix not in extensions:
         return False
     
-    # Check exclusions
-    if _should_exclude(file_path, tuple()):
+    # Check exclusions using default patterns
+    default_patterns = [
+        "__pycache__", ".git", ".venv", "venv", "node_modules",
+        ".tox", ".mypy_cache", ".pytest_cache", "*.egg-info", "dist", "build",
+    ]
+    if _should_exclude(file_path, tuple(default_patterns)):
         return False
     
     # Check if test file
     if not include_tests and _is_test_file(file_path):
         return False
     
-    # Check file size
+    # Check file size (convert KB to bytes)
     try:
-        if file_path.stat().st_size > max_file_size:
+        if file_path.stat().st_size > max_file_size * 1024:
             return False
     except OSError:
         return False
@@ -492,28 +504,8 @@ def _extract_function_blocks_python(content: str, file_path: str) -> list[CodeBl
                 blocks.append(block)
     
     except SyntaxError:
-        # Fallback to simple regex-based extraction for invalid Python
-        import re
-        
-        func_pattern = r'^(def|async\\s+def)\\s+(\\w+)\\s*\\('
-        for i, line in enumerate(lines):
-            if re.match(func_pattern, line.strip()):
-                # Simple heuristic: take 10-50 lines as function
-                end_line = min(i + 50, len(lines))
-                if i + 10 < end_line:
-                    end_line = i + 10
-                
-                func_text = '\\n'.join(lines[i:end_line])
-                func_name = re.match(func_pattern, line.strip()).group(2)
-                
-                block = CodeBlock(
-                    file=file_path,
-                    line_start=i + 1,
-                    line_end=end_line,
-                    text=func_text,
-                    function_name=func_name
-                )
-                blocks.append(block)
+        # Return empty list for invalid Python
+        return []
     
     return blocks
 

@@ -1,12 +1,12 @@
-# redup | 55f 9297L | python:55
+# redup | 52f 8693L | python:52
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[55]:
+M[52]:
   benchmark.py,83
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/config_builder.py,42
+  src/redup/cli_app/config_builder.py,46
   src/redup/cli_app/fuzzy_similarity.py,108
   src/redup/cli_app/main.py,194
   src/redup/cli_app/output_writer.py,66
@@ -22,14 +22,11 @@ M[55]:
   src/redup/core/lazy_grouper.py,116
   src/redup/core/lsh_matcher.py,149
   src/redup/core/matcher.py,84
-  src/redup/core/memory_scanner.py,206
   src/redup/core/models.py,129
-  src/redup/core/parallel_scanner.py,155
-  src/redup/core/pipeline.py,477
+  src/redup/core/pipeline.py,473
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,265
+  src/redup/core/scanner.py,467
   src/redup/core/ts_extractor.py,550
-  src/redup/core/ultra_fast_scanner.py,257
   src/redup/core/universal_fuzzy.py,333
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,24
@@ -184,12 +181,6 @@ D:
     _compare_against_reference(candidates:list[HashedBlock];min_similarity:float;similarity_fn:Callable[Any;float];method_fn:Callable[Any;str];skip_same_location:bool=False)->list[MatchResult]
     match_candidates(candidates:list[HashedBlock];min_similarity:float=0.85)->list[MatchResult]
     refine_structural_matches(candidates:list[HashedBlock];min_similarity:float=0.8)->list[MatchResult]
-  src/redup/core/memory_scanner.py:
-    i: mmap,os,collections.abc.Iterator,pathlib.Path,redup.core.models.{ScanConfig,ScanStats},redup.core.scanner.{CodeBlock,ScannedFile,_collect_files},typing.Any
-    e: MemoryFileCache,scan_project_memory_optimized,scan_project_parallel_memory_optimized
-    MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1),preload_files(1)  # Cache file contents in RAM for faster...
-    scan_project_memory_optimized(config:Any=None;max_cache_mb:int=512)->tuple[list[ScannedFile], ScanStats]
-    scan_project_parallel_memory_optimized(config:Any=None;max_workers:Any=None;max_cache_mb:int=512)->tuple[list[ScannedFile], ScanStats]
   src/redup/core/models.py:
     i: dataclasses.{dataclass,field},enum.Enum,pathlib.Path
     e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats
@@ -198,15 +189,6 @@ D:
     RiskLevel:   # Risk of the proposed refactoring.
     ScanConfig:   # Configuration for project scanning.
     DuplicateFragment: line_count(0)  # A single occurrence of a duplicated c...
-  src/redup/core/parallel_scanner.py:
-    i: os,time,concurrent.futures.{ProcessPoolExecutor,ThreadPoolExecutor,as_completed},functools.lru_cache,pathlib.Path,redup.core.scanner.{CodeBlock,ScannedFile},typing.Any
-    e: scan_project_parallel
-    _scan_file_worker(args:tuple[Path;str;list[str];bool;bool;int])->ScannedFile
-    _should_process_file(file_path:Path;project_root:Path;extensions:list[str];include_tests:bool;max_file_size:int)->bool
-    _is_test_file(file_path:Path;project_root:Path)->bool
-    scan_project_parallel(root:Path;extensions:list[str];exclude_patterns:Any=None;include_tests:bool=False;function_level_only:bool=False;max_file_size:int=1024;...+1)->tuple[list[ScannedFile], Any]
-    _find_files_optimized(root:Path;extensions:set[str];exclude_patterns:list[str])->list[Path]
-    _is_test_file_cached(relative_path:str;test_parts:frozenset)->bool
   src/redup/core/pipeline.py:
     i: time,itertools,collections.defaultdict,redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.lsh_matcher.find_near_duplicates,typing.Any
     e: analyze,analyze_optimized,analyze_optimized,analyze_parallel
@@ -227,18 +209,20 @@ D:
     _choose_action(group:DuplicateGroup)->RefactorAction
     generate_suggestions(dup_map:DuplicationMap)->list[RefactorSuggestion]
   src/redup/core/scanner.py:
-    i: fnmatch,functools,mmap,os,time,collections.abc.Iterator,dataclasses.{dataclass,field},pathlib.Path,redup.core.models.ScanConfig
-    e: CodeBlock,ScannedFile,scan_project
+    i: fnmatch,functools,mmap,os,time,collections.abc.Iterator,concurrent.futures.{ProcessPoolExecutor,as_completed},dataclasses.{dataclass,field}
+    e: CodeBlock,ScannedFile,ScanStrategy,MemoryFileCache,scan_project,scan_project_ultra_fast,scan_project_memory_optimized,scan_project_parallel
     CodeBlock: line_count(0)  # A contiguous block of source code lines.
     ScannedFile: line_count(0)  # A file that has been read and split i...
+    ScanStrategy:   # Configuration for HOW to scan — not W...
+    MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1)  # Cache file contents in RAM for faster...
     _should_exclude(path:Path;patterns:tuple[str;Ellipsis])->bool
-    _load_gitignore_patterns(root_path:Path)->list[str]
-    _collect_files(config:ScanConfig)->Iterator[Path]
+    _collect_files(config:ScanConfig)->list[Path]
     _is_test_file(path:Path)->bool
-    _read_file_optimized(filepath:Path;max_size_kb:int=1024)->str | None
-    _extract_blocks_sliding(lines:list[str];min_lines:int)->list[tuple[int, int, str]]
-    _extract_class_blocks_python(source:str;filepath:str)->list[CodeBlock]
-    _extract_function_blocks_python(source:str;filepath:str)->list[CodeBlock]
+    _preload_files(files:list[Path];max_cache_mb:int=256)->dict[Path, str]
+    _lazy_read_files(files:list[Path])->dict[Path, str]
+    _scan_sequential(sources:Any;config:ScanConfig;function_level_only:bool=False)->tuple[list[ScannedFile], ScanStats]
+    _scan_parallel(sources:Any;config:ScanConfig;max_workers:int=4;function_level_only:bool=False)->tuple[list[ScannedFile], ScanStats]
+    _scan_file_worker(args:tuple[Path;str;list[str];bool;bool;int])->ScannedFile
   src/redup/core/ts_extractor.py:
     i: tree_sitter,pathlib.Path,redup.core.scanner.CodeBlock,redup.core.utils.function_extractor,typing.Any
     e: _LANGUAGE_MAPPING,extract_functions_treesitter,get_supported_languages,is_language_supported
@@ -251,17 +235,6 @@ D:
     _extract_functions_java(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
     extract_functions_treesitter(source:str;file_path:str)->list[CodeBlock]
     _extract_functions_c_cpp(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
-  src/redup/core/ultra_fast_scanner.py:
-    i: ast,mmap,time,collections.abc.Iterator,pathlib.Path,redup.core.models.{ScanConfig,ScanStats},redup.core.scanner.{CodeBlock,ScannedFile},typing.Any
-    e: preload_to_ram,smart_hash_block,extract_functions_fast,scan_project_ultra_fast,scan_project_incremental_fast
-    preload_to_ram(config:ScanConfig;show_progress:bool=True)->dict[Path, str]
-    smart_hash_block(block:CodeBlock)->tuple[str, str]
-    _ast_to_normalized_string_fast(tree:Any)->str
-    extract_functions_fast(source:str;filepath:str)->list[CodeBlock]
-    scan_project_ultra_fast(config:Any=None)->tuple[list[ScannedFile], ScanStats]
-    _extract_blocks_for_file(file_path:Path;source:str;rel_path:str;config:ScanConfig)->list[CodeBlock]
-    _process_sources_batch(sources:dict[Path;str];config:ScanConfig;stats:ScanStats)->tuple[list[ScannedFile], ScanStats]
-    scan_project_incremental_fast(config:Any=None)->tuple[list[ScannedFile], ScanStats]
   src/redup/core/universal_fuzzy.py:
     i: re,dataclasses.dataclass,datasketch.{MinHash,MinHashLSH},pathlib.Path,rapidfuzz.{fuzz,ratio},redup.core.scanner.CodeBlock,typing.Any
     e: UniversalSignature,UniversalFuzzyExtractor,UniversalFuzzyDetector

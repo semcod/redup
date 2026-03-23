@@ -4,12 +4,12 @@
 
 - **Project**: redup
 - **Language**: python
-- **Files**: 33
-- **Lines**: 9358
-- **Functions**: 257
-- **Classes**: 32
-- **Avg CC**: 3.7
-- **Critical (CC≥10)**: 21
+- **Files**: 31
+- **Lines**: 8603
+- **Functions**: 245
+- **Classes**: 33
+- **Avg CC**: 3.4
+- **Critical (CC≥10)**: 12
 
 ## Architecture
 
@@ -27,22 +27,23 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (5 files, 649L, 24 functions)
+### src/redup/cli_app/ (6 files, 655L, 24 functions)
 
 - `output_writer.py` — 78L, 2 methods, CC↑15
 - `scan_commands.py` — 163L, 5 methods, CC↑7
-- `main.py` — 373L, 14 methods, CC↑5
+- `fuzzy_similarity.py` — 160L, 9 methods, CC↑5
+- `main.py` — 219L, 5 methods, CC↑1
 - `scan_helpers.py` — 34L, 3 methods, CC↑1
-- `__init__.py` — 1L, 0 methods, CC↑0
+- _1 more files_
 
-### src/redup/core/ (19 files, 5319L, 185 functions)
+### src/redup/core/ (16 files, 4712L, 173 functions)
 
 - `differ.py` — 209L, 5 methods, CC↑14
-- `ultra_fast_scanner.py` — 358L, 8 methods, CC↑14
-- `memory_scanner.py` — 285L, 8 methods, CC↑13
-- `scanner.py` — 373L, 10 methods, CC↑13
-- `parallel_scanner.py` — 234L, 6 methods, CC↑11
-- _14 more files_
+- `scanner.py` — 647L, 20 methods, CC↑12
+- `pipeline.py` — 660L, 17 methods, CC↑11
+- `universal_fuzzy.py` — 454L, 16 methods, CC↑11
+- `fuzzy_similarity.py` — 408L, 20 methods, CC↑10
+- _11 more files_
 
 ### src/redup/core/utils/ (5 files, 294L, 12 functions)
 
@@ -70,34 +71,29 @@
 
 ## Hotspots (High Fan-Out)
 
-- **scan_project_parallel_memory_optimized** — fan-out=32: Parallel scan with memory optimization.
-- **scan_project_memory_optimized** — fan-out=27: Scan project with memory optimization for faster processing.
-
-Loads files into R
-- **preload_to_ram** — fan-out=22: Load ALL files into RAM at once for maximum speed.
-
-Returns:
-    Dict mapping fi
-- **scan_project_ultra_fast** — fan-out=21: Ultra-fast scanner with RAM preload and smart hashing.
-
-Performance optimization
-- **scan_project** — fan-out=19: Scan a project and return files with their code blocks.
+- **_preload_files** — fan-out=20: Load ALL files into RAM at once for maximum speed.
+- **_scan_sequential** — fan-out=16: Scan files sequentially.
+- **scan_project** — fan-out=16: UNIFIED entry point for project scanning.
 
 Args:
-    config: Scan 
+    config: Scan configuration
+
+- **_extract_function_blocks_python** — fan-out=15: Extract function blocks from Python code using AST.
 - **_find_duplicates_phase_lazy** — fan-out=15: Phase 3: Hash and find duplicates with caching and lazy evaluation.
 - **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
+- **_scan_parallel** — fan-out=14: Scan files in parallel using ProcessPoolExecutor.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/core/pipeline.py (664L, 0 classes) | high | high |
-| 2 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
-| 3 | Split write_results (CC=15 → target CC<10) | medium | low |
-| 4 | Reduce scan_project_parallel_memory_optimized fan-out (currently 32) | medium | medium |
-| 5 | Reduce scan_project_memory_optimized fan-out (currently 27) | medium | medium |
-| 6 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
+| 1 | Split god module src/redup/core/scanner.py (647L, 4 classes) | high | high |
+| 2 | Split god module src/redup/core/pipeline.py (660L, 0 classes) | high | high |
+| 3 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
+| 4 | Split write_results (CC=15 → target CC<10) | medium | low |
+| 5 | Reduce _preload_files fan-out (currently 20) | medium | medium |
+| 6 | Reduce _scan_sequential fan-out (currently 16) | medium | medium |
+| 7 | Reduce scan_project fan-out (currently 16) | medium | medium |
 
 ## Context for LLM
 

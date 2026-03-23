@@ -1,13 +1,14 @@
-# redup | 42f 7272L | python:41,shell:1
+# redup | 40f 6671L | python:39,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[42]:
+M[40]:
   benchmark.py,111
   examples/01_basic_usage.py,58
   project.sh,20
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,373
+  src/redup/cli_app/fuzzy_similarity.py,160
+  src/redup/cli_app/main.py,219
   src/redup/cli_app/output_writer.py,78
   src/redup/cli_app/scan_commands.py,163
   src/redup/cli_app/scan_helpers.py,34
@@ -21,14 +22,11 @@ M[42]:
   src/redup/core/lazy_grouper.py,159
   src/redup/core/lsh_matcher.py,225
   src/redup/core/matcher.py,107
-  src/redup/core/memory_scanner.py,285
   src/redup/core/models.py,169
-  src/redup/core/parallel_scanner.py,234
-  src/redup/core/pipeline.py,664
+  src/redup/core/pipeline.py,660
   src/redup/core/planner.py,110
-  src/redup/core/scanner.py,373
+  src/redup/core/scanner.py,647
   src/redup/core/ts_extractor.py,765
-  src/redup/core/ultra_fast_scanner.py,358
   src/redup/core/universal_fuzzy.py,454
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,36
@@ -48,16 +46,6 @@ D:
     e: write_output,write_results
     write_output(content;output;suffix)
     write_results(dup_map;format;output;path)
-  src/redup/core/ultra_fast_scanner.py:
-    e: preload_to_ram,smart_hash_block,_ast_to_normalized_string_fast,extract_functions_fast,scan_project_ultra_fast,_extract_blocks_for_file,_process_sources_batch,scan_project_incremental_fast
-    preload_to_ram(config;show_progress)
-    smart_hash_block(block)
-    _ast_to_normalized_string_fast(tree)
-    extract_functions_fast(source;filepath)
-    scan_project_ultra_fast(config)
-    _extract_blocks_for_file(file_path;source;rel_path;config)
-    _process_sources_batch(sources;config;stats)
-    scan_project_incremental_fast(config)
   src/redup/core/differ.py:
     e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
     DiffResult:  # Result of comparing two reDUP scans...
@@ -66,25 +54,28 @@ D:
     _groups_match(group1;group2)
     compare_scans(before_file;after_file)
     format_diff_result(diff)
-  src/redup/core/memory_scanner.py:
-    e: MemoryFileCache,scan_project_memory_optimized,scan_project_parallel_memory_optimized
-    MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1),preload_files(1),get_stats(0)  # Cache file contents in RAM for faster access during scanning...
-    scan_project_memory_optimized(config;max_cache_mb)
-    scan_project_parallel_memory_optimized(config;max_workers;max_cache_mb)
   src/redup/core/scanner.py:
-    e: CodeBlock,ScannedFile,_should_exclude,_load_gitignore_patterns,_collect_files,_is_test_file,_read_file_optimized,_extract_blocks_sliding,_extract_class_blocks_python,_extract_function_blocks_python,_preload_files_to_ram,scan_project
+    e: CodeBlock,ScannedFile,ScanStrategy,MemoryFileCache,_should_exclude,_collect_files,_is_test_file,_preload_files,_lazy_read_files,_scan_sequential,_scan_parallel,_scan_file_worker,_should_process_file,_extract_function_blocks_python,_extract_sliding_blocks,scan_project,scan_project_ultra_fast,scan_project_memory_optimized,scan_project_parallel,scan_project_parallel_memory_optimized
     CodeBlock:  # A contiguous block of source code lines...
     ScannedFile:  # A file that has been read and split into blocks...
+    ScanStrategy:  # Configuration for HOW to scan — not WHAT to scan...
+    MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1)  # Cache file contents in RAM for faster access during scanning...
     _should_exclude(path;patterns)
-    _load_gitignore_patterns(root_path)
     _collect_files(config)
     _is_test_file(path)
-    _read_file_optimized(filepath;max_size_kb)
-    _extract_blocks_sliding(lines;min_lines)
-    _extract_class_blocks_python(source;filepath)
-    _extract_function_blocks_python(source;filepath)
-    _preload_files_to_ram(config)
-    scan_project(config;function_level_only)
+    _preload_files(files;max_cache_mb)
+    _lazy_read_files(files)
+    _scan_sequential(sources;config;function_level_only)
+    _scan_parallel(sources;config;max_workers;function_level_only)
+    _scan_file_worker(args)
+    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
+    _extract_function_blocks_python(content;file_path)
+    _extract_sliding_blocks(content;file_path)
+    scan_project(config;strategy;function_level_only)
+    scan_project_ultra_fast(config)
+    scan_project_memory_optimized(config;max_cache_mb)
+    scan_project_parallel(config;max_workers;function_level_only)
+    scan_project_parallel_memory_optimized(config;max_workers;max_cache_mb;function_level_only)
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
@@ -93,14 +84,14 @@ D:
     UniversalSignature:  # Universal semantic signature for any code block...
     UniversalFuzzyExtractor: __init__(0),extract_universal_signature(1),_detect_language(1),_normalize_code(2),_remove_comments(2),_normalize_identifiers(2),_detect_component_type(2),_extract_semantic_patterns(2),_extract_metadata(2),_compute_complexity(2),_compute_structure_hash(1)  # Universal fuzzy extractor for all supported languages and DS...
     UniversalFuzzyDetector: __init__(1),find_similar_components(1),_compute_universal_similarity(2),_compute_pattern_similarity(2),_compute_metadata_similarity(2)  # Universal fuzzy similarity detector for all languages and DS...
-  src/redup/core/parallel_scanner.py:
-    e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
-    _scan_file_worker(args)
-    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
-    _is_test_file(file_path;project_root)
-    scan_project_parallel(root;extensions;exclude_patterns;include_tests;function_level_only;max_file_size;max_workers;min_files_for_parallel;use_threading)
-    _find_files_optimized(root;extensions;exclude_patterns)
-    _is_test_file_cached(relative_path;test_parts)
+  src/redup/reporters/code2llm_reporter.py:
+    e: _calculate_avg_cc,_count_critical_functions,_get_layers,to_code2llm_toon,to_code2llm_context,export_code2llm
+    _calculate_avg_cc(dup_map)
+    _count_critical_functions(dup_map)
+    _get_layers(dup_map)
+    to_code2llm_toon(dup_map;files_scanned;total_lines;functions_count;classes_count)
+    to_code2llm_context(dup_map;files_scanned;total_lines;functions_count;classes_count;modules)
+    export_code2llm(dup_map;output_dir;files_scanned;total_lines;functions_count;classes_count)
   src/redup/core/pipeline.py:
     e: _blocks_to_group,_deduplicate_groups,analyze,analyze_optimized,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase_optimized,_find_duplicates_phase_lazy,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,analyze_optimized,analyze_parallel
     _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
@@ -121,14 +112,6 @@ D:
     _find_near_duplicate_groups(all_blocks;config)
     analyze_optimized(config;function_level_only;use_memory_cache;max_cache_mb)
     analyze_parallel(config;function_level_only;max_workers)
-  src/redup/reporters/code2llm_reporter.py:
-    e: _calculate_avg_cc,_count_critical_functions,_get_layers,to_code2llm_toon,to_code2llm_context,export_code2llm
-    _calculate_avg_cc(dup_map)
-    _count_critical_functions(dup_map)
-    _get_layers(dup_map)
-    to_code2llm_toon(dup_map;files_scanned;total_lines;functions_count;classes_count)
-    to_code2llm_context(dup_map;files_scanned;total_lines;functions_count;classes_count;modules)
-    export_code2llm(dup_map;output_dir;files_scanned;total_lines;functions_count;classes_count)
   src/redup/core/lsh_matcher.py:
     e: _SimpleMinHash,LSHIndex,_create_minhash,_text_to_minhash_features,_create_simple_minhash,build_lsh_index,find_near_duplicates
     _SimpleMinHash: __init__(2),jaccard(1)  # Simple MinHash implementation for fallback without datasketc...
@@ -230,9 +213,6 @@ A...
     check_command(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config_command(init;show)
     info_command()
-  examples/01_basic_usage.py:
-    e: main
-    main()
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -241,6 +221,9 @@ A...
     load_config()
     config_to_scan_config(config;path)
     create_sample_redup_toml()
+  examples/01_basic_usage.py:
+    e: main
+    main()
   src/redup/core/cache.py:
     e: HashCache,hash_block_with_cache,build_hash_index_with_cache
     HashCache: __init__(1),_init_tables(0),_get_file_hash(2),is_file_unchanged(2),get_cached_block_hashes(2),store_file_hashes(3),cleanup_old_entries(1),get_stats(0)  # SQLite-based cache for file and block hashes.
@@ -253,12 +236,8 @@ Provides ~10x...
     _group_to_dict(group;include_snippets)
     _suggestion_to_dict(s)
     to_json(dup_map;indent;include_snippets)
-  src/redup/core/utils/function_extractor.py:
-    e: FunctionExtractor,_extract_java_class_name
-    FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
-    _extract_java_class_name(node)
-  src/redup/cli_app/main.py:
-    e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups,scan,diff,check,config,info
+  src/redup/cli_app/fuzzy_similarity.py:
+    e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups
     _apply_fuzzy_similarity(dup_map;threshold)
     _validate_fuzzy_input(dup_map;threshold)
     _extract_all_blocks(dup_map)
@@ -268,11 +247,10 @@ Provides ~10x...
     _analyze_other_language_blocks(other_blocks;threshold)
     _report_fuzzy_results(similar_pairs)
     _report_similarity_by_groups(similar_pairs)
-    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental;memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
-    diff(before;after)
-    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
-    config(init;show)
-    info()
+  src/redup/core/utils/function_extractor.py:
+    e: FunctionExtractor,_extract_java_class_name
+    FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
+    _extract_java_class_name(node)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
@@ -309,8 +287,15 @@ Provides ~10x...
     print_scan_header(path;ext_list;min_lines;min_similarity)
     print_scan_summary(dup_map)
     apply_fuzzy_similarity(dup_map;threshold)
-  src/redup/__main__.py:
+  src/redup/cli_app/main.py:
+    e: scan,diff,check,config,info
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental;memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
+    diff(before;after)
+    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
+    config(init;show)
+    info()
   src/redup/__init__.py:
+  src/redup/__main__.py:
   src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:

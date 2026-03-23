@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redup
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-258-green)
-> **258** functions | **32** classes | **43** files | CC̄ = 3.7
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-246-green)
+> **246** functions | **33** classes | **40** files | CC̄ = 3.4
 
 > Auto-generated project documentation from source code analysis.
 
@@ -150,33 +150,25 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redup/
-    ├── redup/    ├── 01_basic_usage        ├── __main__├── benchmark            ├── config            ├── hash_cache            ├── universal_fuzzy            ├── lazy_grouper        ├── core/            ├── memory_scanner            ├── planner            ├── ultra_fast_scanner    ├── sitecustomize            ├── parallel_scanner            ├── scanner            ├── matcher            ├── lsh_matcher            ├── hasher            ├── pipeline            ├── cache            ├── ts_extractor            ├── markdown_reporter            ├── fuzzy_similarity            ├── differ        ├── reporters/            ├── json_reporter            ├── code2llm_reporter            ├── yaml_reporter            ├── toon_reporter            ├── enhanced_reporter        ├── cli_app/            ├── output_writer            ├── scan_helpers            ├── scan_commands            ├── main            ├── utils/                ├── hash_utils                ├── function_extractor                ├── duplicate_finders├── project                ├── language_dispatcher            ├── fuzzy_similarity            ├── models```
+    ├── 01_basic_usage        ├── __main__    ├── redup/            ├── config├── benchmark            ├── hash_cache            ├── lazy_grouper        ├── core/            ├── universal_fuzzy            ├── planner            ├── scanner            ├── hasher            ├── matcher            ├── lsh_matcher            ├── ts_extractor            ├── models            ├── cache    ├── sitecustomize            ├── differ            ├── markdown_reporter            ├── fuzzy_similarity        ├── reporters/            ├── json_reporter            ├── code2llm_reporter            ├── yaml_reporter            ├── enhanced_reporter            ├── toon_reporter        ├── cli_app/            ├── scan_helpers            ├── output_writer            ├── scan_commands            ├── main            ├── utils/                ├── hash_utils                ├── duplicate_finders                ├── function_extractor├── project                ├── language_dispatcher            ├── pipeline            ├── fuzzy_similarity```
 
 ## API Overview
 
 ### Classes
 
 - **`HashCache`** — Cache for file hashes to enable incremental scanning.
+- **`DuplicateGroupCollector`** — Collector for lazy duplicate groups with optional limits.
 - **`UniversalSignature`** — Universal semantic signature for any code block.
 - **`UniversalFuzzyExtractor`** — Universal fuzzy extractor for all supported languages and DSLs.
 - **`UniversalFuzzyDetector`** — Universal fuzzy similarity detector for all languages and DSLs.
-- **`DuplicateGroupCollector`** — Collector for lazy duplicate groups with optional limits.
-- **`MemoryFileCache`** — Cache file contents in RAM for faster access during scanning.
 - **`CodeBlock`** — A contiguous block of source code lines.
 - **`ScannedFile`** — A file that has been read and split into blocks.
-- **`MatchResult`** — Result of comparing two code blocks.
-- **`LSHIndex`** — LSH index for efficient near-duplicate detection.
+- **`ScanStrategy`** — Configuration for HOW to scan — not WHAT to scan.
+- **`MemoryFileCache`** — Cache file contents in RAM for faster access during scanning.
 - **`HashedBlock`** — A code block with its computed fingerprints.
 - **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
-- **`HashCache`** — SQLite-based cache for file and block hashes.
-- **`ComponentSignature`** — Semantic signature of a component for fuzzy matching.
-- **`HTMLComponentExtractor`** — Extract HTML components with semantic normalization for fuzzy matching.
-- **`CSSComponentExtractor`** — Extract CSS components with semantic normalization for fuzzy matching.
-- **`FuzzySimilarityDetector`** — Detect fuzzy similarity between HTML/CSS components.
-- **`DiffResult`** — Result of comparing two reDUP scans.
-- **`EnhancedReporter`** — Enhanced reporter with detailed metrics and visualizations.
-- **`FunctionExtractor`** — Generic function extractor that can be configured for different languages.
-- **`LanguageDispatcher`** — Dispatches function extraction to appropriate language-specific extractors.
+- **`MatchResult`** — Result of comparing two code blocks.
+- **`LSHIndex`** — LSH index for efficient near-duplicate detection.
 - **`DuplicateType`** — How the duplicate was detected.
 - **`RefactorAction`** — Proposed refactoring action.
 - **`RiskLevel`** — Risk of the proposed refactoring.
@@ -186,61 +178,63 @@ redup/
 - **`RefactorSuggestion`** — A concrete refactoring proposal for a duplicate group.
 - **`ScanStats`** — Statistics from the scanning phase.
 - **`DuplicationMap`** — Complete result of a reDUP analysis run.
+- **`HashCache`** — SQLite-based cache for file and block hashes.
+- **`DiffResult`** — Result of comparing two reDUP scans.
+- **`ComponentSignature`** — Semantic signature of a component for fuzzy matching.
+- **`HTMLComponentExtractor`** — Extract HTML components with semantic normalization for fuzzy matching.
+- **`CSSComponentExtractor`** — Extract CSS components with semantic normalization for fuzzy matching.
+- **`FuzzySimilarityDetector`** — Detect fuzzy similarity between HTML/CSS components.
+- **`EnhancedReporter`** — Enhanced reporter with detailed metrics and visualizations.
+- **`FunctionExtractor`** — Generic function extractor that can be configured for different languages.
+- **`LanguageDispatcher`** — Dispatches function extraction to appropriate language-specific extractors.
 
 ### Functions
 
 - `main()` — —
-- `benchmark_sequential_vs_parallel()` — Compare sequential vs parallel scanning performance.
-- `benchmark_feature_performance()` — Test performance of different features.
 - `load_config()` — Load reDUP configuration from available sources.
 - `config_to_scan_config(config, path)` — Convert configuration dict to ScanConfig object.
 - `create_sample_redup_toml()` — Create a sample redup.toml configuration file content.
+- `benchmark_sequential_vs_parallel()` — Compare sequential vs parallel scanning performance.
+- `benchmark_feature_performance()` — Test performance of different features.
 - `find_exact_duplicates_lazy(index, min_lines)` — Find exact duplicate groups with lazy evaluation and early exit.
 - `find_structural_duplicates_lazy(index, min_lines)` — Find structural duplicate groups with lazy evaluation and early exit.
 - `find_all_duplicates_lazy(index, min_lines, include_exact, include_structural)` — Find all duplicate groups with lazy evaluation.
-- `scan_project_memory_optimized(config, max_cache_mb)` — Scan project with memory optimization for faster processing.
-- `scan_project_parallel_memory_optimized(config, max_workers, max_cache_mb)` — Parallel scan with memory optimization.
 - `generate_suggestions(dup_map)` — Generate prioritized refactoring suggestions for all duplicate groups.
-- `preload_to_ram(config, show_progress)` — Load ALL files into RAM at once for maximum speed.
-- `smart_hash_block(block)` — Smart hashing: skip AST for small blocks, use fast normalization.
-- `extract_functions_fast(source, filepath)` — Extract function blocks with optimized AST processing.
-- `scan_project_ultra_fast(config)` — Ultra-fast scanner with RAM preload and smart hashing.
-- `scan_project_incremental_fast(config)` — Incremental ultra-fast scan with file modification checking.
-- `scan_project_parallel(root, extensions, exclude_patterns, include_tests)` — Scan project files in parallel for better performance on large projects.
-- `scan_project(config, function_level_only)` — Scan a project and return files with their code blocks.
+- `scan_project(config, strategy, function_level_only)` — UNIFIED entry point for project scanning.
+- `scan_project_ultra_fast(config)` — Legacy compatibility - use scan_project with ScanStrategy(preload_to_ram=True).
+- `scan_project_memory_optimized(config, max_cache_mb)` — Legacy compatibility - use scan_project with ScanStrategy(memory_cache=True).
+- `scan_project_parallel(config, max_workers, function_level_only)` — Legacy compatibility - use scan_project with ScanStrategy(parallel=True).
+- `scan_project_parallel_memory_optimized(config, max_workers, max_cache_mb, function_level_only)` — Legacy compatibility - use scan_project with combined strategy.
+- `hash_block(text)` — SHA-256 hash of normalized text.
+- `hash_block_structural(text)` — SHA-256 hash of deeply normalized text (variable names replaced).
+- `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
+- `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
+- `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
 - `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
 - `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
 - `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
 - `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
 - `build_lsh_index(blocks, threshold, min_lines)` — Build LSH index from code blocks.
 - `find_near_duplicates(blocks, threshold, min_lines)` — Find near-duplicate code blocks using LSH.
-- `hash_block(text)` — SHA-256 hash of normalized text.
-- `hash_block_structural(text)` — SHA-256 hash of deeply normalized text (variable names replaced).
-- `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
-- `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
-- `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
-- `analyze(config, function_level_only)` — Run the full reDUP analysis pipeline.
-- `analyze_optimized(config, function_level_only, use_memory_cache, max_cache_mb)` — Run reDUP analysis with all optimizations enabled.
-- `analyze_parallel(config, function_level_only, max_workers)` — Run reDUP analysis with parallel scanning for large projects.
-- `hash_block_with_cache(text, file_path, start, end)` — Get block hash with optional caching.
-- `build_hash_index_with_cache(blocks, min_lines, cache)` — Build hash index with optional caching support.
 - `extract_functions_treesitter(source, file_path)` — Extract functions using tree-sitter for multi-language support.
 - `get_supported_languages()` — Get list of supported languages for tree-sitter extraction.
 - `is_language_supported(file_path)` — Check if a file extension is supported by tree-sitter extraction.
-- `to_markdown(dup_map)` — Serialize a DuplicationMap to Markdown format.
+- `hash_block_with_cache(text, file_path, start, end)` — Get block hash with optional caching.
+- `build_hash_index_with_cache(blocks, min_lines, cache)` — Build hash index with optional caching support.
 - `compare_scans(before_file, after_file)` — Compare two reDUP scan results and return the differences.
 - `format_diff_result(diff)` — Format a DiffResult as a human-readable string.
+- `to_markdown(dup_map)` — Serialize a DuplicationMap to Markdown format.
 - `to_json(dup_map, indent, include_snippets)` — Serialize a DuplicationMap to JSON string.
 - `to_code2llm_toon(dup_map, files_scanned, total_lines, functions_count)` — Generate code2llm-compatible TOON format.
 - `to_code2llm_context(dup_map, files_scanned, total_lines, functions_count)` — Generate code2llm-compatible context.md format.
 - `export_code2llm(dup_map, output_dir, files_scanned, total_lines)` — Export both code2llm files to the specified directory.
 - `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
 - `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
-- `write_output(content, output, suffix)` — Write content to file or stdout.
-- `write_results(dup_map, format, output, path)` — Write analysis results in specified format.
 - `print_scan_header(path, ext_list, min_lines, min_similarity)` — Print scan operation header.
 - `print_scan_summary(dup_map)` — Print scan operation summary.
 - `apply_fuzzy_similarity(dup_map, threshold)` — Apply fuzzy similarity detection.
+- `write_output(content, output, suffix)` — Write content to file or stdout.
+- `write_results(dup_map, format, output, path)` — Write analysis results in specified format.
 - `scan_command(path, format, output, extensions)` — Scan a project for code duplicates.
 - `diff_command(before, after)` — Compare two reDUP analysis results.
 - `check_command(path, max_groups, max_saved_lines, extensions)` — Quick check for duplicates with summary report.
@@ -253,6 +247,9 @@ redup/
 - `info()` — Show reDUP version and configuration info.
 - `create_hash_function(normalizer)` — Factory function to create hash functions with different normalizers.
 - `create_duplicate_finder(hash_type)` — Factory function to create duplicate finders for different hash types.
+- `analyze(config, function_level_only)` — Run the full reDUP analysis pipeline.
+- `analyze_optimized(config, function_level_only, use_memory_cache, max_cache_mb)` — Run reDUP analysis with all optimizations enabled.
+- `analyze_parallel(config, function_level_only, max_workers)` — Run reDUP analysis with parallel scanning for large projects.
 
 
 ## Project Structure
@@ -278,14 +275,11 @@ redup/
 📄 `src.redup.core.lazy_grouper` (7 functions, 1 classes)
 📄 `src.redup.core.lsh_matcher` (12 functions, 2 classes)
 📄 `src.redup.core.matcher` (5 functions, 1 classes)
-📄 `src.redup.core.memory_scanner` (8 functions, 1 classes)
 📄 `src.redup.core.models` (1 functions, 9 classes)
-📄 `src.redup.core.parallel_scanner` (6 functions)
 📄 `src.redup.core.pipeline` (18 functions)
 📄 `src.redup.core.planner` (5 functions)
-📄 `src.redup.core.scanner` (10 functions, 2 classes)
+📄 `src.redup.core.scanner` (20 functions, 4 classes)
 📄 `src.redup.core.ts_extractor` (24 functions, 1 classes)
-📄 `src.redup.core.ultra_fast_scanner` (8 functions)
 📄 `src.redup.core.universal_fuzzy` (16 functions, 3 classes)
 📦 `src.redup.core.utils`
 📄 `src.redup.core.utils.duplicate_finders` (1 functions)

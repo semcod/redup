@@ -262,15 +262,8 @@ def _scan_phase(config: ScanConfig, function_level_only: bool = False) -> tuple[
 
 def _scan_phase_parallel(config: ScanConfig, max_workers: int | None = None) -> tuple[list[ScannedFile], ScanStats]:
     """Phase 1: Scan project files in parallel."""
-    return scan_project_parallel(
-        root=config.root,
-        extensions=config.extensions,
-        exclude_patterns=config.exclude_patterns,
-        include_tests=config.include_tests,
-        function_level_only=True,  # Always function-level for parallel
-        max_file_size=config.max_file_size_kb,
-        max_workers=max_workers,
-    )
+    strategy = ScanStrategy(parallel=True, max_workers=max_workers or 4)
+    return scan_project(config, strategy, function_level_only=True)
 
 
 def _process_blocks(
@@ -554,12 +547,13 @@ def analyze_optimized(
 
     try:
         # Phase 1: Optimized Scan (parallel + memory cache)
-        if use_memory_cache:
-            scanned_files, stats = scan_project_parallel_memory_optimized(
-                config, max_workers=None, max_cache_mb=max_cache_mb
-            )
-        else:
-            scanned_files, stats = scan_project_parallel(config)
+        strategy = ScanStrategy(
+            parallel=True,
+            max_workers=None,  # Auto-detect
+            memory_cache=use_memory_cache,
+            max_cache_mb=max_cache_mb
+        )
+        scanned_files, stats = scan_project(config, strategy, function_level_only=True)
 
         # Phase 2: Process blocks
         all_blocks = _process_blocks(scanned_files, function_level_only)

@@ -3,43 +3,38 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T20:18:44Z'
+  analyzed_at: '2026-03-23T20:20:03Z'
   tool: code2llm
   stats:
-    files: 33
-    lines: 9358
-    functions: 257
-    classes: 32
+    files: 31
+    lines: 8603
+    functions: 245
+    classes: 33
 health:
-  cc_avg: 3.7
-  critical_count: 21
+  cc_avg: 3.4
+  critical_count: 12
   critical_limit: 10
   duplicates: 1
   cycles: 0
   alerts:
   - type: high_fan_out
-    target: scan_project_parallel_memory_optimized
-    value: 32
+    target: _preload_files
+    value: 20
     limit: 10
     severity: critical
   - type: high_fan_out
-    target: scan_project_memory_optimized
-    value: 27
+    target: _scan_sequential
+    value: 16
     limit: 10
-    severity: critical
-  - type: high_fan_out
-    target: preload_to_ram
-    value: 22
-    limit: 10
-    severity: critical
-  - type: high_fan_out
-    target: scan_project_ultra_fast
-    value: 21
-    limit: 10
-    severity: critical
+    severity: error
   - type: high_fan_out
     target: scan_project
-    value: 19
+    value: 16
+    limit: 10
+    severity: error
+  - type: high_fan_out
+    target: _extract_function_blocks_python
+    value: 15
     limit: 10
     severity: error
   - type: high_fan_out
@@ -58,6 +53,11 @@ health:
     limit: 15
     severity: warning
   - type: high_fan_out
+    target: _scan_parallel
+    value: 14
+    limit: 10
+    severity: warning
+  - type: high_fan_out
     target: analyze_optimized
     value: 14
     limit: 10
@@ -68,11 +68,6 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: scan_project_parallel
-    value: 13
-    limit: 10
-    severity: warning
-  - type: high_fan_out
     target: analyze_parallel
     value: 13
     limit: 10
@@ -80,11 +75,6 @@ health:
   - type: high_fan_out
     target: scan_command
     value: 13
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: smart_hash_block
-    value: 12
     limit: 10
     severity: warning
   - type: high_fan_out
@@ -103,17 +93,17 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: _find_files_optimized
-    value: 10
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: extract_functions_treesitter
+    target: _scan_file_worker
     value: 10
     limit: 10
     severity: warning
   - type: high_fan_out
     target: _normalize_text
+    value: 10
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: extract_functions_treesitter
     value: 10
     limit: 10
     severity: warning
@@ -149,55 +139,12 @@ modules:
   - name: format_diff_result
     type: function
     cc: 14
-- path: src/redup/core/ultra_fast_scanner.py
-  lines: 358
-  classes: 0
-  methods: 8
-  cc_max: 14
-  inbound_deps: 0
-  exports:
-  - name: preload_to_ram
-    type: function
-    cc: 14
-    fan_out: 22
-  - name: smart_hash_block
-    type: function
-    cc: 7
-    fan_out: 12
-  - name: extract_functions_fast
-    type: function
-    cc: 10
-  - name: scan_project_ultra_fast
-    type: function
-    cc: 12
-    fan_out: 21
-  - name: scan_project_incremental_fast
-    type: function
-    cc: 2
-- path: src/redup/core/memory_scanner.py
-  lines: 285
-  classes: 1
-  methods: 8
-  cc_max: 13
-  inbound_deps: 1
-  exports:
-  - name: MemoryFileCache
-    type: class
-    cc_avg: 2.5
-  - name: scan_project_memory_optimized
-    type: function
-    cc: 13
-    fan_out: 27
-  - name: scan_project_parallel_memory_optimized
-    type: function
-    cc: 11
-    fan_out: 32
 - path: src/redup/core/scanner.py
-  lines: 373
-  classes: 2
-  methods: 10
-  cc_max: 13
-  inbound_deps: 4
+  lines: 647
+  classes: 4
+  methods: 20
+  cc_max: 12
+  inbound_deps: 1
   exports:
   - name: CodeBlock
     type: class
@@ -205,10 +152,28 @@ modules:
   - name: ScannedFile
     type: class
     cc_avg: 0.0
+  - name: ScanStrategy
+    type: class
+    cc_avg: 0.0
+  - name: MemoryFileCache
+    type: class
+    cc_avg: 2.8
   - name: scan_project
     type: function
-    cc: 12
-    fan_out: 19
+    cc: 8
+    fan_out: 16
+  - name: scan_project_ultra_fast
+    type: function
+    cc: 1
+  - name: scan_project_memory_optimized
+    type: function
+    cc: 1
+  - name: scan_project_parallel
+    type: function
+    cc: 1
+  - name: scan_project_parallel_memory_optimized
+    type: function
+    cc: 1
 - path: src/redup/reporters/markdown_reporter.py
   lines: 90
   classes: 0
@@ -219,19 +184,8 @@ modules:
   - name: to_markdown
     type: function
     cc: 12
-- path: src/redup/core/parallel_scanner.py
-  lines: 234
-  classes: 0
-  methods: 6
-  cc_max: 11
-  inbound_deps: 1
-  exports:
-  - name: scan_project_parallel
-    type: function
-    cc: 11
-    fan_out: 13
 - path: src/redup/core/pipeline.py
-  lines: 664
+  lines: 660
   classes: 0
   methods: 17
   cc_max: 11
@@ -242,7 +196,7 @@ modules:
     cc: 1
   - name: analyze_optimized
     type: function
-    cc: 4
+    cc: 3
     fan_out: 14
   - name: analyze_parallel
     type: function
@@ -462,7 +416,7 @@ modules:
   classes: 1
   methods: 24
   cc_max: 7
-  inbound_deps: 3
+  inbound_deps: 1
   exports:
   - name: _LanguageRegistry
     type: class
@@ -477,28 +431,12 @@ modules:
   - name: is_language_supported
     type: function
     cc: 3
-- path: src/redup/cli_app/main.py
-  lines: 373
+- path: src/redup/cli_app/fuzzy_similarity.py
+  lines: 160
   classes: 0
-  methods: 14
+  methods: 9
   cc_max: 5
   inbound_deps: 1
-  exports:
-  - name: scan
-    type: function
-    cc: 1
-  - name: diff
-    type: function
-    cc: 1
-  - name: check
-    type: function
-    cc: 1
-  - name: config
-    type: function
-    cc: 1
-  - name: info
-    type: function
-    cc: 1
 - path: src/redup/core/cache.py
   lines: 267
   classes: 1
@@ -520,7 +458,7 @@ modules:
   classes: 0
   methods: 6
   cc_max: 5
-  inbound_deps: 1
+  inbound_deps: 2
   exports:
   - name: load_config
     type: function
@@ -614,6 +552,28 @@ modules:
   - name: create_hash_function
     type: function
     cc: 3
+- path: src/redup/cli_app/main.py
+  lines: 219
+  classes: 0
+  methods: 5
+  cc_max: 1
+  inbound_deps: 0
+  exports:
+  - name: scan
+    type: function
+    cc: 1
+  - name: diff
+    type: function
+    cc: 1
+  - name: check
+    type: function
+    cc: 1
+  - name: config
+    type: function
+    cc: 1
+  - name: info
+    type: function
+    cc: 1
 - path: src/redup/cli_app/scan_helpers.py
   lines: 34
   classes: 0
@@ -713,47 +673,42 @@ modules:
   cc_max: 0
   inbound_deps: 0
 hotspots:
-- name: scan_project_parallel_memory_optimized
-  fan_out: 32
-  note: Parallel scan with memory optimization.
-- name: scan_project_memory_optimized
-  fan_out: 27
-  note: 'Scan project with memory optimization for faster processing.
-
-
-    Loads files into R'
-- name: preload_to_ram
-  fan_out: 22
-  note: "Load ALL files into RAM at once for maximum speed.\n\nReturns:\n    Dict\
-    \ mapping fi"
-- name: scan_project_ultra_fast
-  fan_out: 21
-  note: 'Ultra-fast scanner with RAM preload and smart hashing.
-
-
-    Performance optimization'
+- name: _preload_files
+  fan_out: 20
+  note: Load ALL files into RAM at once for maximum speed.
+- name: _scan_sequential
+  fan_out: 16
+  note: Scan files sequentially.
 - name: scan_project
-  fan_out: 19
-  note: "Scan a project and return files with their code blocks.\n\nArgs:\n    config:\
-    \ Scan "
+  fan_out: 16
+  note: "UNIFIED entry point for project scanning.\n\nArgs:\n    config: Scan configuration\n"
+- name: _extract_function_blocks_python
+  fan_out: 15
+  note: Extract function blocks from Python code using AST.
 - name: _find_duplicates_phase_lazy
   fan_out: 15
   note: 'Phase 3: Hash and find duplicates with caching and lazy evaluation.'
 - name: _load_duplication_map
   fan_out: 15
   note: Load a DuplicationMap from a JSON file.
+- name: _scan_parallel
+  fan_out: 14
+  note: Scan files in parallel using ProcessPoolExecutor.
 - name: analyze_optimized
   fan_out: 14
   note: Analysis pipeline, 14 stages
 - name: write_results
   fan_out: 14
   note: Write analysis results in specified format.
-- name: scan_project_parallel
+- name: analyze_parallel
   fan_out: 13
-  note: Scan project files in parallel for better performance on large projects.
+  note: Analysis pipeline, 13 stages
 refactoring:
   priorities:
-  - action: Split god module src/redup/core/pipeline.py (664L, 0 classes)
+  - action: Split god module src/redup/core/scanner.py (647L, 4 classes)
+    impact: high
+    effort: high
+  - action: Split god module src/redup/core/pipeline.py (660L, 0 classes)
     impact: high
     effort: high
   - action: Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
@@ -763,18 +718,18 @@ refactoring:
     impact: medium
     effort: low
     module: output_writer.py
-  - action: Reduce scan_project_parallel_memory_optimized fan-out (currently 32)
+  - action: Reduce _preload_files fan-out (currently 20)
     impact: medium
     effort: medium
-  - action: Reduce scan_project_memory_optimized fan-out (currently 27)
+  - action: Reduce _scan_sequential fan-out (currently 16)
     impact: medium
     effort: medium
-  - action: Reduce preload_to_ram fan-out (currently 22)
+  - action: Reduce scan_project fan-out (currently 16)
     impact: medium
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 3.7
-  critical: 21
-  lines: 9358
+  cc_avg: 3.4
+  critical: 12
+  lines: 8603
   note: Automated analysis
