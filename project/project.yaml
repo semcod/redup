@@ -3,16 +3,16 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:14:10Z'
+  analyzed_at: '2026-03-23T16:25:57Z'
   tool: code2llm
   stats:
-    files: 12
-    lines: 3350
-    functions: 76
-    classes: 16
+    files: 15
+    lines: 3960
+    functions: 98
+    classes: 17
 health:
-  cc_avg: 4.0
-  critical_count: 4
+  cc_avg: 4.1
+  critical_count: 7
   critical_limit: 10
   duplicates: 0
   cycles: 0
@@ -47,6 +47,11 @@ health:
     value: 11
     limit: 10
     severity: warning
+  - type: high_fan_out
+    target: config
+    value: 11
+    limit: 10
+    severity: warning
 modules:
 - path: src/redup/core/differ.py
   lines: 246
@@ -66,6 +71,26 @@ modules:
   - name: format_diff_result
     type: function
     cc: 14
+- path: src/redup/reporters/markdown_reporter.py
+  lines: 90
+  classes: 0
+  methods: 1
+  cc_max: 12
+  inbound_deps: 1
+  exports:
+  - name: to_markdown
+    type: function
+    cc: 12
+- path: src/redup/core/pipeline.py
+  lines: 332
+  classes: 0
+  methods: 13
+  cc_max: 11
+  inbound_deps: 2
+  exports:
+  - name: analyze
+    type: function
+    cc: 1
 - path: src/redup/core/ts_extractor.py
   lines: 353
   classes: 0
@@ -83,16 +108,28 @@ modules:
   - name: is_language_supported
     type: function
     cc: 3
-- path: src/redup/core/pipeline.py
-  lines: 257
-  classes: 0
+- path: src/redup/core/lsh_matcher.py
+  lines: 217
+  classes: 2
   methods: 12
-  cc_max: 9
-  inbound_deps: 2
+  cc_max: 10
+  inbound_deps: 1
   exports:
-  - name: analyze
+  - name: _SimpleMinHash
+    type: class
+    cc_avg: 3.5
+  - name: LSHIndex
+    type: class
+    cc_avg: 5.6
+    methods:
+    - name: find_near_duplicates
+      cc: 10
+  - name: build_lsh_index
     type: function
-    cc: 1
+    cc: 3
+  - name: find_near_duplicates
+    type: function
+    cc: 2
 - path: src/redup/core/scanner.py
   lines: 201
   classes: 2
@@ -110,26 +147,13 @@ modules:
     type: function
     cc: 8
     fan_out: 17
-- path: src/redup/reporters/toon_reporter.py
-  lines: 106
-  classes: 0
-  methods: 6
-  cc_max: 8
-  inbound_deps: 2
-  exports:
-  - name: to_toon
-    type: function
-    cc: 3
 - path: src/redup/cli_app/main.py
-  lines: 312
-  classes: 1
-  methods: 9
-  cc_max: 7
+  lines: 381
+  classes: 0
+  methods: 11
+  cc_max: 8
   inbound_deps: 0
   exports:
-  - name: OutputFormat
-    type: class
-    cc_avg: 0.0
   - name: scan
     type: function
     cc: 1
@@ -139,7 +163,21 @@ modules:
   - name: check
     type: function
     cc: 5
+  - name: config
+    type: function
+    cc: 6
+    fan_out: 11
   - name: info
+    type: function
+    cc: 3
+- path: src/redup/reporters/toon_reporter.py
+  lines: 106
+  classes: 0
+  methods: 6
+  cc_max: 8
+  inbound_deps: 2
+  exports:
+  - name: to_toon
     type: function
     cc: 3
 - path: src/redup/core/matcher.py
@@ -179,7 +217,7 @@ modules:
   classes: 2
   methods: 15
   cc_max: 6
-  inbound_deps: 2
+  inbound_deps: 3
   exports:
   - name: HashedBlock
     type: class
@@ -200,6 +238,22 @@ modules:
     type: function
     cc: 1
   - name: find_structural_duplicates
+    type: function
+    cc: 1
+- path: src/redup/core/config.py
+  lines: 154
+  classes: 0
+  methods: 6
+  cc_max: 5
+  inbound_deps: 1
+  exports:
+  - name: load_config
+    type: function
+    cc: 5
+  - name: config_to_scan_config
+    type: function
+    cc: 4
+  - name: create_sample_redup_toml
     type: function
     cc: 1
 - path: src/redup/reporters/yaml_reporter.py
@@ -223,7 +277,7 @@ modules:
     type: function
     cc: 3
 - path: src/redup/core/models.py
-  lines: 152
+  lines: 157
   classes: 9
   methods: 1
   cc_max: 1
@@ -315,6 +369,9 @@ hotspots:
 - name: _find_structural_groups
   fan_out: 11
   note: Find structural duplicate groups.
+- name: config
+  fan_out: 11
+  note: Manage reDUP configuration.
 refactoring:
   priorities:
   - action: Split compare_scans (CC=18 → target CC<10)
@@ -329,7 +386,7 @@ refactoring:
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 4.0
-  critical: 4
-  lines: 3350
+  cc_avg: 4.1
+  critical: 7
+  lines: 3960
   note: Automated analysis

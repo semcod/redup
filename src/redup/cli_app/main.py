@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore", category=SyntaxWarning)
 import redup  # noqa: E402
 from redup.core.config import config_to_scan_config, create_sample_redup_toml, load_config  # noqa: E402
 from redup.core.models import DuplicationMap, ScanConfig  # noqa: E402
-from redup.core.pipeline import analyze  # noqa: E402
+from redup.core.pipeline import analyze, analyze_parallel  # noqa: E402
 from redup.reporters.json_reporter import to_json  # noqa: E402
 from redup.reporters.markdown_reporter import to_markdown  # noqa: E402
 from redup.reporters.toon_reporter import to_toon  # noqa: E402
@@ -136,11 +136,15 @@ def _write_results(
         ]
         for _fmt, renderer, suffix in renderers:
             content = renderer(dup_map)
+            if suffix == "json":
+                include_snippets = load_config().get("reporting", {}).get("include_snippets", False)
+                content = to_json(dup_map, include_snippets=include_snippets)
             target = output_dir / f"duplication.{suffix}"
             target.write_text(content, encoding="utf-8")
             typer.echo(f"  → {target}")
     elif format == "json":
-        _write_output(to_json(dup_map), output_dir, "json")
+        include_snippets = load_config().get("reporting", {}).get("include_snippets", False)
+        _write_output(to_json(dup_map, include_snippets=include_snippets), output_dir, "json")
     elif format == "yaml":
         _write_output(to_yaml(dup_map), output_dir, "yaml")
     elif format == "toon":
@@ -193,13 +197,27 @@ def scan(
         "--functions-only",
         help="Only analyze function-level duplicates (faster).",
     ),
+    parallel: bool = typer.Option(
+        False,
+        "--parallel",
+        help="Use parallel scanning for large projects.",
+    ),
+    max_workers: int = typer.Option(
+        None,
+        "--max-workers",
+        help="Number of parallel workers (default: CPU count).",
+    ),
 ) -> None:
     """Scan a project for code duplicates and generate a refactoring map."""
     config = _build_config(path, extensions, min_lines, min_similarity, include_tests)
 
     _print_scan_header(path, config.extensions, min_lines, min_similarity)
 
-    dup_map = analyze(config=config, function_level_only=functions_only)
+    # Choose analysis method
+    if parallel:
+        dup_map = analyze_parallel(config=config, function_level_only=functions_only, max_workers=max_workers)
+    else:
+        dup_map = analyze(config=config, function_level_only=functions_only)
 
     _print_scan_summary(dup_map)
     _write_results(dup_map, format, output, path)

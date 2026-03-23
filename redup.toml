@@ -24,6 +24,6 @@ output = "redup_output"
 
 [reporting]
 # Include code snippets in JSON output
-include_snippets = false
+include_snippets = true
 # Generate suggestions for refactoring
 generate_suggestions = true

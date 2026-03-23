@@ -4,12 +4,12 @@
 
 - **Project**: redup
 - **Language**: python
-- **Files**: 12
-- **Lines**: 3350
-- **Functions**: 76
-- **Classes**: 16
-- **Avg CC**: 4.0
-- **Critical (CC≥10)**: 4
+- **Files**: 15
+- **Lines**: 3960
+- **Functions**: 98
+- **Classes**: 17
+- **Avg CC**: 4.1
+- **Critical (CC≥10)**: 7
 
 ## Architecture
 
@@ -26,22 +26,23 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 313L, 9 functions)
+### src/redup/cli_app/ (2 files, 382L, 11 functions)
 
-- `main.py` — 312L, 9 methods, CC↑7
+- `main.py` — 381L, 11 methods, CC↑8
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (9 files, 1656L, 57 functions)
+### src/redup/core/ (11 files, 2107L, 76 functions)
 
 - `differ.py` — 246L, 5 methods, CC↑18
+- `pipeline.py` — 332L, 13 methods, CC↑11
 - `ts_extractor.py` — 353L, 8 methods, CC↑11
-- `pipeline.py` — 257L, 12 methods, CC↑9
+- `lsh_matcher.py` — 217L, 12 methods, CC↑10
 - `scanner.py` — 201L, 6 methods, CC↑9
-- `matcher.py` — 107L, 5 methods, CC↑7
-- _4 more files_
+- _6 more files_
 
-### src/redup/reporters/ (4 files, 207L, 10 functions)
+### src/redup/reporters/ (5 files, 297L, 11 functions)
 
+- `markdown_reporter.py` — 90L, 1 methods, CC↑12
 - `toon_reporter.py` — 106L, 6 methods, CC↑8
 - `yaml_reporter.py` — 34L, 1 methods, CC↑4
 - `json_reporter.py` — 66L, 3 methods, CC↑3
@@ -50,6 +51,7 @@
 ## Key Exports
 
 - **compare_scans** (function, CC=18) ⚠ split
+- **LSHIndex** (class, CC̄=5.6)
 
 ## Hotspots (High Fan-Out)
 
@@ -61,6 +63,7 @@ Returns:
 - **extract_functions_treesitter** — fan-out=13: Extract functions using tree-sitter for multi-language support.
 - **compare_scans** — fan-out=13: Compare two reDUP scan results and return the differences.
 - **_find_structural_groups** — fan-out=11: Find structural duplicate groups.
+- **config** — fan-out=11: Manage reDUP configuration.
 
 ## Refactoring Priorities
 

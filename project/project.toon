@@ -1,22 +1,25 @@
-# redup | 28f 3419L | python:28
+# redup | 31f 4039L | python:31
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[28]:
+M[31]:
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,261
+  src/redup/cli_app/main.py,316
   src/redup/core/__init__.py,1
+  src/redup/core/config.py,107
   src/redup/core/differ.py,181
   src/redup/core/hasher.py,168
+  src/redup/core/lsh_matcher.py,144
   src/redup/core/matcher.py,84
-  src/redup/core/models.py,114
-  src/redup/core/pipeline.py,192
+  src/redup/core/models.py,118
+  src/redup/core/pipeline.py,243
   src/redup/core/planner.py,82
   src/redup/core/scanner.py,157
   src/redup/core/ts_extractor.py,252
   src/redup/reporters/__init__.py,1
-  src/redup/reporters/json_reporter.py,57
+  src/redup/reporters/json_reporter.py,60
+  src/redup/reporters/markdown_reporter.py,67
   src/redup/reporters/toon_reporter.py,82
   src/redup/reporters/yaml_reporter.py,27
   src/sitecustomize.py,3
@@ -35,17 +38,25 @@ D:
     e: main
     main()
   src/redup/cli_app/main.py:
-    i: warnings,typer,redup,collections.abc.Callable,enum.Enum,pathlib.Path,redup.core.models.{DuplicationMap,ScanConfig},redup.core.pipeline.analyze,redup.reporters.json_reporter.to_json
-    e: OutputFormat,DEFAULT_PATH,DEFAULT_FORMAT,DEFAULT_OUTPUT,scan,diff,check,info
-    OutputFormat: 
+    i: warnings,typer,redup,collections.abc.Callable,pathlib.Path,redup.core.config.{config_to_scan_config,create_sample_redup_toml,load_config},redup.core.models.DuplicationMap,typing.Literal
+    e: DEFAULT_PATH,DEFAULT_FORMAT,DEFAULT_OUTPUT,scan,diff,check,config,info
     _write_output(content:str;output:Any;suffix:str)->None
     _build_config(path:Path;extensions:str;min_lines:int;min_similarity:float;include_tests:bool)->ScanConfig
+    _build_config_with_file_support(path:Path;extensions:Any;min_lines:Any;min_similarity:Any;include_tests:Any)->ScanConfig
     _print_scan_header(path:Path;ext_list:list[str];min_lines:int;min_similarity:float)->None
     _print_scan_summary(dup_map:DuplicationMap)->None
-    _write_results(dup_map:DuplicationMap;format:OutputFormat;output:Any;path:Path)->None
-    scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:OutputFormat=typer.Option(DEFAULT_FORMAT; '--format'; '-f'; help='Output format.');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:str=typer.Option('.py'; '--ext'; '-e'; help='Comma-separated file extensions to scan.');min_lines:int=typer.Option(3; '--min-lines'; help='Minimum block size (lines) to consider as duplicate.');min_similarity:float=typer.Option(0.85; '--min-sim'; help='Minimum similarity score (0.0-1.0) for fuzzy matches.');...+1)->None
+    _write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
+    scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; all).');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:str=typer.Option('.py'; '--ext'; '-e'; help='Comma-separated file extensions to scan.');min_lines:int=typer.Option(3; '--min-lines'; help='Minimum block size (lines) to consider as duplicate.');min_similarity:float=typer.Option(0.85; '--min-sim'; help='Minimum similarity score (0.0-1.0) for fuzzy matches.');...+1)->None
     diff(before:Path=typer.Argument(...; help='Path to the earlier scan JSON file.'; exists=True; dir_okay=False; file_okay=True);after:Path=typer.Argument(...; help='Path to the later scan JSON file.'; exists=True; dir_okay=False; file_okay=True))->None
-    check(path:Path=typer.Argument(Path('.'); help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);max_groups:int=typer.Option(10; '--max-groups'; help='Maximum allowed duplicate groups (default: 10).');max_saved_lines:int=typer.Option(100; '--max-lines'; help='Maximum allowed recoverable lines (default: 100).');extensions:str=typer.Option('.py'; '--ext'; '-e'; help='Comma-separated file extensions to scan.');min_lines:int=typer.Option(3; '--min-lines'; help='Minimum block size (lines) to consider as duplicate.');min_similarity:float=typer.Option(0.85; '--min-sim'; help='Minimum similarity score (0.0-1.0) for fuzzy matches.');...+1)->None
+  src/redup/core/config.py:
+    i: os,tomllib,pathlib.Path,redup.core.models.ScanConfig,typing.Any
+    e: load_config,config_to_scan_config,create_sample_redup_toml
+    _load_toml_file(file_path:Path)->dict[str, Any]
+    _get_config_from_pyproject()->dict[str, Any]
+    _get_config_from_redup_toml()->dict[str, Any]
+    load_config()->dict[str, Any]
+    config_to_scan_config(config:dict[str;Any];path:Path)->ScanConfig
+    create_sample_redup_toml()->str
   src/redup/core/differ.py:
     i: json,dataclasses.dataclass,pathlib.Path,redup.core.models.{DuplicateGroup,DuplicationMap},typing.Any
     e: DiffResult,compare_scans,format_diff_result
@@ -68,6 +79,16 @@ D:
     _normalize_constant(value:Any)->str
     _hash_text(text:str;normalizer:Callable[Any;str])->str
     hash_block(text:str)->str
+  src/redup/core/lsh_matcher.py:
+    i: hashlib,datasketch.{MinHash,MinHashLSH},redup.core.hasher._normalize_text,redup.core.scanner.CodeBlock,typing.Any
+    e: LSHIndex,build_lsh_index,find_near_duplicates
+    _SimpleMinHash: __init__(2),jaccard(1)  # Simple MinHash implementation for fal...
+    LSHIndex: __init__(2),add(1),find_near_duplicates(1),_find_near_duplicates_simple(1),find_all_near_duplicates(1)  # LSH index for efficient near-duplicat...
+    _create_minhash(text:str;num_perm:int=128)->MinHash | None
+    _text_to_minhash_features(text:str;num_features:int=10)->list[str]
+    _create_simple_minhash(text:str;num_perm:int=128)->_SimpleMinHash
+    build_lsh_index(blocks:list[CodeBlock];threshold:float=0.8;min_lines:int=10)->LSHIndex
+    find_near_duplicates(blocks:list[CodeBlock];threshold:float=0.8;min_lines:int=10)->dict[str, list[tuple[CodeBlock, float]]]
   src/redup/core/matcher.py:
     i: difflib,collections.abc.Callable,dataclasses.dataclass,redup.core.hasher.{HashedBlock,_normalize_text}
     e: MatchResult,sequence_similarity,fuzzy_similarity,match_candidates,refine_structural_matches
@@ -86,7 +107,7 @@ D:
     ScanConfig:   # Configuration for project scanning.
     DuplicateFragment: line_count(0)  # A single occurrence of a duplicated c...
   src/redup/core/pipeline.py:
-    i: redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.matcher.{MatchResult,refine_structural_matches},redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType}
+    i: redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.lsh_matcher.find_near_duplicates,redup.core.matcher.{MatchResult,refine_structural_matches},redup.core.models.{DuplicateFragment,DuplicateGroup}
     e: analyze
     _blocks_to_group(group_id:str;blocks:list[HashedBlock];dup_type:DuplicateType;similarity:float=1.0;normalized_hash:str='')->DuplicateGroup
     _deduplicate_groups(groups:list[DuplicateGroup])->list[DuplicateGroup]
@@ -129,9 +150,13 @@ D:
   src/redup/reporters/json_reporter.py:
     i: json,redup.core.models.DuplicationMap,typing.Any
     e: to_json
-    _group_to_dict(group:Any)->dict
+    _group_to_dict(group:Any;include_snippets:bool=False)->dict
     _suggestion_to_dict(s:Any)->dict
-    to_json(dup_map:DuplicationMap;indent:int=2)->str
+    to_json(dup_map:DuplicationMap;indent:int=2;include_snippets:bool=False)->str
+  src/redup/reporters/markdown_reporter.py:
+    i: datetime,datetime.timezone,redup.core.models.DuplicationMap
+    e: to_markdown
+    to_markdown(dup_map:DuplicationMap)->str
   src/redup/reporters/toon_reporter.py:
     i: datetime,datetime.timezone,redup.core.models.DuplicationMap
     e: to_toon

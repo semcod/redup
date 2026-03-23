@@ -1,5 +1,5 @@
-# code2llm | 19f 2227L | python:18,shell:1 | 2026-03-23
-# CC̄=4.0 | critical:4/77 | dups:0 | cycles:0
+# code2llm | 22f 2837L | python:21,shell:1 | 2026-03-23
+# CC̄=4.1 | critical:7/99 | dups:0 | cycles:0
 
 HEALTH[1]:
   🟡 CC    compare_scans CC=18 (limit:15)
@@ -10,17 +10,20 @@ REFACTOR[1]:
 COUPLING: no cross-package imports detected
 
 LAYERS:
-  src/                            CC̄=4.0    ←in:0  →out:0
+  src/                            CC̄=4.1    ←in:0  →out:0
+  │ main                       381L  0C   11m  CC=8      ←0
   │ !  ts_extractor               353L  0C    8m  CC=11     ←1
-  │ main                       312L  1C    9m  CC=7      ←0
-  │ pipeline                   257L  0C   12m  CC=9      ←2
+  │ !  pipeline                   332L  0C   13m  CC=11     ←2
   │ !! differ                     246L  1C    5m  CC=18     ←1
-  │ hasher                     229L  2C   15m  CC=6      ←2
+  │ hasher                     229L  2C   15m  CC=6      ←3
+  │ !  lsh_matcher                217L  2C   12m  CC=10     ←1
   │ scanner                    201L  2C    6m  CC=9      ←1
-  │ models                     152L  9C    1m  CC=1      ←0
+  │ models                     157L  9C    1m  CC=1      ←0
+  │ config                     154L  0C    6m  CC=5      ←1
   │ planner                    110L  0C    5m  CC=7      ←1
   │ matcher                    107L  1C    5m  CC=7      ←1
   │ toon_reporter              106L  0C    6m  CC=8      ←2
+  │ !  markdown_reporter           90L  0C    1m  CC=12     ←1
   │ json_reporter               66L  0C    3m  CC=3      ←3
   │ yaml_reporter               34L  0C    1m  CC=4      ←1
   │ __init__                    25L  0C    0m  CC=0.0    ←0
@@ -36,15 +39,18 @@ LAYERS:
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 4 of 76):
+FUNCTIONS (CC≥10, 7 of 98):
    18.0  compare_scans                              19n   2exit  loops+cond+ret  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
+   12.0  to_markdown                                12n   3exit  loops+cond+ret
+   11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
    11.0  extract_functions_treesitter               29n  10exit  cond+ret
    10.0  _get_tree_sitter_language                   5n   2exit  cond+ret
+   10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
 
   summary:
-    critical(≥10): 4 | high(5-10): 23 | medium(2-5): 27 | low(<2): 22
-    5% CC≥10  36% CC≥5
+    critical(≥10): 7 | high(5-10): 28 | medium(2-5): 37 | low(<2): 26
+    7% CC≥10  36% CC≥5
 
 HOTSPOTS:
   #1  scan_project                         fan=17   "calls 17 functions"
@@ -52,14 +58,16 @@ HOTSPOTS:
   #3  extract_functions_treesitter         fan=13   "calls 13 functions"
   #4  compare_scans                        fan=13   "calls 13 functions"
   #5  _find_structural_groups              fan=11   "calls 11 functions"
-  #6  generate_suggestions                 fan=9    "calls 9 functions"
-  #7  analyze                              fan=8    "analysis pipeline, 8 stages"
-  #8  _extract_functions_java              fan=8    "calls 8 functions"
-  #9  _write_results                       fan=8    "calls 8 functions"
-  #10 scan                                 fan=8    "calls 8 functions"
+  #6  config                               fan=11   "calls 11 functions"
+  #7  generate_suggestions                 fan=9    "calls 9 functions"
+  #8  _find_near_duplicate_groups          fan=9    "calls 9 functions"
+  #9  to_markdown                          fan=9    "calls 9 functions"
+  #10 _write_results                       fan=9    "calls 9 functions"
 
 CLASSES:
-  DuplicationMap                 ████████████████████████   1m  CC̄=1.0   max=1   
+  LSHIndex                       ████████████████████████   5m  CC̄=5.6   max=10  
+  _SimpleMinHash                 █████████                  2m  CC̄=3.5   max=4   
+  DuplicationMap                 ████                       1m  CC̄=1.0   max=1   
   CodeBlock                                                 0m  CC̄=0.0   max=0.0 
   ScannedFile                                               0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
@@ -70,11 +78,10 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
-  DiffResult                                                0m  CC̄=0.0   max=0.0 
-  MatchResult                                               0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
-  OutputFormat                                              0m  CC̄=0.0   max=0.0 
+  MatchResult                                               0m  CC̄=0.0   max=0.0 
+  DiffResult                                                0m  CC̄=0.0   max=0.0 
 
 D:
   src/redup/core/differ.py:
@@ -85,28 +92,11 @@ D:
     _groups_match(group1,group2)
     compare_scans(before_file,after_file)
     format_diff_result(diff)
-  src/redup/core/ts_extractor.py:
-    e: _get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,get_supported_languages,is_language_supported
-    _get_tree_sitter_language(language_name)
-    _extract_functions_javascript(node,source_lines,file_path)
-    _extract_functions_go(node,source_lines,file_path)
-    _extract_functions_rust(node,source_lines,file_path)
-    _extract_functions_java(node,source_lines,file_path)
-    extract_functions_treesitter(source,file_path)
-    get_supported_languages()
-    is_language_supported(file_path)
-  src/redup/core/scanner.py:
-    e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_function_blocks_python,scan_project
-    CodeBlock  # A contiguous block of source code lines....
-    ScannedFile  # A file that has been read and split into blocks....
-    _should_exclude(path,patterns)
-    _collect_files(config)
-    _is_test_file(path)
-    _extract_blocks_sliding(lines,min_lines)
-    _extract_function_blocks_python(source,filepath)
-    scan_project(config)
+  src/redup/reporters/markdown_reporter.py:
+    e: to_markdown
+    to_markdown(dup_map)
   src/redup/core/pipeline.py:
-    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity
+    e: _blocks_to_group,_deduplicate_groups,analyze,_ensure_config,_scan_phase,_process_blocks,_find_duplicates_phase,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups
     _blocks_to_group(group_id,blocks,dup_type,similarity,normalized_hash)
     _deduplicate_groups(groups)
     analyze(config,function_level_only)
@@ -119,6 +109,38 @@ D:
     _deduplicate_phase(groups)
     _match_results_to_blocks(matches)
     _calculate_similarity(matches)
+    _find_near_duplicate_groups(all_blocks,config)
+  src/redup/core/ts_extractor.py:
+    e: _get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,get_supported_languages,is_language_supported
+    _get_tree_sitter_language(language_name)
+    _extract_functions_javascript(node,source_lines,file_path)
+    _extract_functions_go(node,source_lines,file_path)
+    _extract_functions_rust(node,source_lines,file_path)
+    _extract_functions_java(node,source_lines,file_path)
+    extract_functions_treesitter(source,file_path)
+    get_supported_languages()
+    is_language_supported(file_path)
+  src/redup/core/lsh_matcher.py:
+    e: _SimpleMinHash,LSHIndex,_create_minhash,_text_to_minhash_features,_create_simple_minhash,build_lsh_index,find_near_duplicates
+    _SimpleMinHash  # Simple MinHash implementation for fallback without datasketc...
+      __init__(2)  CC=3.0
+    LSHIndex  # LSH index for efficient near-duplicate detection....
+      __init__(2)  CC=2.0
+    _create_minhash(text,num_perm)
+    _text_to_minhash_features(text,num_features)
+    _create_simple_minhash(text,num_perm)
+    build_lsh_index(blocks,threshold,min_lines)
+    find_near_duplicates(blocks,threshold,min_lines)
+  src/redup/core/scanner.py:
+    e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_extract_blocks_sliding,_extract_function_blocks_python,scan_project
+    CodeBlock  # A contiguous block of source code lines....
+    ScannedFile  # A file that has been read and split into blocks....
+    _should_exclude(path,patterns)
+    _collect_files(config)
+    _is_test_file(path)
+    _extract_blocks_sliding(lines,min_lines)
+    _extract_function_blocks_python(source,filepath)
+    scan_project(config)
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -127,6 +149,19 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map,groups)
     to_toon(dup_map)
+  src/redup/cli_app/main.py:
+    e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
+    _write_output(content,output,suffix)
+    _build_config(path,extensions,min_lines,min_similarity,include_tests)
+    _build_config_with_file_support(path,extensions,min_lines,min_similarity,include_tests)
+    _print_scan_header(path,ext_list,min_lines,min_similarity)
+    _print_scan_summary(dup_map)
+    _write_results(dup_map,format,output,path)
+    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only)
+    diff(before,after)
+    check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
+    config(init,show)
+    info()
   src/redup/core/planner.py:
     e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
     _common_prefix(paths)
@@ -142,18 +177,6 @@ D:
     _compare_against_reference(candidates,min_similarity,similarity_fn,method_fn,skip_same_location)
     match_candidates(candidates,min_similarity)
     refine_structural_matches(candidates,min_similarity)
-  src/redup/cli_app/main.py:
-    e: OutputFormat,_write_output,_build_config,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,info
-    OutputFormat
-    _write_output(content,output,suffix)
-    _build_config(path,extensions,min_lines,min_similarity,include_tests)
-    _print_scan_header(path,ext_list,min_lines,min_similarity)
-    _print_scan_summary(dup_map)
-    _write_results(dup_map,format,output,path)
-    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only)
-    diff(before,after)
-    check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
-    info()
   src/redup/core/hasher.py:
     e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,_hashed_block,build_hash_index,_find_duplicates,find_exact_duplicates,find_structural_duplicates,_blocks_from_different_locations
     HashedBlock  # A code block with its computed fingerprints....
@@ -176,6 +199,14 @@ D:
   examples/01_basic_usage.py:
     e: main
     main()
+  src/redup/core/config.py:
+    e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
+    _load_toml_file(file_path)
+    _get_config_from_pyproject()
+    _get_config_from_redup_toml()
+    load_config()
+    config_to_scan_config(config,path)
+    create_sample_redup_toml()
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
@@ -197,8 +228,8 @@ D:
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
   src/redup/__init__.py:
-  src/redup/core/__init__.py:
   src/redup/__main__.py:
+  src/redup/core/__init__.py:
   src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/cli_app/__init__.py:

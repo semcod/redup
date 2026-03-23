@@ -97,12 +97,18 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     else:
         ext_list = extensions
     
+    scan_config = config.get("scan", {})
+    lsh_config = config.get("lsh", {})
+    
     return ScanConfig(
         root=path,
         extensions=ext_list,
-        min_block_lines=config.get("min_lines", 3),
-        min_similarity=config.get("min_similarity", 0.85),
-        include_tests=config.get("include_tests", False),
+        min_block_lines=scan_config.get("min_lines", 3),
+        min_similarity=scan_config.get("min_similarity", 0.85),
+        include_tests=scan_config.get("include_tests", False),
+        lsh_enabled=lsh_config.get("enabled", True),
+        lsh_min_lines=lsh_config.get("min_lines", 50),
+        lsh_threshold=lsh_config.get("threshold", 0.8),
     )
 
 
@@ -120,6 +126,14 @@ min_lines = 3
 min_similarity = 0.85
 # Include test files in analysis
 include_tests = false
+
+[lsh]
+# Enable LSH near-duplicate detection for large blocks
+enabled = true
+# Minimum block size for LSH analysis
+min_lines = 50
+# Similarity threshold for LSH (0.0-1.0)
+threshold = 0.8
 
 [check]
 # CI gate thresholds

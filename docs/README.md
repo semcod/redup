@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redup
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-77-green)
-> **77** functions | **16** classes | **20** files | CC̄ = 4.0
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-99-green)
+> **99** functions | **17** classes | **23** files | CC̄ = 4.1
 
 > Auto-generated project documentation from source code analysis.
 
@@ -150,7 +150,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redup/
-    ├── redup/        ├── __main__        ├── core/    ├── 01_basic_usage            ├── planner            ├── scanner            ├── models    ├── sitecustomize            ├── pipeline            ├── ts_extractor        ├── reporters/            ├── json_reporter            ├── matcher            ├── yaml_reporter        ├── cli_app/            ├── toon_reporter├── project            ├── differ            ├── main            ├── hasher```
+    ├── redup/        ├── __main__    ├── 01_basic_usage        ├── core/            ├── config            ├── planner            ├── scanner            ├── models            ├── pipeline    ├── sitecustomize            ├── lsh_matcher            ├── matcher            ├── ts_extractor        ├── reporters/            ├── differ            ├── json_reporter            ├── hasher            ├── yaml_reporter        ├── cli_app/├── project            ├── markdown_reporter            ├── toon_reporter            ├── main```
 
 ## API Overview
 
@@ -167,39 +167,46 @@ redup/
 - **`RefactorSuggestion`** — A concrete refactoring proposal for a duplicate group.
 - **`ScanStats`** — Statistics from the scanning phase.
 - **`DuplicationMap`** — Complete result of a reDUP analysis run.
+- **`LSHIndex`** — LSH index for efficient near-duplicate detection.
 - **`MatchResult`** — Result of comparing two code blocks.
 - **`DiffResult`** — Result of comparing two reDUP scans.
-- **`OutputFormat`** — —
 - **`HashedBlock`** — A code block with its computed fingerprints.
 - **`HashIndex`** — Index mapping hashes to blocks for fast lookup.
 
 ### Functions
 
 - `main()` — —
+- `load_config()` — Load reDUP configuration from available sources.
+- `config_to_scan_config(config, path)` — Convert configuration dict to ScanConfig object.
+- `create_sample_redup_toml()` — Create a sample redup.toml configuration file content.
 - `generate_suggestions(dup_map)` — Generate prioritized refactoring suggestions for all duplicate groups.
 - `scan_project(config)` — Scan a project and return files with their code blocks.
 - `analyze(config, function_level_only)` — Run the full reDUP analysis pipeline.
-- `extract_functions_treesitter(source, file_path)` — Extract functions using tree-sitter for multi-language support.
-- `get_supported_languages()` — Get list of supported languages for tree-sitter extraction.
-- `is_language_supported(file_path)` — Check if a file extension is supported by tree-sitter extraction.
-- `to_json(dup_map, indent)` — Serialize a DuplicationMap to JSON string.
+- `build_lsh_index(blocks, threshold, min_lines)` — Build LSH index from code blocks.
+- `find_near_duplicates(blocks, threshold, min_lines)` — Find near-duplicate code blocks using LSH.
 - `sequence_similarity(text_a, text_b)` — SequenceMatcher ratio between two normalized texts.
 - `fuzzy_similarity(text_a, text_b)` — Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher.
 - `match_candidates(candidates, min_similarity)` — Compare all pairs in a candidate group and return matches above threshold.
 - `refine_structural_matches(candidates, min_similarity)` — For structural hash collisions, verify with text similarity.
-- `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
-- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
+- `extract_functions_treesitter(source, file_path)` — Extract functions using tree-sitter for multi-language support.
+- `get_supported_languages()` — Get list of supported languages for tree-sitter extraction.
+- `is_language_supported(file_path)` — Check if a file extension is supported by tree-sitter extraction.
 - `compare_scans(before_file, after_file)` — Compare two reDUP scan results and return the differences.
 - `format_diff_result(diff)` — Format a DiffResult as a human-readable string.
-- `scan(path, format, output, extensions)` — Scan a project for code duplicates and generate a refactoring map.
-- `diff(before, after)` — Compare two reDUP scans and show the differences.
-- `check(path, max_groups, max_saved_lines, extensions)` — Check project for duplicates and exit with non-zero code if thresholds exceeded.
-- `info()` — Show reDUP version and configuration info.
+- `to_json(dup_map, indent, include_snippets)` — Serialize a DuplicationMap to JSON string.
 - `hash_block(text)` — SHA-256 hash of normalized text.
 - `hash_block_structural(text)` — SHA-256 hash of deeply normalized text (variable names replaced).
 - `build_hash_index(blocks, min_lines)` — Build a hash index from a list of code blocks.
 - `find_exact_duplicates(index)` — Find groups of blocks with identical normalized text.
 - `find_structural_duplicates(index)` — Find groups of blocks with identical structure (names may differ).
+- `to_yaml(dup_map)` — Serialize a DuplicationMap to YAML string.
+- `to_markdown(dup_map)` — Serialize a DuplicationMap to Markdown format.
+- `to_toon(dup_map)` — Serialize a DuplicationMap to TOON format.
+- `scan(path, format, output, extensions)` — Scan a project for code duplicates and generate a refactoring map.
+- `diff(before, after)` — Compare two reDUP scans and show the differences.
+- `check(path, max_groups, max_saved_lines, extensions)` — Check project for duplicates and exit with non-zero code if thresholds exceeded.
+- `config(init, show)` — Manage reDUP configuration.
+- `info()` — Show reDUP version and configuration info.
 
 
 ## Project Structure
@@ -209,18 +216,21 @@ redup/
 📦 `src.redup`
 📄 `src.redup.__main__`
 📦 `src.redup.cli_app`
-📄 `src.redup.cli_app.main` (9 functions, 1 classes)
+📄 `src.redup.cli_app.main` (11 functions)
 📦 `src.redup.core`
+📄 `src.redup.core.config` (6 functions)
 📄 `src.redup.core.differ` (5 functions, 1 classes)
 📄 `src.redup.core.hasher` (15 functions, 2 classes)
+📄 `src.redup.core.lsh_matcher` (12 functions, 2 classes)
 📄 `src.redup.core.matcher` (5 functions, 1 classes)
 📄 `src.redup.core.models` (1 functions, 9 classes)
-📄 `src.redup.core.pipeline` (12 functions)
+📄 `src.redup.core.pipeline` (13 functions)
 📄 `src.redup.core.planner` (5 functions)
 📄 `src.redup.core.scanner` (6 functions, 2 classes)
 📄 `src.redup.core.ts_extractor` (8 functions)
 📦 `src.redup.reporters`
 📄 `src.redup.reporters.json_reporter` (3 functions)
+📄 `src.redup.reporters.markdown_reporter` (1 functions)
 📄 `src.redup.reporters.toon_reporter` (6 functions)
 📄 `src.redup.reporters.yaml_reporter` (1 functions)
 📄 `src.sitecustomize`
@@ -228,7 +238,7 @@ redup/
 ## Requirements
 
 - Python >= >=3.10
-- pyyaml >=6.0- typer >=0.9.0- rich >=13.0- pydantic >=2.0
+- pyyaml >=6.0- typer >=0.12.0- rich >=13.0- pydantic >=2.0
 
 ## Contributing
 

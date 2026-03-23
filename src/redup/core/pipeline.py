@@ -11,6 +11,7 @@ from redup.core.hasher import (
 )
 from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.matcher import MatchResult, refine_structural_matches
+from redup.core.parallel_scanner import scan_project_parallel
 from redup.core.models import (
     DuplicateFragment,
     DuplicateGroup,
@@ -141,6 +142,19 @@ def _ensure_config(config: ScanConfig | None) -> ScanConfig:
 def _scan_phase(config: ScanConfig) -> tuple[list[ScannedFile], ScanStats]:
     """Phase 1: Scan project files."""
     return scan_project(config)
+
+
+def _scan_phase_parallel(config: ScanConfig, max_workers: int | None = None) -> tuple[list[ScannedFile], ScanStats]:
+    """Phase 1: Scan project files in parallel."""
+    return scan_project_parallel(
+        root=config.root,
+        extensions=config.extensions,
+        exclude_patterns=config.exclude_patterns,
+        include_tests=config.include_tests,
+        function_level_only=True,  # Always function-level for parallel
+        max_file_size=config.max_file_size_kb,
+        max_workers=max_workers,
+    )
 
 
 def _process_blocks(
@@ -328,5 +342,51 @@ def _find_near_duplicate_groups(
         pass
     
     return groups
+
+
+def analyze_parallel(
+    config: ScanConfig | None = None,
+    function_level_only: bool = False,
+    max_workers: int | None = None,
+) -> DuplicationMap:
+    """Run reDUP analysis with parallel scanning for large projects.
+
+    Args:
+        config: Scan configuration. Defaults to current directory, .py files.
+        function_level_only: If True, only analyze function-level blocks.
+        max_workers: Number of parallel workers. Defaults to CPU count.
+
+    Returns:
+        A DuplicationMap with all duplicate groups and refactoring suggestions.
+    """
+    import time
+    start_time = time.time()
+    
+    config = _ensure_config(config)
+
+    # Phase 1: Parallel Scan
+    scanned_files, stats = _scan_phase_parallel(config, max_workers)
+
+    # Phase 2: Process blocks
+    all_blocks = _process_blocks(scanned_files, function_level_only)
+
+    # Phase 3: Hash and find duplicates
+    groups = _find_duplicates_phase(all_blocks, config)
+
+    # Phase 4: Deduplicate and suggest
+    final_groups = _deduplicate_phase(groups)
+
+    # Update scan time
+    stats.scan_time_ms = (time.time() - start_time) * 1000
+
+    dup_map = DuplicationMap(
+        project_path=config.root.as_posix(),
+        config=config,
+        stats=stats,
+        groups=final_groups,
+    )
+    dup_map.suggestions = generate_suggestions(dup_map)
+
+    return dup_map
 
 
