@@ -29,21 +29,11 @@ def _blocks_to_group(
     normalized_hash: str = "",
 ) -> DuplicateGroup:
     """Convert a list of hashed blocks into a DuplicateGroup."""
-    # Deduplicate by file+line
     seen: set[tuple[str, int]] = set()
     fragments: list[DuplicateFragment] = []
 
     for hb in blocks:
-        # Handle both HashedBlock and MatchResult objects
-        if hasattr(hb, 'block'):
-            # HashedBlock object
-            block = hb.block
-        elif hasattr(hb, 'block_a'):
-            # MatchResult object - use block_a
-            block = hb.block_a.block
-        else:
-            continue  # Skip unknown object types
-            
+        block = hb.block
         key = (block.file, block.line_start)
         if key in seen:
             continue
@@ -183,7 +173,7 @@ def _find_duplicates_phase(
 
 def _find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:
     """Find exact duplicate groups."""
-    groups = []
+    groups: list[DuplicateGroup] = []
     exact_groups = find_exact_duplicates(index)
     
     for i, (h, blocks) in enumerate(exact_groups.items(), 1):
@@ -206,8 +196,8 @@ def _find_structural_groups(
     exact_groups_list: list[DuplicateGroup]
 ) -> list[DuplicateGroup]:
     """Find structural duplicate groups."""
-    groups = []
-    exact_hashes = set()
+    groups: list[DuplicateGroup] = []
+    exact_hashes: set[str] = set()
     for group in exact_groups_list:
         exact_hashes.add(group.normalized_hash)
     
