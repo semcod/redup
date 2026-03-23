@@ -2,8 +2,8 @@
 # CC̄=3.9 | critical:10/148 | dups:0 | cycles:0
 
 HEALTH[2]:
-  🟡 CC    extract_functions_treesitter CC=24 (limit:15)
   🟡 CC    compare_scans CC=18 (limit:15)
+  🟡 CC    extract_functions_treesitter CC=24 (limit:15)
 
 REFACTOR[1]:
   1. split 2 high-CC methods  (CC>15)
@@ -97,9 +97,9 @@ CLASSES:
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
   MatchResult                                               0m  CC̄=0.0   max=0.0 
-  DiffResult                                                0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
+  DiffResult                                                0m  CC̄=0.0   max=0.0 
 
 D:
   src/redup/core/ts_extractor.py:

@@ -3,7 +3,7 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T16:53:45Z'
+  analyzed_at: '2026-03-23T16:56:23Z'
   tool: code2llm
   stats:
     files: 21
@@ -492,14 +492,14 @@ refactoring:
   - action: Split god module src/redup/core/ts_extractor.py (794L, 1 classes)
     impact: high
     effort: high
-  - action: Split extract_functions_treesitter (CC=24 → target CC<10)
-    impact: medium
-    effort: low
-    module: ts_extractor.py
   - action: Split compare_scans (CC=18 → target CC<10)
     impact: medium
     effort: low
     module: differ.py
+  - action: Split extract_functions_treesitter (CC=24 → target CC<10)
+    impact: medium
+    effort: low
+    module: ts_extractor.py
   - action: Reduce extract_functions_treesitter fan-out (currently 25)
     impact: medium
     effort: medium

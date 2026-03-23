@@ -6,7 +6,7 @@ SUMMARY:
   dup_groups:    2
   dup_fragments: 9
   saved_lines:   22
-  scan_ms:       1169
+  scan_ms:       1130
 
 DUPLICATES[2] (ranked by impact):
   [S6897]   STRU  _extract_functions_go  L=3 N=7 saved=18 sim=0.96

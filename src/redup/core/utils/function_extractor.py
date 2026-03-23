@@ -141,3 +141,8 @@ OBJC_EXTRACTOR = FunctionExtractor(
     function_node_types=["function_definition"],
     method_node_types=["method_declaration"]
 )
+
+LUA_EXTRACTOR = FunctionExtractor(
+    function_node_types=["function_declaration", "local_function"],
+    method_node_types=[]
+)

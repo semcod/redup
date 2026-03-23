@@ -13,7 +13,8 @@ except ImportError:
 from redup.core.scanner import CodeBlock
 from redup.core.utils.function_extractor import (
     GO_EXTRACTOR, RUST_EXTRACTOR, JAVA_EXTRACTOR, 
-    SCALA_EXTRACTOR, KOTLIN_EXTRACTOR, SWIFT_EXTRACTOR, OBJC_EXTRACTOR
+    SCALA_EXTRACTOR, KOTLIN_EXTRACTOR, SWIFT_EXTRACTOR, OBJC_EXTRACTOR,
+    LUA_EXTRACTOR
 )
 
 
@@ -513,35 +514,7 @@ def _extract_blocks_sql(node: Any, source_lines: list[str], file_path: str) -> l
 
 def _extract_functions_lua(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract functions from Lua using tree-sitter."""
-    blocks = []
-    
-    def traverse(node: Any, depth: int = 0) -> None:
-        if depth > 50:
-            return
-        
-        node_type = node.type
-        
-        # Function declarations (local function, function)
-        if node_type in ("function_declaration", "local_function"):
-            start_line = node.start_point[0] + 1
-            end_line = node.end_point[0] + 1
-            
-            name_node = node.child_by_field_name("name")
-            function_name = name_node.text.decode() if name_node else "anonymous"
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=None,
-            ))
-        
-        for child in node.children:
-            traverse(child, depth + 1)
-    
-    return blocks
+    return LUA_EXTRACTOR.extract_functions(node, source_lines, file_path)
 
 
 def _extract_functions_c_sharp(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:

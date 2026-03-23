@@ -81,8 +81,8 @@ Returns:
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
 | 1 | Split god module src/redup/core/ts_extractor.py (794L, 1 classes) | high | high |
-| 2 | Split extract_functions_treesitter (CC=24 → target CC<10) | medium | low |
-| 3 | Split compare_scans (CC=18 → target CC<10) | medium | low |
+| 2 | Split compare_scans (CC=18 → target CC<10) | medium | low |
+| 3 | Split extract_functions_treesitter (CC=24 → target CC<10) | medium | low |
 | 4 | Reduce extract_functions_treesitter fan-out (currently 25) | medium | medium |
 | 5 | Reduce scan_project fan-out (currently 17) | medium | medium |
 | 6 | Reduce _load_duplication_map fan-out (currently 15) | medium | medium |
