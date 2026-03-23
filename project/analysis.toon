@@ -1,8 +1,8 @@
-# code2llm | 38f 7166L | python:37,shell:1 | 2026-03-23
-# CC̄=3.9 | critical:23/246 | dups:0 | cycles:0
+# code2llm | 41f 7214L | python:40,shell:1 | 2026-03-23
+# CC̄=3.7 | critical:21/258 | dups:0 | cycles:0
 
 HEALTH[1]:
-  🟡 CC    _apply_fuzzy_similarity CC=19 (limit:15)
+  🟡 CC    write_results CC=15 (limit:15)
 
 REFACTOR[1]:
   1. split 1 high-CC methods  (CC>15)
@@ -14,12 +14,12 @@ COUPLING:
   CYCLES: none
 
 LAYERS:
-  src/                            CC̄=3.9    ←in:0  →out:0
+  src/                            CC̄=3.7    ←in:0  →out:0
   │ !! ts_extractor               765L  1C   24m  CC=7      ←3
   │ !! pipeline                   664L  0C   17m  CC=11     ←3
-  │ !! main                       600L  0C   12m  CC=19     ←0
   │ !  universal_fuzzy            454L  3C   16m  CC=11     ←0
   │ !  fuzzy_similarity           408L  4C   20m  CC=10     ←0
+  │ main                       373L  0C   14m  CC=5      ←1
   │ !  scanner                    373L  2C   10m  CC=13     ←4
   │ !  ultra_fast_scanner         358L  0C    8m  CC=14     ←0
   │ !  memory_scanner             285L  1C    8m  CC=13     ←1
@@ -31,6 +31,7 @@ LAYERS:
   │ !  differ                     209L  1C    5m  CC=14     ←1
   │ !  code2llm_reporter          209L  0C    6m  CC=11     ←1
   │ models                     169L  9C    1m  CC=1      ←0
+  │ scan_commands              163L  0C    5m  CC=7      ←1
   │ lazy_grouper               159L  1C    7m  CC=7      ←1
   │ config                     154L  0C    6m  CC=5      ←1
   │ function_extractor         148L  1C    5m  CC=5      ←0
@@ -39,11 +40,13 @@ LAYERS:
   │ toon_reporter              106L  0C    6m  CC=8      ←2
   │ hash_cache                 104L  1C   10m  CC=3      ←0
   │ !  markdown_reporter           90L  0C    1m  CC=12     ←1
+  │ !! output_writer               78L  0C    2m  CC=15     ←1
   │ json_reporter               73L  0C    3m  CC=5      ←3
   │ language_dispatcher         72L  1C    5m  CC=4      ←0
   │ hash_utils                  37L  0C    1m  CC=3      ←0
   │ duplicate_finders           36L  0C    1m  CC=3      ←0
   │ yaml_reporter               34L  0C    1m  CC=4      ←1
+  │ scan_helpers                34L  0C    3m  CC=1      ←1
   │ __init__                    25L  0C    0m  CC=0.0    ←0
   │ __main__                     5L  0C    0m  CC=0.0    ←0
   │ sitecustomize                4L  0C    0m  CC=0.0    ←0
@@ -59,34 +62,32 @@ LAYERS:
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 23 of 245):
-   19.0  _apply_fuzzy_similarity                    22n   3exit  loops+cond+ret  !! split
+FUNCTIONS (CC≥10, 21 of 257):
+   15.0  write_results                              12n   1exit  cond  !! split
    14.0  preload_to_ram                             12n   4exit  loops+cond+ret
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
-   14.0  _write_results                             17n   1exit  loops+cond
    13.0  scan_project_memory_optimized               9n   3exit  loops+cond+ret
    13.0  _extract_blocks_sliding                    12n   3exit  loops+cond+ret
    12.0  scan_project_ultra_fast                    14n   3exit  cond+ret
-   12.0  scan_project                               16n   2exit  loops+cond+ret
    12.0  to_markdown                                12n   3exit  loops+cond+ret
+   12.0  scan_project                               16n   2exit  loops+cond+ret
    11.0  UniversalFuzzyExtractor._extract_metadata   23n   2exit  cond+ret
    11.0  scan_project_parallel_memory_optimized     11n   4exit  cond+ret
    11.0  scan_project_parallel                       8n   3exit  cond+ret
    11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
    11.0  to_code2llm_context                        15n   2exit  loops+cond+ret
-   11.0  check                                      17n   2exit  cond+ret
    10.0  UniversalFuzzyDetector._compute_metadata_similarity   20n   6exit  loops+cond+ret
    10.0  _ast_to_normalized_string_fast             10n   2exit  loops+cond+ret
    10.0  extract_functions_fast                     12n   2exit  loops+cond+ret
-   10.0  _extract_function_blocks_python            10n   2exit  loops+cond+ret
    10.0  _find_files_optimized                      13n   2exit  loops+cond+ret
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
    10.0  CSSComponentExtractor._detect_css_component_type   16n   5exit  cond+ret
    10.0  FuzzySimilarityDetector._compute_attribute_similarity   20n   6exit  loops+cond+ret
+   10.0  _extract_function_blocks_python            10n   2exit  loops+cond+ret
 
   summary:
-    critical(≥10): 23 | high(5-10): 59 | medium(2-5): 88 | low(<2): 75
-    9% CC≥10  33% CC≥5
+    critical(≥10): 21 | high(5-10): 61 | medium(2-5): 92 | low(<2): 83
+    8% CC≥10  32% CC≥5
 
 HOTSPOTS:
   #1  scan_project_parallel_memory_optimized  fan=32   "calls 32 functions"
@@ -96,9 +97,9 @@ HOTSPOTS:
   #5  scan_project                         fan=19   "calls 19 functions"
   #6  _find_duplicates_phase_lazy          fan=15   "calls 15 functions"
   #7  _load_duplication_map                fan=15   "calls 15 functions"
-  #8  _write_results                       fan=15   "calls 15 functions"
-  #9  analyze_optimized                    fan=14   "analysis pipeline, 14 stages"
-  #10 _apply_fuzzy_similarity              fan=14   "calls 14 functions"
+  #8  analyze_optimized                    fan=14   "analysis pipeline, 14 stages"
+  #9  write_results                        fan=14   "calls 14 functions"
+  #10 scan_project_parallel                fan=13   "calls 13 functions"
 
 CLASSES:
   EnhancedReporter               ████████████████████████  17m  CC̄=3.5   max=8   
@@ -118,8 +119,6 @@ CLASSES:
   _LanguageRegistry              ██                         2m  CC̄=3.0   max=5   
   DuplicationMap                 █                          1m  CC̄=1.0   max=1   
   UniversalSignature                                        0m  CC̄=0.0   max=0.0 
-  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
-  ScannedFile                                               0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
   RiskLevel                                                 0m  CC̄=0.0   max=0.0 
@@ -133,22 +132,14 @@ CLASSES:
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
   DiffResult                                                0m  CC̄=0.0   max=0.0 
+  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
+  ScannedFile                                               0m  CC̄=0.0   max=0.0 
 
 D:
-  src/redup/cli_app/main.py:
-    e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_apply_fuzzy_similarity,_write_results,scan,diff,check,config,info
-    _write_output(content,output,suffix)
-    _build_config(path,extensions,min_lines,min_similarity,include_tests)
-    _build_config_with_file_support(path,extensions,min_lines,min_similarity,include_tests,parallel,max_workers,incremental,memory_cache,max_cache_mb,functions_only)
-    _print_scan_header(path,ext_list,min_lines,min_similarity)
-    _print_scan_summary(dup_map)
-    _apply_fuzzy_similarity(dup_map,threshold)
-    _write_results(dup_map,format,output,path)
-    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only,parallel,max_workers,incremental,memory_cache,max_cache_mb,fuzzy,fuzzy_threshold)
-    diff(before,after)
-    check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
-    config(init,show)
-    info()
+  src/redup/cli_app/output_writer.py:
+    e: write_output,write_results
+    write_output(content,output,suffix)
+    write_results(dup_map,format,output,path)
   src/redup/core/ultra_fast_scanner.py:
     e: preload_to_ram,smart_hash_block,_ast_to_normalized_string_fast,extract_functions_fast,scan_project_ultra_fast,_extract_blocks_for_file,_process_sources_batch,scan_project_incremental_fast
     preload_to_ram(config,show_progress)
@@ -335,6 +326,13 @@ A...
     _extract_functions_bash(node,source_lines,file_path)
     get_supported_languages()
     is_language_supported(file_path)
+  src/redup/cli_app/scan_commands.py:
+    e: scan_command,diff_command,check_command,config_command,info_command
+    scan_command(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only,parallel,max_workers,incremental,memory_cache,max_cache_mb,fuzzy,fuzzy_threshold)
+    diff_command(before,after)
+    check_command(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
+    config_command(init,show)
+    info_command()
   examples/01_basic_usage.py:
     e: main
     main()
@@ -365,6 +363,22 @@ Provides ~10x...
     FunctionExtractor  # Generic function extractor that can be configured for differ...
       __init__(3)  CC=1.0
     _extract_java_class_name(node)
+  src/redup/cli_app/main.py:
+    e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups,scan,diff,check,config,info
+    _apply_fuzzy_similarity(dup_map,threshold)
+    _validate_fuzzy_input(dup_map,threshold)
+    _extract_all_blocks(dup_map)
+    _separate_blocks_by_type(all_blocks)
+    _analyze_blocks_with_detectors(html_css_blocks,other_blocks,threshold)
+    _analyze_html_css_blocks(html_css_blocks,threshold)
+    _analyze_other_language_blocks(other_blocks,threshold)
+    _report_fuzzy_results(similar_pairs)
+    _report_similarity_by_groups(similar_pairs)
+    scan(path,format,output,extensions,min_lines,min_similarity,include_tests,functions_only,parallel,max_workers,incremental,memory_cache,max_cache_mb,fuzzy,fuzzy_threshold)
+    diff(before,after)
+    check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
+    config(init,show)
+    info()
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
@@ -400,6 +414,11 @@ Provides ~10x...
     ScanStats  # Statistics from the scanning phase....
     DuplicationMap  # Complete result of a reDUP analysis run....
       sorted_by_impact(0)  CC=1.0
+  src/redup/cli_app/scan_helpers.py:
+    e: print_scan_header,print_scan_summary,apply_fuzzy_similarity
+    print_scan_header(path,ext_list,min_lines,min_similarity)
+    print_scan_summary(dup_map)
+    apply_fuzzy_similarity(dup_map,threshold)
   src/redup/__main__.py:
   src/redup/__init__.py:
   src/redup/core/__init__.py:

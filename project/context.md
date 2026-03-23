@@ -4,12 +4,12 @@
 
 - **Project**: redup
 - **Language**: python
-- **Files**: 30
-- **Lines**: 9097
-- **Functions**: 245
+- **Files**: 33
+- **Lines**: 9358
+- **Functions**: 257
 - **Classes**: 32
-- **Avg CC**: 3.9
-- **Critical (CC≥10)**: 23
+- **Avg CC**: 3.7
+- **Critical (CC≥10)**: 21
 
 ## Architecture
 
@@ -27,9 +27,12 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 601L, 12 functions)
+### src/redup/cli_app/ (5 files, 649L, 24 functions)
 
-- `main.py` — 600L, 12 methods, CC↑19
+- `output_writer.py` — 78L, 2 methods, CC↑15
+- `scan_commands.py` — 163L, 5 methods, CC↑7
+- `main.py` — 373L, 14 methods, CC↑5
+- `scan_helpers.py` — 34L, 3 methods, CC↑1
 - `__init__.py` — 1L, 0 methods, CC↑0
 
 ### src/redup/core/ (19 files, 5319L, 185 functions)
@@ -60,6 +63,7 @@
 
 ## Key Exports
 
+- **write_results** (function, CC=15) ⚠ split
 - **UniversalFuzzyDetector** (class, CC̄=5.6)
 - **FuzzySimilarityDetector** (class, CC̄=5.3)
 - **LSHIndex** (class, CC̄=5.6)
@@ -88,13 +92,12 @@ Args:
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/cli_app/main.py (600L, 0 classes) | high | high |
-| 2 | Split god module src/redup/core/pipeline.py (664L, 0 classes) | high | high |
-| 3 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
-| 4 | Split _apply_fuzzy_similarity (CC=19 → target CC<10) | medium | low |
-| 5 | Reduce scan_project_parallel_memory_optimized fan-out (currently 32) | medium | medium |
-| 6 | Reduce scan_project_memory_optimized fan-out (currently 27) | medium | medium |
-| 7 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
+| 1 | Split god module src/redup/core/pipeline.py (664L, 0 classes) | high | high |
+| 2 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
+| 3 | Split write_results (CC=15 → target CC<10) | medium | low |
+| 4 | Reduce scan_project_parallel_memory_optimized fan-out (currently 32) | medium | medium |
+| 5 | Reduce scan_project_memory_optimized fan-out (currently 27) | medium | medium |
+| 6 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
 
 ## Context for LLM
 

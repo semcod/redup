@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [0.3.23] - 2026-03-23
+
+### Docs
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Test
+- Update tests/test_e2e.py
+
+### Other
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/dashboard.html
+- Update project/evolution.toon
+- Update project/flow.mmd
+- Update project/flow.png
+- Update project/flow.toon
+- ... and 6 more files
+
 ## [0.3.22] - 2026-03-23
 
 ## [0.3.21] - 2026-03-23

@@ -3,16 +3,16 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T20:13:23Z'
+  analyzed_at: '2026-03-23T20:18:44Z'
   tool: code2llm
   stats:
-    files: 30
-    lines: 9097
-    functions: 245
+    files: 33
+    lines: 9358
+    functions: 257
     classes: 32
 health:
-  cc_avg: 3.9
-  critical_count: 23
+  cc_avg: 3.7
+  critical_count: 21
   critical_limit: 10
   duplicates: 1
   cycles: 0
@@ -52,14 +52,9 @@ health:
     value: 15
     limit: 10
     severity: error
-  - type: high_fan_out
-    target: _write_results
-    value: 15
-    limit: 10
-    severity: error
   - type: cc_exceeded
-    target: _apply_fuzzy_similarity
-    value: 19
+    target: write_results
+    value: 15
     limit: 15
     severity: warning
   - type: high_fan_out
@@ -68,7 +63,7 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: _apply_fuzzy_similarity
+    target: write_results
     value: 14
     limit: 10
     severity: warning
@@ -83,12 +78,17 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
+    target: scan_command
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
     target: smart_hash_block
     value: 12
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: scan
+    target: check_command
     value: 12
     limit: 10
     severity: warning
@@ -98,51 +98,41 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: check
+    target: config_command
     value: 11
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: config
-    value: 11
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: _collect_files
+    target: _find_files_optimized
     value: 10
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: _extract_blocks_sliding
+    target: extract_functions_treesitter
+    value: 10
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _normalize_text
     value: 10
     limit: 10
     severity: warning
 modules:
-- path: src/redup/cli_app/main.py
-  lines: 600
+- path: src/redup/cli_app/output_writer.py
+  lines: 78
   classes: 0
-  methods: 12
-  cc_max: 19
-  inbound_deps: 0
+  methods: 2
+  cc_max: 15
+  inbound_deps: 1
   exports:
-  - name: scan
-    type: function
-    cc: 5
-    fan_out: 12
-  - name: diff
+  - name: write_output
     type: function
     cc: 3
-  - name: check
+  - name: write_results
     type: function
-    cc: 11
-    fan_out: 11
-  - name: config
-    type: function
-    cc: 6
-    fan_out: 11
-  - name: info
-    type: function
-    cc: 3
+    cc: 15
+    flag: split
+    fan_out: 14
 - path: src/redup/core/differ.py
   lines: 209
   classes: 1
@@ -391,6 +381,31 @@ modules:
   - name: to_toon
     type: function
     cc: 3
+- path: src/redup/cli_app/scan_commands.py
+  lines: 163
+  classes: 0
+  methods: 5
+  cc_max: 7
+  inbound_deps: 1
+  exports:
+  - name: scan_command
+    type: function
+    cc: 7
+    fan_out: 13
+  - name: diff_command
+    type: function
+    cc: 2
+  - name: check_command
+    type: function
+    cc: 4
+    fan_out: 12
+  - name: config_command
+    type: function
+    cc: 5
+    fan_out: 11
+  - name: info_command
+    type: function
+    cc: 3
 - path: src/redup/core/lazy_grouper.py
   lines: 159
   classes: 1
@@ -462,6 +477,28 @@ modules:
   - name: is_language_supported
     type: function
     cc: 3
+- path: src/redup/cli_app/main.py
+  lines: 373
+  classes: 0
+  methods: 14
+  cc_max: 5
+  inbound_deps: 1
+  exports:
+  - name: scan
+    type: function
+    cc: 1
+  - name: diff
+    type: function
+    cc: 1
+  - name: check
+    type: function
+    cc: 1
+  - name: config
+    type: function
+    cc: 1
+  - name: info
+    type: function
+    cc: 1
 - path: src/redup/core/cache.py
   lines: 267
   classes: 1
@@ -577,6 +614,22 @@ modules:
   - name: create_hash_function
     type: function
     cc: 3
+- path: src/redup/cli_app/scan_helpers.py
+  lines: 34
+  classes: 0
+  methods: 3
+  cc_max: 1
+  inbound_deps: 1
+  exports:
+  - name: print_scan_header
+    type: function
+    cc: 1
+  - name: print_scan_summary
+    type: function
+    cc: 1
+  - name: apply_fuzzy_similarity
+    type: function
+    cc: 1
 - path: src/redup/core/models.py
   lines: 169
   classes: 9
@@ -689,30 +742,27 @@ hotspots:
 - name: _load_duplication_map
   fan_out: 15
   note: Load a DuplicationMap from a JSON file.
-- name: _write_results
-  fan_out: 15
-  note: Write scan results to output files.
 - name: analyze_optimized
   fan_out: 14
   note: Analysis pipeline, 14 stages
-- name: _apply_fuzzy_similarity
+- name: write_results
   fan_out: 14
-  note: Apply fuzzy similarity detection to find similar components across all languages
+  note: Write analysis results in specified format.
+- name: scan_project_parallel
+  fan_out: 13
+  note: Scan project files in parallel for better performance on large projects.
 refactoring:
   priorities:
-  - action: Split god module src/redup/cli_app/main.py (600L, 0 classes)
-    impact: high
-    effort: high
   - action: Split god module src/redup/core/pipeline.py (664L, 0 classes)
     impact: high
     effort: high
   - action: Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
     impact: high
     effort: high
-  - action: Split _apply_fuzzy_similarity (CC=19 → target CC<10)
+  - action: Split write_results (CC=15 → target CC<10)
     impact: medium
     effort: low
-    module: main.py
+    module: output_writer.py
   - action: Reduce scan_project_parallel_memory_optimized fan-out (currently 32)
     impact: medium
     effort: medium
@@ -724,7 +774,7 @@ refactoring:
     effort: medium
 evolution:
 - date: '2026-03-23'
-  cc_avg: 3.9
-  critical: 23
-  lines: 9097
+  cc_avg: 3.7
+  critical: 21
+  lines: 9358
   note: Automated analysis

@@ -6,7 +6,6 @@ from typing import List
 import typer
 
 from redup.core.models import DuplicationMap
-from redup.cli_app.main import _apply_fuzzy_similarity
 
 
 def print_scan_header(path: Path, ext_list: List[str], min_lines: int, min_similarity: float) -> None:
@@ -30,5 +29,6 @@ def print_scan_summary(dup_map: DuplicationMap) -> None:
 
 
 def apply_fuzzy_similarity(dup_map: DuplicationMap, threshold: float) -> DuplicationMap:
-    """Apply fuzzy similarity detection (wrapper for main function)."""
+    """Apply fuzzy similarity detection."""
+    from redup.cli_app.fuzzy_similarity import _apply_fuzzy_similarity
     return _apply_fuzzy_similarity(dup_map, threshold)

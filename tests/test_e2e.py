@@ -355,8 +355,11 @@ class TestFullRoundtrip:
         assert json_file.exists()
 
         data = json.loads(json_file.read_text())
+        self._verify_json_structure(data)
+        self._verify_calculate_tax_group(data)
 
-        # Verify structure
+    def _verify_json_structure(self, data: dict) -> None:
+        """Verify basic JSON structure."""
         assert "project_path" in data
         assert "stats" in data
         assert "summary" in data
@@ -366,11 +369,10 @@ class TestFullRoundtrip:
         # Verify stats
         assert data["stats"]["files_scanned"] == 4
         assert data["stats"]["total_lines"] > 0
-
-        # Verify duplicates found
         assert data["summary"]["total_groups"] >= 1
 
-        # Verify the calculate_tax group
+    def _verify_calculate_tax_group(self, data: dict) -> None:
+        """Verify the calculate_tax group specifically."""
         tax_groups = [
             g for g in data["groups"]
             if g.get("normalized_name") == "calculate_tax"

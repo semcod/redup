@@ -1,12 +1,17 @@
-# redup | 50f 9185L | python:50
+# redup | 55f 9297L | python:55
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[50]:
+M[55]:
   benchmark.py,83
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,485
+  src/redup/cli_app/config_builder.py,42
+  src/redup/cli_app/fuzzy_similarity.py,108
+  src/redup/cli_app/main.py,194
+  src/redup/cli_app/output_writer.py,66
+  src/redup/cli_app/scan_commands.py,124
+  src/redup/cli_app/scan_helpers.py,25
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,205
   src/redup/core/config.py,107
@@ -42,7 +47,7 @@ M[50]:
   test_fuzzy_similarity.py,191
   test_universal_fuzzy.py,257
   tests/__init__.py,0
-  tests/test_e2e.py,330
+  tests/test_e2e.py,336
   tests/test_hasher.py,78
   tests/test_matcher.py,49
   tests/test_models.py,85
@@ -61,17 +66,48 @@ D:
     i: pathlib.Path,redup.{ScanConfig,analyze},redup.reporters.json_reporter.to_json,redup.reporters.toon_reporter.to_toon
     e: main
     main()
-  src/redup/cli_app/main.py:
-    i: warnings,typer,redup,collections.abc.Callable,pathlib.Path,redup.core.config.{config_to_scan_config,create_sample_redup_toml,load_config},redup.core.models.DuplicationMap,typing.Literal
-    e: DEFAULT_PATH,DEFAULT_FORMAT,DEFAULT_OUTPUT,scan,diff,check,config,info
-    _write_output(content:str;output:Any;suffix:str)->None
-    _build_config(path:Path;extensions:str;min_lines:int;min_similarity:float;include_tests:bool)->ScanConfig
-    _build_config_with_file_support(path:Path;extensions:Any;min_lines:Any;min_similarity:Any;include_tests:Any;parallel:bool=False;...+1)->ScanConfig
-    _print_scan_header(path:Path;ext_list:list[str];min_lines:int;min_similarity:float)->None
-    _print_scan_summary(dup_map:DuplicationMap)->None
+  src/redup/cli_app/config_builder.py:
+    i: pathlib.Path,redup.core.config.{config_to_scan_config,load_config},redup.core.models.ScanConfig,typing.Any
+    e: build_config,build_config_with_file_support
+    build_config(path:Path;extensions:str;min_lines:int;min_similarity:float;include_tests:bool)->ScanConfig
+    build_config_with_file_support(path:Path;extensions:Any;min_lines:Any;min_similarity:Any;include_tests:Any;parallel:bool=False;...+1)->ScanConfig
+  src/redup/cli_app/fuzzy_similarity.py:
+    i: typer,pathlib.Path,redup.core.models.DuplicationMap
     _apply_fuzzy_similarity(dup_map:DuplicationMap;threshold:float)->DuplicationMap
-    _write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
+    _validate_fuzzy_input(dup_map:DuplicationMap;threshold:float)->'FuzzyValidationResult'
+    _extract_all_blocks(dup_map:DuplicationMap)->list
+    _separate_blocks_by_type(all_blocks:list)->tuple[list, list]
+    _analyze_blocks_with_detectors(html_css_blocks:list;other_blocks:list;threshold:float)->list
+    _analyze_html_css_blocks(html_css_blocks:list;threshold:float)->list
+    _analyze_other_language_blocks(other_blocks:list;threshold:float)->list
+    _report_fuzzy_results(similar_pairs:list)->None
+  src/redup/cli_app/main.py:
+    i: warnings,typer,redup,collections.abc.Callable,pathlib.Path,redup.core.config.{create_sample_redup_toml,load_config},redup.core.models.{DuplicationMap,ScanConfig},typing.Literal
+    e: DEFAULT_PATH,DEFAULT_FORMAT,DEFAULT_OUTPUT,scan,diff,check,config,info
     scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; code2llm; all; enhanced).');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
+    diff(before:Path=typer.Argument(...; help='Path to the earlier scan JSON file.'; exists=True; dir_okay=False; file_okay=True);after:Path=typer.Argument(...; help='Path to the later scan JSON file.'; exists=True; dir_okay=False; file_okay=True))->None
+    check(path:Path=typer.Argument(Path('.'); help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);max_groups:Any=typer.Option(None; '--max-groups'; help='Maximum allowed duplicate groups. Overrides config.');max_saved_lines:Any=typer.Option(None; '--max-lines'; help='Maximum allowed recoverable lines. Overrides config.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
+    config(init:bool=typer.Option(False; '--init'; help='Create a sample redup.toml configuration file.');show:bool=typer.Option(False; '--show'; help='Show current configuration (files + env vars).'))->None
+    info()->None
+  src/redup/cli_app/output_writer.py:
+    i: pathlib.Path,redup.core.models.DuplicationMap,redup.reporters.code2llm_reporter.{export_code2llm,to_code2llm_context,to_code2llm_toon},redup.reporters.json_reporter.to_json,redup.reporters.markdown_reporter.to_markdown,redup.reporters.toon_reporter.to_toon,redup.reporters.yaml_reporter.to_yaml,typing.Any
+    e: write_output,write_results
+    write_output(content:str;output:Any;suffix:str)->None
+    write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
+  src/redup/cli_app/scan_commands.py:
+    i: typer,pathlib.Path,redup.cli_app.config_builder.{build_config,build_config_with_file_support},redup.core.config.create_sample_redup_toml,redup.core.models.DuplicationMap,redup.core.pipeline.{analyze,analyze_optimized,analyze_parallel},typing.Any
+    e: scan_command,diff_command,check_command,config_command,info_command
+    scan_command(path:Path=typer.Argument(Path('.'); help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; code2llm; all; enhanced).');output:Any=typer.Option(None; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
+    diff_command(before:Path;after:Path)->None
+    check_command(path:Path=typer.Argument(Path('.'); help='Project root directory to check.'; exists=True; dir_okay=True; file_okay=False);max_groups:int=typer.Option(10; '--max-groups'; help='Maximum duplicate groups to report.');max_saved_lines:int=typer.Option(100; '--max-saved-lines'; help='Maximum saved lines to report.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines).');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0).');...+1)->None
+    config_command(init:bool=typer.Option(False; '--init'; help='Create sample redup.toml configuration.');show:bool=typer.Option(False; '--show'; help='Show current configuration.'))->None
+    info_command()->None
+  src/redup/cli_app/scan_helpers.py:
+    i: typer,pathlib.Path,redup.core.models.DuplicationMap,typing.List
+    e: print_scan_header,print_scan_summary,apply_fuzzy_similarity
+    print_scan_header(path:Path;ext_list:List[str];min_lines:int;min_similarity:float)->None
+    print_scan_summary(dup_map:DuplicationMap)->None
+    apply_fuzzy_similarity(dup_map:DuplicationMap;threshold:float)->DuplicationMap
   src/redup/core/cache.py:
     i: hashlib,sqlite3,time,pathlib.Path,redup.core.hasher.{hash_block,hash_block_structural},redup.core.scanner.CodeBlock,typing.Any
     e: HashCache,hash_block_with_cache,build_hash_index_with_cache

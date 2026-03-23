@@ -1,13 +1,16 @@
-# redup | 39f 7224L | python:38,shell:1
+# redup | 42f 7272L | python:41,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[39]:
+M[42]:
   benchmark.py,111
   examples/01_basic_usage.py,58
   project.sh,20
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,600
+  src/redup/cli_app/main.py,373
+  src/redup/cli_app/output_writer.py,78
+  src/redup/cli_app/scan_commands.py,163
+  src/redup/cli_app/scan_helpers.py,34
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,267
   src/redup/core/config.py,154
@@ -41,20 +44,10 @@ M[39]:
   src/redup/reporters/yaml_reporter.py,34
   src/sitecustomize.py,4
 D:
-  src/redup/cli_app/main.py:
-    e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_apply_fuzzy_similarity,_write_results,scan,diff,check,config,info
-    _write_output(content;output;suffix)
-    _build_config(path;extensions;min_lines;min_similarity;include_tests)
-    _build_config_with_file_support(path;extensions;min_lines;min_similarity;include_tests;parallel;max_workers;incremental;memory_cache;max_cache_mb;functions_only)
-    _print_scan_header(path;ext_list;min_lines;min_similarity)
-    _print_scan_summary(dup_map)
-    _apply_fuzzy_similarity(dup_map;threshold)
-    _write_results(dup_map;format;output;path)
-    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental;memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
-    diff(before;after)
-    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
-    config(init;show)
-    info()
+  src/redup/cli_app/output_writer.py:
+    e: write_output,write_results
+    write_output(content;output;suffix)
+    write_results(dup_map;format;output;path)
   src/redup/core/ultra_fast_scanner.py:
     e: preload_to_ram,smart_hash_block,_ast_to_normalized_string_fast,extract_functions_fast,scan_project_ultra_fast,_extract_blocks_for_file,_process_sources_batch,scan_project_incremental_fast
     preload_to_ram(config;show_progress)
@@ -230,6 +223,13 @@ A...
     _extract_functions_bash(node;source_lines;file_path)
     get_supported_languages()
     is_language_supported(file_path)
+  src/redup/cli_app/scan_commands.py:
+    e: scan_command,diff_command,check_command,config_command,info_command
+    scan_command(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental;memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
+    diff_command(before;after)
+    check_command(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
+    config_command(init;show)
+    info_command()
   examples/01_basic_usage.py:
     e: main
     main()
@@ -257,6 +257,22 @@ Provides ~10x...
     e: FunctionExtractor,_extract_java_class_name
     FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
     _extract_java_class_name(node)
+  src/redup/cli_app/main.py:
+    e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups,scan,diff,check,config,info
+    _apply_fuzzy_similarity(dup_map;threshold)
+    _validate_fuzzy_input(dup_map;threshold)
+    _extract_all_blocks(dup_map)
+    _separate_blocks_by_type(all_blocks)
+    _analyze_blocks_with_detectors(html_css_blocks;other_blocks;threshold)
+    _analyze_html_css_blocks(html_css_blocks;threshold)
+    _analyze_other_language_blocks(other_blocks;threshold)
+    _report_fuzzy_results(similar_pairs)
+    _report_similarity_by_groups(similar_pairs)
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental;memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
+    diff(before;after)
+    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
+    config(init;show)
+    info()
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)
@@ -288,6 +304,11 @@ Provides ~10x...
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
+  src/redup/cli_app/scan_helpers.py:
+    e: print_scan_header,print_scan_summary,apply_fuzzy_similarity
+    print_scan_header(path;ext_list;min_lines;min_similarity)
+    print_scan_summary(dup_map)
+    apply_fuzzy_similarity(dup_map;threshold)
   src/redup/__main__.py:
   src/redup/__init__.py:
   src/redup/core/__init__.py:
