@@ -7,117 +7,127 @@ flowchart LR
         examples__01_basic_usage__main["main"]
     end
     subgraph src_redup
-        src__scan_project_parallel["scan_project_parallel"]
-        src__is_language_supported["is_language_supported"]
-        src__redup__core__hasher__hash_block_structural["hash_block_structural"]
-        src__to_code2llm_toon["to_code2llm_toon"]
-        src__redup__cli_app__main___write_output["_write_output"]
-        src___initialize_language_dispatcher["_initialize_language_dispatche"]
-        src___blocks_from_different_locations["_blocks_from_different_locatio"]
-        src___group_to_dict["_group_to_dict"]
-        src___find_duplicates_phase_optimized["_find_duplicates_phase_optimiz"]
-        src__refine_structural_matches["refine_structural_matches"]
-        src___compare_against_reference["_compare_against_reference"]
-        src__redup__core__scanner___extract_blocks_sliding["_extract_blocks_sliding"]
-        src__redup__core__hasher__find_exact_duplicates["find_exact_duplicates"]
-        src__redup__core__planner___suggest_module_name["_suggest_module_name"]
-        src__redup__core__matcher__sequence_similarity["sequence_similarity"]
-        src___is_test_file_cached["_is_test_file_cached"]
+        src__find_near_duplicates["find_near_duplicates"]
         src__redup__core__lsh_matcher__build_lsh_index["build_lsh_index"]
-        src___find_files_optimized["_find_files_optimized"]
-        src__redup__core__config__load_config["load_config"]
-        src__create_duplicate_finder["create_duplicate_finder"]
-        src__create_hash_function["create_hash_function"]
-        src__redup__core__planner___choose_action["_choose_action"]
-        src__get_supported_languages["get_supported_languages"]
-        src__redup__core__pipeline__analyze["analyze"]
-        src__redup__cli_app__main___write_results["_write_results"]
-        src__redup__core__hasher___normalize_text["_normalize_text"]
-        src__redup__core__pipeline___deduplicate_groups["_deduplicate_groups"]
-        src___count_critical_functions["_count_critical_functions"]
-        src__redup__core__pipeline___deduplicate_phase["_deduplicate_phase"]
-        src__redup__core__config__config_to_scan_config["config_to_scan_config"]
-        src__redup__core__config___load_toml_file["_load_toml_file"]
-        src__redup__reporters__json_reporter__to_json["to_json"]
+        src__build_hash_index_with_cache["build_hash_index_with_cache"]
+        src__redup__core__pipeline___scan_phase_parallel["_scan_phase_parallel"]
         src__redup__core__scanner___collect_files["_collect_files"]
-        src__redup__core__pipeline__analyze_parallel["analyze_parallel"]
+        src__redup__core__planner___choose_action["_choose_action"]
+        src__extract_functions_fast["extract_functions_fast"]
+        src__create_duplicate_finder["create_duplicate_finder"]
+        src__preload_to_ram["preload_to_ram"]
+        src__redup__core__scanner___should_exclude["_should_exclude"]
+        src__redup__cli_app__main__diff["diff"]
+        src__redup__core__hasher___hash_text["_hash_text"]
+        src__redup__cli_app__main___write_results["_write_results"]
+        src__redup__core__differ___load_duplication_map["_load_duplication_map"]
+        src__redup__cli_app__main___write_output["_write_output"]
+        src__redup__core__planner___assess_risk["_assess_risk"]
+        src___compare_against_reference["_compare_against_reference"]
+        src___get_layers["_get_layers"]
+        src__redup__core__differ__format_diff_result["format_diff_result"]
+        src__redup__core__lsh_matcher___create_minhash["_create_minhash"]
+        src___suggestion_to_dict["_suggestion_to_dict"]
+        src___is_test_file_cached["_is_test_file_cached"]
+        src___get_config_from_redup_toml["_get_config_from_redup_toml"]
+        src__extract_functions_treesitter["extract_functions_treesitter"]
+        src__find_all_duplicates_lazy["find_all_duplicates_lazy"]
+        src__redup__core__pipeline___blocks_to_group["_blocks_to_group"]
+        src__redup__cli_app__main__config["config"]
+        src__is_language_supported["is_language_supported"]
         src__redup__core__scanner___is_test_file["_is_test_file"]
+        src___create_simple_minhash["_create_simple_minhash"]
+        src___match_results_to_blocks["_match_results_to_blocks"]
+        src___find_duplicates_phase_optimized["_find_duplicates_phase_optimiz"]
+        src__redup__core__pipeline__analyze_optimized["analyze_optimized"]
+        src__scan_project_memory_optimized["scan_project_memory_optimized"]
+        src__redup__core__hasher__build_hash_index["build_hash_index"]
+        src__redup__core__pipeline___scan_phase["_scan_phase"]
+        src___render_header["_render_header"]
+        src__find_structural_duplicates_lazy["find_structural_duplicates_laz"]
+        src__redup__core__matcher__fuzzy_similarity["fuzzy_similarity"]
+        src__redup__core__pipeline___find_exact_groups["_find_exact_groups"]
+        src___render_duplicates["_render_duplicates"]
+        src___find_near_duplicates_simple["_find_near_duplicates_simple"]
+        src___initialize_language_dispatcher["_initialize_language_dispatche"]
+        src__to_code2llm_context["to_code2llm_context"]
+        src__scan_project_incremental_fast["scan_project_incremental_fast"]
+        src__redup__core__scanner___read_file_optimized["_read_file_optimized"]
+        src___create_duplicate_group["_create_duplicate_group"]
+        src__redup__core__pipeline___ensure_config["_ensure_config"]
+        src__redup__core__hasher___normalize_text["_normalize_text"]
+        src__find_exact_duplicates_lazy["find_exact_duplicates_lazy"]
+        src___get_config_from_pyproject["_get_config_from_pyproject"]
+        src___render_summary["_render_summary"]
+        src__to_code2llm_toon["to_code2llm_toon"]
+        src__redup__core__scanner__scan_project["scan_project"]
+        src__redup__core__config___load_toml_file["_load_toml_file"]
+        src___find_structural_groups["_find_structural_groups"]
+        src__redup__core__matcher__sequence_similarity["sequence_similarity"]
+        src__scan_project_parallel["scan_project_parallel"]
+        src__export_code2llm["export_code2llm"]
+        src___render_refactor["_render_refactor"]
+        src__redup__core__config__config_to_scan_config["config_to_scan_config"]
+        src__redup__reporters__toon_reporter__to_toon["to_toon"]
+        src___process_sources_batch["_process_sources_batch"]
+        src__redup__core__config__create_sample_redup_toml["create_sample_redup_toml"]
+        src__redup__core__hasher__find_exact_duplicates["find_exact_duplicates"]
+        src__redup__reporters__yaml_reporter__to_yaml["to_yaml"]
+        src__redup__core__scanner___extract_blocks_sliding["_extract_blocks_sliding"]
+        src__redup__reporters__json_reporter__to_json["to_json"]
+        src__redup__core__scanner___preload_files_to_ram["_preload_files_to_ram"]
+        src__redup__core__pipeline___process_blocks["_process_blocks"]
+        src__get_supported_languages["get_supported_languages"]
+        src___should_process_file["_should_process_file"]
+        src__find_near_duplicates["find_near_duplicates"]
+        src__redup__core__planner___common_prefix["_common_prefix"]
+        src___extract_blocks_for_file["_extract_blocks_for_file"]
+        src__redup__core__hasher__hash_block["hash_block"]
+        src___extract_function_blocks_python["_extract_function_blocks_pytho"]
+        src___text_to_minhash_features["_text_to_minhash_features"]
+        src___build_config_with_file_support["_build_config_with_file_suppor"]
+        src__redup__core__pipeline__analyze_parallel["analyze_parallel"]
+        src__find_structural_duplicates["find_structural_duplicates"]
+        src__refine_structural_matches["refine_structural_matches"]
+        src__redup__core__hasher___normalize_ast_text["_normalize_ast_text"]
+        src___find_near_duplicate_groups["_find_near_duplicate_groups"]
+        src__create_hash_function["create_hash_function"]
+        src___blocks_from_different_locations["_blocks_from_different_locatio"]
+        src__redup__core__planner__generate_suggestions["generate_suggestions"]
+        src___ast_to_normalized_string["_ast_to_normalized_string"]
+        src__redup__core__pipeline___deduplicate_groups["_deduplicate_groups"]
+        src__redup__core__lsh_matcher__LSHIndex__add["add"]
+        src__redup__cli_app__main__check["check"]
+        src___calculate_avg_cc["_calculate_avg_cc"]
+        src___find_files_optimized["_find_files_optimized"]
         src__redup__core__hasher___find_duplicates["_find_duplicates"]
+        src__redup__core__hasher__hash_block_structural["hash_block_structural"]
+        src__redup__core__pipeline__analyze["analyze"]
+        src__redup__core__hasher___hashed_block["_hashed_block"]
+        src__redup__core__differ___group_by_id["_group_by_id"]
+        src__redup__core__pipeline___deduplicate_phase["_deduplicate_phase"]
+        src___ast_to_normalized_string_fast["_ast_to_normalized_string_fast"]
+        src___scan_file_worker["_scan_file_worker"]
+        src___find_duplicates_phase_lazy["_find_duplicates_phase_lazy"]
+        src___group_to_dict["_group_to_dict"]
+        src__redup__core__cache__hash_block_with_cache["hash_block_with_cache"]
+        src__redup__core__config__load_config["load_config"]
+        src__redup__core__planner___suggest_module_name["_suggest_module_name"]
+        src___render_metrics_target["_render_metrics_target"]
+        src__scan_project_ultra_fast["scan_project_ultra_fast"]
+        src___count_critical_functions["_count_critical_functions"]
+        src__smart_hash_block["smart_hash_block"]
+        src__redup__core__differ__compare_scans["compare_scans"]
         src__redup__core__matcher__match_candidates["match_candidates"]
         src___get_tree_sitter_language["_get_tree_sitter_language"]
-        src__redup__core__differ___group_by_id["_group_by_id"]
-        src__redup__core__hasher__build_hash_index["build_hash_index"]
-        src___find_structural_groups["_find_structural_groups"]
-        src__redup__reporters__yaml_reporter__to_yaml["to_yaml"]
-        src__redup__core__hasher___normalize_ast_text["_normalize_ast_text"]
-        src__redup__core__cache__hash_block_with_cache["hash_block_with_cache"]
-        src___create_simple_minhash["_create_simple_minhash"]
-        src__find_structural_duplicates["find_structural_duplicates"]
-        src__extract_functions_treesitter["extract_functions_treesitter"]
-        src__redup__core__config__create_sample_redup_toml["create_sample_redup_toml"]
-        src___find_near_duplicate_groups["_find_near_duplicate_groups"]
-        src___extract_function_blocks_python["_extract_function_blocks_pytho"]
-        src__redup__core__pipeline___scan_phase["_scan_phase"]
-        src__find_structural_duplicates_lazy["find_structural_duplicates_laz"]
-        src__redup__core__differ__compare_scans["compare_scans"]
-        src__redup__core__pipeline___process_blocks["_process_blocks"]
-        src__redup__core__hasher___hashed_block["_hashed_block"]
-        src__redup__cli_app__main__diff["diff"]
-        src__build_hash_index_with_cache["build_hash_index_with_cache"]
-        src__redup__core__matcher__fuzzy_similarity["fuzzy_similarity"]
-        src__redup__core__planner__generate_suggestions["generate_suggestions"]
-        src__redup__core__pipeline__analyze_optimized["analyze_optimized"]
-        src__export_code2llm["export_code2llm"]
-        src___render_header["_render_header"]
-        src__redup__core__scanner__scan_project["scan_project"]
-        src__find_all_duplicates_lazy["find_all_duplicates_lazy"]
-        src___find_near_duplicates_simple["_find_near_duplicates_simple"]
-        src___render_refactor["_render_refactor"]
-        src__redup__core__hasher___hash_text["_hash_text"]
-        src___find_duplicates_phase_lazy["_find_duplicates_phase_lazy"]
-        src__redup__core__lsh_matcher__LSHIndex__add["add"]
-        src__redup__core__pipeline___find_exact_groups["_find_exact_groups"]
-        src__redup__core__pipeline___scan_phase_parallel["_scan_phase_parallel"]
-        src__find_near_duplicates["find_near_duplicates"]
-        src___render_metrics_target["_render_metrics_target"]
-        src__redup__core__hasher__hash_block["hash_block"]
-        src___text_to_minhash_features["_text_to_minhash_features"]
-        src___render_duplicates["_render_duplicates"]
-        src__redup__core__pipeline___blocks_to_group["_blocks_to_group"]
-        src___get_config_from_redup_toml["_get_config_from_redup_toml"]
-        src__redup__core__differ__format_diff_result["format_diff_result"]
-        src___get_layers["_get_layers"]
-        src__redup__reporters__toon_reporter__to_toon["to_toon"]
-        src__find_exact_duplicates_lazy["find_exact_duplicates_lazy"]
-        src___calculate_avg_cc["_calculate_avg_cc"]
-        src__redup__core__scanner___should_exclude["_should_exclude"]
-        src__redup__core__pipeline___ensure_config["_ensure_config"]
-        src___render_summary["_render_summary"]
-        src__find_near_duplicates["find_near_duplicates"]
-        src__redup__cli_app__main__config["config"]
-        src___suggestion_to_dict["_suggestion_to_dict"]
-        src___scan_file_worker["_scan_file_worker"]
-        src__to_code2llm_context["to_code2llm_context"]
-        src___ast_to_normalized_string["_ast_to_normalized_string"]
-        src___build_config_with_file_support["_build_config_with_file_suppor"]
-        src__calculate_diff_stats["calculate_diff_stats"]
-        src__redup__core__planner___assess_risk["_assess_risk"]
-        src___should_process_file["_should_process_file"]
-        src__redup__cli_app__main__check["check"]
-        src___match_results_to_blocks["_match_results_to_blocks"]
-        src__redup__core__lsh_matcher___create_minhash["_create_minhash"]
-        src__redup__core__differ___load_duplication_map["_load_duplication_map"]
-        src___get_config_from_pyproject["_get_config_from_pyproject"]
-        src__redup__core__planner___common_prefix["_common_prefix"]
-        src___create_duplicate_group["_create_duplicate_group"]
     end
     examples__01_basic_usage__main --> src__redup__core__pipeline__analyze
+    benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze
+    benchmark__benchmark_feature_performance --> src__redup__core__pipeline__analyze_parallel
     src___get_config_from_pyproject --> src__redup__core__config___load_toml_file
     src___get_config_from_redup_toml --> src__redup__core__config___load_toml_file
     src__redup__core__config__load_config --> src___get_config_from_redup_toml
     src__redup__core__config__load_config --> src___get_config_from_pyproject
-    benchmark__benchmark_sequential_vs_parallel --> src__redup__core__pipeline__analyze
-    benchmark__benchmark_feature_performance --> src__redup__core__pipeline__analyze_parallel
     src__find_exact_duplicates_lazy --> src___create_duplicate_group
     src__find_exact_duplicates_lazy --> src___blocks_from_different_locations
     src__find_structural_duplicates_lazy --> src___create_duplicate_group
@@ -128,10 +138,12 @@ flowchart LR
     src__redup__core__planner__generate_suggestions --> src__redup__core__planner___choose_action
     src__redup__core__planner__generate_suggestions --> src__redup__core__planner___suggest_module_name
     src__redup__core__planner__generate_suggestions --> src__redup__core__planner___assess_risk
+    src__scan_project_memory_optimized --> src__redup__core__scanner___collect_files
     src__redup__core__scanner___collect_files --> src__redup__core__scanner___should_exclude
     src__redup__core__scanner___collect_files --> src__redup__core__scanner___is_test_file
-    src__redup__core__scanner__scan_project --> src__redup__core__scanner___collect_files
-    src__redup__core__scanner__scan_project --> src__redup__core__scanner___extract_blocks_sliding
+    src__redup__core__scanner___preload_files_to_ram --> src__redup__core__scanner___collect_files
+    src__redup__core__scanner___preload_files_to_ram --> src__redup__core__scanner___read_file_optimized
+    src__redup__core__scanner__scan_project --> src__redup__core__scanner___preload_files_to_ram
     src___scan_file_worker --> src___should_process_file
     src___scan_file_worker --> src___extract_function_blocks_python
     src___scan_file_worker --> src__extract_functions_treesitter
@@ -146,12 +158,11 @@ flowchart LR
     src__redup__core__pipeline__analyze --> src__redup__core__planner__generate_suggestions
     src__redup__core__pipeline__analyze_optimized --> src__redup__core__pipeline___ensure_config
     src__redup__core__pipeline__analyze_optimized --> src__redup__core__pipeline___process_blocks
-    src__redup__core__pipeline__analyze_optimized --> src___find_duplicates_phase_lazy
+    src__redup__core__pipeline__analyze_optimized --> src___find_duplicates_phase_optimized
     src__redup__core__pipeline__analyze_optimized --> src__redup__core__pipeline___deduplicate_phase
     src__redup__core__pipeline__analyze_optimized --> src__redup__core__planner__generate_suggestions
-    src__redup__core__pipeline__analyze_optimized --> src__redup__core__pipeline___scan_phase_parallel
-    src__redup__core__pipeline__analyze_optimized --> src__redup__core__pipeline___scan_phase
     src__redup__core__pipeline___scan_phase --> src__redup__core__scanner__scan_project
+    src__redup__core__pipeline___scan_phase --> src__scan_project_ultra_fast
     src__redup__core__pipeline___scan_phase_parallel --> src__scan_project_parallel
     src___find_duplicates_phase_optimized --> src__redup__core__hasher__build_hash_index
     src___find_duplicates_phase_optimized --> src___find_near_duplicate_groups
@@ -173,7 +184,6 @@ flowchart LR
     src__redup__core__pipeline__analyze_parallel --> src__redup__core__pipeline___process_blocks
     src__redup__core__pipeline__analyze_parallel --> src___find_duplicates_phase_optimized
     src__redup__core__pipeline__analyze_parallel --> src__redup__core__pipeline___deduplicate_phase
-    src__redup__core__pipeline__analyze_parallel --> src__redup__core__planner__generate_suggestions
     src__redup__core__matcher__sequence_similarity --> src__redup__core__hasher___normalize_text
     src__redup__core__matcher__fuzzy_similarity --> src__redup__core__hasher___normalize_text
     src__redup__core__matcher__fuzzy_similarity --> src__redup__core__matcher__sequence_similarity
@@ -190,23 +200,23 @@ flowchart LR
     src__redup__core__cache__hash_block_with_cache --> src__redup__core__hasher__hash_block
     src__redup__core__cache__hash_block_with_cache --> src__redup__core__hasher__hash_block_structural
     src__build_hash_index_with_cache --> src__redup__core__cache__hash_block_with_cache
-    src__redup__core__hasher___normalize_ast_text --> src___ast_to_normalized_string
-    src__redup__core__hasher___normalize_ast_text --> src__redup__core__hasher___normalize_text
-    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block
-    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block_structural
-    src__redup__core__hasher__build_hash_index --> src__redup__core__hasher___hashed_block
-    src__redup__core__hasher___find_duplicates --> src___blocks_from_different_locations
-    src__extract_functions_treesitter --> src___get_tree_sitter_language
-    src__extract_functions_treesitter --> src___initialize_language_dispatcher
-    src__get_supported_languages --> src___get_tree_sitter_language
-    src__is_language_supported --> src___get_tree_sitter_language
-    src__redup__reporters__json_reporter__to_json --> src___group_to_dict
-    src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
+    src__redup__core__differ__compare_scans --> src__redup__core__differ___load_duplication_map
+    src__redup__core__differ__compare_scans --> src__redup__core__differ___group_by_id
     src___get_layers --> src___calculate_avg_cc
     src__to_code2llm_toon --> src___calculate_avg_cc
     src__to_code2llm_toon --> src___count_critical_functions
     src__export_code2llm --> src__to_code2llm_toon
     src__export_code2llm --> src__to_code2llm_context
+    src__preload_to_ram --> src__redup__core__scanner___collect_files
+    src__smart_hash_block --> src___ast_to_normalized_string_fast
+    src__scan_project_ultra_fast --> src__preload_to_ram
+    src__scan_project_ultra_fast --> src___process_sources_batch
+    src___extract_blocks_for_file --> src__redup__core__scanner___extract_blocks_sliding
+    src___extract_blocks_for_file --> src__extract_functions_fast
+    src___process_sources_batch --> src___extract_blocks_for_file
+    src__scan_project_incremental_fast --> src__scan_project_ultra_fast
+    src__redup__reporters__json_reporter__to_json --> src___group_to_dict
+    src__redup__reporters__json_reporter__to_json --> src___suggestion_to_dict
     src__redup__reporters__yaml_reporter__to_yaml --> src___group_to_dict
     src__redup__reporters__yaml_reporter__to_yaml --> src___suggestion_to_dict
     src__redup__reporters__toon_reporter__to_toon --> src___render_header
@@ -215,7 +225,17 @@ flowchart LR
     src__redup__reporters__toon_reporter__to_toon --> src___render_refactor
     src__redup__reporters__toon_reporter__to_toon --> src___render_metrics_target
     src__create_hash_function --> src__redup__core__hasher___hash_text
+    src__extract_functions_treesitter --> src___get_tree_sitter_language
+    src__extract_functions_treesitter --> src___initialize_language_dispatcher
+    src__get_supported_languages --> src___get_tree_sitter_language
+    src__is_language_supported --> src___get_tree_sitter_language
     src__create_duplicate_finder --> src__redup__core__hasher___find_duplicates
+    src__redup__core__hasher___normalize_ast_text --> src___ast_to_normalized_string
+    src__redup__core__hasher___normalize_ast_text --> src__redup__core__hasher___normalize_text
+    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block
+    src__redup__core__hasher___hashed_block --> src__redup__core__hasher__hash_block_structural
+    src__redup__core__hasher__build_hash_index --> src__redup__core__hasher___hashed_block
+    src__redup__core__hasher___find_duplicates --> src___blocks_from_different_locations
     src___build_config_with_file_support --> src__redup__core__config__load_config
     src___build_config_with_file_support --> src__redup__core__config__config_to_scan_config
     src__redup__cli_app__main___write_results --> src__redup__cli_app__main___write_output
@@ -225,6 +245,3 @@ flowchart LR
     src__redup__cli_app__main__check --> src__redup__core__config__load_config
     src__redup__cli_app__main__check --> src__redup__core__config__config_to_scan_config
     src__redup__cli_app__main__config --> src__redup__core__config__create_sample_redup_toml
-    src__redup__core__differ__compare_scans --> src__redup__core__differ___load_duplication_map
-    src__redup__core__differ__compare_scans --> src__redup__core__differ___group_by_id
-    src__redup__core__differ__compare_scans --> src__calculate_diff_stats

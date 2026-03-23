@@ -278,6 +278,8 @@ def scan_project(config: ScanConfig | None = None, function_level_only: bool = F
     Returns:
         Tuple of (scanned_files, scan_stats).
     """
+    import sys
+    
     if config is None:
         config = ScanConfig()
 
@@ -289,8 +291,17 @@ def scan_project(config: ScanConfig | None = None, function_level_only: bool = F
     files_content = _preload_files_to_ram(config)
     stats.files_scanned = len(files_content)
     
+    # Progress indicator for large projects
+    total_files = len(files_content)
+    if total_files > 100:
+        print(f"  Scanning {total_files} files...", file=sys.stderr, flush=True)
+    
     # Phase 2: Process all files from RAM
-    for filepath, source in files_content:
+    for i, (filepath, source) in enumerate(files_content):
+        # Progress indicator for large projects
+        if total_files > 100 and (i + 1) % 50 == 0:
+            print(f"  Progress: {i + 1}/{total_files} files...", file=sys.stderr, flush=True)
+        
         lines = source.splitlines()
         rel_path = str(filepath.relative_to(config.root.resolve()))
         stats.total_lines += len(lines)
@@ -326,6 +337,9 @@ def scan_project(config: ScanConfig | None = None, function_level_only: bool = F
         sf = ScannedFile(path=rel_path, lines=lines, blocks=all_blocks)
         scanned.append(sf)
         stats.total_blocks += len(all_blocks)
+    
+    if total_files > 100:
+        print(f"  Scanned {stats.total_blocks} blocks from {stats.files_scanned} files", file=sys.stderr, flush=True)
 
     stats.scan_time_ms = (time.monotonic() - t0) * 1000
     return scanned, stats

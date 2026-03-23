@@ -39,9 +39,10 @@ def _normalize_text(text: str) -> str:
     # Vectorized: single list comprehension pass instead of loop
     lines = text.splitlines()
     result_lines = [
-        _COMMENT_RE.sub("", line).strip()
-        for line in lines
-        if line.strip() and not _MULTILINE_STRING_RE.match(line)
+        stripped for line in lines
+        if (line.strip() and not _MULTILINE_STRING_RE.match(line))
+        for processed in [_COMMENT_RE.sub("", line).strip()]
+        if processed  # Skip empty lines (only comments)
     ]
     result = "\n".join(result_lines)
     

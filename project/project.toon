@@ -1,341 +1,61 @@
-# redup | 45f 6755L | python:45
-# Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[45]:
-  benchmark.py,83
-  examples/01_basic_usage.py,39
-  src/redup/__init__.py,21
-  src/redup/__main__.py,3
-  src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,383
-  src/redup/core/__init__.py,1
-  src/redup/core/cache.py,205
-  src/redup/core/config.py,107
-  src/redup/core/differ.py,152
-  src/redup/core/hash_cache.py,82
-  src/redup/core/hasher.py,191
-  src/redup/core/lazy_grouper.py,114
-  src/redup/core/lsh_matcher.py,144
-  src/redup/core/matcher.py,84
-  src/redup/core/models.py,121
-  src/redup/core/parallel_scanner.py,155
-  src/redup/core/pipeline.py,367
-  src/redup/core/planner.py,82
-  src/redup/core/scanner.py,190
-  src/redup/core/ts_extractor.py,550
-  src/redup/core/utils/__init__.py,1
-  src/redup/core/utils/diff_helpers.py,73
-  src/redup/core/utils/duplicate_finders.py,24
-  src/redup/core/utils/function_extractor.py,111
-  src/redup/core/utils/hash_utils.py,25
-  src/redup/core/utils/language_dispatcher.py,51
-  src/redup/reporters/__init__.py,1
-  src/redup/reporters/code2llm_reporter.py,167
-  src/redup/reporters/enhanced_reporter.py,229
-  src/redup/reporters/json_reporter.py,60
-  src/redup/reporters/markdown_reporter.py,67
-  src/redup/reporters/toon_reporter.py,82
-  src/redup/reporters/yaml_reporter.py,27
-  src/sitecustomize.py,3
-  tests/__init__.py,0
-  tests/test_e2e.py,330
-  tests/test_hasher.py,78
-  tests/test_matcher.py,49
-  tests/test_models.py,85
-  tests/test_pipeline.py,96
-  tests/test_planner.py,110
-  tests/test_reporters.py,80
-  tests/test_scanner.py,52
-  tests/test_ts_extractor.py,168
-D:
-  benchmark.py:
-    i: time,sys,pathlib.Path,redup.core.models.ScanConfig,redup.core.pipeline.{analyze,analyze_parallel}
-    e: benchmark_sequential_vs_parallel,benchmark_feature_performance
-    benchmark_sequential_vs_parallel()
-    benchmark_feature_performance()
-  examples/01_basic_usage.py:
-    i: pathlib.Path,redup.{ScanConfig,analyze},redup.reporters.json_reporter.to_json,redup.reporters.toon_reporter.to_toon
-    e: main
-    main()
-  src/redup/cli_app/main.py:
-    i: warnings,typer,redup,collections.abc.Callable,pathlib.Path,redup.core.config.{config_to_scan_config,create_sample_redup_toml,load_config},redup.core.models.DuplicationMap,typing.Literal
-    e: DEFAULT_PATH,DEFAULT_FORMAT,DEFAULT_OUTPUT,scan,diff,check,config,info
-    _write_output(content:str;output:Any;suffix:str)->None
-    _build_config(path:Path;extensions:str;min_lines:int;min_similarity:float;include_tests:bool)->ScanConfig
-    _build_config_with_file_support(path:Path;extensions:Any;min_lines:Any;min_similarity:Any;include_tests:Any;parallel:bool=False;...+1)->ScanConfig
-    _print_scan_header(path:Path;ext_list:list[str];min_lines:int;min_similarity:float)->None
-    _print_scan_summary(dup_map:DuplicationMap)->None
-    _write_results(dup_map:DuplicationMap;format:str;output:Any;path:Path)->None
-    scan(path:Path=typer.Argument(DEFAULT_PATH; help='Project root directory to scan.'; exists=True; dir_okay=True; file_okay=False);format:str=typer.Option('toon'; '--format'; '-f'; help='Output format (json; yaml; toon; markdown; code2llm; all; enhanced).');output:Any=typer.Option(DEFAULT_OUTPUT; '--output'; '-o'; help='Output directory or file path. Defaults to stdout.');extensions:Any=typer.Option(None; '--ext'; '-e'; help='Comma-separated file extensions to scan. Overrides config.');min_lines:Any=typer.Option(None; '--min-lines'; help='Minimum block size (lines). Overrides config.');min_similarity:Any=typer.Option(None; '--min-sim'; help='Minimum similarity score (0.0-1.0). Overrides config.');...+1)->None
-    diff(before:Path=typer.Argument(...; help='Path to the earlier scan JSON file.'; exists=True; dir_okay=False; file_okay=True);after:Path=typer.Argument(...; help='Path to the later scan JSON file.'; exists=True; dir_okay=False; file_okay=True))->None
-  src/redup/core/cache.py:
-    i: hashlib,sqlite3,time,pathlib.Path,redup.core.hasher.{hash_block,hash_block_structural},redup.core.scanner.CodeBlock,typing.Any
-    e: HashCache,hash_block_with_cache,build_hash_index_with_cache
-    HashCache: __init__(1),_init_tables(0),_get_file_hash(2),is_file_unchanged(2),get_cached_block_hashes(2)  # SQLite-based cache for file and block...
-    hash_block_with_cache(text:str;file_path:Path;start:int;end:int;cache:Any=None)->tuple[str, str]
-    build_hash_index_with_cache(blocks:list[CodeBlock];min_lines:int=3;cache:Any=None)->tuple[Any, dict[Path, dict[tuple[int, int], tuple[str, str]]]]
-  src/redup/core/config.py:
-    i: os,tomllib,pathlib.Path,redup.core.models.ScanConfig,typing.Any
-    e: load_config,config_to_scan_config,create_sample_redup_toml
-    _load_toml_file(file_path:Path)->dict[str, Any]
-    _get_config_from_pyproject()->dict[str, Any]
-    _get_config_from_redup_toml()->dict[str, Any]
-    load_config()->dict[str, Any]
-    config_to_scan_config(config:dict[str;Any];path:Path)->ScanConfig
-    create_sample_redup_toml()->str
-  src/redup/core/differ.py:
-    i: json,dataclasses.dataclass,pathlib.Path,redup.core.models.{DuplicateGroup,DuplicationMap},redup.core.utils.diff_helpers.{DiffCalculator,GroupMatcher},typing.Any
-    e: DiffResult,compare_scans,format_diff_result
-    DiffResult:   # Result of comparing two reDUP scans.
-    _load_duplication_map(file_path:Path)->DuplicationMap
-    _group_by_id(groups:list[DuplicateGroup])->dict[str, DuplicateGroup]
-    _groups_match(group1:DuplicateGroup;group2:DuplicateGroup)->bool
-    compare_scans(before_file:Path;after_file:Path)->DiffResult
-    format_diff_result(diff:DiffResult)->str
-  src/redup/core/hash_cache.py:
-    i: hashlib,json,pathlib.Path,typing.Any
-    e: HashCache
-    HashCache: __init__(1),_load(0),save(0),get_file_hash(1),is_unchanged(2)  # Cache for file hashes to enable incre...
-    _config_to_hash(config:Any)->str
-  src/redup/core/hasher.py:
-    i: ast,functools,hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock,typing.Any
-    e: _MAX_CACHE_SIZE,_AST_HANDLERS,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,HashedBlock,HashIndex
-    HashedBlock:   # A code block with its computed finger...
-    HashIndex:   # Index mapping hashes to blocks for fa...
-    _normalize_text(text:str)->str
-    _normalize_ast_text(text:str)->str
-    _ast_to_normalized_string(tree:object)->str
-    _process_ast_node(node;name_map:dict[str;str];counter:list[int])->str | None
-    _get_placeholder(name:str;name_map:dict[str;str];counter:list[int])->str
-    _normalize_constant(value:Any)->str
-    _hash_text(text:str;normalizer:Callable[Any;str])->str
-    hash_block(text:str)->str
-  src/redup/core/lazy_grouper.py:
-    i: collections.abc.Iterator,redup.core.hasher.{HashIndex,HashedBlock,_blocks_from_different_locations},redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType},typing.Any
-    e: find_exact_duplicates_lazy,find_structural_duplicates_lazy,find_all_duplicates_lazy,DuplicateGroupCollector
-    DuplicateGroupCollector: __init__(3),collect(1),collect_sorted(1)  # Collector for lazy duplicate groups w...
-    find_exact_duplicates_lazy(index:HashIndex;min_lines:int=3)->Iterator[DuplicateGroup]
-    find_structural_duplicates_lazy(index:HashIndex;min_lines:int=3)->Iterator[DuplicateGroup]
-    _create_duplicate_group(hash_val:str;blocks:list[HashedBlock];duplicate_type:DuplicateType)->DuplicateGroup
-    find_all_duplicates_lazy(index:HashIndex;min_lines:int=3;include_exact:bool=True;include_structural:bool=True)->Iterator[DuplicateGroup]
-  src/redup/core/lsh_matcher.py:
-    i: hashlib,datasketch.{MinHash,MinHashLSH},redup.core.hasher._normalize_text,redup.core.scanner.CodeBlock,typing.Any
-    e: LSHIndex,build_lsh_index,find_near_duplicates
-    _SimpleMinHash: __init__(2),jaccard(1)  # Simple MinHash implementation for fal...
-    LSHIndex: __init__(2),add(1),find_near_duplicates(1),_find_near_duplicates_simple(1),find_all_near_duplicates(1)  # LSH index for efficient near-duplicat...
-    _create_minhash(text:str;num_perm:int=128)->MinHash | None
-    _text_to_minhash_features(text:str;num_features:int=10)->list[str]
-    _create_simple_minhash(text:str;num_perm:int=128)->_SimpleMinHash
-    build_lsh_index(blocks:list[CodeBlock];threshold:float=0.8;min_lines:int=10)->LSHIndex
-    find_near_duplicates(blocks:list[CodeBlock];threshold:float=0.8;min_lines:int=10)->dict[str, list[tuple[CodeBlock, float]]]
-  src/redup/core/matcher.py:
-    i: difflib,collections.abc.Callable,dataclasses.dataclass,redup.core.hasher.{HashedBlock,_normalize_text}
-    e: MatchResult,sequence_similarity,fuzzy_similarity,match_candidates,refine_structural_matches
-    MatchResult:   # Result of comparing two code blocks.
-    sequence_similarity(text_a:str;text_b:str)->float
-    fuzzy_similarity(text_a:str;text_b:str)->float
-    _compare_against_reference(candidates:list[HashedBlock];min_similarity:float;similarity_fn:Callable[Any;float];method_fn:Callable[Any;str];skip_same_location:bool=False)->list[MatchResult]
-    match_candidates(candidates:list[HashedBlock];min_similarity:float=0.85)->list[MatchResult]
-    refine_structural_matches(candidates:list[HashedBlock];min_similarity:float=0.8)->list[MatchResult]
-  src/redup/core/models.py:
-    i: dataclasses.{dataclass,field},enum.Enum,pathlib.Path
-    e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats
-    DuplicateType:   # How the duplicate was detected.
-    RefactorAction:   # Proposed refactoring action.
-    RiskLevel:   # Risk of the proposed refactoring.
-    ScanConfig:   # Configuration for project scanning.
-    DuplicateFragment: line_count(0)  # A single occurrence of a duplicated c...
-  src/redup/core/parallel_scanner.py:
-    i: os,time,concurrent.futures.{ProcessPoolExecutor,ThreadPoolExecutor,as_completed},functools.lru_cache,pathlib.Path,redup.core.scanner.{CodeBlock,ScannedFile},typing.Any
-    e: scan_project_parallel
-    _scan_file_worker(args:tuple[Path;str;list[str];bool;bool;int])->ScannedFile
-    _should_process_file(file_path:Path;project_root:Path;extensions:list[str];include_tests:bool;max_file_size:int)->bool
-    _is_test_file(file_path:Path;project_root:Path)->bool
-    scan_project_parallel(root:Path;extensions:list[str];exclude_patterns:Any=None;include_tests:bool=False;function_level_only:bool=False;max_file_size:int=1024;...+1)->tuple[list[ScannedFile], Any]
-    _find_files_optimized(root:Path;extensions:set[str];exclude_patterns:list[str])->list[Path]
-    _is_test_file_cached(relative_path:str;test_parts:frozenset)->bool
-  src/redup/core/pipeline.py:
-    i: time,itertools,collections.defaultdict,redup.core.hasher.{HashIndex,HashedBlock,build_hash_index,find_exact_duplicates,find_structural_duplicates},redup.core.lsh_matcher.find_near_duplicates,typing.Any
-    e: analyze,analyze_optimized,analyze_parallel
-    _blocks_to_group(group_id:str;blocks:list[HashedBlock];dup_type:DuplicateType;similarity:float=1.0;normalized_hash:str='')->DuplicateGroup
-    _deduplicate_groups(groups:list[DuplicateGroup])->list[DuplicateGroup]
-    analyze(config:Any=None;function_level_only:bool=False)->DuplicationMap
-    analyze_optimized(config:Any=None;function_level_only:bool=False)->DuplicationMap
-    _ensure_config(config:Any)->ScanConfig
-    _scan_phase(config:ScanConfig)->tuple[list[ScannedFile], ScanStats]
-    _scan_phase_parallel(config:ScanConfig;max_workers:Any=None)->tuple[list[ScannedFile], ScanStats]
-    _process_blocks(scanned_files:list[ScannedFile];function_level_only:bool)->list[CodeBlock]
-  src/redup/core/planner.py:
-    i: os,redup.core.models.{DuplicateGroup,DuplicationMap,RefactorAction,RefactorSuggestion,RiskLevel}
-    e: generate_suggestions
-    _common_prefix(paths:list[str])->str
-    _suggest_module_name(group:DuplicateGroup)->str
-    _assess_risk(group:DuplicateGroup)->RiskLevel
-    _choose_action(group:DuplicateGroup)->RefactorAction
-    generate_suggestions(dup_map:DuplicationMap)->list[RefactorSuggestion]
-  src/redup/core/scanner.py:
-    i: fnmatch,functools,time,collections.abc.Iterator,dataclasses.{dataclass,field},pathlib.Path,redup.core.models.{ScanConfig,ScanStats}
-    e: CodeBlock,ScannedFile,scan_project
-    CodeBlock: line_count(0)  # A contiguous block of source code lines.
-    ScannedFile: line_count(0)  # A file that has been read and split i...
-    _should_exclude(path:Path;patterns:tuple[str;Ellipsis])->bool
-    _collect_files(config:ScanConfig)->Iterator[Path]
-    _is_test_file(path:Path)->bool
-    _extract_blocks_sliding(lines:list[str];min_lines:int)->list[tuple[int, int, str]]
-    _extract_class_blocks_python(source:str;filepath:str)->list[CodeBlock]
-    _extract_function_blocks_python(source:str;filepath:str)->list[CodeBlock]
-    scan_project(config:Any=None)->tuple[list[ScannedFile], ScanStats]
-  src/redup/core/ts_extractor.py:
-    i: tree_sitter,pathlib.Path,redup.core.scanner.CodeBlock,redup.core.utils.function_extractor,typing.Any
-    e: _LANGUAGE_MAPPING,extract_functions_treesitter,get_supported_languages,is_language_supported
-    _LanguageRegistry: __init__(0),get_language(1)  # Registry for tree-sitter language par...
-    _initialize_language_dispatcher()->None
-    _get_tree_sitter_language(language_name:str)->Any
-    _extract_functions_javascript(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
-    _extract_functions_go(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
-    _extract_functions_rust(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
-    _extract_functions_java(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
-    extract_functions_treesitter(source:str;file_path:str)->list[CodeBlock]
-    _extract_functions_c_cpp(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
-  src/redup/core/utils/diff_helpers.py:
-    i: models.DuplicateGroup,typing.{Dict,List,Set}
-    e: GroupMatcher,DiffCalculator
-    GroupMatcher: __init__(2),_find_all_matches(0),_groups_match(2),get_resolved_groups(0),get_new_groups(0)  # Helper class to find matching groups...
-    DiffCalculator: calculate_lines(1),calculate_diff_stats(3)  # Helper class to calculate diff statis...
-  src/redup/core/utils/duplicate_finders.py:
-    i: typing.{Callable,Dict,List,TYPE_CHECKING}
-    e: create_duplicate_finder
-    create_duplicate_finder(hash_type:str)->Callable[["HashIndex"], "Dict[str, List[HashedBlock]]"]
-  src/redup/core/utils/function_extractor.py:
-    i: scanner.CodeBlock,typing.{Any,Callable,List,Optional}
-    e: FunctionExtractor,GO_EXTRACTOR,RUST_EXTRACTOR,JAVA_EXTRACTOR,SCALA_EXTRACTOR,KOTLIN_EXTRACTOR,SWIFT_EXTRACTOR,OBJC_EXTRACTOR
-    FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can b...
-    _extract_java_class_name(node:Any)->Optional[str]
-  src/redup/core/utils/hash_utils.py:
-    i: hasher.{_normalize_ast_text,_normalize_text},typing.{Callable,TYPE_CHECKING}
-    e: create_hash_function
-    create_hash_function(normalizer:Callable[Any;str])->Callable[[str], str]
-  src/redup/core/utils/language_dispatcher.py:
-    i: scanner.CodeBlock,typing.{Any,Callable,Dict,List,Optional}
-    e: LanguageDispatcher
-    LanguageDispatcher: __init__(0),register_extractor(2),register_group(2),get_extractor(1),extract_functions(4)  # Dispatches function extraction to app...
-  src/redup/reporters/code2llm_reporter.py:
-    i: datetime,datetime.timezone,pathlib.Path,redup.core.models.DuplicationMap,typing.Any
-    e: to_code2llm_toon,to_code2llm_context,export_code2llm
-    _calculate_avg_cc(dup_map:DuplicationMap)->float
-    _count_critical_functions(dup_map:DuplicationMap)->int
-    _get_layers(dup_map:DuplicationMap)->list[dict]
-    to_code2llm_toon(dup_map:DuplicationMap;files_scanned:int=0;total_lines:int=0;functions_count:int=0;classes_count:int=0)->str
-    to_code2llm_context(dup_map:DuplicationMap;files_scanned:int=0;total_lines:int=0;functions_count:int=0;classes_count:int=0;modules:Any=None)->str
-    export_code2llm(dup_map:DuplicationMap;output_dir:Path;files_scanned:int=0;total_lines:int=0;functions_count:int=0;classes_count:int=0)->tuple[Path, Path]
-  src/redup/reporters/enhanced_reporter.py:
-    i: json,time,collections.{Counter,defaultdict},pathlib.Path,redup.core.models.{DuplicateFragment,DuplicateGroup},typing.{Any,Dict,List}
-    e: EnhancedReporter
-    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0)  # Enhanced reporter with detailed metri...
-  src/redup/reporters/json_reporter.py:
-    i: json,redup.core.models.DuplicationMap,typing.Any
-    e: to_json
-    _group_to_dict(group:Any;include_snippets:bool=False)->dict
-    _suggestion_to_dict(s:Any)->dict
-    to_json(dup_map:DuplicationMap;indent:int=2;include_snippets:bool=False)->str
-  src/redup/reporters/markdown_reporter.py:
-    i: datetime,datetime.timezone,redup.core.models.DuplicationMap
-    e: to_markdown
-    to_markdown(dup_map:DuplicationMap)->str
-  src/redup/reporters/toon_reporter.py:
-    i: datetime,datetime.timezone,redup.core.models.DuplicationMap
-    e: to_toon
-    _render_header(dup_map:DuplicationMap)->list[str]
-    _render_summary(dup_map:DuplicationMap)->list[str]
-    _render_duplicates(groups:list)->list[str]
-    _render_refactor(suggestions:list)->list[str]
-    _render_metrics_target(dup_map:DuplicationMap;groups:list)->list[str]
-    to_toon(dup_map:DuplicationMap)->str
-  src/redup/reporters/yaml_reporter.py:
-    i: redup.core.models.DuplicationMap
-    e: to_yaml
-    to_yaml(dup_map:DuplicationMap)->str
-  tests/test_e2e.py:
-    i: json,subprocess,sys,tempfile,pytest,pathlib.Path,redup.cli_app.main.app,typer.testing.CliRunner
-    e: project_with_duplicates,empty_project,no_duplicates_project,TestCLIInfo,TestCLIScanToon,TestCLIScanJSON,TestCLIScanYAML,TestCLIScanAll
-    TestCLIInfo: test_info_shows_version(0),test_info_shows_dependencies(0)
-    TestCLIScanToon: test_scan_toon_stdout(1),test_scan_toon_to_file(2),test_scan_empty_project(1),test_scan_no_duplicates(1)
-    TestCLIScanJSON: test_scan_json_stdout_parseable(1),test_scan_json_to_file(2),test_json_contains_fragment_details(2)
-    TestCLIScanYAML: test_scan_yaml_to_file(2)
-    TestCLIScanAll: test_format_all_creates_three_files(2),test_format_all_json_valid(2),test_format_all_toon_has_refactor(2),test_all_three_formats_consistent(2)
-    project_with_duplicates(tmp_path:Path)->Path
-    empty_project(tmp_path:Path)->Path
-    no_duplicates_project(tmp_path:Path)->Path
-  tests/test_hasher.py:
-    i: redup.core.hasher.{build_hash_index,find_exact_duplicates,find_structural_duplicates,hash_block,hash_block_structural},redup.core.scanner.CodeBlock
-    e: test_identical_blocks_same_hash,test_comment_stripping,test_different_blocks_different_hash,test_structural_hash_ignores_literals,test_structural_hash_different_structure,test_build_hash_index_groups_duplicates,test_find_structural_duplicates
-    test_identical_blocks_same_hash()
-    test_comment_stripping()
-    test_different_blocks_different_hash()
-    test_structural_hash_ignores_literals()
-    test_structural_hash_different_structure()
-    test_build_hash_index_groups_duplicates()
-    test_find_structural_duplicates()
-  tests/test_matcher.py:
-    i: redup.core.hasher.HashedBlock,redup.core.matcher.{fuzzy_similarity,match_candidates,refine_structural_matches,sequence_similarity},redup.core.scanner.CodeBlock
-    e: test_sequence_similarity_identical,test_sequence_similarity_different,test_fuzzy_similarity_close,test_match_candidates_above_threshold,test_match_candidates_below_threshold,test_refine_structural_same_location_skipped
-    _make_hashed(file:str;text:str;func:str='f')->HashedBlock
-    test_sequence_similarity_identical()
-    test_sequence_similarity_different()
-    test_fuzzy_similarity_close()
-    test_match_candidates_above_threshold()
-    test_match_candidates_below_threshold()
-    test_refine_structural_same_location_skipped()
-  tests/test_models.py:
-    i: redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType,DuplicationMap,ScanConfig}
-    e: test_fragment_line_count,test_group_saved_lines,test_group_single_occurrence_no_savings,test_group_impact_score,test_duplication_map_sorted_by_impact,test_duplication_map_totals,test_scan_config_defaults
-    test_fragment_line_count()
-    test_group_saved_lines()
-    test_group_single_occurrence_no_savings()
-    test_group_impact_score()
-    test_duplication_map_sorted_by_impact()
-    test_duplication_map_totals()
-    test_scan_config_defaults()
-  tests/test_pipeline.py:
-    i: tempfile,pathlib.Path,redup.core.models.ScanConfig,redup.core.pipeline.analyze
-    e: test_analyze_finds_duplicates,test_analyze_generates_suggestions,test_analyze_empty_project,test_analyze_no_duplicates
-    _create_test_project(root:Path)->None
-    test_analyze_finds_duplicates()
-    test_analyze_generates_suggestions()
-    test_analyze_empty_project()
-    test_analyze_no_duplicates()
-  tests/test_planner.py:
-    i: redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType,DuplicationMap,RefactorAction},redup.core.planner.generate_suggestions
-    e: test_generate_suggestions_basic,test_no_suggestions_for_single_occurrence,test_priority_ordering,test_large_block_extract_module
-    test_generate_suggestions_basic()
-    test_no_suggestions_for_single_occurrence()
-    test_priority_ordering()
-    test_large_block_extract_module()
-  tests/test_reporters.py:
-    i: json,redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType,DuplicationMap,ScanStats},redup.reporters.json_reporter.to_json,redup.reporters.toon_reporter.to_toon,redup.reporters.yaml_reporter.to_yaml
-    e: test_json_reporter_valid_json,test_json_reporter_with_suggestions,test_toon_reporter_header,test_toon_reporter_contains_fragments,test_yaml_reporter_valid,test_empty_map_json,test_empty_map_toon
-    _sample_map()->DuplicationMap
-    test_json_reporter_valid_json()
-    test_json_reporter_with_suggestions()
-    test_toon_reporter_header()
-    test_toon_reporter_contains_fragments()
-    test_yaml_reporter_valid()
-    test_empty_map_json()
-    test_empty_map_toon()
-  tests/test_scanner.py:
-    i: tempfile,pathlib.Path,redup.core.models.ScanConfig,redup.core.scanner.{_extract_function_blocks_python,_is_test_file,_should_exclude,scan_project}
-    e: test_should_exclude_git,test_should_exclude_venv,test_should_not_exclude_normal,test_is_test_file,test_extract_function_blocks_python,test_extract_function_blocks_syntax_error,test_scan_project_real_dir
-    test_should_exclude_git()
-    test_should_exclude_venv()
-    test_should_not_exclude_normal()
-    test_is_test_file()
-    test_extract_function_blocks_python()
-    test_extract_function_blocks_syntax_error()
-    test_scan_project_real_dir()
-  tests/test_ts_extractor.py:
-    i: pytest,pathlib.Path,redup.core.ts_extractor.{_LANGUAGE_MAPPING,_language_registry,extract_functions_treesitter,get_supported_languages,is_language_supported}
-    e: TestLanguageMapping,TestLanguageRegistry,TestLanguageSupportFunctions,TestExtractFunctions,TestHTMLExtraction,TestCSSExtraction,TestSQLExtraction,TestCExtraction
-    TestLanguageMapping: test_language_mapping_has_common_extensions(0),test_language_mapping_has_new_web_languages(0),test_language_mapping_has_data_formats(0),test_language_mapping_has_sql(0),test_language_mapping_has_dsl_languages(0)  # Test language extension mappings.
-    TestLanguageRegistry: test_registry_has_core_languages(0),test_registry_has_web_languages(0),test_registry_has_new_languages(0),test_registry_has_dsl_languages(0),test_registry_has_data_formats(0)  # Test language registry for tree-sitte...
-    TestLanguageSupportFunctions: test_is_language_supported_python(0),test_is_language_supported_unknown_extension(0),test_is_language_supported_known_languages(0)  # Test language support checking functi...
-    TestExtractFunctions: test_extract_python_returns_empty(0),test_extract_unknown_extension_returns_empty(0),test_extract_javascript_no_treesitter(0)  # Test function extraction for differen...
-    TestHTMLExtraction: test_html_extraction_structure(0)  # Test HTML block extraction.
+# redup | 207 func | 28f | 7506L | python | 2026-03-23
+
+HEALTH:
+  CC̄=3.8  critical=18 (limit:10)  dup=1  cycles=0
+
+ALERTS[20]:
+  !!! high_fan_out     scan_project_parallel_memory_optimized = 30 (limit:10)
+  !!! high_fan_out     scan_project_memory_optimized = 25 (limit:10)
+  !!! high_fan_out     preload_to_ram = 22 (limit:10)
+  !!! high_fan_out     scan_project_ultra_fast = 21 (limit:10)
+  !!  high_fan_out     scan_project = 19 (limit:10)
+  !!  high_fan_out     _find_duplicates_phase_lazy = 15 (limit:10)
+  !!  high_fan_out     _load_duplication_map = 15 (limit:10)
+  !!  high_fan_out     _write_results = 15 (limit:10)
+  !   cc_exceeded      preload_to_ram = 15 (limit:15)
+  !   high_fan_out     analyze_optimized = 14 (limit:10)
+
+MODULES[36] (top by size):
+  M[src/redup/core/ts_extractor.py] 765L C:1 F:24 CC↑7 D:3 (python)
+  M[src/redup/core/pipeline.py] 657L C:0 F:17 CC↑11 D:3 (python)
+  M[src/redup/cli_app/main.py] 501L C:0 F:11 CC↑14 D:0 (python)
+  M[src/redup/core/ultra_fast_scanner.py] 362L C:0 F:8 CC↑15 D:1 (python)
+  M[src/redup/core/scanner.py] 345L C:2 F:9 CC↑13 D:4 (python)
+  M[src/redup/core/memory_scanner.py] 281L C:1 F:8 CC↑11 D:1 (python)
+  M[src/redup/reporters/enhanced_reporter.py] 274L C:1 F:17 CC↑8 D:0 (python)
+  M[src/redup/core/hasher.py] 272L C:2 F:15 CC↑6 D:7 (python)
+  M[src/redup/core/cache.py] 267L C:1 F:10 CC↑5 D:1 (python)
+  M[src/redup/core/parallel_scanner.py] 234L C:0 F:6 CC↑11 D:1 (python)
+  M[src/redup/core/lsh_matcher.py] 225L C:2 F:12 CC↑10 D:1 (python)
+  M[src/redup/core/differ.py] 209L C:1 F:5 CC↑14 D:1 (python)
+  M[src/redup/reporters/code2llm_reporter.py] 209L C:0 F:6 CC↑11 D:1 (python)
+  M[src/redup/core/models.py] 164L C:9 F:1 CC↑1 D:0 (python)
+  M[src/redup/core/lazy_grouper.py] 155L C:1 F:7 CC↑7 D:1 (python)
+  LANGS: python:35/shell:1
+
+HOTSPOTS[10]:
+  ★ scan_project_parallel_memory_optimized fan=30  // Parallel scan with memory optimization.
+  ★ scan_project_memory_optimized fan=25  // Scan project with memory optimization for faster processing.
+
+Loads files into R
+  ★ preload_to_ram fan=22  // Load ALL files into RAM at once for maximum speed.
+
+Returns:
+    Dict mapping fi
+  ★ scan_project_ultra_fast fan=21  // Ultra-fast scanner with RAM preload and smart hashing.
+
+Performance optimization
+  ★ scan_project fan=19  // Scan a project and return files with their code blocks.
+
+Args:
+    config: Scan 
+
+REFACTOR[7]:
+  [1] H/H Split god module src/redup/cli_app/main.py (501L, 0 classes)
+  [2] H/H Split god module src/redup/core/pipeline.py (657L, 0 classes)
+  [3] H/H Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
+  [4] M/L Split preload_to_ram (CC=15 → target CC<10)
+  [5] M/M Reduce scan_project_parallel_memory_optimized fan-out (currently 30)
+
+EVOLUTION:
+  2026-03-23 CC̄=3.8 crit=18 7506L // Automated analysis

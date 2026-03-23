@@ -242,12 +242,13 @@ def _ensure_config(config: ScanConfig | None) -> ScanConfig:
     return config or ScanConfig()
 
 
-def _scan_phase(config: ScanConfig) -> tuple[list[ScannedFile], ScanStats]:
+def _scan_phase(config: ScanConfig, function_level_only: bool = False) -> tuple[list[ScannedFile], ScanStats]:
     """Phase 1: Scan project files with ultra-fast optimization."""
     # Use ultra-fast scanner by default for 4x speedup
-    if getattr(config, 'use_ultra_fast_scanner', True):
+    if getattr(config, 'use_ultra_fast_scanner', False):
         return scan_project_ultra_fast(config)
-    return scan_project(config)
+    # Use optimized scan_project with RAM preload
+    return scan_project(config, function_level_only=function_level_only)
 
 
 def _scan_phase_parallel(config: ScanConfig, max_workers: int | None = None) -> tuple[list[ScannedFile], ScanStats]:

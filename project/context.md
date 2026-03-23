@@ -4,19 +4,19 @@
 
 - **Project**: redup
 - **Language**: python
-- **Files**: 27
-- **Lines**: 6669
-- **Functions**: 197
-- **Classes**: 26
-- **Avg CC**: 3.5
-- **Critical (CC≥10)**: 10
+- **Files**: 28
+- **Lines**: 7506
+- **Functions**: 207
+- **Classes**: 25
+- **Avg CC**: 3.8
+- **Critical (CC≥10)**: 18
 
 ## Architecture
 
-### root/ (2 files, 128L, 2 functions)
+### root/ (2 files, 129L, 2 functions)
 
 - `benchmark.py` — 111L, 2 methods, CC↑3
-- `project.sh` — 17L, 0 methods, CC↑0
+- `project.sh` — 18L, 0 methods, CC↑0
 
 ### src/ (1 files, 4L, 0 functions)
 
@@ -27,28 +27,27 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 460L, 11 functions)
+### src/redup/cli_app/ (2 files, 502L, 11 functions)
 
-- `main.py` — 459L, 11 methods, CC↑14
+- `main.py` — 501L, 11 methods, CC↑14
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (15 files, 3521L, 130 functions)
+### src/redup/core/ (17 files, 4412L, 148 functions)
 
+- `ultra_fast_scanner.py` — 362L, 8 methods, CC↑15
 - `differ.py` — 209L, 5 methods, CC↑14
+- `scanner.py` — 345L, 9 methods, CC↑13
+- `memory_scanner.py` — 281L, 8 methods, CC↑11
 - `parallel_scanner.py` — 234L, 6 methods, CC↑11
-- `pipeline.py` — 518L, 17 methods, CC↑11
-- `lsh_matcher.py` — 217L, 12 methods, CC↑10
-- `scanner.py` — 249L, 7 methods, CC↑10
-- _10 more files_
+- _12 more files_
 
-### src/redup/core/utils/ (6 files, 391L, 20 functions)
+### src/redup/core/utils/ (5 files, 294L, 12 functions)
 
-- `diff_helpers.py` — 97L, 8 methods, CC↑7
 - `function_extractor.py` — 148L, 5 methods, CC↑5
 - `language_dispatcher.py` — 72L, 5 methods, CC↑4
 - `duplicate_finders.py` — 36L, 1 methods, CC↑3
 - `hash_utils.py` — 37L, 1 methods, CC↑3
-- _1 more files_
+- `__init__.py` — 1L, 0 methods, CC↑0
 
 ### src/redup/reporters/ (7 files, 787L, 34 functions)
 
@@ -61,30 +60,40 @@
 
 ## Key Exports
 
+- **preload_to_ram** (function, CC=15) ⚠ split
 - **LSHIndex** (class, CC̄=5.6)
 
 ## Hotspots (High Fan-Out)
 
-- **scan_project** — fan-out=18: Scan a project and return files with their code blocks.
+- **scan_project_parallel_memory_optimized** — fan-out=30: Parallel scan with memory optimization.
+- **scan_project_memory_optimized** — fan-out=25: Scan project with memory optimization for faster processing.
+
+Loads files into R
+- **preload_to_ram** — fan-out=22: Load ALL files into RAM at once for maximum speed.
 
 Returns:
-    Tuple of (
+    Dict mapping fi
+- **scan_project_ultra_fast** — fan-out=21: Ultra-fast scanner with RAM preload and smart hashing.
+
+Performance optimization
+- **scan_project** — fan-out=19: Scan a project and return files with their code blocks.
+
+Args:
+    config: Scan 
 - **_find_duplicates_phase_lazy** — fan-out=15: Phase 3: Hash and find duplicates with caching and lazy evaluation.
-- **_write_results** — fan-out=15: Write scan results to output files.
 - **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
-- **scan_project_parallel** — fan-out=13: Scan project files in parallel for better performance on large projects.
-- **analyze_optimized** — fan-out=12: Analysis pipeline, 12 stages
-- **_find_structural_groups** — fan-out=11: Find structural duplicate groups.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/core/pipeline.py (518L, 0 classes) | high | high |
-| 2 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
-| 3 | Reduce scan_project fan-out (currently 18) | medium | medium |
-| 4 | Reduce _find_duplicates_phase_lazy fan-out (currently 15) | medium | medium |
-| 5 | Reduce _write_results fan-out (currently 15) | medium | medium |
+| 1 | Split god module src/redup/cli_app/main.py (501L, 0 classes) | high | high |
+| 2 | Split god module src/redup/core/pipeline.py (657L, 0 classes) | high | high |
+| 3 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
+| 4 | Split preload_to_ram (CC=15 → target CC<10) | medium | low |
+| 5 | Reduce scan_project_parallel_memory_optimized fan-out (currently 30) | medium | medium |
+| 6 | Reduce scan_project_memory_optimized fan-out (currently 25) | medium | medium |
+| 7 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
 
 ## Context for LLM
 

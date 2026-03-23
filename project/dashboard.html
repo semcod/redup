@@ -60,17 +60,17 @@
 <p style="color:var(--muted);font-size:.85rem;">
   Analyzed 2026-03-23 by code2llm
   &nbsp;·&nbsp; Primary language: <strong>python</strong>
-  &nbsp;·&nbsp; Python: 34, Shell: 1
+  &nbsp;·&nbsp; Python: 35, Shell: 1
 </p>
 
 <div class="grid">
-  <div class="card"><div class="value">197</div><div class="label">Functions</div></div>
-  <div class="card"><div class="value">26</div><div class="label">Classes</div></div>
-  <div class="card"><div class="value">27</div><div class="label">Files</div></div>
-  <div class="card"><div class="value">6,669</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">207</div><div class="label">Functions</div></div>
+  <div class="card"><div class="value">25</div><div class="label">Classes</div></div>
+  <div class="card"><div class="value">28</div><div class="label">Files</div></div>
+  <div class="card"><div class="value">7,506</div><div class="label">Lines</div></div>
   <div class="card"><div class="value">2</div><div class="label">Languages</div></div>
-  <div class="card"><div class="value">3.5</div><div class="label">Avg CC</div></div>
-  <div class="card"><div class="value">10</div><div class="label">Critical (CC≥10)</div></div>
+  <div class="card"><div class="value">3.8</div><div class="label">Avg CC</div></div>
+  <div class="card"><div class="value">18</div><div class="label">Critical (CC≥10)</div></div>
   <div class="card"><div class="value">1</div><div class="label">Duplicates</div></div>
   <div class="card"><div class="value">0</div><div class="label">Cycles</div></div>
 </div>
@@ -94,14 +94,14 @@
   <div class="chart-container">
     <h2 style="border:none;margin:0 0 .5rem;">Evolution (2026-03-23)</h2>
     <div class="evo-cards">
-      <div class="card"><div class="value">3.5</div><div class="label">CC̄ →</div></div>
-      <div class="card"><div class="value">10</div><div class="label">Critical →</div></div>
-      <div class="card"><div class="value">6669</div><div class="label">Lines</div></div>
+      <div class="card"><div class="value">3.8</div><div class="label">CC̄ →</div></div>
+      <div class="card"><div class="value">18</div><div class="label">Critical →</div></div>
+      <div class="card"><div class="value">7506</div><div class="label">Lines</div></div>
     </div>
     <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
   </div>
   <div>
-    <h2>Top Modules (35)</h2>
+    <h2>Top Modules (36)</h2>
     <div class="card"><div class="table-wrap">
     <table>
       <thead><tr><th>Module</th><th>Path</th><th style="text-align:right">Lines</th><th style="text-align:right">Funcs</th><th style="text-align:right">Classes</th><th style="text-align:right">CC max</th></tr></thead>
@@ -117,7 +117,7 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>pipeline.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">518</td>
+                <td style="text-align:right">657</td>
                 <td style="text-align:right">17</td>
                 <td style="text-align:right">0</td>
                 <td style="text-align:right">11</td>
@@ -125,10 +125,34 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>main.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/cli_app</td>
-                <td style="text-align:right">459</td>
+                <td style="text-align:right">501</td>
                 <td style="text-align:right">11</td>
                 <td style="text-align:right">0</td>
                 <td style="text-align:right">14</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>ultra_fast_scanner.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">362</td>
+                <td style="text-align:right">8</td>
+                <td style="text-align:right">0</td>
+                <td style="text-align:right">15</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>scanner.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">345</td>
+                <td style="text-align:right">9</td>
+                <td style="text-align:right">2</td>
+                <td style="text-align:right">13</td>
+            </tr>
+            <tr>
+                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>memory_scanner.py</td>
+                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
+                <td style="text-align:right">281</td>
+                <td style="text-align:right">8</td>
+                <td style="text-align:right">1</td>
+                <td style="text-align:right">11</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>enhanced_reporter.py</td>
@@ -141,10 +165,10 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>hasher.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">270</td>
+                <td style="text-align:right">272</td>
                 <td style="text-align:right">15</td>
                 <td style="text-align:right">2</td>
-                <td style="text-align:right">8</td>
+                <td style="text-align:right">6</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>cache.py</td>
@@ -153,14 +177,6 @@
                 <td style="text-align:right">10</td>
                 <td style="text-align:right">1</td>
                 <td style="text-align:right">5</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>scanner.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">249</td>
-                <td style="text-align:right">7</td>
-                <td style="text-align:right">2</td>
-                <td style="text-align:right">10</td>
             </tr>
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>parallel_scanner.py</td>
@@ -173,7 +189,7 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>lsh_matcher.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">217</td>
+                <td style="text-align:right">225</td>
                 <td style="text-align:right">12</td>
                 <td style="text-align:right">2</td>
                 <td style="text-align:right">10</td>
@@ -197,7 +213,7 @@
             <tr>
                 <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>models.py</td>
                 <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">161</td>
+                <td style="text-align:right">164</td>
                 <td style="text-align:right">1</td>
                 <td style="text-align:right">9</td>
                 <td style="text-align:right">1</td>
@@ -249,38 +265,50 @@
                 <td style="text-align:right">5</td>
                 <td style="text-align:right">1</td>
                 <td style="text-align:right">7</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>toon_reporter.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/reporters</td>
-                <td style="text-align:right">106</td>
-                <td style="text-align:right">6</td>
-                <td style="text-align:right">0</td>
-                <td style="text-align:right">8</td>
-            </tr>
-            <tr>
-                <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3572A5;margin-right:6px"></span>hash_cache.py</td>
-                <td style="color:var(--muted);font-size:.75rem">src/redup/core</td>
-                <td style="text-align:right">104</td>
-                <td style="text-align:right">10</td>
-                <td style="text-align:right">1</td>
-                <td style="text-align:right">3</td>
             </tr></tbody>
     </table>
     </div></div>
   </div>
 </div>
 
-<h2>Alerts (13)</h2>
+<h2>Alerts (20)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>Severity</th><th>Target</th><th>Type</th><th>Value</th><th>Limit</th></tr></thead>
   <tbody>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>scan_project_parallel_memory_optimized</td>
+                <td>high_fan_out</td>
+                <td>30</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>scan_project_memory_optimized</td>
+                <td>high_fan_out</td>
+                <td>25</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>preload_to_ram</td>
+                <td>high_fan_out</td>
+                <td>22</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>scan_project_ultra_fast</td>
+                <td>high_fan_out</td>
+                <td>21</td>
+                <td>10</td>
+            </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
                 <td>scan_project</td>
                 <td>high_fan_out</td>
-                <td>18</td>
+                <td>19</td>
                 <td>10</td>
             </tr>
             <tr class="error">
@@ -292,16 +320,30 @@
             </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
-                <td>_write_results</td>
+                <td>_load_duplication_map</td>
                 <td>high_fan_out</td>
                 <td>15</td>
                 <td>10</td>
             </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
-                <td>_load_duplication_map</td>
+                <td>_write_results</td>
                 <td>high_fan_out</td>
                 <td>15</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>preload_to_ram</td>
+                <td>cc_exceeded</td>
+                <td>15</td>
+                <td>15</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>analyze_optimized</td>
+                <td>high_fan_out</td>
+                <td>14</td>
                 <td>10</td>
             </tr>
             <tr class="warning">
@@ -313,7 +355,21 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>analyze_optimized</td>
+                <td>analyze_parallel</td>
+                <td>high_fan_out</td>
+                <td>13</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>scan</td>
+                <td>high_fan_out</td>
+                <td>13</td>
+                <td>10</td>
+            </tr>
+            <tr class="warning">
+                <td><span class="badge warning">warning</span></td>
+                <td>smart_hash_block</td>
                 <td>high_fan_out</td>
                 <td>12</td>
                 <td>10</td>
@@ -323,48 +379,6 @@
                 <td>_find_structural_groups</td>
                 <td>high_fan_out</td>
                 <td>11</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>_normalize_text</td>
-                <td>high_fan_out</td>
-                <td>11</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>check</td>
-                <td>high_fan_out</td>
-                <td>11</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>config</td>
-                <td>high_fan_out</td>
-                <td>11</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>_find_files_optimized</td>
-                <td>high_fan_out</td>
-                <td>10</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>extract_functions_treesitter</td>
-                <td>high_fan_out</td>
-                <td>10</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>scan</td>
-                <td>high_fan_out</td>
-                <td>10</td>
                 <td>10</td>
             </tr></tbody>
 </table>
@@ -378,12 +392,39 @@
   <thead><tr><th>Function</th><th>Fan-out</th><th>Note</th></tr></thead>
   <tbody>
             <tr>
-                <td><strong>scan_project</strong></td>
-                <td>18</td>
-                <td>Scan a project and return files with their code blocks.
+                <td><strong>scan_project_parallel_memory_optimized</strong></td>
+                <td>30</td>
+                <td>Parallel scan with memory optimization.</td>
+            </tr>
+            <tr>
+                <td><strong>scan_project_memory_optimized</strong></td>
+                <td>25</td>
+                <td>Scan project with memory optimization for faster processing.
+
+Loads files into R</td>
+            </tr>
+            <tr>
+                <td><strong>preload_to_ram</strong></td>
+                <td>22</td>
+                <td>Load ALL files into RAM at once for maximum speed.
 
 Returns:
-    Tuple of (</td>
+    Dict mapping fi</td>
+            </tr>
+            <tr>
+                <td><strong>scan_project_ultra_fast</strong></td>
+                <td>21</td>
+                <td>Ultra-fast scanner with RAM preload and smart hashing.
+
+Performance optimization</td>
+            </tr>
+            <tr>
+                <td><strong>scan_project</strong></td>
+                <td>19</td>
+                <td>Scan a project and return files with their code blocks.
+
+Args:
+    config: Scan </td>
             </tr>
             <tr>
                 <td><strong>_find_duplicates_phase_lazy</strong></td>
@@ -391,84 +432,74 @@ Returns:
                 <td>Phase 3: Hash and find duplicates with caching and lazy evaluation.</td>
             </tr>
             <tr>
-                <td><strong>_write_results</strong></td>
-                <td>15</td>
-                <td>Write scan results to output files.</td>
-            </tr>
-            <tr>
                 <td><strong>_load_duplication_map</strong></td>
                 <td>15</td>
                 <td>Load a DuplicationMap from a JSON file.</td>
             </tr>
             <tr>
-                <td><strong>scan_project_parallel</strong></td>
-                <td>13</td>
-                <td>Scan project files in parallel for better performance on large projects.</td>
+                <td><strong>_write_results</strong></td>
+                <td>15</td>
+                <td>Write scan results to output files.</td>
             </tr>
             <tr>
                 <td><strong>analyze_optimized</strong></td>
-                <td>12</td>
-                <td>Analysis pipeline, 12 stages</td>
+                <td>14</td>
+                <td>Analysis pipeline, 14 stages</td>
             </tr>
             <tr>
-                <td><strong>_find_structural_groups</strong></td>
-                <td>11</td>
-                <td>Find structural duplicate groups.</td>
-            </tr>
-            <tr>
-                <td><strong>_normalize_text</strong></td>
-                <td>11</td>
-                <td>Normalize code text for comparison.
-
-Strips comments, normalizes whitespace, low</td>
-            </tr>
-            <tr>
-                <td><strong>check</strong></td>
-                <td>11</td>
-                <td>Check project for duplicates and exit with non-zero code if thresholds exceeded.</td>
-            </tr>
-            <tr>
-                <td><strong>config</strong></td>
-                <td>11</td>
-                <td>Manage reDUP configuration.</td>
+                <td><strong>scan_project_parallel</strong></td>
+                <td>13</td>
+                <td>Scan project files in parallel for better performance on large projects.</td>
             </tr></tbody>
 </table>
 </div></div>
 </div>
 
 <div>
-<h2>Refactoring Priorities (5)</h2>
+<h2>Refactoring Priorities (7)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>#</th><th>Action</th><th>Impact</th><th>Effort</th></tr></thead>
   <tbody>
             <tr>
                 <td>1</td>
-                <td>Split god module src/redup/core/pipeline.py (518L, 0 classes)</td>
+                <td>Split god module src/redup/cli_app/main.py (501L, 0 classes)</td>
                 <td><span class="badge high">high</span></td>
                 <td>high</td>
             </tr>
             <tr>
                 <td>2</td>
-                <td>Split god module src/redup/core/ts_extractor.py (765L, 1 classes)</td>
+                <td>Split god module src/redup/core/pipeline.py (657L, 0 classes)</td>
                 <td><span class="badge high">high</span></td>
                 <td>high</td>
             </tr>
             <tr>
                 <td>3</td>
-                <td>Reduce scan_project fan-out (currently 18)</td>
-                <td><span class="badge medium">medium</span></td>
-                <td>medium</td>
+                <td>Split god module src/redup/core/ts_extractor.py (765L, 1 classes)</td>
+                <td><span class="badge high">high</span></td>
+                <td>high</td>
             </tr>
             <tr>
                 <td>4</td>
-                <td>Reduce _find_duplicates_phase_lazy fan-out (currently 15)</td>
+                <td>Split preload_to_ram (CC=15 → target CC<10)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>low</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Reduce scan_project_parallel_memory_optimized fan-out (currently 30)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr>
             <tr>
-                <td>5</td>
-                <td>Reduce _write_results fan-out (currently 15)</td>
+                <td>6</td>
+                <td>Reduce scan_project_memory_optimized fan-out (currently 25)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>medium</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Reduce preload_to_ram fan-out (currently 22)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr></tbody>
@@ -477,7 +508,7 @@ Strips comments, normalizes whitespace, low</td>
 </div>
 </div>
 
-<footer>Generated by code2llm on 2026-03-23 18:29</footer>
+<footer>Generated by code2llm on 2026-03-23 18:43</footer>
 
 <script>
 // Evolution chart disabled — fewer than 3 data points
@@ -489,7 +520,7 @@ new Chart(langCtx, {
   data: {
     labels: ['Python', 'Shell'],
     datasets: [{
-      data: [34, 1],
+      data: [35, 1],
       backgroundColor: ['#3572A5', '#89e051'],
       borderColor: 'var(--border)', borderWidth: 1
     }]
@@ -507,8 +538,8 @@ const modLinesCtx = document.getElementById('modLinesChart').getContext('2d');
 new Chart(modLinesCtx, {
   type: 'bar',
   data: {
-    labels: ['ts_extractor.py', 'pipeline.py', 'main.py', 'enhanced_reporter.py', 'hasher.py', 'cache.py', 'scanner.py', 'parallel_scanner.py', 'lsh_matcher.py', 'differ.py', 'code2llm_reporter.py', 'models.py', 'lazy_grouper.py', 'config.py', 'function_extractor.py'],
-    datasets: [{ label: 'Lines', data: [765, 518, 459, 274, 270, 267, 249, 234, 217, 209, 209, 161, 155, 154, 148],
+    labels: ['ts_extractor.py', 'pipeline.py', 'main.py', 'ultra_fast_scanner.py', 'scanner.py', 'memory_scanner.py', 'enhanced_reporter.py', 'hasher.py', 'cache.py', 'parallel_scanner.py', 'lsh_matcher.py', 'differ.py', 'code2llm_reporter.py', 'models.py', 'lazy_grouper.py'],
+    datasets: [{ label: 'Lines', data: [765, 657, 501, 362, 345, 281, 274, 272, 267, 234, 225, 209, 209, 164, 155],
       backgroundColor: '#3b82f6'
     }]
   },
@@ -527,8 +558,8 @@ const modFuncsCtx = document.getElementById('modFuncsChart').getContext('2d');
 new Chart(modFuncsCtx, {
   type: 'bar',
   data: {
-    labels: ['ts_extractor.py', 'pipeline.py', 'enhanced_reporter.py', 'hasher.py', 'lsh_matcher.py', 'main.py', 'cache.py', 'hash_cache.py', 'diff_helpers.py', 'scanner.py', 'lazy_grouper.py', 'parallel_scanner.py', 'code2llm_reporter.py', 'toon_reporter.py', 'config.py'],
-    datasets: [{ label: 'Functions', data: [24, 17, 17, 15, 12, 11, 10, 10, 8, 7, 7, 6, 6, 6, 6],
+    labels: ['ts_extractor.py', 'pipeline.py', 'enhanced_reporter.py', 'hasher.py', 'lsh_matcher.py', 'main.py', 'cache.py', 'hash_cache.py', 'scanner.py', 'ultra_fast_scanner.py', 'memory_scanner.py', 'lazy_grouper.py', 'parallel_scanner.py', 'code2llm_reporter.py', 'toon_reporter.py'],
+    datasets: [{ label: 'Functions', data: [24, 17, 17, 15, 12, 11, 10, 10, 9, 8, 8, 7, 6, 6, 6],
       backgroundColor: '#22c55e'
     }]
   },
