@@ -1,4 +1,4 @@
-# redup | 37f 6216L | python:36,shell:1
+# redup | 37f 6231L | python:36,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[37]:
   benchmark.py,111
@@ -7,24 +7,24 @@ M[37]:
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,501
+  src/redup/cli_app/main.py,506
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,267
   src/redup/core/config.py,154
   src/redup/core/differ.py,209
   src/redup/core/hash_cache.py,104
-  src/redup/core/hasher.py,272
-  src/redup/core/lazy_grouper.py,155
+  src/redup/core/hasher.py,273
+  src/redup/core/lazy_grouper.py,159
   src/redup/core/lsh_matcher.py,225
   src/redup/core/matcher.py,107
-  src/redup/core/memory_scanner.py,281
+  src/redup/core/memory_scanner.py,285
   src/redup/core/models.py,164
   src/redup/core/parallel_scanner.py,234
-  src/redup/core/pipeline.py,657
+  src/redup/core/pipeline.py,664
   src/redup/core/planner.py,110
-  src/redup/core/scanner.py,345
+  src/redup/core/scanner.py,343
   src/redup/core/ts_extractor.py,765
-  src/redup/core/ultra_fast_scanner.py,362
+  src/redup/core/ultra_fast_scanner.py,358
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,36
   src/redup/core/utils/function_extractor.py,148
@@ -49,14 +49,6 @@ D:
     _extract_blocks_for_file(file_path;source;rel_path;config)
     _process_sources_batch(sources;config;stats)
     scan_project_incremental_fast(config)
-  src/redup/core/differ.py:
-    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
-    DiffResult:  # Result of comparing two reDUP scans...
-    _load_duplication_map(file_path)
-    _group_by_id(groups)
-    _groups_match(group1;group2)
-    compare_scans(before_file;after_file)
-    format_diff_result(diff)
   src/redup/cli_app/main.py:
     e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
     _write_output(content;output;suffix)
@@ -70,6 +62,19 @@ D:
     check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config(init;show)
     info()
+  src/redup/core/differ.py:
+    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
+    DiffResult:  # Result of comparing two reDUP scans...
+    _load_duplication_map(file_path)
+    _group_by_id(groups)
+    _groups_match(group1;group2)
+    compare_scans(before_file;after_file)
+    format_diff_result(diff)
+  src/redup/core/memory_scanner.py:
+    e: MemoryFileCache,scan_project_memory_optimized,scan_project_parallel_memory_optimized
+    MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1),preload_files(1),get_stats(0)  # Cache file contents in RAM for faster access during scanning...
+    scan_project_memory_optimized(config;max_cache_mb)
+    scan_project_parallel_memory_optimized(config;max_workers;max_cache_mb)
   src/redup/core/scanner.py:
     e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_read_file_optimized,_extract_blocks_sliding,_extract_class_blocks_python,_extract_function_blocks_python,_preload_files_to_ram,scan_project
     CodeBlock:  # A contiguous block of source code lines...
@@ -86,11 +91,6 @@ D:
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
-  src/redup/core/memory_scanner.py:
-    e: MemoryFileCache,scan_project_memory_optimized,scan_project_parallel_memory_optimized
-    MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1),preload_files(1),get_stats(0)  # Cache file contents in RAM for faster access during scanning...
-    scan_project_memory_optimized(config;max_cache_mb)
-    scan_project_parallel_memory_optimized(config;max_workers;max_cache_mb)
   src/redup/core/parallel_scanner.py:
     e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
     _scan_file_worker(args)
@@ -147,6 +147,25 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map;groups)
     to_toon(dup_map)
+  src/redup/core/hasher.py:
+    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,_hashed_block,build_hash_index,_find_duplicates,_blocks_from_different_locations
+    HashedBlock:  # A code block with its computed fingerprints...
+    HashIndex:  # Index mapping hashes to blocks for fast lookup...
+    _normalize_text(text)
+    _normalize_ast_text(text)
+    _ast_to_normalized_string(tree)
+    _process_ast_node(node;name_map;counter)
+    _get_placeholder(name;name_map;counter)
+    _normalize_constant(value)
+    _hash_text(text;normalizer)
+    hash_block(text)
+    hash_block_structural(text)
+    find_exact_duplicates(index)
+    find_structural_duplicates(index)
+    _hashed_block(block)
+    build_hash_index(blocks;min_lines)
+    _find_duplicates(hash_dict)
+    _blocks_from_different_locations(blocks)
   src/redup/core/lazy_grouper.py:
     e: DuplicateGroupCollector,find_exact_duplicates_lazy,find_structural_duplicates_lazy,_create_duplicate_group,find_all_duplicates_lazy
     DuplicateGroupCollector: __init__(3),collect(1),collect_sorted(1)  # Collector for lazy duplicate groups with optional limits.
@@ -163,14 +182,6 @@ A...
     _assess_risk(group)
     _choose_action(group)
     generate_suggestions(dup_map)
-  src/redup/core/matcher.py:
-    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
-    MatchResult:  # Result of comparing two code blocks...
-    sequence_similarity(text_a;text_b)
-    fuzzy_similarity(text_a;text_b)
-    _compare_against_reference(candidates;min_similarity;similarity_fn;method_fn;skip_same_location)
-    match_candidates(candidates;min_similarity)
-    refine_structural_matches(candidates;min_similarity)
   src/redup/core/ts_extractor.py:
     e: _LanguageRegistry,_initialize_language_dispatcher,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_lua,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
     _LanguageRegistry: __init__(0),get_language(1)  # Registry for tree-sitter language parsers...
@@ -196,25 +207,14 @@ A...
     _extract_functions_bash(node;source_lines;file_path)
     get_supported_languages()
     is_language_supported(file_path)
-  src/redup/core/hasher.py:
-    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,_hashed_block,build_hash_index,_find_duplicates,_blocks_from_different_locations
-    HashedBlock:  # A code block with its computed fingerprints...
-    HashIndex:  # Index mapping hashes to blocks for fast lookup...
-    _normalize_text(text)
-    _normalize_ast_text(text)
-    _ast_to_normalized_string(tree)
-    _process_ast_node(node;name_map;counter)
-    _get_placeholder(name;name_map;counter)
-    _normalize_constant(value)
-    _hash_text(text;normalizer)
-    hash_block(text)
-    hash_block_structural(text)
-    find_exact_duplicates(index)
-    find_structural_duplicates(index)
-    _hashed_block(block)
-    build_hash_index(blocks;min_lines)
-    _find_duplicates(hash_dict)
-    _blocks_from_different_locations(blocks)
+  src/redup/core/matcher.py:
+    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
+    MatchResult:  # Result of comparing two code blocks...
+    sequence_similarity(text_a;text_b)
+    fuzzy_similarity(text_a;text_b)
+    _compare_against_reference(candidates;min_similarity;similarity_fn;method_fn;skip_same_location)
+    match_candidates(candidates;min_similarity)
+    refine_structural_matches(candidates;min_similarity)
   examples/01_basic_usage.py:
     e: main
     main()

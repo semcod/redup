@@ -1,4 +1,4 @@
-# redup | 46f 7593L | python:46
+# redup | 46f 7607L | python:46
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[46]:
   benchmark.py,83
@@ -6,24 +6,24 @@ M[46]:
   src/redup/__init__.py,21
   src/redup/__main__.py,3
   src/redup/cli_app/__init__.py,1
-  src/redup/cli_app/main.py,418
+  src/redup/cli_app/main.py,420
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,205
   src/redup/core/config.py,107
   src/redup/core/differ.py,152
   src/redup/core/hash_cache.py,82
   src/redup/core/hasher.py,190
-  src/redup/core/lazy_grouper.py,114
+  src/redup/core/lazy_grouper.py,116
   src/redup/core/lsh_matcher.py,149
   src/redup/core/matcher.py,84
-  src/redup/core/memory_scanner.py,201
+  src/redup/core/memory_scanner.py,206
   src/redup/core/models.py,123
   src/redup/core/parallel_scanner.py,155
-  src/redup/core/pipeline.py,471
+  src/redup/core/pipeline.py,477
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,247
+  src/redup/core/scanner.py,245
   src/redup/core/ts_extractor.py,550
-  src/redup/core/ultra_fast_scanner.py,260
+  src/redup/core/ultra_fast_scanner.py,257
   src/redup/core/utils/__init__.py,1
   src/redup/core/utils/duplicate_finders.py,24
   src/redup/core/utils/function_extractor.py,111

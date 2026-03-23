@@ -1,11 +1,9 @@
-# code2llm | 36f 6158L | python:35,shell:1 | 2026-03-23
+# code2llm | 36f 6173L | python:35,shell:1 | 2026-03-23
 # CC̄=3.8 | critical:18/208 | dups:0 | cycles:0
 
-HEALTH[1]:
-  🟡 CC    preload_to_ram CC=15 (limit:15)
+HEALTH[0]: ok
 
-REFACTOR[1]:
-  1. split 1 high-CC methods  (CC>15)
+REFACTOR[0]: none needed
 
 COUPLING:
              benchmark  src.redup
@@ -14,22 +12,22 @@ COUPLING:
   CYCLES: none
 
 LAYERS:
-  src/                            CC̄=3.8    ←in:0  →out:0
+  src/                            CC̄=3.9    ←in:0  →out:0
   │ !! ts_extractor               765L  1C   24m  CC=7      ←3
-  │ !! pipeline                   657L  0C   17m  CC=11     ←3
-  │ !! main                       501L  0C   11m  CC=14     ←0
-  │ !! ultra_fast_scanner         362L  0C    8m  CC=15     ←1
-  │ !  scanner                    345L  2C    9m  CC=13     ←4
-  │ !  memory_scanner             281L  1C    8m  CC=11     ←1
+  │ !! pipeline                   664L  0C   17m  CC=11     ←3
+  │ !! main                       506L  0C   11m  CC=14     ←0
+  │ !  ultra_fast_scanner         358L  0C    8m  CC=14     ←0
+  │ !  scanner                    343L  2C    9m  CC=13     ←4
+  │ !  memory_scanner             285L  1C    8m  CC=13     ←1
   │ enhanced_reporter          274L  1C   17m  CC=8      ←0
-  │ hasher                     272L  2C   15m  CC=6      ←7
+  │ hasher                     273L  2C   15m  CC=8      ←7
   │ cache                      267L  1C   10m  CC=5      ←1
   │ !  parallel_scanner           234L  0C    6m  CC=11     ←1
   │ !  lsh_matcher                225L  2C   12m  CC=10     ←1
-  │ !  differ                     209L  1C    5m  CC=14     ←1
   │ !  code2llm_reporter          209L  0C    6m  CC=11     ←1
+  │ !  differ                     209L  1C    5m  CC=14     ←1
   │ models                     164L  9C    1m  CC=1      ←0
-  │ lazy_grouper               155L  1C    7m  CC=7      ←1
+  │ lazy_grouper               159L  1C    7m  CC=7      ←1
   │ config                     154L  0C    6m  CC=5      ←1
   │ function_extractor         148L  1C    5m  CC=5      ←0
   │ planner                    110L  0C    5m  CC=7      ←1
@@ -58,38 +56,38 @@ LAYERS:
 DUPLICATES[0]: none
 
 FUNCTIONS (CC≥10, 18 of 207):
-   15.0  preload_to_ram                             15n   5exit  loops+cond+ret  !! split
-   14.0  format_diff_result                         16n   2exit  loops+cond+ret
+   14.0  preload_to_ram                             12n   4exit  loops+cond+ret
    14.0  _write_results                             17n   1exit  loops+cond
+   14.0  format_diff_result                         16n   2exit  loops+cond+ret
+   13.0  scan_project_memory_optimized               9n   3exit  loops+cond+ret
    13.0  _extract_blocks_sliding                    12n   3exit  loops+cond+ret
+   12.0  scan_project_ultra_fast                    14n   3exit  cond+ret
    12.0  scan_project                               16n   2exit  loops+cond+ret
    12.0  to_markdown                                12n   3exit  loops+cond+ret
-   12.0  scan_project_ultra_fast                    14n   3exit  cond+ret
-   11.0  scan_project_memory_optimized               9n   3exit  loops+cond+ret
+   11.0  scan_project_parallel_memory_optimized     11n   4exit  cond+ret
    11.0  scan_project_parallel                       8n   3exit  cond+ret
    11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
    11.0  to_code2llm_context                        15n   2exit  loops+cond+ret
    11.0  check                                      17n   2exit  cond+ret
-   10.0  scan_project_parallel_memory_optimized     11n   4exit  cond+ret
+   10.0  _ast_to_normalized_string_fast             10n   2exit  loops+cond+ret
+   10.0  extract_functions_fast                     12n   2exit  loops+cond+ret
    10.0  _extract_function_blocks_python            10n   2exit  loops+cond+ret
    10.0  _find_files_optimized                      13n   2exit  loops+cond+ret
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
-   10.0  _ast_to_normalized_string_fast             10n   2exit  loops+cond+ret
-   10.0  extract_functions_fast                     12n   2exit  loops+cond+ret
 
   summary:
-    critical(≥10): 18 | high(5-10): 50 | medium(2-5): 74 | low(<2): 65
+    critical(≥10): 18 | high(5-10): 50 | medium(2-5): 73 | low(<2): 66
     9% CC≥10  33% CC≥5
 
 HOTSPOTS:
-  #1  scan_project_parallel_memory_optimized  fan=30   "calls 30 functions"
-  #2  scan_project_memory_optimized        fan=25   "calls 25 functions"
+  #1  scan_project_parallel_memory_optimized  fan=32   "calls 32 functions"
+  #2  scan_project_memory_optimized        fan=27   "calls 27 functions"
   #3  preload_to_ram                       fan=22   "calls 22 functions"
   #4  scan_project_ultra_fast              fan=21   "calls 21 functions"
   #5  scan_project                         fan=19   "calls 19 functions"
   #6  _find_duplicates_phase_lazy          fan=15   "calls 15 functions"
-  #7  _load_duplication_map                fan=15   "calls 15 functions"
-  #8  _write_results                       fan=15   "calls 15 functions"
+  #7  _write_results                       fan=15   "calls 15 functions"
+  #8  _load_duplication_map                fan=15   "calls 15 functions"
   #9  analyze_optimized                    fan=14   "analysis pipeline, 14 stages"
   #10 scan_project_parallel                fan=13   "calls 13 functions"
 
@@ -116,9 +114,9 @@ CLASSES:
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
   MatchResult                                               0m  CC̄=0.0   max=0.0 
-  DiffResult                                                0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
+  DiffResult                                                0m  CC̄=0.0   max=0.0 
 
 D:
   src/redup/core/ultra_fast_scanner.py:
@@ -131,14 +129,6 @@ D:
     _extract_blocks_for_file(file_path,source,rel_path,config)
     _process_sources_batch(sources,config,stats)
     scan_project_incremental_fast(config)
-  src/redup/core/differ.py:
-    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
-    DiffResult  # Result of comparing two reDUP scans....
-    _load_duplication_map(file_path)
-    _group_by_id(groups)
-    _groups_match(group1,group2)
-    compare_scans(before_file,after_file)
-    format_diff_result(diff)
   src/redup/cli_app/main.py:
     e: _write_output,_build_config,_build_config_with_file_support,_print_scan_header,_print_scan_summary,_write_results,scan,diff,check,config,info
     _write_output(content,output,suffix)
@@ -152,6 +142,20 @@ D:
     check(path,max_groups,max_saved_lines,extensions,min_lines,min_similarity,include_tests)
     config(init,show)
     info()
+  src/redup/core/differ.py:
+    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
+    DiffResult  # Result of comparing two reDUP scans....
+    _load_duplication_map(file_path)
+    _group_by_id(groups)
+    _groups_match(group1,group2)
+    compare_scans(before_file,after_file)
+    format_diff_result(diff)
+  src/redup/core/memory_scanner.py:
+    e: MemoryFileCache,scan_project_memory_optimized,scan_project_parallel_memory_optimized
+    MemoryFileCache  # Cache file contents in RAM for faster access during scanning...
+      __init__(1)  CC=1.0
+    scan_project_memory_optimized(config,max_cache_mb)
+    scan_project_parallel_memory_optimized(config,max_workers,max_cache_mb)
   src/redup/core/scanner.py:
     e: CodeBlock,ScannedFile,_should_exclude,_collect_files,_is_test_file,_read_file_optimized,_extract_blocks_sliding,_extract_class_blocks_python,_extract_function_blocks_python,_preload_files_to_ram,scan_project
     CodeBlock  # A contiguous block of source code lines....
@@ -168,12 +172,6 @@ D:
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
-  src/redup/core/memory_scanner.py:
-    e: MemoryFileCache,scan_project_memory_optimized,scan_project_parallel_memory_optimized
-    MemoryFileCache  # Cache file contents in RAM for faster access during scanning...
-      __init__(1)  CC=1.0
-    scan_project_memory_optimized(config,max_cache_mb)
-    scan_project_parallel_memory_optimized(config,max_workers,max_cache_mb)
   src/redup/core/parallel_scanner.py:
     e: _scan_file_worker,_should_process_file,_is_test_file,scan_project_parallel,_find_files_optimized,_is_test_file_cached
     _scan_file_worker(args)
@@ -233,6 +231,25 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map,groups)
     to_toon(dup_map)
+  src/redup/core/hasher.py:
+    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,_hashed_block,build_hash_index,_find_duplicates,_blocks_from_different_locations
+    HashedBlock  # A code block with its computed fingerprints....
+    HashIndex  # Index mapping hashes to blocks for fast lookup....
+    _normalize_text(text)
+    _normalize_ast_text(text)
+    _ast_to_normalized_string(tree)
+    _process_ast_node(node,name_map,counter)
+    _get_placeholder(name,name_map,counter)
+    _normalize_constant(value)
+    _hash_text(text,normalizer)
+    hash_block(text)
+    hash_block_structural(text)
+    find_exact_duplicates(index)
+    find_structural_duplicates(index)
+    _hashed_block(block)
+    build_hash_index(blocks,min_lines)
+    _find_duplicates(hash_dict)
+    _blocks_from_different_locations(blocks)
   src/redup/core/lazy_grouper.py:
     e: DuplicateGroupCollector,find_exact_duplicates_lazy,find_structural_duplicates_lazy,_create_duplicate_group,find_all_duplicates_lazy
     DuplicateGroupCollector  # Collector for lazy duplicate groups with optional limits.
@@ -250,14 +267,6 @@ A...
     _assess_risk(group)
     _choose_action(group)
     generate_suggestions(dup_map)
-  src/redup/core/matcher.py:
-    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
-    MatchResult  # Result of comparing two code blocks....
-    sequence_similarity(text_a,text_b)
-    fuzzy_similarity(text_a,text_b)
-    _compare_against_reference(candidates,min_similarity,similarity_fn,method_fn,skip_same_location)
-    match_candidates(candidates,min_similarity)
-    refine_structural_matches(candidates,min_similarity)
   src/redup/core/ts_extractor.py:
     e: _LanguageRegistry,_initialize_language_dispatcher,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_lua,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
     _LanguageRegistry  # Registry for tree-sitter language parsers....
@@ -284,25 +293,14 @@ A...
     _extract_functions_bash(node,source_lines,file_path)
     get_supported_languages()
     is_language_supported(file_path)
-  src/redup/core/hasher.py:
-    e: HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,_hashed_block,build_hash_index,_find_duplicates,_blocks_from_different_locations
-    HashedBlock  # A code block with its computed fingerprints....
-    HashIndex  # Index mapping hashes to blocks for fast lookup....
-    _normalize_text(text)
-    _normalize_ast_text(text)
-    _ast_to_normalized_string(tree)
-    _process_ast_node(node,name_map,counter)
-    _get_placeholder(name,name_map,counter)
-    _normalize_constant(value)
-    _hash_text(text,normalizer)
-    hash_block(text)
-    hash_block_structural(text)
-    find_exact_duplicates(index)
-    find_structural_duplicates(index)
-    _hashed_block(block)
-    build_hash_index(blocks,min_lines)
-    _find_duplicates(hash_dict)
-    _blocks_from_different_locations(blocks)
+  src/redup/core/matcher.py:
+    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
+    MatchResult  # Result of comparing two code blocks....
+    sequence_similarity(text_a,text_b)
+    fuzzy_similarity(text_a,text_b)
+    _compare_against_reference(candidates,min_similarity,similarity_fn,method_fn,skip_same_location)
+    match_candidates(candidates,min_similarity)
+    refine_structural_matches(candidates,min_similarity)
   examples/01_basic_usage.py:
     e: main
     main()

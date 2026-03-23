@@ -1,21 +1,17 @@
 # code2llm/evolution | 208 func | 29f | 2026-03-23
 
-NEXT[4] (ranked by impact):
+NEXT[3] (ranked by impact):
   [1] !! SPLIT           src/redup/core/pipeline.py
-      WHY: 657L, 0 classes, max CC=11
-      EFFORT: ~4h  IMPACT: 7227
+      WHY: 664L, 0 classes, max CC=11
+      EFFORT: ~4h  IMPACT: 7304
 
   [2] !! SPLIT           src/redup/cli_app/main.py
-      WHY: 501L, 0 classes, max CC=14
-      EFFORT: ~4h  IMPACT: 7014
+      WHY: 506L, 0 classes, max CC=14
+      EFFORT: ~4h  IMPACT: 7084
 
   [3] !! SPLIT           src/redup/core/ts_extractor.py
       WHY: 765L, 1 classes, max CC=7
       EFFORT: ~4h  IMPACT: 5355
-
-  [4] !  SPLIT-FUNC      preload_to_ram  CC=15  fan=22
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 330
 
 
 RISKS[3]:
@@ -24,11 +20,11 @@ RISKS[3]:
   ⚠ Splitting src/redup/cli_app/main.py may break 11 import paths
 
 METRICS-TARGET:
-  CC̄:          3.8 → ≤2.7
-  max-CC:      15 → ≤7
+  CC̄:          3.9 → ≤2.7
+  max-CC:      14 → ≤7
   god-modules: 3 → 0
-  high-CC(≥15): 1 → ≤0
+  high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=3.5 → now CC̄=3.8
+  prev CC̄=3.8 → now CC̄=3.9

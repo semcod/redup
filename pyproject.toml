@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redup"
-version = "0.3.18"
+version = "0.3.19"
 description = "Code duplication analyzer and refactoring planner for LLMs"
 readme = "README.md"
 license = "Apache-2.0"

@@ -5,7 +5,7 @@
 - **Project**: redup
 - **Language**: python
 - **Files**: 28
-- **Lines**: 7506
+- **Lines**: 7521
 - **Functions**: 207
 - **Classes**: 25
 - **Avg CC**: 3.8
@@ -27,17 +27,17 @@
 - `__init__.py` — 25L, 0 methods, CC↑0
 - `__main__.py` — 5L, 0 methods, CC↑0
 
-### src/redup/cli_app/ (2 files, 502L, 11 functions)
+### src/redup/cli_app/ (2 files, 507L, 11 functions)
 
-- `main.py` — 501L, 11 methods, CC↑14
+- `main.py` — 506L, 11 methods, CC↑14
 - `__init__.py` — 1L, 0 methods, CC↑0
 
-### src/redup/core/ (17 files, 4412L, 148 functions)
+### src/redup/core/ (17 files, 4422L, 148 functions)
 
-- `ultra_fast_scanner.py` — 362L, 8 methods, CC↑15
 - `differ.py` — 209L, 5 methods, CC↑14
-- `scanner.py` — 345L, 9 methods, CC↑13
-- `memory_scanner.py` — 281L, 8 methods, CC↑11
+- `ultra_fast_scanner.py` — 358L, 8 methods, CC↑14
+- `memory_scanner.py` — 285L, 8 methods, CC↑13
+- `scanner.py` — 343L, 9 methods, CC↑13
 - `parallel_scanner.py` — 234L, 6 methods, CC↑11
 - _12 more files_
 
@@ -60,13 +60,12 @@
 
 ## Key Exports
 
-- **preload_to_ram** (function, CC=15) ⚠ split
 - **LSHIndex** (class, CC̄=5.6)
 
 ## Hotspots (High Fan-Out)
 
-- **scan_project_parallel_memory_optimized** — fan-out=30: Parallel scan with memory optimization.
-- **scan_project_memory_optimized** — fan-out=25: Scan project with memory optimization for faster processing.
+- **scan_project_parallel_memory_optimized** — fan-out=32: Parallel scan with memory optimization.
+- **scan_project_memory_optimized** — fan-out=27: Scan project with memory optimization for faster processing.
 
 Loads files into R
 - **preload_to_ram** — fan-out=22: Load ALL files into RAM at once for maximum speed.
@@ -81,19 +80,18 @@ Performance optimization
 Args:
     config: Scan 
 - **_find_duplicates_phase_lazy** — fan-out=15: Phase 3: Hash and find duplicates with caching and lazy evaluation.
-- **_load_duplication_map** — fan-out=15: Load a DuplicationMap from a JSON file.
+- **_write_results** — fan-out=15: Write scan results to output files.
 
 ## Refactoring Priorities
 
 | # | Action | Impact | Effort |
 |---|--------|--------|--------|
-| 1 | Split god module src/redup/cli_app/main.py (501L, 0 classes) | high | high |
-| 2 | Split god module src/redup/core/pipeline.py (657L, 0 classes) | high | high |
+| 1 | Split god module src/redup/cli_app/main.py (506L, 0 classes) | high | high |
+| 2 | Split god module src/redup/core/pipeline.py (664L, 0 classes) | high | high |
 | 3 | Split god module src/redup/core/ts_extractor.py (765L, 1 classes) | high | high |
-| 4 | Split preload_to_ram (CC=15 → target CC<10) | medium | low |
-| 5 | Reduce scan_project_parallel_memory_optimized fan-out (currently 30) | medium | medium |
-| 6 | Reduce scan_project_memory_optimized fan-out (currently 25) | medium | medium |
-| 7 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
+| 4 | Reduce scan_project_parallel_memory_optimized fan-out (currently 32) | medium | medium |
+| 5 | Reduce scan_project_memory_optimized fan-out (currently 27) | medium | medium |
+| 6 | Reduce preload_to_ram fan-out (currently 22) | medium | medium |
 
 ## Context for LLM
 
