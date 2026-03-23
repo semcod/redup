@@ -42,53 +42,53 @@ class ScanConfig:
     exclude_patterns: list[str] = field(
         default_factory=lambda: [
             # Universal system files (but not normal code files)
-            ".git/", ".svn/", ".hg/", "__pycache__/", ".pytest_cache/", ".mypy_cache/",
-            ".ruff_cache/", ".tox/", ".nox/", ".coverage", "htmlcov/", ".DS_Store",
-            "Thumbs.db", "*.swp", "*.swo", "*~", ".vscode/", ".idea/",
+            ".git", ".svn", ".hg", "__pycache__", ".pytest_cache", ".mypy_cache",
+            ".ruff_cache", ".tox", ".nox", ".coverage", "htmlcov", ".DS_Store",
+            "Thumbs.db", "*.swp", "*.swo", "*~", ".vscode", ".idea",
             
             # Python specific
             "*.pyc", "*.pyo", "*.pyd", "$py.class",
-            "python*/", "python3*/", "Python*/",
-            "venv*/", "env*/", ".venv*/", ".env*/",
-            "*.egg-info/", "*.egg", "build/", "dist/",
-            ".installer/", ".eggs/", "lib/", "lib64/", "parts/", "sdist/", "var/", "wheels/",
+            "python*", "python3*", "Python*",
+            "venv*", "env*", ".venv*", ".env*",
+            "*.egg-info", "*.egg", "build", "dist",
+            ".installer", ".eggs", "lib", "lib64", "parts", "sdist", "var", "wheels",
             
             # Node.js/JavaScript
-            "node_modules/", "npm-debug.log*", "yarn-debug.log*", "yarn-error.log*",
-            "pnpm-debug.log*", ".npm/", ".yarn-integrity/", ".eslintcache/", ".stylelintcache/",
-            ".next/", ".nuxt/", ".vuepress/dist/",
+            "node_modules", "npm-debug.log*", "yarn-debug.log*", "yarn-error.log*",
+            "pnpm-debug.log*", ".npm", ".yarn-integrity", ".eslintcache", ".stylelintcache",
+            ".next", ".nuxt", ".vuepress/dist",
             
             # Java/Maven/Gradle
-            "target/", "build/", "out/", ".classpath/", ".project/", ".settings/",
-            ".mvn/", "gradle/", ".gradle/", "*.class", "*.jar", "*.war", "*.ear", "*.aar",
+            "target", "build", "out", ".classpath", ".project", ".settings",
+            ".mvn", "gradle", ".gradle", "*.class", "*.jar", "*.war", "*.ear", "*.aar",
             
             # Rust
-            "target/", "Cargo.lock", "**/*.rs.bk",
+            "target", "Cargo.lock", "**/*.rs.bk",
             
             # Go
-            "vendor/", "*.exe", "*.exe~", "*.dll", "*.so", "*.dylib", "*.test", "*.out",
+            "vendor", "*.exe", "*.exe~", "*.dll", "*.so", "*.dylib", "*.test", "*.out",
             
             # Docker
-            ".dockerignore", ".docker/",
+            ".dockerignore", ".docker",
             
             # Mobile
-            "android/app/build/", "ios/build/", "*.apk", "*.ipa", "*.xcarchive",
+            "android/app/build", "ios/build", "*.apk", "*.ipa", "*.xcarchive",
             
             # Database
-            "*.db", "*.sqlite", "*.sqlite3", "data/", "logs/",
+            "*.db", "*.sqlite", "*.sqlite3", "data", "logs",
             
             # Cloud/DevOps
-            ".terraform/", ".terraform.lock.hcl", "*.tfstate", "*.tfstate.*", ".ansible/", ".kube/",
+            ".terraform", ".terraform.lock.hcl", "*.tfstate", "*.tfstate.*", ".ansible", ".kube",
             
             # General build/cache
-            "cache/", ".cache/", "tmp/", ".tmp/", "*.tmp", "*.temp", "*.bak", "*.backup",
+            "cache", ".cache", "tmp", ".tmp", "*.tmp", "*.temp", "*.bak", "*.backup",
             
             # Package managers
             "composer.lock", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", 
             "poetry.lock", "Pipfile.lock", "Gemfile.lock",
             
             # Logs
-            "*.log", "logs/",
+            "*.log", "logs",
         ]
     )
     min_block_lines: int = 3
