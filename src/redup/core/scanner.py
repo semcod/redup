@@ -140,22 +140,32 @@ def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
     return False  # Not excluded by any pattern
 
 
+def _project_relative_path(file_path: Path, project_root: Path) -> Path:
+    """Return a path relative to the project root when possible."""
+    try:
+        return file_path.relative_to(project_root)
+    except ValueError:
+        return file_path
+
+
 def _collect_files(config: ScanConfig) -> list[Path]:
     """Collect all files to scan based on configuration."""
     files = []
     
     for file_path in config.root.rglob("*"):
         if file_path.is_file():
+            relative_path = _project_relative_path(file_path, config.root)
+
             # Check extension
             if file_path.suffix not in config.extensions:
                 continue
             
             # Check exclusions
-            if _should_exclude(file_path, tuple(config.exclude_patterns)):
+            if _should_exclude(relative_path, tuple(config.exclude_patterns)):
                 continue
             
             # Check if test file
-            if not config.include_tests and _is_test_file(file_path):
+            if not config.include_tests and _is_test_file(relative_path):
                 continue
             
             # Check file size
@@ -458,6 +468,8 @@ def _should_process_file(
     max_file_size: int
 ) -> bool:
     """Check if file should be processed in parallel scan."""
+    relative_path = _project_relative_path(file_path, Path(project_root))
+
     # Check extension
     if file_path.suffix not in extensions:
         return False
@@ -467,11 +479,11 @@ def _should_process_file(
         "__pycache__", ".git", ".venv", "venv", "node_modules",
         ".tox", ".mypy_cache", ".pytest_cache", "*.egg-info", "dist", "build",
     ]
-    if _should_exclude(file_path, tuple(default_patterns)):
+    if _should_exclude(relative_path, tuple(default_patterns)):
         return False
     
     # Check if test file
-    if not include_tests and _is_test_file(file_path):
+    if not include_tests and _is_test_file(relative_path):
         return False
     
     # Check file size (convert KB to bytes)

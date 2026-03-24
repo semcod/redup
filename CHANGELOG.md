@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-03-24
+
+### Test
+- Update tests/test_mcp_server.py
+
 ## [0.4.1] - 2026-03-23
 
 ### Other
