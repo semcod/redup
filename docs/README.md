@@ -29,9 +29,11 @@ pip install -e .
 
 ```bash
 pip install redup[all]    # all optional features
+pip install redup[fast]    # fast features
 pip install redup[fuzzy]    # fuzzy features
 pip install redup[ast]    # ast features
 pip install redup[lsh]    # lsh features
+pip install redup[semantic]    # semantic features
 pip install redup[dev]    # development tools
 ```
 

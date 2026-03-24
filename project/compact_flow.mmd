@@ -1,6 +1,8 @@
 flowchart TD
     benchmark["benchmark<br/>2 funcs"]
+    benchmarks_bench_libraries["benchmarks.bench_libraries<br/>4 funcs"]
     examples_01_basic_usage["examples.01_basic_usage<br/>1 funcs"]
-    src_redup["src.redup<br/>243 funcs"]
+    src_redup["src.redup<br/>282 funcs"]
     examples_01_basic_usage -->|3| src_redup
     benchmark -->|3| src_redup
+    benchmarks_bench_libraries -->|1| src_redup

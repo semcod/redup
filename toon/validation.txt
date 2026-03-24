@@ -1,0 +1,59 @@
+VALLM BATCH VALIDATION RESULTS
+               Results by Language                
+┏━━━━━━━━━━┳━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━┓
+┃ Language ┃ Total ┃ Passed ┃ Failed ┃ Avg Score ┃
+┡━━━━━━━━━━╇━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━┩
+│ yaml     │     3 │      3 │      0 │      1.00 │
+│ python   │    58 │     50 │      8 │      0.97 │
+│ toml     │     2 │      2 │      0 │      1.00 │
+│ bash     │     1 │      1 │      0 │      1.00 │
+│ json     │     2 │      2 │      0 │      1.00 │
+└──────────┴───────┴────────┴────────┴───────────┘
+
+Total: 102 files, 58 passed, 44 failed
+
+Failed Files:
+  • PERFORMANCE_OPTIMIZATIONS.md: Unsupported file type
+  • BUGFIX_SUMMARY.md: Unsupported file type
+  • SPRINT_2_PLAN.md: Unsupported file type
+  • MEMORY_OPTIMIZATION.md: Unsupported file type
+  • VERSION: Unsupported file type
+  • LICENSE: Unsupported file type
+  • complexity_reduction_plan.md: Unsupported file type
+  • TODO.md: Unsupported file type
+  • CHANGELOG.md: Unsupported file type
+  • PERFORMANCE.md: Unsupported file type
+  • CONTINUATION_PLAN.md: Unsupported file type
+  • COMPLEXITY_REDUCTION_COMPLETE.md: Unsupported file type
+  • README.md: Unsupported file type
+  • docs/API.md: Unsupported file type
+  • docs/README.md: Unsupported file type
+  • code2llm_output/context.md: Unsupported file type
+  • code2llm_output/README.md: Unsupported file type
+  • code2llm_output/analysis.toon: Unsupported file type
+  • benchmarks/bench_libraries.py: Validation fail
+  • project/validation.toon: Unsupported file type
+  • project/project.toon: Unsupported file type
+  • project/compact_flow.mmd: Unsupported file type
+  • project/validation_fixed.toon: Unsupported file type
+  • project/map.toon: Unsupported file type
+  • project/calls.mmd: Unsupported file type
+  • project/index.html: Unsupported file type
+  • project/flow.toon: Unsupported file type
+  • project/context.md: Unsupported file type
+  • project/prompt.txt: Unsupported file type
+  • project/evolution.toon: Unsupported file type
+  • project/flow.mmd: Unsupported file type
+  • project/dashboard.html: Unsupported file type
+  • project/README.md: Unsupported file type
+  • project/analysis.toon: Unsupported file type
+  • project/duplication.toon: Unsupported file type
+  • proxy_analysis/duplication.toon: Unsupported file type
+  • src/redup/core/hasher.py: Validation fail
+  • src/redup/core/scanner.py.backup: Unsupported file type
+  • src/redup/core/semantic.py: Validation fail
+  • src/redup/core/python_parser.py: Validation fail
+  • src/redup/core/utils/function_extractor.py: Validation fail
+  • src/redup/core/utils/hash_utils.py: Validation fail
+  • src/redup/core/utils/duplicate_finders.py: Validation fail
+  • src/redup/core/utils/language_dispatcher.py: Validation fail

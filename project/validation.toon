@@ -1,267 +1,143 @@
 Using .gitignore from .
-Excluded 25844 files by .gitignore
-# vallm batch | 0f | 55✓ 52✗
+Excluded 25985 files by .gitignore
+Validating 102 files...
+Processing 1/102: PERFORMANCE_OPTIMIZATIONS.md
+Processing 2/102: goal.yaml
+Processing 3/102: BUGFIX_SUMMARY.md
+Processing 4/102: test_universal_fuzzy.py
+Processing 5/102: SPRINT_2_PLAN.md
+Processing 6/102: MEMORY_OPTIMIZATION.md
+Processing 7/102: VERSION
+Processing 8/102: LICENSE
+Processing 9/102: test_fuzzy_similarity.py
+Processing 10/102: redup.toml
+Processing 11/102: pyproject.toml
+Processing 12/102: complexity_reduction_plan.md
+Processing 13/102: TODO.md
+Processing 14/102: benchmark.py
+Processing 15/102: CHANGELOG.md
+Processing 16/102: project.sh
+Processing 17/102: PERFORMANCE.md
+Processing 18/102: CONTINUATION_PLAN.md
+Processing 19/102: COMPLEXITY_REDUCTION_COMPLETE.md
+Processing 20/102: README.md
+Processing 21/102: redup_self_analysis/duplication.json
+Processing 22/102: docs/API.md
+Processing 23/102: docs/README.md
+Processing 24/102: code2llm_output/context.md
+Processing 25/102: code2llm_output/README.md
+Processing 26/102: code2llm_output/analysis.toon
+Processing 27/102: examples/01_basic_usage.py
+Processing 28/102: benchmarks/bench_libraries.py
 
-SUMMARY:
-  total: 0
-  passed: 55
-  failed: 52
-  success: 0.0%
+✗ benchmarks/bench_libraries.py (Python) - fail
+  • python.import.resolvable: Module 'xxhash' not found (line 105)
+Processing 29/102: src/sitecustomize.py
+Processing 30/102: tests/test_matcher.py
+Processing 31/102: tests/test_hasher.py
+Processing 32/102: tests/__init__.py
+Processing 33/102: tests/test_mcp_server.py
+Processing 34/102: tests/test_planner.py
+Processing 35/102: tests/test_e2e.py
+Processing 36/102: tests/test_scanner.py
+Processing 37/102: tests/test_models.py
+Processing 38/102: tests/test_reporters.py
+Processing 39/102: tests/test_ts_extractor.py
+Processing 40/102: tests/test_pipeline.py
+Processing 41/102: project/validation.toon
+Processing 42/102: project/project.toon
+Processing 43/102: project/compact_flow.mmd
+Processing 44/102: project/validation_fixed.toon
+Processing 45/102: project/map.toon
+Processing 46/102: project/calls.mmd
+Processing 47/102: project/index.html
+Processing 48/102: project/flow.toon
+Processing 49/102: project/context.md
+Processing 50/102: project/prompt.txt
+Processing 51/102: project/evolution.toon
+Processing 52/102: project/project.yaml
+Processing 53/102: project/flow.mmd
+Processing 54/102: project/dashboard.html
+Processing 55/102: project/README.md
+Processing 56/102: project/analysis.toon
+Processing 57/102: project/duplication.toon
+Processing 58/102: proxy_analysis/duplication.yaml
+Processing 59/102: proxy_analysis/duplication.json
+Processing 60/102: proxy_analysis/duplication.toon
+Processing 61/102: src/redup/__init__.py
+Processing 62/102: src/redup/__main__.py
+Processing 63/102: src/redup/mcp_server.py
+Processing 64/102: src/redup/core/config.py
+Processing 65/102: src/redup/core/hash_cache.py
+Processing 66/102: src/redup/core/universal_fuzzy.py
+Processing 67/102: src/redup/core/matcher.py
+Processing 68/102: src/redup/core/lazy_grouper.py
+Processing 69/102: src/redup/core/__init__.py
+Processing 70/102: src/redup/core/hasher.py
 
-FILES:
-  [yaml]
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-  [python]
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✗ unknown
-      verdict: fail
-      score: 0.89
-      issues: 4
-        [error] python.import.resolvable: Module 'utils.hash_utils' not found@194
-        [error] python.import.resolvable: Module 'utils.hash_utils' not found@200
-        [error] python.import.resolvable: Module 'utils.duplicate_finders' not found@206
-        [error] python.import.resolvable: Module 'utils.duplicate_finders' not found@212
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✗ unknown
-      verdict: fail
-      score: 0.79
-      issues: 1
-        [error] python.import.resolvable: Module 'scanner' not found@4
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✗ unknown
-      verdict: fail
-      score: 0.66
-      issues: 4
-        [error] python.import.resolvable: Module 'hasher' not found@35
-        [error] python.import.resolvable: Module 'hasher' not found@6
-        [error] python.import.resolvable: Module 'hasher' not found@25
-        [error] python.import.resolvable: Module 'hasher' not found@21
-    ✗ unknown
-      verdict: fail
-      score: 0.71
-      issues: 2
-        [error] python.import.resolvable: Module 'hasher' not found@6
-        [error] python.import.resolvable: Module 'hasher' not found@21
-    ✗ unknown
-      verdict: fail
-      score: 0.79
-      issues: 1
-        [error] python.import.resolvable: Module 'scanner' not found@4
-  [toml]
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-  [bash]
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-  [json]
-    ✓ unknown
-      verdict: pass
-      score: 1.00
-    ✓ unknown
-      verdict: pass
-      score: 1.00
+✗ src/redup/core/hasher.py (Python) - fail
+  • python.import.resolvable: Module 'xxhash' not found (line 16)
+  • python.import.resolvable: Module 'pybloom_live' not found (line 25)
+  • python.import.resolvable: Module 'utils.hash_utils' not found (line 210)
+  • python.import.resolvable: Module 'utils.hash_utils' not found (line 216)
+  • python.import.resolvable: Module 'utils.duplicate_finders' not found (line 222)
+  • python.import.resolvable: Module 'utils.duplicate_finders' not found (line 228)
+Processing 71/102: src/redup/core/planner.py
+Processing 72/102: src/redup/core/scanner.py.backup
+Processing 73/102: src/redup/core/semantic.py
 
-FAILED:
-  ✗ PERFORMANCE_OPTIMIZATIONS.md: Unable to process file (unsupported format or binary)
-  ✗ BUGFIX_SUMMARY.md: Unable to process file (unsupported format or binary)
-  ✗ SPRINT_2_PLAN.md: Unable to process file (unsupported format or binary)
-  ✗ MEMORY_OPTIMIZATION.md: Unable to process file (unsupported format or binary)
-  ✗ VERSION: Unable to process file (unsupported format or binary)
-  ✗ LICENSE: Unable to process file (unsupported format or binary)
-  ✗ complexity_reduction_plan.md: Unable to process file (unsupported format or binary)
-  ✗ TODO.md: Unable to process file (unsupported format or binary)
-  ✗ .gitignore: Unable to process file (unsupported format or binary)
-  ✗ CHANGELOG.md: Unable to process file (unsupported format or binary)
-  ✗ PERFORMANCE.md: Unable to process file (unsupported format or binary)
-  ✗ CONTINUATION_PLAN.md: Unable to process file (unsupported format or binary)
-  ✗ COMPLEXITY_REDUCTION_COMPLETE.md: Unable to process file (unsupported format or binary)
-  ✗ README.md: Unable to process file (unsupported format or binary)
-  ✗ docs/API.md: Unable to process file (unsupported format or binary)
-  ✗ docs/README.md: Unable to process file (unsupported format or binary)
-  ✗ code2llm_output/context.md: Unable to process file (unsupported format or binary)
-  ✗ code2llm_output/README.md: Unable to process file (unsupported format or binary)
-  ✗ code2llm_output/analysis.toon: Unable to process file (unsupported format or binary)
-  ✗ .idea/.gitignore: Unable to process file (unsupported format or binary)
-  ✗ .pytest_cache/.gitignore: Unable to process file (unsupported format or binary)
-  ✗ project/validation.toon: Unable to process file (unsupported format or binary)
-  ✗ project/project.toon: Unable to process file (unsupported format or binary)
-  ✗ project/compact_flow.mmd: Unable to process file (unsupported format or binary)
-  ✗ project/validation_fixed.toon: Unable to process file (unsupported format or binary)
-  ✗ project/map.toon: Unable to process file (unsupported format or binary)
-  ✗ project/calls.mmd: Unable to process file (unsupported format or binary)
-  ✗ project/index.html: Unable to process file (unsupported format or binary)
-  ✗ project/flow.toon: Unable to process file (unsupported format or binary)
-  ✗ project/context.md: Unable to process file (unsupported format or binary)
-  ✗ project/prompt.txt: Unable to process file (unsupported format or binary)
-  ✗ project/evolution.toon: Unable to process file (unsupported format or binary)
-  ✗ project/flow.png: Binary file (skipped)
-  ✗ project/calls.png: Binary file (skipped)
-  ✗ project/flow.mmd: Unable to process file (unsupported format or binary)
-  ✗ project/dashboard.html: Unable to process file (unsupported format or binary)
-  ✗ project/compact_flow.png: Binary file (skipped)
-  ✗ project/README.md: Unable to process file (unsupported format or binary)
-  ✗ project/analysis.toon: Unable to process file (unsupported format or binary)
-  ✗ project/duplication.toon: Unable to process file (unsupported format or binary)
-  ✗ proxy_analysis/duplication.toon: Unable to process file (unsupported format or binary)
-  ✗ .ruff_cache/.gitignore: Unable to process file (unsupported format or binary)
-  ✗ .mypy_cache/.gitignore: Unable to process file (unsupported format or binary)
-  ✗ .venv/.gitignore: Unable to process file (unsupported format or binary)
-  ✗ venv/.gitignore: Unable to process file (unsupported format or binary)
-  ✗ .redup/cache/hash_cache.db: Binary file (skipped)
-  ✗ src/redup/core/hasher.py: Validation fail
-  ✗ src/redup/core/scanner.py.backup: Unable to process file (unsupported format or binary)
-  ✗ src/redup/core/utils/function_extractor.py: Validation fail
-  ✗ src/redup/core/utils/hash_utils.py: Validation fail
-  ✗ src/redup/core/utils/duplicate_finders.py: Validation fail
-  ✗ src/redup/core/utils/language_dispatcher.py: Validation fail
+✗ src/redup/core/semantic.py (Python) - fail
+  • python.import.resolvable: Module 'sentence_transformers' not found (line 64)
+  • python.import.resolvable: Module 'torch' not found (line 65)
+  • python.import.resolvable: Module 'sentence_transformers' not found (line 126)
+  • python.import.resolvable: Module 'sentence_transformers' not found (line 170)
+  • python.import.resolvable: Module 'sentence_transformers' not found (line 36)
+Processing 74/102: src/redup/core/python_parser.py
+
+✗ src/redup/core/python_parser.py (Python) - fail
+  • python.import.resolvable: Module 'libcst' not found (line 27)
+Processing 75/102: src/redup/core/scanner.py
+Processing 76/102: src/redup/core/models.py
+Processing 77/102: src/redup/core/pipeline.py
+Processing 78/102: src/redup/core/lsh_matcher.py
+Processing 79/102: src/redup/core/ts_extractor.py
+Processing 80/102: src/redup/core/fuzzy_similarity.py
+Processing 81/102: src/redup/core/cache.py
+Processing 82/102: src/redup/core/differ.py
+Processing 83/102: src/redup/reporters/markdown_reporter.py
+Processing 84/102: src/redup/reporters/code2llm_reporter.py
+Processing 85/102: src/redup/reporters/enhanced_reporter.py
+Processing 86/102: src/redup/reporters/__init__.py
+Processing 87/102: src/redup/reporters/json_reporter.py
+Processing 88/102: src/redup/reporters/toon_reporter.py
+Processing 89/102: src/redup/reporters/yaml_reporter.py
+Processing 90/102: src/redup/cli_app/scan_commands.py
+Processing 91/102: src/redup/cli_app/output_writer.py
+Processing 92/102: src/redup/cli_app/config_builder.py
+Processing 93/102: src/redup/cli_app/__init__.py
+Processing 94/102: src/redup/cli_app/scan_helpers.py
+Processing 95/102: src/redup/cli_app/main.py
+Processing 96/102: src/redup/cli_app/fuzzy_similarity.py
+Processing 97/102: src/redup/core/utils/function_extractor.py
+
+✗ src/redup/core/utils/function_extractor.py (Python) - fail
+  • python.import.resolvable: Module 'scanner' not found (line 4)
+Processing 98/102: src/redup/core/utils/__init__.py
+Processing 99/102: src/redup/core/utils/diff_helpers.py
+Processing 100/102: src/redup/core/utils/hash_utils.py
+
+✗ src/redup/core/utils/hash_utils.py (Python) - fail
+  • python.import.resolvable: Module 'hasher' not found (line 35)
+  • python.import.resolvable: Module 'hasher' not found (line 6)
+  • python.import.resolvable: Module 'hasher' not found (line 25)
+  • python.import.resolvable: Module 'hasher' not found (line 21)
+Processing 101/102: src/redup/core/utils/duplicate_finders.py
+
+✗ src/redup/core/utils/duplicate_finders.py (Python) - fail
+  • python.import.resolvable: Module 'hasher' not found (line 6)
+  • python.import.resolvable: Module 'hasher' not found (line 21)
+Processing 102/102: src/redup/core/utils/language_dispatcher.py
+
+✗ src/redup/core/utils/language_dispatcher.py (Python) - fail
+  • python.import.resolvable: Module 'scanner' not found (line 4)
+✓ Results saved to toon/validation.txt

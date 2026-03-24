@@ -1,13 +1,13 @@
-# code2llm/evolution | 246 func | 32f | 2026-03-23
+# code2llm/evolution | 289 func | 37f | 2026-03-24
 
-NEXT[4] (ranked by impact):
-  [1] !! SPLIT           src/redup/core/scanner.py
-      WHY: 655L, 4 classes, max CC=12
-      EFFORT: ~4h  IMPACT: 7860
+NEXT[6] (ranked by impact):
+  [1] !! SPLIT           src/redup/mcp_server.py
+      WHY: 675L, 0 classes, max CC=12
+      EFFORT: ~4h  IMPACT: 8100
 
   [2] !! SPLIT           src/redup/core/pipeline.py
-      WHY: 660L, 0 classes, max CC=11
-      EFFORT: ~4h  IMPACT: 7260
+      WHY: 714L, 0 classes, max CC=11
+      EFFORT: ~4h  IMPACT: 7854
 
   [3] !! SPLIT           src/redup/core/ts_extractor.py
       WHY: 765L, 1 classes, max CC=7
@@ -17,18 +17,26 @@ NEXT[4] (ranked by impact):
       WHY: CC=15 exceeds 15
       EFFORT: ~1h  IMPACT: 210
 
+  [5] !  SPLIT-FUNC      _parse_with_ast  CC=15  fan=13
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 195
+
+  [6] !  SPLIT-FUNC      GroupMatcher._ensure_matches  CC=15  fan=13
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 195
+
 
 RISKS[3]:
   ⚠ Splitting src/redup/core/ts_extractor.py may break 24 import paths
-  ⚠ Splitting src/redup/core/pipeline.py may break 17 import paths
-  ⚠ Splitting src/redup/core/scanner.py may break 20 import paths
+  ⚠ Splitting src/redup/core/pipeline.py may break 18 import paths
+  ⚠ Splitting src/redup/mcp_server.py may break 16 import paths
 
 METRICS-TARGET:
-  CC̄:          3.5 → ≤2.4
+  CC̄:          3.7 → ≤2.6
   max-CC:      15 → ≤7
-  god-modules: 3 → 0
-  high-CC(≥15): 1 → ≤0
+  god-modules: 4 → 0
+  high-CC(≥15): 3 → ≤1
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=3.5 → now CC̄=3.5
+  prev CC̄=3.5 → now CC̄=3.7

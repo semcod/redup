@@ -1,7 +1,8 @@
-# redup | 52f 8772L | python:52
+# redup | 58f 10413L | python:58
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[52]:
+M[58]:
   benchmark.py,83
+  benchmarks/bench_libraries.py,120
   examples/01_basic_usage.py,39
   src/redup/__init__.py,21
   src/redup/__main__.py,3
@@ -16,23 +17,27 @@ M[52]:
   src/redup/core/cache.py,205
   src/redup/core/config.py,107
   src/redup/core/differ.py,152
-  src/redup/core/fuzzy_similarity.py,287
+  src/redup/core/fuzzy_similarity.py,294
   src/redup/core/hash_cache.py,82
-  src/redup/core/hasher.py,190
+  src/redup/core/hasher.py,242
   src/redup/core/lazy_grouper.py,116
   src/redup/core/lsh_matcher.py,149
   src/redup/core/matcher.py,84
-  src/redup/core/models.py,156
-  src/redup/core/pipeline.py,473
+  src/redup/core/models.py,151
+  src/redup/core/pipeline.py,516
   src/redup/core/planner.py,82
-  src/redup/core/scanner.py,473
+  src/redup/core/python_parser.py,125
+  src/redup/core/scanner.py,456
+  src/redup/core/semantic.py,133
   src/redup/core/ts_extractor.py,550
-  src/redup/core/universal_fuzzy.py,333
+  src/redup/core/universal_fuzzy.py,327
   src/redup/core/utils/__init__.py,1
+  src/redup/core/utils/diff_helpers.py,124
   src/redup/core/utils/duplicate_finders.py,24
   src/redup/core/utils/function_extractor.py,111
   src/redup/core/utils/hash_utils.py,25
   src/redup/core/utils/language_dispatcher.py,51
+  src/redup/mcp_server.py,611
   src/redup/reporters/__init__.py,1
   src/redup/reporters/code2llm_reporter.py,167
   src/redup/reporters/enhanced_reporter.py,229
@@ -47,6 +52,7 @@ M[52]:
   tests/test_e2e.py,347
   tests/test_hasher.py,78
   tests/test_matcher.py,49
+  tests/test_mcp_server.py,163
   tests/test_models.py,85
   tests/test_pipeline.py,96
   tests/test_planner.py,110
@@ -59,6 +65,13 @@ D:
     e: benchmark_sequential_vs_parallel,benchmark_feature_performance
     benchmark_sequential_vs_parallel()
     benchmark_feature_performance()
+  benchmarks/bench_libraries.py:
+    i: time,tempfile,sys,pathlib.Path,redup.core.models.ScanConfig,redup.core.pipeline.analyze
+    e: generate_test_project,benchmark,benchmark_hash_performance,benchmark_fuzzy_performance
+    generate_test_project(root:Path;num_files:int=50;lines_per_file:int=200)
+    benchmark()
+    benchmark_hash_performance()
+    benchmark_fuzzy_performance()
   examples/01_basic_usage.py:
     i: pathlib.Path,redup.{ScanConfig,analyze},redup.reporters.json_reporter.to_json,redup.reporters.toon_reporter.to_toon
     e: main
@@ -130,7 +143,7 @@ D:
     compare_scans(before_file:Path;after_file:Path)->DiffResult
     format_diff_result(diff:DiffResult)->str
   src/redup/core/fuzzy_similarity.py:
-    i: re,dataclasses.dataclass,datasketch.{MinHash,MinHashLSH},pathlib.Path,rapidfuzz.{fuzz,ratio},redup.core.scanner.CodeBlock,typing.Any
+    i: re,dataclasses.dataclass,datasketch.{MinHash,MinHashLSH},pathlib.Path,rapidfuzz._rfuzz,redup.core.scanner.CodeBlock,typing.Any
     e: ComponentSignature,HTMLComponentExtractor,CSSComponentExtractor,FuzzySimilarityDetector
     ComponentSignature:   # Semantic signature of a component for...
     HTMLComponentExtractor: __init__(0),extract_component_signature(1),_normalize_html(1),_normalize_class_name(1),_detect_component_type(1)  # Extract HTML components with semantic...
@@ -142,8 +155,9 @@ D:
     HashCache: __init__(1),_load(0),save(0),get_file_hash(1),is_unchanged(2)  # Cache for file hashes to enable incre...
     _config_to_hash(config:Any)->str
   src/redup/core/hasher.py:
-    i: ast,functools,hashlib,re,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},redup.core.scanner.CodeBlock,typing.Any
+    i: ast,functools,hashlib,re,xxhash,collections.defaultdict,collections.abc.Callable,dataclasses.{dataclass,field},typing.Any
     e: _MAX_CACHE_SIZE,_COMMENT_RE,_MULTILINE_STRING_RE,_AST_HANDLERS,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates
+    BloomHashIndex: __init__(1),add(2),get_duplicate_groups(0)  # Two-pass hash index: Bloom filter eli...
     HashedBlock:   # A code block with its computed finger...
     HashIndex:   # Index mapping hashes to blocks for fa...
     _normalize_text(text:str)->str
@@ -194,10 +208,10 @@ D:
     e: analyze,analyze_optimized,analyze_optimized,analyze_parallel
     _blocks_to_group(group_id:str;blocks:list[HashedBlock];dup_type:DuplicateType;similarity:float=1.0;normalized_hash:str='')->DuplicateGroup
     _deduplicate_groups(groups:list[DuplicateGroup])->list[DuplicateGroup]
-    analyze(config:Any=None;function_level_only:bool=False)->DuplicationMap
+    analyze(config:Any=None;function_level_only:Any=None)->DuplicationMap
     analyze_optimized(config:Any=None;function_level_only:bool=False;use_memory_cache:bool=True;max_cache_mb:int=512)->DuplicationMap
     _ensure_config(config:Any)->ScanConfig
-    _scan_phase(config:ScanConfig;function_level_only:bool=False)->tuple[list[ScannedFile], ScanStats]
+    _scan_phase(config:ScanConfig;function_level_only:Any=None)->tuple[list[ScannedFile], ScanStats]
     _scan_phase_parallel(config:ScanConfig;max_workers:Any=None)->tuple[list[ScannedFile], ScanStats]
     _process_blocks(scanned_files:list[ScannedFile];function_level_only:bool)->list[CodeBlock]
   src/redup/core/planner.py:
@@ -208,6 +222,14 @@ D:
     _assess_risk(group:DuplicateGroup)->RiskLevel
     _choose_action(group:DuplicateGroup)->RefactorAction
     generate_suggestions(dup_map:DuplicationMap)->list[RefactorSuggestion]
+  src/redup/core/python_parser.py:
+    i: dataclasses.dataclass,redup.core.scanner.CodeBlock,typing.Any
+    e: ParsedFunction,parse_python_functions,parsed_to_code_blocks
+    ParsedFunction:   # A parsed Python function with metadata.
+    _parse_with_libcst(source:str;filepath:str)->list[ParsedFunction]
+    _parse_with_ast(source:str;filepath:str)->list[ParsedFunction]
+    parse_python_functions(source:str;filepath:str)->list[ParsedFunction]
+    parsed_to_code_blocks(parsed:list[ParsedFunction];filepath:str)->list[CodeBlock]
   src/redup/core/scanner.py:
     i: fnmatch,functools,mmap,os,time,collections.abc.Iterator,concurrent.futures.{ProcessPoolExecutor,as_completed},dataclasses.{dataclass,field}
     e: CodeBlock,ScannedFile,ScanStrategy,MemoryFileCache,scan_project,scan_project_ultra_fast,scan_project_memory_optimized,scan_project_parallel
@@ -216,13 +238,18 @@ D:
     ScanStrategy:   # Configuration for HOW to scan — not W...
     MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1)  # Cache file contents in RAM for faster...
     _should_exclude(path:Path;patterns:tuple[str;Ellipsis])->bool
+    _project_relative_path(file_path:Path;project_root:Path)->Path
     _collect_files(config:ScanConfig)->list[Path]
     _is_test_file(path:Path)->bool
     _preload_files(files:list[Path];max_cache_mb:int=256)->dict[Path, str]
     _lazy_read_files(files:list[Path])->dict[Path, str]
     _scan_sequential(sources:Any;config:ScanConfig;function_level_only:bool=False)->tuple[list[ScannedFile], ScanStats]
     _scan_parallel(sources:Any;config:ScanConfig;max_workers:int=4;function_level_only:bool=False)->tuple[list[ScannedFile], ScanStats]
-    _scan_file_worker(args:tuple[Path;str;list[str];bool;bool;int])->ScannedFile
+  src/redup/core/semantic.py:
+    i: dataclasses.dataclass,redup.core.scanner.CodeBlock,typing.Optional
+    e: SemanticMatch,SemanticDetector
+    SemanticMatch:   # A pair of semantically similar code b...
+    SemanticDetector: __init__(2),_ensure_model(0),find_semantic_duplicates(2),find_semantic_duplicates_fast(2),compute_semantic_similarity(2)  # Detects semantically similar code usi...
   src/redup/core/ts_extractor.py:
     i: tree_sitter,pathlib.Path,redup.core.scanner.CodeBlock,redup.core.utils.function_extractor,typing.Any
     e: _LANGUAGE_MAPPING,extract_functions_treesitter,get_supported_languages,is_language_supported
@@ -236,11 +263,19 @@ D:
     extract_functions_treesitter(source:str;file_path:str)->list[CodeBlock]
     _extract_functions_c_cpp(node:Any;source_lines:list[str];file_path:str)->list[CodeBlock]
   src/redup/core/universal_fuzzy.py:
-    i: re,dataclasses.dataclass,datasketch.{MinHash,MinHashLSH},pathlib.Path,rapidfuzz.{fuzz,ratio},redup.core.scanner.CodeBlock,typing.Any
+    i: re,dataclasses.dataclass,datasketch.{MinHash,MinHashLSH},pathlib.Path,redup.core.fuzzy_similarity.{_partial_ratio,_text_ratio,_token_sort_ratio},redup.core.scanner.CodeBlock,typing.Any
     e: UniversalSignature,UniversalFuzzyExtractor,UniversalFuzzyDetector
     UniversalSignature:   # Universal semantic signature for any...
     UniversalFuzzyExtractor: __init__(0),extract_universal_signature(1),_detect_language(1),_normalize_code(2),_remove_comments(2)  # Universal fuzzy extractor for all sup...
     UniversalFuzzyDetector: __init__(1),find_similar_components(1),_compute_universal_similarity(2),_compute_pattern_similarity(2),_compute_metadata_similarity(2)  # Universal fuzzy similarity detector f...
+  src/redup/core/utils/diff_helpers.py:
+    i: dataclasses.dataclass,redup.core.models.DuplicateGroup,typing.Iterable
+    e: GroupMatcher,DiffCalculator
+    _MatchResult: 
+    GroupMatcher: __init__(2),_ensure_matches(0),_match_score(2),get_resolved_groups(0),get_new_groups(0)  # Match duplicate groups between two sc...
+    DiffCalculator: calculate_diff_stats(3)  # Aggregate statistics for scan diffs.
+    _group_files(group:DuplicateGroup)->set[str]
+    _groups_match(group1:DuplicateGroup;group2:DuplicateGroup)->bool
   src/redup/core/utils/duplicate_finders.py:
     i: typing.{Callable,Dict,List,TYPE_CHECKING}
     e: create_duplicate_finder
@@ -258,6 +293,17 @@ D:
     i: scanner.CodeBlock,typing.{Any,Callable,Dict,List,Optional}
     e: LanguageDispatcher
     LanguageDispatcher: __init__(0),register_extractor(2),register_group(2),get_extractor(1),extract_functions(4)  # Dispatches function extraction to app...
+  src/redup/mcp_server.py:
+    i: json,platform,sys,enum.Enum,pathlib.Path,redup.__version__,redup.core.config.{config_to_scan_config,load_config},redup.core.differ.compare_scans,typing.Any
+    e: SCAN_PROPERTIES,TOOL_SCHEMA_REDUP,TOOL_SCHEMA_REDUP_HANDLERS,MCP_HANDLERS,handle_initialize,handle_tools_list,handle_tools_call,handle_request
+    _json_safe(value:Any)->Any
+    _resolve_path(raw:Any)->Path
+    _parse_extensions(value:Any)->list[str] | None
+    _build_scan_config(path:Path;params:dict[str;Any])->ScanConfig
+    _run_analysis(path:Path;params:dict[str;Any])->tuple[ScanConfig, Any]
+    _estimate_code2llm_counts(dup_map:Any)->tuple[int, int]
+    _handle_analyze_project(params:dict[str;Any])->str
+    _handle_suggest_refactoring(params:dict[str;Any])->str
   src/redup/reporters/code2llm_reporter.py:
     i: datetime,datetime.timezone,pathlib.Path,redup.core.models.DuplicationMap,typing.Any
     e: to_code2llm_toon,to_code2llm_context,export_code2llm
@@ -339,6 +385,16 @@ D:
     test_match_candidates_above_threshold()
     test_match_candidates_below_threshold()
     test_refine_structural_same_location_skipped()
+  tests/test_mcp_server.py:
+    i: json,tempfile,pathlib.Path,redup.core.models.ScanConfig,redup.core.pipeline.analyze,redup.mcp_server.handle_request,redup.reporters.json_reporter.to_json
+    e: test_initialize_and_tools_list,test_analyze_project_returns_json_report,test_compare_scans_returns_summary,test_check_project_detects_threshold_violation,test_unknown_tool_returns_error
+    _create_test_project(root:Path)->None
+    _analyze_test_project(root:Path)
+    test_initialize_and_tools_list()->None
+    test_analyze_project_returns_json_report()->None
+    test_compare_scans_returns_summary()->None
+    test_check_project_detects_threshold_violation()->None
+    test_unknown_tool_returns_error()->None
   tests/test_models.py:
     i: redup.core.models.{DuplicateFragment,DuplicateGroup,DuplicateType,DuplicationMap,ScanConfig}
     e: test_fragment_line_count,test_group_saved_lines,test_group_single_occurrence_no_savings,test_group_impact_score,test_duplication_map_sorted_by_impact,test_duplication_map_totals,test_scan_config_defaults

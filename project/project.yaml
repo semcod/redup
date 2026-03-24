@@ -3,20 +3,25 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-23T20:37:08Z'
+  analyzed_at: '2026-03-24T17:17:13Z'
   tool: code2llm
   stats:
-    files: 31
-    lines: 8616
-    functions: 245
-    classes: 33
+    files: 36
+    lines: 10318
+    functions: 288
+    classes: 40
 health:
-  cc_avg: 3.4
-  critical_count: 13
+  cc_avg: 3.7
+  critical_count: 17
   critical_limit: 10
   duplicates: 1
-  cycles: 0
+  cycles: 1
   alerts:
+  - type: high_fan_out
+    target: _handle_analyze_project
+    value: 23
+    limit: 10
+    severity: critical
   - type: high_fan_out
     target: _preload_files
     value: 20
@@ -43,7 +48,17 @@ health:
     limit: 10
     severity: error
   - type: cc_exceeded
+    target: _parse_with_ast
+    value: 15
+    limit: 15
+    severity: warning
+  - type: cc_exceeded
     target: write_results
+    value: 15
+    limit: 15
+    severity: warning
+  - type: cc_exceeded
+    target: GroupMatcher._ensure_matches
     value: 15
     limit: 15
     severity: warning
@@ -63,6 +78,21 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
+    target: SemanticDetector.find_semantic_duplicates
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _parse_with_libcst
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _parse_with_ast
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
     target: scan_command
     value: 13
     limit: 10
@@ -73,33 +103,18 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: check_command
+    target: GroupMatcher._ensure_matches
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: _handle_check_project
     value: 12
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: config_command
-    value: 11
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: _find_structural_groups
-    value: 11
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: _scan_file_worker
-    value: 10
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: _normalize_text
-    value: 10
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: extract_functions_treesitter
-    value: 10
+    target: check_command
+    value: 12
     limit: 10
     severity: warning
 modules:
@@ -118,12 +133,49 @@ modules:
     cc: 15
     flag: split
     fan_out: 14
+- path: src/redup/core/python_parser.py
+  lines: 170
+  classes: 1
+  methods: 4
+  cc_max: 15
+  inbound_deps: 1
+  exports:
+  - name: ParsedFunction
+    type: class
+    cc_avg: 0.0
+  - name: parse_python_functions
+    type: function
+    cc: 3
+  - name: parsed_to_code_blocks
+    type: function
+    cc: 2
+- path: src/redup/core/utils/diff_helpers.py
+  lines: 162
+  classes: 3
+  methods: 9
+  cc_max: 15
+  inbound_deps: 0
+  exports:
+  - name: _MatchResult
+    type: class
+    cc_avg: 0.0
+  - name: GroupMatcher
+    type: class
+    cc_avg: 5.8
+    methods:
+    - name: _ensure_matches
+      cc: 15
+      flag: split
+      fan_out: 13
+  - name: DiffCalculator
+    type: class
+    cc_avg: 4.0
 - path: src/redup/core/differ.py
   lines: 209
   classes: 1
   methods: 5
   cc_max: 14
-  inbound_deps: 1
+  inbound_deps: 2
   exports:
   - name: DiffResult
     type: class
@@ -135,10 +187,10 @@ modules:
     type: function
     cc: 14
 - path: src/redup/core/scanner.py
-  lines: 642
+  lines: 633
   classes: 4
-  methods: 20
-  cc_max: 12
+  methods: 21
+  cc_max: 13
   inbound_deps: 1
   exports:
   - name: CodeBlock
@@ -169,26 +221,48 @@ modules:
   - name: scan_project_parallel_memory_optimized
     type: function
     cc: 1
+- path: src/redup/mcp_server.py
+  lines: 675
+  classes: 0
+  methods: 16
+  cc_max: 12
+  inbound_deps: 0
+  exports:
+  - name: handle_initialize
+    type: function
+    cc: 1
+  - name: handle_tools_list
+    type: function
+    cc: 2
+  - name: handle_tools_call
+    type: function
+    cc: 4
+  - name: handle_request
+    type: function
+    cc: 5
+  - name: run_server
+    type: function
+    cc: 6
 - path: src/redup/reporters/markdown_reporter.py
   lines: 90
   classes: 0
   methods: 1
   cc_max: 12
-  inbound_deps: 1
+  inbound_deps: 2
   exports:
   - name: to_markdown
     type: function
     cc: 12
 - path: src/redup/core/pipeline.py
-  lines: 660
+  lines: 714
   classes: 0
-  methods: 17
+  methods: 18
   cc_max: 11
-  inbound_deps: 3
+  inbound_deps: 5
   exports:
   - name: analyze
     type: function
-    cc: 1
+    cc: 2
   - name: analyze_optimized
     type: function
     cc: 3
@@ -198,7 +272,7 @@ modules:
     cc: 3
     fan_out: 13
 - path: src/redup/core/universal_fuzzy.py
-  lines: 454
+  lines: 449
   classes: 3
   methods: 16
   cc_max: 11
@@ -215,16 +289,13 @@ modules:
       cc: 11
   - name: UniversalFuzzyDetector
     type: class
-    cc_avg: 5.6
-    methods:
-    - name: _compute_metadata_similarity
-      cc: 10
+    cc_avg: 5.4
 - path: src/redup/reporters/code2llm_reporter.py
   lines: 209
   classes: 0
   methods: 6
   cc_max: 11
-  inbound_deps: 1
+  inbound_deps: 2
   exports:
   - name: to_code2llm_toon
     type: function
@@ -235,8 +306,28 @@ modules:
   - name: export_code2llm
     type: function
     cc: 1
+- path: benchmarks/bench_libraries.py
+  lines: 160
+  classes: 0
+  methods: 4
+  cc_max: 10
+  inbound_deps: 0
+  exports:
+  - name: generate_test_project
+    type: function
+    cc: 3
+  - name: benchmark
+    type: function
+    cc: 10
+    fan_out: 10
+  - name: benchmark_hash_performance
+    type: function
+    cc: 4
+  - name: benchmark_fuzzy_performance
+    type: function
+    cc: 4
 - path: src/redup/core/fuzzy_similarity.py
-  lines: 408
+  lines: 416
   classes: 4
   methods: 20
   cc_max: 10
@@ -256,10 +347,7 @@ modules:
       cc: 10
   - name: FuzzySimilarityDetector
     type: class
-    cc_avg: 5.3
-    methods:
-    - name: _compute_attribute_similarity
-      cc: 10
+    cc_avg: 5.0
 - path: src/redup/core/lsh_matcher.py
   lines: 225
   classes: 2
@@ -282,13 +370,33 @@ modules:
   - name: find_near_duplicates
     type: function
     cc: 2
-- path: src/redup/core/hasher.py
-  lines: 273
+- path: src/redup/core/semantic.py
+  lines: 174
   classes: 2
-  methods: 15
+  methods: 5
+  cc_max: 9
+  inbound_deps: 0
+  exports:
+  - name: SemanticMatch
+    type: class
+    cc_avg: 0.0
+  - name: SemanticDetector
+    type: class
+    cc_avg: 4.2
+    methods:
+    - name: find_semantic_duplicates
+      cc: 9
+      fan_out: 13
+- path: src/redup/core/hasher.py
+  lines: 340
+  classes: 3
+  methods: 18
   cc_max: 8
   inbound_deps: 7
   exports:
+  - name: BloomHashIndex
+    type: class
+    cc_avg: 3.3
   - name: HashedBlock
     type: class
     cc_avg: 0.0
@@ -325,7 +433,7 @@ modules:
   classes: 0
   methods: 6
   cc_max: 8
-  inbound_deps: 2
+  inbound_deps: 3
   exports:
   - name: to_toon
     type: function
@@ -453,7 +561,7 @@ modules:
   classes: 0
   methods: 6
   cc_max: 5
-  inbound_deps: 2
+  inbound_deps: 3
   exports:
   - name: load_config
     type: function
@@ -479,7 +587,7 @@ modules:
   classes: 0
   methods: 3
   cc_max: 5
-  inbound_deps: 3
+  inbound_deps: 4
   exports:
   - name: to_json
     type: function
@@ -499,7 +607,7 @@ modules:
   classes: 0
   methods: 1
   cc_max: 4
-  inbound_deps: 1
+  inbound_deps: 2
   exports:
   - name: to_yaml
     type: function
@@ -586,7 +694,7 @@ modules:
     type: function
     cc: 1
 - path: src/redup/core/models.py
-  lines: 169
+  lines: 216
   classes: 9
   methods: 1
   cc_max: 1
@@ -668,6 +776,9 @@ modules:
   cc_max: 0
   inbound_deps: 0
 hotspots:
+- name: _handle_analyze_project
+  fan_out: 23
+  note: Analysis pipeline, 23 stages
 - name: _preload_files
   fan_out: 20
   note: Load ALL files into RAM at once for maximum speed.
@@ -692,34 +803,50 @@ hotspots:
 - name: analyze_optimized
   fan_out: 14
   note: Analysis pipeline, 14 stages
-- name: scan_command
+- name: SemanticDetector.find_semantic_duplicates
   fan_out: 13
-  note: Scan a project for code duplicates.
-- name: analyze_parallel
-  fan_out: 13
-  note: Analysis pipeline, 13 stages
+  note: 'Find semantically similar code blocks using embeddings.
+
+
+    Pipeline:
+
+    1. Encode all'
 refactoring:
   priorities:
-  - action: Split god module src/redup/core/scanner.py (642L, 4 classes)
+  - action: Split god module src/redup/core/scanner.py (633L, 4 classes)
     impact: high
     effort: high
-  - action: Split god module src/redup/core/pipeline.py (660L, 0 classes)
+  - action: Split god module src/redup/mcp_server.py (675L, 0 classes)
+    impact: high
+    effort: high
+  - action: Split god module src/redup/core/pipeline.py (714L, 0 classes)
     impact: high
     effort: high
   - action: Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
     impact: high
     effort: high
+  - action: Split _parse_with_ast (CC=15 → target CC<10)
+    impact: medium
+    effort: low
+    module: python_parser.py
   - action: Split write_results (CC=15 → target CC<10)
     impact: medium
     effort: low
     module: output_writer.py
+  - action: Split GroupMatcher._ensure_matches (CC=15 → target CC<10)
+    impact: medium
+    effort: low
+    module: diff_helpers.py
+  - action: 'Break circular dependency: src.redup.mcp_server._json_safe'
+    impact: medium
+    effort: low
+  - action: Reduce _handle_analyze_project fan-out (currently 23)
+    impact: medium
+    effort: medium
   - action: Reduce _preload_files fan-out (currently 20)
     impact: medium
     effort: medium
   - action: Reduce _scan_sequential fan-out (currently 16)
-    impact: medium
-    effort: medium
-  - action: Reduce scan_project fan-out (currently 16)
     impact: medium
     effort: medium
 evolution:
@@ -727,4 +854,9 @@ evolution:
   cc_avg: 3.4
   critical: 13
   lines: 8616
+  note: Automated analysis
+- date: '2026-03-24'
+  cc_avg: 3.7
+  critical: 17
+  lines: 10318
   note: Automated analysis
