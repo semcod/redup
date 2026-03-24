@@ -398,7 +398,7 @@ class TestFullRoundtrip:
             assert tax["occurrences"] == 3
             assert tax["saved_lines_potential"] > 0
 
-            files_in_frags = {f["file"] for f in tax["fragments"]}
+            files_in_frags = {Path(f["file"]).name for f in tax["fragments"]}
             assert "billing.py" in files_in_frags
             assert "shipping.py" in files_in_frags
             assert "returns.py" in files_in_frags

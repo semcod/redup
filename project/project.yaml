@@ -3,7 +3,7 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-24T17:17:13Z'
+  analyzed_at: '2026-03-24T17:18:59Z'
   tool: code2llm
   stats:
     files: 36
@@ -98,12 +98,12 @@ health:
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: analyze_parallel
+    target: GroupMatcher._ensure_matches
     value: 13
     limit: 10
     severity: warning
   - type: high_fan_out
-    target: GroupMatcher._ensure_matches
+    target: analyze_parallel
     value: 13
     limit: 10
     severity: warning

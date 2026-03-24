@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.4.4] - 2026-03-24
+
+### Test
+- Update tests/test_e2e.py
+
+### Other
+- Update project/analysis.toon
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/dashboard.html
+- Update project/duplication.toon
+- Update project/evolution.toon
+- Update project/flow.mmd
+- Update project/flow.png
+- Update project/flow.toon
+- Update project/index.html
+- ... and 4 more files
+
 ## [0.4.3] - 2026-03-24
 
 ### Docs

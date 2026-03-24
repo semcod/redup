@@ -79,16 +79,16 @@ FUNCTIONS (CC≥10, 17 of 288):
    15.0  GroupMatcher._ensure_matches               20n   2exit  loops+cond+ret  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
    13.0  _should_exclude                            17n   4exit  loops+cond+ret
-   12.0  _preload_files                              9n   3exit  loops+cond+ret
    12.0  _build_scan_config                         25n   2exit  cond+ret
+   12.0  _preload_files                              9n   3exit  loops+cond+ret
    12.0  to_markdown                                12n   3exit  loops+cond+ret
    11.0  UniversalFuzzyExtractor._extract_metadata   23n   2exit  cond+ret
    11.0  to_code2llm_context                        15n   2exit  loops+cond+ret
    11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
    10.0  benchmark                                   2n   1exit  
+   10.0  _json_safe                                 18n   7exit  cond+ret
    10.0  _scan_sequential                            4n   2exit  loops+ret
    10.0  _scan_parallel                              6n   3exit  cond+ret
-   10.0  _json_safe                                 18n   7exit  cond+ret
    10.0  LSHIndex.find_near_duplicates              11n   4exit  cond+ret
    10.0  CSSComponentExtractor._detect_css_component_type   16n   5exit  cond+ret
 
@@ -112,8 +112,8 @@ CLASSES:
   EnhancedReporter               ████████████████████████  17m  CC̄=3.5   max=8   
   UniversalFuzzyExtractor        ███████████████           11m  CC̄=2.8   max=11  
   HashCache                      ████████████               9m  CC̄=2.2   max=3   
-  HTMLComponentExtractor         ███████████                8m  CC̄=2.8   max=7   
   HashCache                      ███████████                8m  CC̄=2.6   max=5   
+  HTMLComponentExtractor         ███████████                8m  CC̄=2.8   max=7   
   CSSComponentExtractor          ████████                   6m  CC̄=4.7   max=10  
   FuzzySimilarityDetector        ████████                   6m  CC̄=5.0   max=9   
   GroupMatcher                   ████████                   6m  CC̄=5.8   max=15    !!
@@ -133,12 +133,6 @@ CLASSES:
   MatchResult                                               0m  CC̄=0.0   max=0.0 
   SemanticMatch                                             0m  CC̄=0.0   max=0.0 
   ParsedFunction                                            0m  CC̄=0.0   max=0.0 
-  HashedBlock                                               0m  CC̄=0.0   max=0.0 
-  HashIndex                                                 0m  CC̄=0.0   max=0.0 
-  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
-  ScannedFile                                               0m  CC̄=0.0   max=0.0 
-  ScanStrategy                                              0m  CC̄=0.0   max=0.0 
-  ComponentSignature                                        0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
   RiskLevel                                                 0m  CC̄=0.0   max=0.0 
@@ -147,6 +141,12 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
+  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
+  ScannedFile                                               0m  CC̄=0.0   max=0.0 
+  ScanStrategy                                              0m  CC̄=0.0   max=0.0 
+  HashedBlock                                               0m  CC̄=0.0   max=0.0 
+  HashIndex                                                 0m  CC̄=0.0   max=0.0 
+  ComponentSignature                                        0m  CC̄=0.0   max=0.0 
   _MatchResult                                              0m  CC̄=0.0   max=0.0 
   DiffResult                                                0m  CC̄=0.0   max=0.0 
 
@@ -312,10 +312,6 @@ D:
     build_hash_index(blocks,min_lines)
     _find_duplicates(hash_dict)
     _blocks_from_different_locations(blocks)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
-      __init__(1)  CC=1.0
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -324,6 +320,10 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map,groups)
     to_toon(dup_map)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
+      __init__(1)  CC=1.0
   src/redup/core/lazy_grouper.py:
     e: DuplicateGroupCollector,find_exact_duplicates_lazy,find_structural_duplicates_lazy,_create_duplicate_group,find_all_duplicates_lazy
     DuplicateGroupCollector  # Collector for lazy duplicate groups with optional limits.
@@ -407,11 +407,6 @@ Provides ~10x...
     _group_to_dict(group,include_snippets)
     _suggestion_to_dict(s)
     to_json(dup_map,indent,include_snippets)
-  src/redup/core/utils/function_extractor.py:
-    e: FunctionExtractor,_extract_java_class_name
-    FunctionExtractor  # Generic function extractor that can be configured for differ...
-      __init__(3)  CC=1.0
-    _extract_java_class_name(node)
   src/redup/cli_app/fuzzy_similarity.py:
     e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups
     _apply_fuzzy_similarity(dup_map,threshold)
@@ -423,6 +418,11 @@ Provides ~10x...
     _analyze_other_language_blocks(other_blocks,threshold)
     _report_fuzzy_results(similar_pairs)
     _report_similarity_by_groups(similar_pairs)
+  src/redup/core/utils/function_extractor.py:
+    e: FunctionExtractor,_extract_java_class_name
+    FunctionExtractor  # Generic function extractor that can be configured for differ...
+      __init__(3)  CC=1.0
+    _extract_java_class_name(node)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)

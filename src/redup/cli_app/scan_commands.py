@@ -150,8 +150,9 @@ def info_command() -> None:
     # Check optional dependencies
     deps = {
         "tree-sitter": "tree_sitter",
-        "datasketch": "datasketch", 
+        "datasketch": "datasketch",
         "rapidfuzz": "rapidfuzz",
+        "pyyaml": "yaml",
     }
     
     typer.echo("\nOptional dependencies:")

@@ -10,7 +10,7 @@ VALLM BATCH VALIDATION RESULTS
 │ json     │     2 │      2 │      0 │      1.00 │
 └──────────┴───────┴────────┴────────┴───────────┘
 
-Total: 102 files, 58 passed, 44 failed
+Total: 103 files, 58 passed, 45 failed
 
 Failed Files:
   • PERFORMANCE_OPTIMIZATIONS.md: Unsupported file type
@@ -49,6 +49,7 @@ Failed Files:
   • project/analysis.toon: Unsupported file type
   • project/duplication.toon: Unsupported file type
   • proxy_analysis/duplication.toon: Unsupported file type
+  • toon/validation.txt: Unsupported file type
   • src/redup/core/hasher.py: Validation fail
   • src/redup/core/scanner.py.backup: Unsupported file type
   • src/redup/core/semantic.py: Validation fail

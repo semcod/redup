@@ -61,18 +61,18 @@ def write_results(dup_map: DuplicationMap, format: str, output: Any, path: Path)
             "markdown": to_markdown(dup_map),
         }
         
-        if output and output.is_dir():
-            for fmt, content in formats.items():
-                target = output / f"duplication.{fmt}"
-                target.write_text(content, encoding="utf-8")
-                typer.echo(f"  → {target}")
+        # Determine and create output directory
+        if output:
+            # Create output directory if it doesn't exist
+            output.mkdir(parents=True, exist_ok=True)
+            base_dir = output
         else:
-            # Write to separate files in the same directory
-            base_dir = output.parent if output else path
-            for fmt, content in formats.items():
-                target = base_dir / f"duplication.{fmt}"
-                target.write_text(content, encoding="utf-8")
-                typer.echo(f"  → {target}")
+            base_dir = path
+        
+        for fmt, content in formats.items():
+            target = base_dir / f"duplication.{fmt}"
+            target.write_text(content, encoding="utf-8")
+            typer.echo(f"  → {target}")
     else:
         typer.echo(f"❌ Unknown format: {format}", err=True)
         raise typer.Exit(1)
