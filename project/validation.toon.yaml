@@ -1,0 +1,338 @@
+# vallm batch | 112f | 60✓ 52✗
+
+SUMMARY:
+  total: 112
+  passed: 60
+  failed: 52
+  success: 53.6%
+
+FILES:
+  [yaml]
+    ✓ goal.yaml
+      verdict: pass
+      score: 1.00
+    ✗ project/toon.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
+    ✗ project/toon.toon.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
+    ✗ project/duplication.toon.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
+    ✗ project/evolution.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
+    ✓ project/project.yaml
+      verdict: pass
+      score: 1.00
+    ✗ project/map.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 12 parse error(s) in yaml
+    ✗ project/map.toon.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 12 parse error(s) in yaml
+    ✗ project/evolution.toon.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
+    ✓ project/analysis.toon.yaml
+      verdict: pass
+      score: 1.00
+    ✓ proxy_analysis/duplication.yaml
+      verdict: pass
+      score: 1.00
+  [python]
+    ✓ test_universal_fuzzy.py
+      verdict: pass
+      score: 1.00
+    ✓ test_fuzzy_similarity.py
+      verdict: pass
+      score: 1.00
+    ✓ benchmark.py
+      verdict: pass
+      score: 1.00
+    ✓ examples/01_basic_usage.py
+      verdict: pass
+      score: 1.00
+    ✗ benchmarks/bench_libraries.py
+      verdict: fail
+      score: 0.96
+      issues: 1
+        [error] python.import.resolvable: Module 'xxhash' not found@105
+    ✓ src/sitecustomize.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_matcher.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_hasher.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/__init__.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_mcp_server.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_planner.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_e2e.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_scanner.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_models.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_reporters.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_ts_extractor.py
+      verdict: pass
+      score: 1.00
+    ✓ tests/test_pipeline.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/config.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/__init__.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/__main__.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/mcp_server.py
+      verdict: pass
+      score: 0.98
+      issues: 1
+        [warning] complexity.maintainability: Low maintainability index: 17.5 (threshold: 20)
+    ✓ src/redup/core/config.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/hash_cache.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/universal_fuzzy.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/matcher.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/lazy_grouper.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/__init__.py
+      verdict: pass
+      score: 1.00
+    ✗ src/redup/core/hasher.py
+      verdict: fail
+      score: 0.85
+      issues: 6
+        [error] python.import.resolvable: Module 'xxhash' not found@16
+        [error] python.import.resolvable: Module 'pybloom_live' not found@25
+        [error] python.import.resolvable: Module 'utils.hash_utils' not found@210
+        [error] python.import.resolvable: Module 'utils.hash_utils' not found@216
+        [error] python.import.resolvable: Module 'utils.duplicate_finders' not found@222
+        [error] python.import.resolvable: Module 'utils.duplicate_finders' not found@228
+    ✓ src/redup/core/planner.py
+      verdict: pass
+      score: 1.00
+    ✗ src/redup/core/semantic.py
+      verdict: fail
+      score: 0.76
+      issues: 5
+        [error] python.import.resolvable: Module 'sentence_transformers' not found@64
+        [error] python.import.resolvable: Module 'torch' not found@65
+        [error] python.import.resolvable: Module 'sentence_transformers' not found@126
+        [error] python.import.resolvable: Module 'sentence_transformers' not found@170
+        [error] python.import.resolvable: Module 'sentence_transformers' not found@36
+    ✗ src/redup/core/python_parser.py
+      verdict: fail
+      score: 0.93
+      issues: 1
+        [error] python.import.resolvable: Module 'libcst' not found@27
+    ✓ src/redup/core/scanner.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/models.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/pipeline.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/lsh_matcher.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/ts_extractor.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/fuzzy_similarity.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/cache.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/differ.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/reporters/markdown_reporter.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/reporters/code2llm_reporter.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/reporters/enhanced_reporter.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/reporters/__init__.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/reporters/json_reporter.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/reporters/toon_reporter.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/reporters/yaml_reporter.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/cli_app/scan_commands.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/cli_app/output_writer.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/cli_app/config_builder.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/cli_app/__init__.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/cli_app/scan_helpers.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/cli_app/main.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/cli_app/fuzzy_similarity.py
+      verdict: pass
+      score: 1.00
+    ✗ src/redup/core/utils/function_extractor.py
+      verdict: fail
+      score: 0.79
+      issues: 1
+        [error] python.import.resolvable: Module 'scanner' not found@4
+    ✓ src/redup/core/utils/__init__.py
+      verdict: pass
+      score: 1.00
+    ✓ src/redup/core/utils/diff_helpers.py
+      verdict: pass
+      score: 1.00
+    ✗ src/redup/core/utils/hash_utils.py
+      verdict: fail
+      score: 0.66
+      issues: 4
+        [error] python.import.resolvable: Module 'hasher' not found@35
+        [error] python.import.resolvable: Module 'hasher' not found@6
+        [error] python.import.resolvable: Module 'hasher' not found@25
+        [error] python.import.resolvable: Module 'hasher' not found@21
+    ✗ src/redup/core/utils/duplicate_finders.py
+      verdict: fail
+      score: 0.71
+      issues: 2
+        [error] python.import.resolvable: Module 'hasher' not found@6
+        [error] python.import.resolvable: Module 'hasher' not found@21
+    ✗ src/redup/core/utils/language_dispatcher.py
+      verdict: fail
+      score: 0.79
+      issues: 1
+        [error] python.import.resolvable: Module 'scanner' not found@4
+  [toml]
+    ✓ redup.toml
+      verdict: pass
+      score: 1.00
+    ✓ pyproject.toml
+      verdict: pass
+      score: 1.00
+  [bash]
+    ✓ project.sh
+      verdict: pass
+      score: 1.00
+  [json]
+    ✓ redup_self_analysis/duplication.json
+      verdict: pass
+      score: 1.00
+    ✓ proxy_analysis/duplication.json
+      verdict: pass
+      score: 1.00
+
+FAILED:
+  ✗ PERFORMANCE_OPTIMIZATIONS.md: Unsupported file type
+  ✗ BUGFIX_SUMMARY.md: Unsupported file type
+  ✗ SPRINT_2_PLAN.md: Unsupported file type
+  ✗ MEMORY_OPTIMIZATION.md: Unsupported file type
+  ✗ VERSION: Unsupported file type
+  ✗ LICENSE: Unsupported file type
+  ✗ complexity_reduction_plan.md: Unsupported file type
+  ✗ TODO.md: Unsupported file type
+  ✗ CHANGELOG.md: Unsupported file type
+  ✗ PERFORMANCE.md: Unsupported file type
+  ✗ CONTINUATION_PLAN.md: Unsupported file type
+  ✗ COMPLEXITY_REDUCTION_COMPLETE.md: Unsupported file type
+  ✗ README.md: Unsupported file type
+  ✗ docs/API.md: Unsupported file type
+  ✗ docs/README.md: Unsupported file type
+  ✗ code2llm_output/context.md: Unsupported file type
+  ✗ code2llm_output/README.md: Unsupported file type
+  ✗ code2llm_output/analysis.toon: Unsupported file type
+  ✗ benchmarks/bench_libraries.py: Validation fail
+  ✗ project/validation.toon: Unsupported file type
+  ✗ project/project.toon: Unsupported file type
+  ✗ project/compact_flow.mmd: Unsupported file type
+  ✗ project/toon.yaml: Validation fail
+  ✗ project/validation_fixed.toon: Unsupported file type
+  ✗ project/map.toon: Unsupported file type
+  ✗ project/calls.mmd: Unsupported file type
+  ✗ project/toon.toon.yaml: Validation fail
+  ✗ project/index.html: Unsupported file type
+  ✗ project/flow.toon: Unsupported file type
+  ✗ project/duplication.toon.yaml: Validation fail
+  ✗ project/context.md: Unsupported file type
+  ✗ project/prompt.txt: Unsupported file type
+  ✗ project/evolution.yaml: Validation fail
+  ✗ project/evolution.toon: Unsupported file type
+  ✗ project/map.yaml: Validation fail
+  ✗ project/map.toon.yaml: Validation fail
+  ✗ project/flow.mmd: Unsupported file type
+  ✗ project/dashboard.html: Unsupported file type
+  ✗ project/evolution.toon.yaml: Validation fail
+  ✗ project/README.md: Unsupported file type
+  ✗ project/analysis.toon: Unsupported file type
+  ✗ project/duplication.toon: Unsupported file type
+  ✗ proxy_analysis/duplication.toon: Unsupported file type
+  ✗ toon/validation.txt: Unsupported file type
+  ✗ src/redup/core/hasher.py: Validation fail
+  ✗ src/redup/core/scanner.py.backup: Unsupported file type
+  ✗ src/redup/core/semantic.py: Validation fail
+  ✗ src/redup/core/python_parser.py: Validation fail
+  ✗ src/redup/core/utils/function_extractor.py: Validation fail
+  ✗ src/redup/core/utils/hash_utils.py: Validation fail
+  ✗ src/redup/core/utils/duplicate_finders.py: Validation fail
+  ✗ src/redup/core/utils/language_dispatcher.py: Validation fail

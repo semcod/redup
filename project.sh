@@ -16,6 +16,5 @@ rm project/analysis.yaml
 .venv/bin/pip install code2docs --upgrade
 .venv/bin/code2docs ./ --readme-only
 .venv/bin/redup scan . --format toon --output ./project
-.venv/bin/redup scan . --format toon --output ./project
 .venv/bin/redup scan src/ -f toon --output ./project
-.venv/bin/vallm batch . --recursive --output toon > ./project/validation.toon
+.venv/bin/vallm batch . --recursive --format toon --output ./project

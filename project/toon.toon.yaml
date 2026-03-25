@@ -1,4 +1,4 @@
-# code2llm | 45f 8290L | python:44,shell:1 | 2026-03-25
+# code2llm | 45f 8289L | python:44,shell:1 | 2026-03-25
 # CC̄=3.7 | critical:2/296 | dups:0 | cycles:1
 
 HEALTH[3]:
@@ -18,9 +18,9 @@ PIPELINES[162]:
       PURITY: 100% pure
   [3] Src [benchmark_fuzzy_performance]: benchmark_fuzzy_performance
       PURITY: 100% pure
-  [4] Src [main]: main → analyze → _ensure_config
+  [4] Src [_load_from_env]: _load_from_env
       PURITY: 100% pure
-  [5] Src [_load_from_env]: _load_from_env
+  [5] Src [reload]: reload
       PURITY: 100% pure
 
 LAYERS:
@@ -39,8 +39,8 @@ LAYERS:
   │ cache                      267L  1C   10m  CC=5      ←1
   │ lsh_matcher                225L  2C   12m  CC=10     ←1
   │ models                     216L  9C    1m  CC=1      ←0
+  │ differ                     209L  1C    5m  CC=14     ←3
   │ code2llm_reporter          209L  0C    6m  CC=11     ←2
-  │ differ                     209L  1C    5m  CC=14     ←2
   │ main                       196L  0C    5m  CC=1      ←0
   │ config                     182L  1C    7m  CC=9      ←12
   │ semantic                   174L  2C    5m  CC=9      ←0
@@ -73,7 +73,7 @@ LAYERS:
   │
   ./                              CC̄=3.0    ←in:0  →out:0
   │ benchmark                  111L  0C    2m  CC=3      ←0
-  │ project.sh                  21L  0C    0m  CC=0.0    ←0
+  │ project.sh                  20L  0C    0m  CC=0.0    ←0
   │
 
 COUPLING:

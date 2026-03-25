@@ -1,13 +1,13 @@
-# redup | 45f 8290L | python:44,shell:1 | 2026-03-25
+# redup | 45f 8289L | python:44,shell:1 | 2026-03-25
 # stats: 295 func | 0 cls | 45 mod | CC̄=3.7 | critical:2 | cycles:0
 # alerts[5]: fan-out _handle_analyze_project=23; fan-out _preload_files=20; fan-out _scan_sequential=16; fan-out scan_project=16; CC GroupMatcher._ensure_matches=15
-# hotspots[5]: _handle_analyze_project fan=23; _preload_files fan=20; _scan_sequential fan=16; scan_project fan=16; _find_duplicates_phase_lazy fan=15
-# evolution: baseline
+# hotspots[5]: _handle_analyze_project fan=23; _preload_files fan=20; _scan_sequential fan=16; scan_project fan=16; _load_duplication_map fan=15
+# evolution: CC̄ 3.6→3.7 (regressed +0.1)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
 M[45]:
   benchmark.py,111
   benchmarks/bench_libraries.py,160
-  project.sh,21
+  project.sh,20
   src/redup/__init__.py,25
   src/redup/__main__.py,5
   src/redup/cli_app/__init__.py,1
@@ -126,6 +126,14 @@ D:
     UniversalSignature:  # Universal semantic signature for any code block...
     UniversalFuzzyExtractor: __init__(0),extract_universal_signature(1),_detect_language(1),_normalize_code(2),_remove_comments(2),_normalize_identifiers(2),_detect_component_type(2),_extract_semantic_patterns(2),_extract_metadata(2),_compute_complexity(2),_compute_structure_hash(1)  # Universal fuzzy extractor for all supported languages and DS...
     UniversalFuzzyDetector: __init__(1),find_similar_components(1),_compute_universal_similarity(2),_compute_pattern_similarity(2),_compute_metadata_similarity(2)  # Universal fuzzy similarity detector for all languages and DS...
+  src/redup/reporters/code2llm_reporter.py:
+    e: _calculate_avg_cc,_count_critical_functions,_get_layers,to_code2llm_toon,to_code2llm_context,export_code2llm
+    _calculate_avg_cc(dup_map)
+    _count_critical_functions(dup_map)
+    _get_layers(dup_map)
+    to_code2llm_toon(dup_map;files_scanned;total_lines;functions_count;classes_count)
+    to_code2llm_context(dup_map;files_scanned;total_lines;functions_count;classes_count;modules)
+    export_code2llm(dup_map;output_dir;files_scanned;total_lines;functions_count;classes_count)
   src/redup/core/pipeline.py:
     e: _blocks_to_group,_deduplicate_groups,analyze,analyze_optimized,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase_optimized,_find_duplicates_phase_lazy,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,_find_semantic_groups,analyze_optimized,analyze_parallel
     _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
@@ -147,14 +155,6 @@ D:
     _find_semantic_groups(blocks;threshold)
     analyze_optimized(config;function_level_only;use_memory_cache;max_cache_mb)
     analyze_parallel(config;function_level_only;max_workers)
-  src/redup/reporters/code2llm_reporter.py:
-    e: _calculate_avg_cc,_count_critical_functions,_get_layers,to_code2llm_toon,to_code2llm_context,export_code2llm
-    _calculate_avg_cc(dup_map)
-    _count_critical_functions(dup_map)
-    _get_layers(dup_map)
-    to_code2llm_toon(dup_map;files_scanned;total_lines;functions_count;classes_count)
-    to_code2llm_context(dup_map;files_scanned;total_lines;functions_count;classes_count;modules)
-    export_code2llm(dup_map;output_dir;files_scanned;total_lines;functions_count;classes_count)
   benchmarks/bench_libraries.py:
     e: generate_test_project,benchmark,benchmark_hash_performance,benchmark_fuzzy_performance
     generate_test_project(root;num_files;lines_per_file)
@@ -207,9 +207,6 @@ Attribut...
     build_hash_index(blocks;min_lines)
     _find_duplicates(hash_dict)
     _blocks_from_different_locations(blocks)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -218,6 +215,9 @@ Attribut...
     _render_refactor(suggestions)
     _render_metrics_target(dup_map;groups)
     to_toon(dup_map)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
   src/redup/core/lazy_grouper.py:
     e: DuplicateGroupCollector,find_exact_duplicates_lazy,find_structural_duplicates_lazy,_create_duplicate_group,find_all_duplicates_lazy
     DuplicateGroupCollector: __init__(3),collect(1),collect_sorted(1)  # Collector for lazy duplicate groups with optional limits.
@@ -282,11 +282,6 @@ A...
     load_config()
     config_to_scan_config(config;path)
     create_sample_redup_toml()
-  src/redup/reporters/json_reporter.py:
-    e: _group_to_dict,_suggestion_to_dict,to_json
-    _group_to_dict(group;include_snippets)
-    _suggestion_to_dict(s)
-    to_json(dup_map;indent;include_snippets)
   src/redup/core/cache.py:
     e: HashCache,hash_block_with_cache,build_hash_index_with_cache
     HashCache: __init__(1),_init_tables(0),_get_file_hash(2),is_file_unchanged(2),get_cached_block_hashes(2),store_file_hashes(3),cleanup_old_entries(1),get_stats(0)  # SQLite-based cache for file and block hashes.
@@ -294,6 +289,11 @@ A...
 Provides ~10x...
     hash_block_with_cache(text;file_path;start;end;cache)
     build_hash_index_with_cache(blocks;min_lines;cache)
+  src/redup/reporters/json_reporter.py:
+    e: _group_to_dict,_suggestion_to_dict,to_json
+    _group_to_dict(group;include_snippets)
+    _suggestion_to_dict(s)
+    to_json(dup_map;indent;include_snippets)
   src/redup/core/utils/function_extractor.py:
     e: FunctionExtractor,_extract_java_class_name
     FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
