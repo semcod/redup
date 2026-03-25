@@ -1,6 +1,6 @@
 # code2llm/evolution | 289 func | 37f | 2026-03-24
 
-NEXT[6] (ranked by impact):
+NEXT[5] (ranked by impact):
   [1] !! SPLIT           src/redup/mcp_server.py
       WHY: 675L, 0 classes, max CC=12
       EFFORT: ~4h  IMPACT: 8100
@@ -13,15 +13,11 @@ NEXT[6] (ranked by impact):
       WHY: 765L, 1 classes, max CC=7
       EFFORT: ~4h  IMPACT: 5355
 
-  [4] !  SPLIT-FUNC      write_results  CC=15  fan=14
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 210
-
-  [5] !  SPLIT-FUNC      _parse_with_ast  CC=15  fan=13
+  [4] !  SPLIT-FUNC      _parse_with_ast  CC=15  fan=13
       WHY: CC=15 exceeds 15
       EFFORT: ~1h  IMPACT: 195
 
-  [6] !  SPLIT-FUNC      GroupMatcher._ensure_matches  CC=15  fan=13
+  [5] !  SPLIT-FUNC      GroupMatcher._ensure_matches  CC=15  fan=13
       WHY: CC=15 exceeds 15
       EFFORT: ~1h  IMPACT: 195
 
@@ -35,7 +31,7 @@ METRICS-TARGET:
   CC̄:          3.7 → ≤2.6
   max-CC:      15 → ≤7
   god-modules: 4 → 0
-  high-CC(≥15): 3 → ≤1
+  high-CC(≥15): 2 → ≤1
   hub-types:   0 → ≤0
 
 HISTORY:

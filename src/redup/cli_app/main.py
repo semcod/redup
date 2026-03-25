@@ -78,14 +78,15 @@ def scan(
         "--include-tests",
         help="Include test files. Overrides config.",
     ),
-    functions_only: bool = typer.Option(
-        True,
-        "--functions-only/--no-functions-only",
-        help="Only analyze function-level duplicates (default: enabled for speed).",
+    no_functions_only: bool = typer.Option(
+        False,
+        "--no-functions-only",
+        help="Analyze all code, not just functions (default: functions-only for speed).",
     ),
     parallel: bool = typer.Option(
         False,
-        "--parallel/--no-parallel",
+        "--parallel",
+        "--no-parallel",
         help="Use parallel scanning for large projects (default: disabled due to issues).",
     ),
     max_workers: int | None = typer.Option(
@@ -98,10 +99,10 @@ def scan(
         "--incremental",
         help="Use incremental scanning with caching.",
     ),
-    memory_cache: bool = typer.Option(
-        True,
-        "--memory-cache/--no-memory-cache",
-        help="Use memory cache for faster scanning.",
+    no_memory_cache: bool = typer.Option(
+        False,
+        "--no-memory-cache",
+        help="Disable memory cache for scanning.",
     ),
     max_cache_mb: int = typer.Option(
         512,
@@ -122,8 +123,8 @@ def scan(
     """Scan a project for code duplicates."""
     return scan_command(
         path, format, output, extensions, min_lines, min_similarity,
-        include_tests, functions_only, parallel, max_workers,
-        incremental, memory_cache, max_cache_mb, fuzzy, fuzzy_threshold
+        include_tests, not no_functions_only, parallel, max_workers,
+        incremental, not no_memory_cache, max_cache_mb, fuzzy, fuzzy_threshold
     )
 
 

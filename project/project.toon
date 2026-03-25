@@ -1,4 +1,4 @@
-# redup | 58f 10413L | python:58
+# redup | 58f 10414L | python:58
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[58]:
   benchmark.py,83
@@ -10,8 +10,8 @@ M[58]:
   src/redup/cli_app/config_builder.py,46
   src/redup/cli_app/fuzzy_similarity.py,108
   src/redup/cli_app/main.py,194
-  src/redup/cli_app/output_writer.py,66
-  src/redup/cli_app/scan_commands.py,124
+  src/redup/cli_app/output_writer.py,64
+  src/redup/cli_app/scan_commands.py,125
   src/redup/cli_app/scan_helpers.py,25
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,205

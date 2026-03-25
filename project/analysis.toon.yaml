@@ -1,0 +1,44 @@
+format: toon-v2-yaml
+timestamp: '2026-03-25'
+header:
+  files: 44
+  lines: 8114
+  functions: 289
+  avg_cc: 3.7
+  critical_count: 2
+  duplicates: 0
+  cycles: 1
+health:
+  count: 3
+  status: issues_found
+  issues:
+  - severity: red
+    code: GOD
+    message: src/redup/core/scanner.py = 633L, 4 classes, 21m, max CC=13
+  - severity: yellow
+    code: CC
+    message: _parse_with_ast CC=15 (limit:15)
+  - severity: yellow
+    code: CC
+    message: _ensure_matches CC=15 (limit:15)
+refactor:
+  steps:
+  - action: split_module
+    target: src/redup/core/scanner.py
+  - action: split_methods
+    count: 2
+    reason: high_cc
+  - action: break_cycles
+    count: 1
+pipelines:
+  count: 0
+  pipelines: []
+layers:
+  count: 0
+  layers: []
+coupling:
+  count: 0
+  packages: []
+external:
+  count: 0
+  libraries: []

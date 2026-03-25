@@ -3,11 +3,11 @@ project:
   name: redup
   repo: /home/tom/github/semcod/redup
   language: python
-  analyzed_at: '2026-03-24T17:18:59Z'
+  analyzed_at: '2026-03-24T18:06:47Z'
   tool: code2llm
   stats:
     files: 36
-    lines: 10318
+    lines: 10319
     functions: 288
     classes: 40
 health:
@@ -49,11 +49,6 @@ health:
     severity: error
   - type: cc_exceeded
     target: _parse_with_ast
-    value: 15
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: write_results
     value: 15
     limit: 15
     severity: warning
@@ -117,22 +112,12 @@ health:
     value: 12
     limit: 10
     severity: warning
+  - type: high_fan_out
+    target: _handle_suggest_refactoring
+    value: 11
+    limit: 10
+    severity: warning
 modules:
-- path: src/redup/cli_app/output_writer.py
-  lines: 78
-  classes: 0
-  methods: 2
-  cc_max: 15
-  inbound_deps: 1
-  exports:
-  - name: write_output
-    type: function
-    cc: 3
-  - name: write_results
-    type: function
-    cc: 15
-    flag: split
-    fan_out: 14
 - path: src/redup/core/python_parser.py
   lines: 170
   classes: 1
@@ -221,6 +206,20 @@ modules:
   - name: scan_project_parallel_memory_optimized
     type: function
     cc: 1
+- path: src/redup/cli_app/output_writer.py
+  lines: 78
+  classes: 0
+  methods: 2
+  cc_max: 12
+  inbound_deps: 1
+  exports:
+  - name: write_output
+    type: function
+    cc: 3
+  - name: write_results
+    type: function
+    cc: 12
+    fan_out: 14
 - path: src/redup/mcp_server.py
   lines: 675
   classes: 0
@@ -439,7 +438,7 @@ modules:
     type: function
     cc: 3
 - path: src/redup/cli_app/scan_commands.py
-  lines: 163
+  lines: 164
   classes: 0
   methods: 5
   cc_max: 7
@@ -829,10 +828,6 @@ refactoring:
     impact: medium
     effort: low
     module: python_parser.py
-  - action: Split write_results (CC=15 → target CC<10)
-    impact: medium
-    effort: low
-    module: output_writer.py
   - action: Split GroupMatcher._ensure_matches (CC=15 → target CC<10)
     impact: medium
     effort: low
@@ -858,5 +853,5 @@ evolution:
 - date: '2026-03-24'
   cc_avg: 3.7
   critical: 17
-  lines: 10318
+  lines: 10319
   note: Automated analysis

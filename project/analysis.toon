@@ -1,15 +1,14 @@
-# code2llm | 44f 8112L | python:43,shell:1 | 2026-03-24
+# code2llm | 44f 8113L | python:43,shell:1 | 2026-03-24
 # CC̄=3.7 | critical:17/289 | dups:0 | cycles:1
 
-HEALTH[4]:
+HEALTH[3]:
   🔴 GOD   src/redup/core/scanner.py = 633L, 4 classes, 21m, max CC=13
   🟡 CC    _parse_with_ast CC=15 (limit:15)
-  🟡 CC    write_results CC=15 (limit:15)
   🟡 CC    _ensure_matches CC=15 (limit:15)
 
 REFACTOR[3]:
   1. split src/redup/core/scanner.py  (god module)
-  2. split 3 high-CC methods  (CC>15)
+  2. split 2 high-CC methods  (CC>15)
   3. break 1 circular dependencies
 
 COUPLING:
@@ -40,7 +39,7 @@ LAYERS:
   │ !  differ                     209L  1C    5m  CC=14     ←2
   │ semantic                   174L  2C    5m  CC=9      ←0
   │ !! python_parser              170L  1C    4m  CC=15     ←1
-  │ scan_commands              163L  0C    5m  CC=7      ←1
+  │ scan_commands              164L  0C    5m  CC=7      ←1
   │ !! diff_helpers               162L  3C    9m  CC=15     ←1
   │ fuzzy_similarity           160L  0C    9m  CC=5      ←1
   │ lazy_grouper               159L  1C    7m  CC=7      ←1
@@ -51,7 +50,7 @@ LAYERS:
   │ toon_reporter              106L  0C    6m  CC=8      ←3
   │ hash_cache                 104L  1C   10m  CC=3      ←0
   │ !  markdown_reporter           90L  0C    1m  CC=12     ←2
-  │ !! output_writer               78L  0C    2m  CC=15     ←1
+  │ !  output_writer               78L  0C    2m  CC=12     ←1
   │ json_reporter               73L  0C    3m  CC=5      ←4
   │ language_dispatcher         72L  1C    5m  CC=4      ←0
   │ hash_utils                  37L  0C    1m  CC=3      ←0
@@ -75,13 +74,13 @@ DUPLICATES[0]: none
 
 FUNCTIONS (CC≥10, 17 of 288):
    15.0  _parse_with_ast                            11n   2exit  loops+cond+ret  !! split
-   15.0  write_results                              12n   1exit  cond  !! split
    15.0  GroupMatcher._ensure_matches               20n   2exit  loops+cond+ret  !! split
    14.0  format_diff_result                         16n   2exit  loops+cond+ret
    13.0  _should_exclude                            17n   4exit  loops+cond+ret
    12.0  _build_scan_config                         25n   2exit  cond+ret
    12.0  _preload_files                              9n   3exit  loops+cond+ret
    12.0  to_markdown                                12n   3exit  loops+cond+ret
+   12.0  write_results                              12n   1exit  cond
    11.0  UniversalFuzzyExtractor._extract_metadata   23n   2exit  cond+ret
    11.0  to_code2llm_context                        15n   2exit  loops+cond+ret
    11.0  _find_near_duplicate_groups                 9n   4exit  cond+ret
@@ -133,6 +132,9 @@ CLASSES:
   MatchResult                                               0m  CC̄=0.0   max=0.0 
   SemanticMatch                                             0m  CC̄=0.0   max=0.0 
   ParsedFunction                                            0m  CC̄=0.0   max=0.0 
+  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
+  ScannedFile                                               0m  CC̄=0.0   max=0.0 
+  ScanStrategy                                              0m  CC̄=0.0   max=0.0 
   DuplicateType                                             0m  CC̄=0.0   max=0.0 
   RefactorAction                                            0m  CC̄=0.0   max=0.0 
   RiskLevel                                                 0m  CC̄=0.0   max=0.0 
@@ -141,9 +143,6 @@ CLASSES:
   DuplicateGroup                                            0m  CC̄=0.0   max=0.0 
   RefactorSuggestion                                        0m  CC̄=0.0   max=0.0 
   ScanStats                                                 0m  CC̄=0.0   max=0.0 
-  CodeBlock                                                 0m  CC̄=0.0   max=0.0 
-  ScannedFile                                               0m  CC̄=0.0   max=0.0 
-  ScanStrategy                                              0m  CC̄=0.0   max=0.0 
   HashedBlock                                               0m  CC̄=0.0   max=0.0 
   HashIndex                                                 0m  CC̄=0.0   max=0.0 
   ComponentSignature                                        0m  CC̄=0.0   max=0.0 
@@ -158,10 +157,6 @@ D:
     _parse_with_ast(source,filepath)
     parse_python_functions(source,filepath)
     parsed_to_code_blocks(parsed,filepath)
-  src/redup/cli_app/output_writer.py:
-    e: write_output,write_results
-    write_output(content,output,suffix)
-    write_results(dup_map,format,output,path)
   src/redup/core/utils/diff_helpers.py:
     e: _MatchResult,GroupMatcher,DiffCalculator,_group_files,_groups_match
     _MatchResult
@@ -224,6 +219,10 @@ D:
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
+  src/redup/cli_app/output_writer.py:
+    e: write_output,write_results
+    write_output(content,output,suffix)
+    write_results(dup_map,format,output,path)
   src/redup/core/universal_fuzzy.py:
     e: UniversalSignature,UniversalFuzzyExtractor,UniversalFuzzyDetector
     UniversalSignature  # Universal semantic signature for any code block....
@@ -312,6 +311,10 @@ D:
     build_hash_index(blocks,min_lines)
     _find_duplicates(hash_dict)
     _blocks_from_different_locations(blocks)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
+      __init__(1)  CC=1.0
   src/redup/reporters/toon_reporter.py:
     e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
     _render_header(dup_map)
@@ -320,10 +323,6 @@ D:
     _render_refactor(suggestions)
     _render_metrics_target(dup_map,groups)
     to_toon(dup_map)
-  src/redup/reporters/enhanced_reporter.py:
-    e: EnhancedReporter
-    EnhancedReporter  # Enhanced reporter with detailed metrics and visualizations....
-      __init__(1)  CC=1.0
   src/redup/core/lazy_grouper.py:
     e: DuplicateGroupCollector,find_exact_duplicates_lazy,find_structural_duplicates_lazy,_create_duplicate_group,find_all_duplicates_lazy
     DuplicateGroupCollector  # Collector for lazy duplicate groups with optional limits.
@@ -407,6 +406,11 @@ Provides ~10x...
     _group_to_dict(group,include_snippets)
     _suggestion_to_dict(s)
     to_json(dup_map,indent,include_snippets)
+  src/redup/core/utils/function_extractor.py:
+    e: FunctionExtractor,_extract_java_class_name
+    FunctionExtractor  # Generic function extractor that can be configured for differ...
+      __init__(3)  CC=1.0
+    _extract_java_class_name(node)
   src/redup/cli_app/fuzzy_similarity.py:
     e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups
     _apply_fuzzy_similarity(dup_map,threshold)
@@ -418,11 +422,6 @@ Provides ~10x...
     _analyze_other_language_blocks(other_blocks,threshold)
     _report_fuzzy_results(similar_pairs)
     _report_similarity_by_groups(similar_pairs)
-  src/redup/core/utils/function_extractor.py:
-    e: FunctionExtractor,_extract_java_class_name
-    FunctionExtractor  # Generic function extractor that can be configured for differ...
-      __init__(3)  CC=1.0
-    _extract_java_class_name(node)
   src/redup/reporters/yaml_reporter.py:
     e: to_yaml
     to_yaml(dup_map)

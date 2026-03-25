@@ -1,0 +1,69 @@
+format: evolution-toon-yaml
+timestamp: '2026-03-25'
+stats:
+  total_funcs: 284
+  total_files: 35
+  avg_cc: 3.7
+  max_cc: 15
+  high_cc_count: 2
+  critical_count: 16
+refactoring:
+  action_count: 5
+  actions:
+  - priority: high
+    action: SPLIT
+    target: src/redup/core/ts_extractor.py
+    reason: 765L, 1 classes, max CC=7
+    effort: ~4h
+  - priority: high
+    action: SPLIT
+    target: src/redup/core/pipeline.py
+    reason: 714L, 0 classes, max CC=11
+    effort: ~4h
+  - priority: high
+    action: SPLIT
+    target: src/redup/mcp_server.py
+    reason: 675L, 0 classes, max CC=12
+    effort: ~4h
+  - priority: high
+    action: SPLIT-FUNC
+    target: _parse_with_ast
+    cc: 15
+    fan_out: 13
+    reason: CC=15 exceeds 15
+    effort: ~1h
+  - priority: high
+    action: SPLIT-FUNC
+    target: GroupMatcher._ensure_matches
+    cc: 15
+    fan_out: 13
+    reason: CC=15 exceeds 15
+    effort: ~1h
+risks:
+  count: 3
+  items:
+  - type: breaking_imports
+    target: src/redup/core/ts_extractor.py
+    impact: may break 24 import paths
+  - type: breaking_imports
+    target: src/redup/core/pipeline.py
+    impact: may break 18 import paths
+  - type: breaking_imports
+    target: src/redup/mcp_server.py
+    impact: may break 16 import paths
+metrics_target:
+  avg_cc:
+    current: 3.7
+    target: 2.6
+  max_cc:
+    current: 15
+    target: 7
+  god_modules:
+    current: 4
+    target: 0
+  high_cc:
+    current: 2
+    target: 1
+  hub_types:
+    current: 0
+    target: 0
