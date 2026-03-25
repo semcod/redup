@@ -1,12 +1,12 @@
-# redup/duplication | 6 groups | 38f 8202L | 2026-03-25
+# redup/duplication | 6 groups | 38f 8201L | 2026-03-25
 
 SUMMARY:
   files_scanned: 38
-  total_lines:   8202
+  total_lines:   8201
   dup_groups:    6
   dup_fragments: 19
   saved_lines:   69
-  scan_ms:       4229
+  scan_ms:       3352
 
 DUPLICATES[6] (ranked by impact):
   [8f10890085628ab3]   STRU  find_exact_duplicates_lazy  L=26 N=2 saved=26 sim=1.00

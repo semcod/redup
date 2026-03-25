@@ -85,11 +85,10 @@ def scan(
         "--no-functions-only",
         help="Analyze all code, not just functions (default: functions-only mode is ON).",
     ),
-    parallel: bool = typer.Option(
+    no_parallel: bool = typer.Option(
         False,
-        "--parallel",
         "--no-parallel",
-        help="Use parallel scanning for large projects (default: disabled due to issues).",
+        help="Disable parallel scanning for large projects (default: disabled).",
     ),
     max_workers: int | None = typer.Option(
         None,
@@ -125,7 +124,7 @@ def scan(
     """Scan a project for code duplicates."""
     return scan_command(
         path, format, output, extensions, min_lines, min_similarity,
-        include_tests, not no_functions_only, parallel, max_workers,
+        include_tests, not no_functions_only, not no_parallel, max_workers,
         incremental, not no_memory_cache, max_cache_mb, fuzzy, fuzzy_threshold
     )
 

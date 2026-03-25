@@ -17,5 +17,5 @@ rm project/analysis.yaml
 .venv/bin/code2docs ./ --readme-only
 .venv/bin/redup scan . --format toon --output ./project
 .venv/bin/redup scan . --format toon --output ./project
-.venv/bin/redup scan src/ --functions-only -f toon --output ./project
+.venv/bin/redup scan src/ -f toon --output ./project
 .venv/bin/vallm batch . --recursive --output toon > ./project/validation.toon
