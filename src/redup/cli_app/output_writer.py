@@ -3,6 +3,7 @@
 from pathlib import Path
 from typing import Any
 
+from redup.config import config, get_default_filename
 from redup.core.models import DuplicationMap
 from redup.reporters.json_reporter import to_json
 from redup.reporters.markdown_reporter import to_markdown
@@ -15,9 +16,9 @@ from redup.reporters.enhanced_reporter import EnhancedReporter
 def write_output(content: str, output: Path | None, suffix: str) -> None:
     """Write content to file or stdout."""
     import typer
-    
+
     if output:
-        target = output if output.suffix else output / f"duplication.{suffix}"
+        target = output if output.suffix else output / get_default_filename(suffix)
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
         typer.echo(f"  → {target}")
@@ -70,7 +71,7 @@ def write_results(dup_map: DuplicationMap, format: str, output: Any, path: Path)
             base_dir = path
         
         for fmt, content in formats.items():
-            target = base_dir / f"duplication.{fmt}"
+            target = base_dir / get_default_filename(fmt)
             target.write_text(content, encoding="utf-8")
             typer.echo(f"  → {target}")
     else:

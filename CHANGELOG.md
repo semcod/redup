@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [0.4.6] - 2026-03-25
+
+### Docs
+- Update project/context.md
+
+### Test
+- Update tests/test_e2e.py
+
+### Other
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/duplication.toon
+- Update project/index.html
+- Update project/validation.toon
+
 ## [0.4.5] - 2026-03-25
 
 ### Docs

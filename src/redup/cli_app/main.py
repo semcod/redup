@@ -13,6 +13,7 @@ import typer
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 import redup  # noqa: E402
+from redup.config import config as global_config, reload_config  # noqa: E402
 from redup.core.config import create_sample_redup_toml, load_config  # noqa: E402
 from redup.core.models import DuplicationMap, ScanConfig  # noqa: E402
 
@@ -35,7 +36,8 @@ OutputFormat = Literal["json", "yaml", "toon", "markdown", "all", "enhanced", "c
 
 
 DEFAULT_PATH = Path(".")
-DEFAULT_FORMAT: OutputFormat = "toon"
+# Use centralized config for defaults
+DEFAULT_FORMAT: OutputFormat = global_config.DEFAULT_FORMAT  # type: ignore
 DEFAULT_OUTPUT: Path | None = None
 
 

@@ -14,6 +14,7 @@ except ImportError:
     except ImportError:
         tomllib = None
 
+from redup.config import config as global_config, reload_config
 from redup.core.models import ScanConfig
 
 
@@ -50,11 +51,20 @@ def load_config() -> dict[str, Any]:
     
     Priority order:
     1. Environment variables (REDUP_*)
-    2. redup.toml in current directory
-    3. [tool.redup] in pyproject.toml
-    4. Defaults
+    2. .env file in current directory (auto-loaded via redup.config)
+    3. redup.toml in current directory
+    4. [tool.redup] in pyproject.toml
+    5. Global config defaults (redup.config)
     """
-    config = {}
+    # Start with global config defaults (already includes .env if present)
+    config = {
+        "extensions": global_config.DEFAULT_EXTENSIONS,
+        "min_lines": global_config.DEFAULT_MIN_LINES,
+        "min_similarity": global_config.DEFAULT_MIN_SIMILARITY,
+        "include_tests": global_config.DEFAULT_INCLUDE_TESTS,
+        "output": global_config.DEFAULT_OUTPUT_DIR,
+        "format": global_config.DEFAULT_FORMAT,
+    }
     
     # Load from redup.toml
     config.update(_get_config_from_redup_toml())
@@ -116,6 +126,11 @@ def create_sample_redup_toml() -> str:
     """Create a sample redup.toml configuration file content."""
     return """# reDUP Configuration File
 # See https://github.com/semcod/redup for documentation
+#
+# You can also use a .env file in your project directory:
+#   REDUP_DEFAULT_OUTPUT_FILENAME=my_duplication.yaml
+#   REDUP_DEFAULT_FORMAT=toon
+#   REDUP_MIN_LINES=5
 
 [scan]
 # File extensions to scan (comma-separated)
@@ -143,6 +158,8 @@ max_lines = 100
 [output]
 # Default output format
 format = "toon"
+# Default output filename (can include suffix)
+filename = "duplication.toon.yaml"
 # Default output directory (relative to project root)
 output = "redup_output"
 

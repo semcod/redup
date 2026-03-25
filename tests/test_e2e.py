@@ -139,7 +139,7 @@ class TestCLIScanToon:
             "scan", str(project_with_duplicates), "-f", "toon", "-o", str(out)
         ])
         assert result.exit_code == 0
-        toon_file = out / "duplication.toon"
+        toon_file = out / "duplication.toon.yaml"
         assert toon_file.exists()
         content = toon_file.read_text()
         assert "DUPLICATES" in content
@@ -239,7 +239,7 @@ class TestCLIScanAll:
         assert result.exit_code == 0
         assert (out / "duplication.json").exists()
         assert (out / "duplication.yaml").exists()
-        assert (out / "duplication.toon").exists()
+        assert (out / "duplication.toon.yaml").exists()
 
     def test_format_all_json_valid(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
@@ -256,7 +256,7 @@ class TestCLIScanAll:
             "scan", str(project_with_duplicates), "-f", "all",
             "-o", str(out), "--functions-only"
         ])
-        toon = (out / "duplication.toon").read_text()
+        toon = (out / "duplication.toon.yaml").read_text()
         assert "REFACTOR" in toon
 
     def test_all_three_formats_consistent(self, project_with_duplicates: Path, tmp_path: Path):
@@ -267,7 +267,7 @@ class TestCLIScanAll:
             "-o", str(out), "--functions-only"
         ])
         json_data = json.loads((out / "duplication.json").read_text())
-        toon_text = (out / "duplication.toon").read_text()
+        toon_text = (out / "duplication.toon.yaml").read_text()
         yaml_text = (out / "duplication.yaml").read_text()
 
         json_groups = json_data["summary"]["total_groups"]
