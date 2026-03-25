@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.4.10] - 2026-03-25
+
+### Test
+- Update tests/test_e2e.py
+
+### Other
+- Update project/validation.toon
+- Update toon/validation.txt
+
 ## [0.4.9] - 2026-03-25
 
 ### Docs

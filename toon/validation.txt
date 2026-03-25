@@ -3,14 +3,14 @@ VALLM BATCH VALIDATION RESULTS
 ┏━━━━━━━━━━┳━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Language ┃ Total ┃ Passed ┃ Failed ┃ Avg Score ┃
 ┡━━━━━━━━━━╇━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━┩
-│ yaml     │     6 │      6 │      0 │      1.00 │
+│ yaml     │     7 │      6 │      1 │      0.86 │
 │ python   │    59 │     51 │      8 │      0.97 │
 │ toml     │     2 │      2 │      0 │      1.00 │
 │ bash     │     1 │      1 │      0 │      1.00 │
 │ json     │     2 │      2 │      0 │      1.00 │
 └──────────┴───────┴────────┴────────┴───────────┘
 
-Total: 109 files, 62 passed, 47 failed
+Total: 108 files, 62 passed, 46 failed
 
 Failed Files:
   • PERFORMANCE_OPTIMIZATIONS.md: Unsupported file type
@@ -32,7 +32,6 @@ Failed Files:
   • code2llm_output/README.md: Unsupported file type
   • code2llm_output/analysis.toon: Unsupported file type
   • benchmarks/bench_libraries.py: Validation fail
-  • project/duplication.toonyaml: Unsupported file type
   • project/validation.toon: Unsupported file type
   • project/project.toon: Unsupported file type
   • project/compact_flow.mmd: Unsupported file type
@@ -41,9 +40,9 @@ Failed Files:
   • project/calls.mmd: Unsupported file type
   • project/index.html: Unsupported file type
   • project/flow.toon: Unsupported file type
+  • project/duplication.toon.yaml: Validation fail
   • project/context.md: Unsupported file type
   • project/prompt.txt: Unsupported file type
-  • project/duplication.toon.toon: Unsupported file type
   • project/evolution.toon: Unsupported file type
   • project/flow.mmd: Unsupported file type
   • project/dashboard.html: Unsupported file type

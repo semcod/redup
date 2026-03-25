@@ -152,8 +152,7 @@ class TestCLIScanToon:
 
     def test_scan_no_duplicates(self, no_duplicates_project: Path):
         result = runner.invoke(app, [
-            "scan", str(no_duplicates_project), "-f", "toon", "--functions-only"
-        ])
+            "scan", str(no_duplicates_project), "-f", "toon"        ])
         assert result.exit_code == 0
         assert "0 duplicate groups" in result.output
 
@@ -165,8 +164,7 @@ class TestCLIScanToon:
 class TestCLIScanJSON:
     def test_scan_json_stdout_parseable(self, project_with_duplicates: Path):
         result = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "json", "--functions-only"
-        ])
+            "scan", str(project_with_duplicates), "-f", "json"        ])
         assert result.exit_code == 0
         # Extract JSON from output (skip the info lines at the top)
         lines = result.output.strip().split("\n")
@@ -181,8 +179,7 @@ class TestCLIScanJSON:
         out = tmp_path / "output"
         result = runner.invoke(app, [
             "scan", str(project_with_duplicates), "-f", "json",
-            "-o", str(out), "--functions-only"
-        ])
+            "-o", str(out)        ])
         assert result.exit_code == 0
         json_file = out / "duplication.json"
         assert json_file.exists()
@@ -195,8 +192,7 @@ class TestCLIScanJSON:
         out = tmp_path / "output"
         runner.invoke(app, [
             "scan", str(project_with_duplicates), "-f", "json",
-            "-o", str(out), "--functions-only"
-        ])
+            "-o", str(out)        ])
         data = json.loads((out / "duplication.json").read_text())
         group = data["groups"][0]
         assert "fragments" in group
@@ -215,8 +211,7 @@ class TestCLIScanYAML:
         out = tmp_path / "output"
         result = runner.invoke(app, [
             "scan", str(project_with_duplicates), "-f", "yaml",
-            "-o", str(out), "--functions-only"
-        ])
+            "-o", str(out)        ])
         assert result.exit_code == 0
         yaml_file = out / "duplication.yaml"
         assert yaml_file.exists()
@@ -234,8 +229,7 @@ class TestCLIScanAll:
         out = tmp_path / "output"
         result = runner.invoke(app, [
             "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out), "--functions-only"
-        ])
+            "-o", str(out)        ])
         assert result.exit_code == 0
         assert (out / "duplication.json").exists()
         assert (out / "duplication.yaml").exists()
@@ -245,8 +239,7 @@ class TestCLIScanAll:
         out = tmp_path / "output"
         runner.invoke(app, [
             "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out), "--functions-only"
-        ])
+            "-o", str(out)        ])
         data = json.loads((out / "duplication.json").read_text())
         assert data["summary"]["total_groups"] >= 1
 
@@ -254,8 +247,7 @@ class TestCLIScanAll:
         out = tmp_path / "output"
         runner.invoke(app, [
             "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out), "--functions-only"
-        ])
+            "-o", str(out)        ])
         toon = (out / "duplication.toon.yaml").read_text()
         assert "REFACTOR" in toon
 
@@ -264,8 +256,7 @@ class TestCLIScanAll:
         out = tmp_path / "output"
         runner.invoke(app, [
             "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out), "--functions-only"
-        ])
+            "-o", str(out)        ])
         json_data = json.loads((out / "duplication.json").read_text())
         toon_text = (out / "duplication.toon.yaml").read_text()
         yaml_text = (out / "duplication.yaml").read_text()
@@ -291,12 +282,10 @@ class TestCLIOptions:
     def test_min_lines_filter(self, project_with_duplicates: Path):
         result_low = runner.invoke(app, [
             "scan", str(project_with_duplicates), "--min-lines", "3",
-            "-f", "toon", "--functions-only"
-        ])
+            "-f", "toon"        ])
         result_high = runner.invoke(app, [
             "scan", str(project_with_duplicates), "--min-lines", "20",
-            "-f", "toon", "--functions-only"
-        ])
+            "-f", "toon"        ])
         assert result_low.exit_code == 0
         assert result_high.exit_code == 0
 
@@ -329,7 +318,7 @@ class TestPythonModule:
     def test_python_m_redup_scan(self, project_with_duplicates: Path):
         result = subprocess.run(
             [sys.executable, "-m", "redup", "scan", str(project_with_duplicates),
-             "-f", "toon", "--functions-only"],
+             "-f", "toon"],
             capture_output=True, text=True, timeout=30,
         )
         assert result.returncode == 0
@@ -416,7 +405,7 @@ class TestFullRoundtrip:
         out = tmp_path / "results"
         subprocess.run(
             [sys.executable, "-m", "redup", "scan", str(project_with_duplicates),
-             "-f", "all", "-o", str(out), "--functions-only"],
+             "-f", "all", "-o", str(out)],
             capture_output=True, text=True, timeout=30,
         )
 
@@ -451,7 +440,7 @@ class TestFullRoundtrip:
             out = Path(tmp)
             result = subprocess.run(
                 [sys.executable, "-m", "redup", "scan", str(src_dir),
-                 "-f", "json", "-o", str(out), "--functions-only"],
+                 "-f", "json", "-o", str(out)],
                 capture_output=True, text=True, timeout=30,
             )
             assert result.returncode == 0
