@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.6-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.7-green.svg)](https://pypi.org/project/redup/)
 
 reDUP scans codebases for duplicated functions, blocks, and structural patterns — then builds a prioritized refactoring map that LLMs can consume to eliminate redundancy systematically.
 
@@ -274,7 +274,7 @@ reDUP is part of the [wronai](https://github.com/wronai) developer toolchain:
 ### 📈 **Typical workflow:**
 
 1. `code2llm` analyzes the project → `.toon` diagnostics
-2. `redup` finds duplicates → `duplication.toon`  
+2. `redup` finds duplicates → `duplication.toon.yaml`  
 3. Feed both to an LLM for targeted refactoring
 4. `vallm` validates the LLM's proposals before merging
 

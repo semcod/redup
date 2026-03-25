@@ -423,7 +423,7 @@ class TestFullRoundtrip:
         # All files created
         assert (out / "duplication.json").exists()
         assert (out / "duplication.yaml").exists()
-        assert (out / "duplication.toon").exists()
+        assert (out / "duplication.toon.yaml").exists()
 
         # JSON parseable
         json_data = json.loads((out / "duplication.json").read_text())
@@ -431,7 +431,7 @@ class TestFullRoundtrip:
         json_saved = json_data["summary"]["total_saved_lines"]
 
         # TOON mentions same numbers
-        toon = (out / "duplication.toon").read_text()
+        toon = (out / "duplication.toon.yaml").read_text()
         assert f"dup_groups:    {json_groups}" in toon
         assert f"saved_lines:   {json_saved}" in toon
 

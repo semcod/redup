@@ -1,9 +1,9 @@
 format: evolution-toon-yaml
 timestamp: '2026-03-25'
 stats:
-  total_funcs: 284
-  total_files: 35
-  avg_cc: 3.7
+  total_funcs: 291
+  total_files: 36
+  avg_cc: 3.6
   max_cc: 15
   high_cc_count: 2
   critical_count: 16
@@ -53,8 +53,8 @@ risks:
     impact: may break 16 import paths
 metrics_target:
   avg_cc:
-    current: 3.7
-    target: 2.6
+    current: 3.6
+    target: 2.5
   max_cc:
     current: 15
     target: 7

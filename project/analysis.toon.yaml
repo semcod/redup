@@ -1,9 +1,9 @@
 format: toon-v2-yaml
 timestamp: '2026-03-25'
 header:
-  files: 44
-  lines: 8114
-  functions: 289
+  files: 45
+  lines: 8306
+  functions: 296
   avg_cc: 3.7
   critical_count: 2
   duplicates: 0

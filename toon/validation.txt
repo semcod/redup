@@ -4,13 +4,13 @@ VALLM BATCH VALIDATION RESULTS
 ┃ Language ┃ Total ┃ Passed ┃ Failed ┃ Avg Score ┃
 ┡━━━━━━━━━━╇━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━┩
 │ yaml     │     6 │      6 │      0 │      1.00 │
-│ python   │    58 │     50 │      8 │      0.97 │
+│ python   │    59 │     51 │      8 │      0.97 │
 │ toml     │     2 │      2 │      0 │      1.00 │
 │ bash     │     1 │      1 │      0 │      1.00 │
 │ json     │     2 │      2 │      0 │      1.00 │
 └──────────┴───────┴────────┴────────┴───────────┘
 
-Total: 106 files, 61 passed, 45 failed
+Total: 108 files, 62 passed, 46 failed
 
 Failed Files:
   • PERFORMANCE_OPTIMIZATIONS.md: Unsupported file type
@@ -42,6 +42,7 @@ Failed Files:
   • project/flow.toon: Unsupported file type
   • project/context.md: Unsupported file type
   • project/prompt.txt: Unsupported file type
+  • project/duplication.toon.toon: Unsupported file type
   • project/evolution.toon: Unsupported file type
   • project/flow.mmd: Unsupported file type
   • project/dashboard.html: Unsupported file type

@@ -156,7 +156,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 ## Requirements
 
 - Python >= >=3.10
-- pyyaml >=6.0- typer >=0.12.0- rich >=13.0- pydantic >=2.0- tomli >=2.0; python_version<'3.11'
+- pyyaml >=6.0- typer >=0.12.0- rich >=13.0- pydantic >=2.0- tomli >=2.0; python_version<'3.11'- python-dotenv >=1.0
 
 ## Contributing
 

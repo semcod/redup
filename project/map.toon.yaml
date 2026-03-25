@@ -2,11 +2,11 @@ format: map-toon-yaml
 project: redup
 timestamp: '2026-03-25'
 stats:
-  files: 44
-  lines: 8114
-  functions: 288
+  files: 45
+  lines: 8306
+  functions: 295
   languages:
-    python: 43
+    python: 44
     shell: 1
 modules:
 - path: benchmark.py
@@ -145,7 +145,7 @@ modules:
     - similar_pairs
     returns: null
 - path: src/redup/cli_app/main.py
-  lines: 220
+  lines: 222
   imports: []
   exports:
   - type: function
@@ -202,7 +202,7 @@ modules:
     args: []
     returns: null
 - path: src/redup/cli_app/output_writer.py
-  lines: 78
+  lines: 79
   imports: []
   exports:
   - type: function
@@ -309,6 +309,39 @@ modules:
     - dup_map
     - threshold
     returns: null
+- path: src/redup/config.py
+  lines: 172
+  imports: []
+  exports:
+  - type: class
+    name: RedupConfig
+  - type: function
+    name: get_default_filename
+  - type: function
+    name: reload_config
+  classes:
+  - name: RedupConfig
+    bases: []
+    methods:
+    - name: _env_name
+      arity: 1
+    - name: _load_from_env
+      arity: 0
+    - name: reload
+      arity: 1
+    - name: get
+      arity: 2
+    - name: set
+      arity: 2
+  functions:
+  - name: get_default_filename
+    args:
+    - suffix
+    returns: null
+  - name: reload_config
+    args:
+    - env_path
+    returns: null
 - path: src/redup/core/__init__.py
   lines: 1
   imports: []
@@ -361,7 +394,7 @@ modules:
     - cache
     returns: null
 - path: src/redup/core/config.py
-  lines: 154
+  lines: 171
   imports: []
   exports:
   - type: function
