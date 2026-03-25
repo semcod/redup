@@ -9,6 +9,8 @@ flowchart TD
         src__redup__config__RedupConfig__reload["reload"]
         src__redup__config__RedupConfig__get["get"]
         src__redup__config__reload_config["reload_config"]
+        benchmark__benchmark_sequential_vs_parallel["benchmark_sequential_vs_parall"]
+        benchmark__benchmark_feature_performance["benchmark_feature_performance"]
         src__redup__core__hash_cache__HashCache___load["_load"]
         src__redup__core__hash_cache__HashCache__save["save"]
         src__redup__core__hash_cache__HashCache__get_file_hash["get_file_hash"]
@@ -17,12 +19,10 @@ flowchart TD
         src__redup__core__hash_cache__HashCache__invalidate["invalidate"]
         src__redup__core__hash_cache__HashCache__get_cached_results["get_cached_results"]
         src__redup__core__hash_cache__HashCache__clear["clear"]
-        src__redup__core__hash_cache___config_to_hash["_config_to_hash"]
-        benchmark__benchmark_sequential_vs_parallel["benchmark_sequential_vs_parall"]
         ...["+164 more"]
     end
 
     subgraph Exporters
     end
 
-    class src__redup__config__RedupConfig___env_name,src__redup__config__RedupConfig___load_from_env,src__redup__config__RedupConfig__reload,src__redup__config__RedupConfig__get,src__redup__config__reload_config,src__redup__core__hash_cache__HashCache___load,src__redup__core__hash_cache__HashCache__save,src__redup__core__hash_cache__HashCache__get_file_hash,src__redup__core__hash_cache__HashCache__is_unchanged,src__redup__core__hash_cache__HashCache__update entry
+    class src__redup__config__RedupConfig___env_name,src__redup__config__RedupConfig___load_from_env,src__redup__config__RedupConfig__reload,src__redup__config__RedupConfig__get,src__redup__config__reload_config,benchmark__benchmark_sequential_vs_parallel,benchmark__benchmark_feature_performance,src__redup__core__hash_cache__HashCache___load,src__redup__core__hash_cache__HashCache__save,src__redup__core__hash_cache__HashCache__get_file_hash entry
