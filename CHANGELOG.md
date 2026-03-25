@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.4.9] - 2026-03-25
+
+### Docs
+- Update project/context.md
+
+### Other
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/duplication.toon.yaml
+- Update project/index.html
+- Update project/validation.toon
+
 ## [0.4.8] - 2026-03-25
 
 ### Docs
