@@ -1,0 +1,89 @@
+# code2llm | 45f 8290L | python:44,shell:1 | 2026-03-25
+# CC̄=3.7 | critical:2/296 | dups:0 | cycles:1
+
+HEALTH[3]:
+  🔴 GOD   src/redup/core/scanner.py = 633L, 4 classes, 21m, max CC=13
+  🟡 CC    _parse_with_ast CC=15 (limit:15)
+  🟡 CC    _ensure_matches CC=15 (limit:15)
+
+REFACTOR[3]:
+  1. split src/redup/core/scanner.py  (god module)
+  2. split 2 high-CC methods  (CC>15)
+  3. break 1 circular dependencies
+
+PIPELINES[162]:
+  [1] Src [benchmark]: benchmark → generate_test_project
+      PURITY: 100% pure
+  [2] Src [benchmark_hash_performance]: benchmark_hash_performance
+      PURITY: 100% pure
+  [3] Src [benchmark_fuzzy_performance]: benchmark_fuzzy_performance
+      PURITY: 100% pure
+  [4] Src [main]: main → analyze → _ensure_config
+      PURITY: 100% pure
+  [5] Src [_load_from_env]: _load_from_env
+      PURITY: 100% pure
+
+LAYERS:
+  benchmarks/                     CC̄=5.2    ←in:0  →out:1
+  │ bench_libraries            160L  0C    4m  CC=10     ←0
+  │
+  src/                            CC̄=3.7    ←in:0  →out:0
+  │ !! ts_extractor               765L  1C   24m  CC=7      ←1
+  │ !! pipeline                   714L  0C   18m  CC=11     ←5
+  │ !! mcp_server                 675L  0C   16m  CC=12     ←0
+  │ !! scanner                    633L  4C   21m  CC=13     ←1
+  │ universal_fuzzy            449L  3C   16m  CC=11     ←0
+  │ fuzzy_similarity           416L  4C   20m  CC=10     ←0
+  │ hasher                     340L  3C   18m  CC=8      ←7
+  │ enhanced_reporter          274L  1C   17m  CC=8      ←0
+  │ cache                      267L  1C   10m  CC=5      ←1
+  │ lsh_matcher                225L  2C   12m  CC=10     ←1
+  │ models                     216L  9C    1m  CC=1      ←0
+  │ code2llm_reporter          209L  0C    6m  CC=11     ←2
+  │ differ                     209L  1C    5m  CC=14     ←2
+  │ main                       196L  0C    5m  CC=1      ←0
+  │ config                     182L  1C    7m  CC=9      ←12
+  │ semantic                   174L  2C    5m  CC=9      ←0
+  │ config                     171L  0C    6m  CC=5      ←3
+  │ !! python_parser              170L  1C    4m  CC=15     ←1
+  │ scan_commands              164L  0C    5m  CC=7      ←1
+  │ !! diff_helpers               162L  3C    9m  CC=15     ←1
+  │ fuzzy_similarity           160L  0C    9m  CC=5      ←1
+  │ lazy_grouper               159L  1C    7m  CC=7      ←1
+  │ function_extractor         148L  1C    5m  CC=5      ←0
+  │ planner                    110L  0C    5m  CC=7      ←1
+  │ matcher                    107L  1C    5m  CC=7      ←1
+  │ toon_reporter              106L  0C    6m  CC=8      ←3
+  │ hash_cache                 104L  1C   10m  CC=3      ←0
+  │ markdown_reporter           90L  0C    1m  CC=12     ←2
+  │ output_writer               79L  0C    2m  CC=12     ←1
+  │ json_reporter               73L  0C    3m  CC=5      ←4
+  │ language_dispatcher         72L  1C    5m  CC=4      ←0
+  │ hash_utils                  37L  0C    1m  CC=3      ←0
+  │ duplicate_finders           36L  0C    1m  CC=3      ←0
+  │ yaml_reporter               34L  0C    1m  CC=4      ←2
+  │ scan_helpers                34L  0C    3m  CC=1      ←1
+  │ __init__                    25L  0C    0m  CC=0.0    ←0
+  │ __main__                     5L  0C    0m  CC=0.0    ←0
+  │ sitecustomize                4L  0C    0m  CC=0.0    ←0
+  │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │
+  ./                              CC̄=3.0    ←in:0  →out:0
+  │ benchmark                  111L  0C    2m  CC=3      ←0
+  │ project.sh                  21L  0C    0m  CC=0.0    ←0
+  │
+
+COUPLING:
+               src.redup   benchmark  benchmarks
+   src.redup          ──          ←4          ←1  hub
+   benchmark           4          ──            
+  benchmarks           1                      ──
+  CYCLES: 1
+  HUB: src.redup/ (fan-in=5)
+
+EXTERNAL:
+  validation: run `vallm batch .` → validation.toon
+  duplication: run `redup scan .` → duplication.toon

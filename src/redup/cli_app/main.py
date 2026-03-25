@@ -36,20 +36,13 @@ OutputFormat = Literal["json", "yaml", "toon", "markdown", "all", "enhanced", "c
 
 
 DEFAULT_PATH = Path(".")
-# Use centralized config for defaults
-DEFAULT_FORMAT: OutputFormat = global_config.DEFAULT_FORMAT  # type: ignore
+DEFAULT_FORMAT: OutputFormat = "toon"
 DEFAULT_OUTPUT: Path | None = None
 
 
 @app.command()
 def scan(
-    path: Path = typer.Argument(
-        DEFAULT_PATH,
-        help="Project root directory to scan.",
-        exists=True,
-        dir_okay=True,
-        file_okay=False,
-    ),
+    path: Path = typer.Argument(DEFAULT_PATH, help="Project root directory to scan."),
     format: str = typer.Option(
         "toon",
         "--format", "-f",
@@ -131,20 +124,8 @@ def scan(
 
 @app.command()
 def diff(
-    before: Path = typer.Argument(
-        ...,
-        help="Path to the earlier scan JSON file.",
-        exists=True,
-        dir_okay=False,
-        file_okay=True,
-    ),
-    after: Path = typer.Argument(
-        ...,
-        help="Path to the later scan JSON file.", 
-        exists=True,
-        dir_okay=False,
-        file_okay=True,
-    ),
+    before: Path = typer.Argument(..., help="Path to the earlier scan JSON file."),
+    after: Path = typer.Argument(..., help="Path to the later scan JSON file."),
 ) -> None:
     """Compare two reDUP scans and show the differences."""
     return diff_command(before, after)
@@ -152,13 +133,7 @@ def diff(
 
 @app.command()
 def check(
-    path: Path = typer.Argument(
-        Path("."),
-        help="Project root directory to scan.",
-        exists=True,
-        dir_okay=True,
-        file_okay=False,
-    ),
+    path: Path = typer.Argument(Path("."), help="Project root directory to scan."),
     max_groups: int | None = typer.Option(
         None,
         "--max-groups",

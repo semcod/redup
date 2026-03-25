@@ -42,14 +42,14 @@
 - **Classes**: 1
 - **File**: `enhanced_reporter.py`
 
-### src.redup.mcp_server
-- **Functions**: 16
-- **File**: `mcp_server.py`
-
 ### src.redup.core.universal_fuzzy
 - **Functions**: 16
 - **Classes**: 3
 - **File**: `universal_fuzzy.py`
+
+### src.redup.mcp_server
+- **Functions**: 16
+- **File**: `mcp_server.py`
 
 ### src.redup.core.lsh_matcher
 - **Functions**: 12
@@ -89,22 +89,22 @@
 - **Functions**: 6
 - **File**: `config.py`
 
-### src.redup.reporters.code2llm_reporter
-- **Functions**: 6
-- **File**: `code2llm_reporter.py`
-
 ### src.redup.reporters.toon_reporter
 - **Functions**: 6
 - **File**: `toon_reporter.py`
 
+### src.redup.reporters.code2llm_reporter
+- **Functions**: 6
+- **File**: `code2llm_reporter.py`
+
+### src.redup.core.matcher
+- **Functions**: 5
+- **Classes**: 1
+- **File**: `matcher.py`
+
 ### src.redup.core.planner
 - **Functions**: 5
 - **File**: `planner.py`
-
-### src.redup.core.semantic
-- **Functions**: 5
-- **Classes**: 2
-- **File**: `semantic.py`
 
 ## Key Entry Points
 
@@ -129,18 +129,18 @@ Main execution flows into the system:
 - **Calls**: src.redup.core.scanner._should_process_file, ScannedFile, content.splitlines, ScannedFile, open, f.read, ScannedFile, str
 
 ### src.redup.core.utils.diff_helpers.GroupMatcher._ensure_matches
-- **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, self.before_groups.items, remaining_before.sort, remaining_after.sort, self.after_groups.get, src.redup.core.differ._groups_match, enumerate
+- **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, self.before_groups.items, remaining_before.sort, remaining_after.sort, self.after_groups.get, src.redup.core.utils.diff_helpers._groups_match, enumerate
 
 ### src.redup.mcp_server._handle_check_project
 - **Calls**: src.redup.mcp_server._resolve_path, src.redup.mcp_server._run_analysis, int, int, json.dumps, params.get, FileNotFoundError, params.get
 
-### src.redup.cli_app.main.scan
-> Scan a project for code duplicates.
-- **Calls**: app.command, typer.Argument, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option
-
 ### src.redup.core.pipeline._find_duplicates_phase_lazy
 > Phase 3: Hash and find duplicates with caching and lazy evaluation.
 - **Calls**: time.time, list, src.redup.core.pipeline._find_near_duplicate_groups, groups.extend, groups.sort, src.redup.core.cache.build_hash_index_with_cache, block_hash_cache.items, src.redup.core.hasher.build_hash_index
+
+### src.redup.cli_app.main.scan
+> Scan a project for code duplicates.
+- **Calls**: app.command, typer.Argument, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option
 
 ### src.redup.core.semantic.SemanticDetector.find_semantic_duplicates
 > Find semantically similar code blocks using embeddings.
@@ -169,32 +169,29 @@ Pipeline:
 > Benchmark hash performance specifically.
 - **Calls**: print, time.perf_counter, range, time.perf_counter, time.perf_counter, range, print, None.hexdigest
 
-### src.redup.core.ts_extractor._extract_functions_c_sharp
-> Extract functions from C# using tree-sitter.
-- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, parent.child_by_field_name
-
 ### src.redup.core.fuzzy_similarity.CSSComponentExtractor._normalize_css_value
 > Normalize CSS property values for fuzzy comparison.
 - **Calls**: None.lower, re.search, re.search, re.sub, re.sub, size_match.groups, float, value.strip
+
+### src.redup.core.ts_extractor._extract_functions_c_sharp
+> Extract functions from C# using tree-sitter.
+- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, parent.child_by_field_name
 
 ### benchmarks.bench_libraries.benchmark_fuzzy_performance
 > Benchmark fuzzy matching performance.
 - **Calls**: print, time.perf_counter, range, None.ratio, time.perf_counter, time.perf_counter, range, print
 
-### src.redup.core.fuzzy_similarity.HTMLComponentExtractor._normalize_class_name
-> Normalize class names to patterns.
-- **Calls**: class_str.split, None.join, cls.startswith, normalized.append, cls.startswith, normalized.append, cls.startswith, normalized.append
-
 ### src.redup.core.pipeline._find_structural_groups
 > Find structural duplicate groups.
 - **Calls**: src.redup.config.RedupConfig.set, src.redup.core.hasher.find_structural_duplicates, enumerate, exact_hashes.add, structural_groups.items, len, src.redup.core.matcher.refine_structural_matches, src.redup.core.pipeline._match_results_to_blocks
 
+### src.redup.core.fuzzy_similarity.HTMLComponentExtractor._normalize_class_name
+> Normalize class names to patterns.
+- **Calls**: class_str.split, None.join, cls.startswith, normalized.append, cls.startswith, normalized.append, cls.startswith, normalized.append
+
 ### src.redup.config.RedupConfig._load_from_env
 > Load configuration from environment variables.
 - **Calls**: dir, attr_name.startswith, cls._env_name, os.getenv, getattr, isinstance, isinstance, value.lower
-
-### src.redup.mcp_server._handle_suggest_refactoring
-- **Calls**: src.redup.mcp_server._resolve_path, src.redup.mcp_server._run_analysis, EnhancedReporter, json.dumps, params.get, FileNotFoundError, reporter.generate_metrics_report, src.redup.mcp_server._json_safe
 
 ### src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_metadata
 > Extract language-specific metadata.
@@ -204,13 +201,8 @@ Pipeline:
 > Compute similarity between metadata dictionaries.
 - **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, len, len, meta1.keys, meta2.keys, value_similarities.append, value_similarities.append
 
-### src.redup.core.ts_extractor._extract_functions_ruby
-> Extract functions from Ruby using tree-sitter.
-- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, name_node.text.decode
-
-### src.redup.core.ts_extractor._extract_functions_php
-> Extract functions from PHP using tree-sitter.
-- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, blocks.append, parent.child_by_field_name, CodeBlock
+### src.redup.mcp_server._handle_suggest_refactoring
+- **Calls**: src.redup.mcp_server._resolve_path, src.redup.mcp_server._run_analysis, EnhancedReporter, json.dumps, params.get, FileNotFoundError, reporter.generate_metrics_report, src.redup.mcp_server._json_safe
 
 ### src.redup.core.fuzzy_similarity.HTMLComponentExtractor._extract_attributes
 > Extract key attributes for comparison.
@@ -223,6 +215,14 @@ Pipeline:
 ### src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_attribute_similarity
 > Compute similarity between attribute dictionaries.
 - **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, attrs1.keys, attrs2.keys, len, len, value_similarities.append, value_similarities.append
+
+### src.redup.core.ts_extractor._extract_functions_ruby
+> Extract functions from Ruby using tree-sitter.
+- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, name_node.text.decode
+
+### src.redup.core.ts_extractor._extract_functions_php
+> Extract functions from PHP using tree-sitter.
+- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, blocks.append, parent.child_by_field_name, CodeBlock
 
 ### src.redup.core.cache.HashCache.store_file_hashes
 > Store file and block hashes in cache.
@@ -287,17 +287,17 @@ _handle_check_project [src.redup.mcp_server]
           └─ →> config_to_scan_config
 ```
 
-### Flow 8: scan
-```
-scan [src.redup.cli_app.main]
-```
-
-### Flow 9: _find_duplicates_phase_lazy
+### Flow 8: _find_duplicates_phase_lazy
 ```
 _find_duplicates_phase_lazy [src.redup.core.pipeline]
   └─> _find_near_duplicate_groups
       └─ →> find_near_duplicates
           └─ →> _create_minhash
+```
+
+### Flow 9: scan
+```
+scan [src.redup.cli_app.main]
 ```
 
 ### Flow 10: find_semantic_duplicates
@@ -378,16 +378,6 @@ Attributes can be set via:
 - **Methods**: 5
 - **Key Methods**: src.redup.core.utils.language_dispatcher.LanguageDispatcher.__init__, src.redup.core.utils.language_dispatcher.LanguageDispatcher.register_extractor, src.redup.core.utils.language_dispatcher.LanguageDispatcher.register_group, src.redup.core.utils.language_dispatcher.LanguageDispatcher.get_extractor, src.redup.core.utils.language_dispatcher.LanguageDispatcher.extract_functions
 
-### src.redup.core.scanner.MemoryFileCache
-> Cache file contents in RAM for faster access during scanning.
-- **Methods**: 4
-- **Key Methods**: src.redup.core.scanner.MemoryFileCache.__init__, src.redup.core.scanner.MemoryFileCache._estimate_size, src.redup.core.scanner.MemoryFileCache.get_file_content, src.redup.core.scanner.MemoryFileCache._evict_oldest
-
-### src.redup.core.utils.function_extractor.FunctionExtractor
-> Generic function extractor that can be configured for different languages.
-- **Methods**: 4
-- **Key Methods**: src.redup.core.utils.function_extractor.FunctionExtractor.__init__, src.redup.core.utils.function_extractor.FunctionExtractor.extract_functions, src.redup.core.utils.function_extractor.FunctionExtractor._create_function_block, src.redup.core.utils.function_extractor.FunctionExtractor._create_method_block
-
 ### src.redup.core.models.DuplicateGroup
 > A cluster of duplicated code fragments.
 - **Methods**: 4
@@ -397,6 +387,16 @@ Attributes can be set via:
 > Complete result of a reDUP analysis run.
 - **Methods**: 4
 - **Key Methods**: src.redup.core.models.DuplicationMap.total_groups, src.redup.core.models.DuplicationMap.total_fragments, src.redup.core.models.DuplicationMap.total_saved_lines, src.redup.core.models.DuplicationMap.sorted_by_impact
+
+### src.redup.core.scanner.MemoryFileCache
+> Cache file contents in RAM for faster access during scanning.
+- **Methods**: 4
+- **Key Methods**: src.redup.core.scanner.MemoryFileCache.__init__, src.redup.core.scanner.MemoryFileCache._estimate_size, src.redup.core.scanner.MemoryFileCache.get_file_content, src.redup.core.scanner.MemoryFileCache._evict_oldest
+
+### src.redup.core.utils.function_extractor.FunctionExtractor
+> Generic function extractor that can be configured for different languages.
+- **Methods**: 4
+- **Key Methods**: src.redup.core.utils.function_extractor.FunctionExtractor.__init__, src.redup.core.utils.function_extractor.FunctionExtractor.extract_functions, src.redup.core.utils.function_extractor.FunctionExtractor._create_function_block, src.redup.core.utils.function_extractor.FunctionExtractor._create_method_block
 
 ### src.redup.core.lazy_grouper.DuplicateGroupCollector
 > Collector for lazy duplicate groups with optional limits.
@@ -423,17 +423,6 @@ Key functions that process and transform data:
 > Invalidate cache for a file or entire cache.
 - **Output to**: str, self._cache.pop
 
-### src.redup.mcp_server._parse_extensions
-- **Output to**: isinstance, value.split, list, None.strip, extensions.append
-
-### src.redup.core.hasher._process_ast_node
-> Process a single AST node and return its normalized representation.
-- **Output to**: _AST_HANDLERS.get, type, handler
-
-### src.redup.core.scanner._should_process_file
-> Check if file should be processed in parallel scan.
-- **Output to**: src.redup.core.scanner._project_relative_path, src.redup.core.scanner._should_exclude, Path, tuple, src.redup.core.scanner._is_test_file
-
 ### src.redup.core.python_parser._parse_with_libcst
 > Fast path — libcst CST parsing.
 - **Output to**: cst.parse_module, tree.visit, self._class_stack.append, self._class_stack.pop, len
@@ -450,17 +439,28 @@ Key functions that process and transform data:
 > Convert ParsedFunction list to CodeBlock list for pipeline compatibility.
 - **Output to**: CodeBlock
 
-### src.redup.core.differ.format_diff_result
-> Format a DiffResult as a human-readable string.
-- **Output to**: lines.append, lines.append, lines.append, lines.append, lines.append
+### src.redup.mcp_server._parse_extensions
+- **Output to**: isinstance, value.split, list, None.strip, extensions.append
+
+### src.redup.core.scanner._should_process_file
+> Check if file should be processed in parallel scan.
+- **Output to**: src.redup.core.scanner._project_relative_path, src.redup.core.scanner._should_exclude, Path, tuple, src.redup.core.scanner._is_test_file
+
+### src.redup.core.hasher._process_ast_node
+> Process a single AST node and return its normalized representation.
+- **Output to**: _AST_HANDLERS.get, type, handler
+
+### src.redup.core.pipeline._process_blocks
+> Phase 2: Extract and filter code blocks with memory optimization.
+- **Output to**: range, len, all_blocks.append
 
 ### src.redup.cli_app.fuzzy_similarity._validate_fuzzy_input
 > Validate input parameters for fuzzy similarity analysis.
 - **Output to**: FuzzyValidationResult, FuzzyValidationResult, FuzzyValidationResult
 
-### src.redup.core.pipeline._process_blocks
-> Phase 2: Extract and filter code blocks with memory optimization.
-- **Output to**: range, len, all_blocks.append
+### src.redup.core.differ.format_diff_result
+> Format a DiffResult as a human-readable string.
+- **Output to**: lines.append, lines.append, lines.append, lines.append, lines.append
 
 ## Behavioral Patterns
 
@@ -488,11 +488,11 @@ Functions exposed as public API (no underscore prefix):
 - `examples.01_basic_usage.main` - 23 calls
 - `src.redup.cli_app.scan_commands.config_command` - 23 calls
 - `src.redup.core.pipeline.analyze_optimized` - 20 calls
-- `src.redup.cli_app.scan_commands.check_command` - 19 calls
 - `src.redup.core.pipeline.analyze_parallel` - 19 calls
+- `src.redup.cli_app.scan_commands.check_command` - 19 calls
 - `src.redup.core.config.config_to_scan_config` - 18 calls
-- `src.redup.reporters.code2llm_reporter.to_code2llm_toon` - 17 calls
 - `src.redup.cli_app.main.scan` - 17 calls
+- `src.redup.reporters.code2llm_reporter.to_code2llm_toon` - 17 calls
 - `src.redup.core.semantic.SemanticDetector.find_semantic_duplicates` - 16 calls
 - `src.redup.core.scanner.scan_project` - 16 calls
 - `benchmark.benchmark_feature_performance` - 15 calls
@@ -501,8 +501,8 @@ Functions exposed as public API (no underscore prefix):
 - `benchmarks.bench_libraries.benchmark_fuzzy_performance` - 12 calls
 - `src.redup.core.cache.HashCache.store_file_hashes` - 11 calls
 - `src.redup.core.ts_extractor.extract_functions_treesitter` - 10 calls
-- `src.redup.core.differ.compare_scans` - 10 calls
 - `src.redup.cli_app.main.check` - 10 calls
+- `src.redup.core.differ.compare_scans` - 10 calls
 - `src.redup.core.universal_fuzzy.UniversalFuzzyExtractor.extract_universal_signature` - 9 calls
 - `src.redup.core.planner.generate_suggestions` - 9 calls
 - `src.redup.core.lsh_matcher.LSHIndex.find_near_duplicates` - 9 calls
@@ -513,10 +513,10 @@ Functions exposed as public API (no underscore prefix):
 - `src.redup.core.lsh_matcher.LSHIndex.add` - 8 calls
 - `src.redup.core.pipeline.analyze` - 8 calls
 - `src.redup.core.semantic.SemanticDetector.find_semantic_duplicates_fast` - 7 calls
-- `src.redup.core.hasher.build_hash_index` - 7 calls
 - `src.redup.core.lsh_matcher.LSHIndex.find_all_near_duplicates` - 7 calls
-- `src.redup.core.cache.HashCache.get_stats` - 7 calls
+- `src.redup.core.hasher.build_hash_index` - 7 calls
 - `src.redup.reporters.toon_reporter.to_toon` - 7 calls
+- `src.redup.core.cache.HashCache.get_stats` - 7 calls
 - `src.redup.core.utils.function_extractor.FunctionExtractor.extract_functions` - 7 calls
 
 ## System Interactions
@@ -552,9 +552,9 @@ graph TD
     _handle_check_projec --> _run_analysis
     _handle_check_projec --> int
     _handle_check_projec --> dumps
-    scan --> command
-    scan --> Argument
-    scan --> Option
+    _find_duplicates_pha --> time
+    _find_duplicates_pha --> list
+    _find_duplicates_pha --> _find_near_duplicate
 ```
 
 ## Reverse Engineering Guidelines

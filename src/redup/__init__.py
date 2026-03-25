@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__version__ = "0.4.12"
+__version__ = "0.4.13"
 
 from redup.core.models import (
     DuplicateFragment,

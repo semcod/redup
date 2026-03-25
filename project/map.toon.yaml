@@ -1,1993 +1,362 @@
-format: map-toon-yaml
-project: redup
-timestamp: '2026-03-25'
-stats:
-  files: 45
-  lines: 8316
-  functions: 295
-  languages:
-    python: 44
-    shell: 1
-modules:
-- path: benchmark.py
-  lines: 111
-  imports: []
-  exports:
-  - type: function
-    name: benchmark_sequential_vs_parallel
-  - type: function
-    name: benchmark_feature_performance
-  classes: []
-  functions:
-  - name: benchmark_sequential_vs_parallel
-    args: []
-    returns: null
-  - name: benchmark_feature_performance
-    args: []
-    returns: null
-- path: benchmarks/bench_libraries.py
-  lines: 160
-  imports: []
-  exports:
-  - type: function
-    name: generate_test_project
-  - type: function
-    name: benchmark
-  - type: function
-    name: benchmark_hash_performance
-  - type: function
-    name: benchmark_fuzzy_performance
-  classes: []
-  functions:
-  - name: generate_test_project
-    args:
-    - root
-    - num_files
-    - lines_per_file
-    returns: null
-  - name: benchmark
-    args: []
-    returns: null
-  - name: benchmark_hash_performance
-    args: []
-    returns: null
-  - name: benchmark_fuzzy_performance
-    args: []
-    returns: null
-- path: project.sh
-  lines: 21
-  imports: []
-  exports: []
-  classes: []
-  functions: []
-- path: src/redup/__init__.py
-  lines: 25
-  imports: []
-  exports: []
-  classes: []
-  functions: []
-- path: src/redup/__main__.py
-  lines: 5
-  imports: []
-  exports: []
-  classes: []
-  functions: []
-- path: src/redup/cli_app/__init__.py
-  lines: 1
-  imports: []
-  exports: []
-  classes: []
-  functions: []
-- path: src/redup/cli_app/fuzzy_similarity.py
-  lines: 160
-  imports: []
-  exports:
-  - type: function
-    name: _apply_fuzzy_similarity
-  - type: function
-    name: _validate_fuzzy_input
-  - type: function
-    name: _extract_all_blocks
-  - type: function
-    name: _separate_blocks_by_type
-  - type: function
-    name: _analyze_blocks_with_detectors
-  - type: function
-    name: _analyze_html_css_blocks
-  - type: function
-    name: _analyze_other_language_blocks
-  - type: function
-    name: _report_fuzzy_results
-  - type: function
-    name: _report_similarity_by_groups
-  classes: []
-  functions:
-  - name: _apply_fuzzy_similarity
-    args:
-    - dup_map
-    - threshold
-    returns: null
-  - name: _validate_fuzzy_input
-    args:
-    - dup_map
-    - threshold
-    returns: null
-  - name: _extract_all_blocks
-    args:
-    - dup_map
-    returns: null
-  - name: _separate_blocks_by_type
-    args:
-    - all_blocks
-    returns: null
-  - name: _analyze_blocks_with_detectors
-    args:
-    - html_css_blocks
-    - other_blocks
-    - threshold
-    returns: null
-  - name: _analyze_html_css_blocks
-    args:
-    - html_css_blocks
-    - threshold
-    returns: null
-  - name: _analyze_other_language_blocks
-    args:
-    - other_blocks
-    - threshold
-    returns: null
-  - name: _report_fuzzy_results
-    args:
-    - similar_pairs
-    returns: null
-  - name: _report_similarity_by_groups
-    args:
-    - similar_pairs
-    returns: null
-- path: src/redup/cli_app/main.py
-  lines: 222
-  imports: []
-  exports:
-  - type: function
-    name: scan
-  - type: function
-    name: diff
-  - type: function
-    name: check
-  - type: function
-    name: config
-  - type: function
-    name: info
-  classes: []
-  functions:
-  - name: scan
-    args:
-    - path
-    - format
-    - output
-    - extensions
-    - min_lines
-    - min_similarity
-    - include_tests
-    - no_functions_only
-    - parallel
-    - max_workers
-    - incremental
-    - no_memory_cache
-    - max_cache_mb
-    - fuzzy
-    - fuzzy_threshold
-    returns: null
-  - name: diff
-    args:
-    - before
-    - after
-    returns: null
-  - name: check
-    args:
-    - path
-    - max_groups
-    - max_saved_lines
-    - extensions
-    - min_lines
-    - min_similarity
-    - include_tests
-    returns: null
-  - name: config
-    args:
-    - init
-    - show
-    returns: null
-  - name: info
-    args: []
-    returns: null
-- path: src/redup/cli_app/output_writer.py
-  lines: 79
-  imports: []
-  exports:
-  - type: function
-    name: write_output
-  - type: function
-    name: write_results
-  classes: []
-  functions:
-  - name: write_output
-    args:
-    - content
-    - output
-    - suffix
-    returns: null
-  - name: write_results
-    args:
-    - dup_map
-    - format
-    - output
-    - path
-    returns: null
-- path: src/redup/cli_app/scan_commands.py
-  lines: 164
-  imports: []
-  exports:
-  - type: function
-    name: scan_command
-  - type: function
-    name: diff_command
-  - type: function
-    name: check_command
-  - type: function
-    name: config_command
-  - type: function
-    name: info_command
-  classes: []
-  functions:
-  - name: scan_command
-    args:
-    - path
-    - format
-    - output
-    - extensions
-    - min_lines
-    - min_similarity
-    - include_tests
-    - functions_only
-    - parallel
-    - max_workers
-    - incremental
-    - memory_cache
-    - max_cache_mb
-    - fuzzy
-    - fuzzy_threshold
-    returns: null
-  - name: diff_command
-    args:
-    - before
-    - after
-    returns: null
-  - name: check_command
-    args:
-    - path
-    - max_groups
-    - max_saved_lines
-    - extensions
-    - min_lines
-    - min_similarity
-    - include_tests
-    returns: null
-  - name: config_command
-    args:
-    - init
-    - show
-    returns: null
-  - name: info_command
-    args: []
-    returns: null
-- path: src/redup/cli_app/scan_helpers.py
-  lines: 34
-  imports: []
-  exports:
-  - type: function
-    name: print_scan_header
-  - type: function
-    name: print_scan_summary
-  - type: function
-    name: apply_fuzzy_similarity
-  classes: []
-  functions:
-  - name: print_scan_header
-    args:
-    - path
-    - ext_list
-    - min_lines
-    - min_similarity
-    returns: null
-  - name: print_scan_summary
-    args:
-    - dup_map
-    returns: null
-  - name: apply_fuzzy_similarity
-    args:
-    - dup_map
-    - threshold
-    returns: null
-- path: src/redup/config.py
-  lines: 182
-  imports: []
-  exports:
-  - type: class
-    name: RedupConfig
-  - type: function
-    name: get_default_filename
-  - type: function
-    name: reload_config
-  classes:
-  - name: RedupConfig
-    bases: []
-    methods:
-    - name: _env_name
-      arity: 1
-    - name: _load_from_env
-      arity: 0
-    - name: reload
-      arity: 1
-    - name: get
-      arity: 2
-    - name: set
-      arity: 2
-  functions:
-  - name: get_default_filename
-    args:
-    - suffix
-    returns: null
-  - name: reload_config
-    args:
-    - env_path
-    returns: null
-- path: src/redup/core/__init__.py
-  lines: 1
-  imports: []
-  exports: []
-  classes: []
-  functions: []
-- path: src/redup/core/cache.py
-  lines: 267
-  imports: []
-  exports:
-  - type: class
-    name: HashCache
-  - type: function
-    name: hash_block_with_cache
-  - type: function
-    name: build_hash_index_with_cache
-  classes:
-  - name: HashCache
-    bases: []
-    methods:
-    - name: __init__
-      arity: 1
-    - name: _init_tables
-      arity: 0
-    - name: _get_file_hash
-      arity: 2
-    - name: is_file_unchanged
-      arity: 2
-    - name: get_cached_block_hashes
-      arity: 2
-    - name: store_file_hashes
-      arity: 3
-    - name: cleanup_old_entries
-      arity: 1
-    - name: get_stats
-      arity: 0
-  functions:
-  - name: hash_block_with_cache
-    args:
-    - text
-    - file_path
-    - start
-    - end
-    - cache
-    returns: null
-  - name: build_hash_index_with_cache
-    args:
-    - blocks
-    - min_lines
-    - cache
-    returns: null
-- path: src/redup/core/config.py
-  lines: 171
-  imports: []
-  exports:
-  - type: function
-    name: _load_toml_file
-  - type: function
-    name: _get_config_from_pyproject
-  - type: function
-    name: _get_config_from_redup_toml
-  - type: function
-    name: load_config
-  - type: function
-    name: config_to_scan_config
-  - type: function
-    name: create_sample_redup_toml
-  classes: []
-  functions:
-  - name: _load_toml_file
-    args:
-    - file_path
-    returns: null
-  - name: _get_config_from_pyproject
-    args: []
-    returns: null
-  - name: _get_config_from_redup_toml
-    args: []
-    returns: null
-  - name: load_config
-    args: []
-    returns: null
-  - name: config_to_scan_config
-    args:
-    - config
-    - path
-    returns: null
-  - name: create_sample_redup_toml
-    args: []
-    returns: null
-- path: src/redup/core/differ.py
-  lines: 209
-  imports: []
-  exports:
-  - type: class
-    name: DiffResult
-  - type: function
-    name: _load_duplication_map
-  - type: function
-    name: _group_by_id
-  - type: function
-    name: _groups_match
-  - type: function
-    name: compare_scans
-  - type: function
-    name: format_diff_result
-  classes:
-  - name: DiffResult
-    bases: []
-    methods: []
-  functions:
-  - name: _load_duplication_map
-    args:
-    - file_path
-    returns: null
-  - name: _group_by_id
-    args:
-    - groups
-    returns: null
-  - name: _groups_match
-    args:
-    - group1
-    - group2
-    returns: null
-  - name: compare_scans
-    args:
-    - before_file
-    - after_file
-    returns: null
-  - name: format_diff_result
-    args:
-    - diff
-    returns: null
-- path: src/redup/core/fuzzy_similarity.py
-  lines: 416
-  imports: []
-  exports:
-  - type: class
-    name: ComponentSignature
-  - type: class
-    name: HTMLComponentExtractor
-  - type: class
-    name: CSSComponentExtractor
-  - type: class
-    name: FuzzySimilarityDetector
-  classes:
-  - name: ComponentSignature
-    bases: []
-    methods: []
-  - name: HTMLComponentExtractor
-    bases: []
-    methods:
-    - name: __init__
-      arity: 0
-    - name: extract_component_signature
-      arity: 1
-    - name: _normalize_html
-      arity: 1
-    - name: _normalize_class_name
-      arity: 1
-    - name: _detect_component_type
-      arity: 1
-    - name: _extract_attributes
-      arity: 1
-    - name: _extract_text_content
-      arity: 1
-    - name: _compute_structure_hash
-      arity: 1
-  - name: CSSComponentExtractor
-    bases: []
-    methods:
-    - name: __init__
-      arity: 0
-    - name: extract_component_signature
-      arity: 1
-    - name: _extract_css_properties
-      arity: 1
-    - name: _normalize_css_value
-      arity: 1
-    - name: _detect_css_component_type
-      arity: 1
-    - name: _compute_css_hash
-      arity: 1
-  - name: FuzzySimilarityDetector
-    bases: []
-    methods:
-    - name: __init__
-      arity: 1
-    - name: find_similar_components
-      arity: 1
-    - name: _extract_signature
-      arity: 1
-    - name: _compute_similarity
-      arity: 2
-    - name: _compute_attribute_similarity
-      arity: 2
-    - name: _compute_css_similarity
-      arity: 2
-  functions: []
-- path: src/redup/core/hash_cache.py
-  lines: 104
-  imports: []
-  exports:
-  - type: class
-    name: HashCache
-  - type: function
-    name: _config_to_hash
-  classes:
-  - name: HashCache
-    bases: []
-    methods:
-    - name: __init__
-      arity: 1
-    - name: _load
-      arity: 0
-    - name: save
-      arity: 0
-    - name: get_file_hash
-      arity: 1
-    - name: is_unchanged
-      arity: 2
-    - name: update
-      arity: 3
-    - name: invalidate
-      arity: 1
-    - name: get_cached_results
-      arity: 1
-    - name: clear
-      arity: 0
-  functions:
-  - name: _config_to_hash
-    args:
-    - config
-    returns: null
-- path: src/redup/core/hasher.py
-  lines: 340
-  imports: []
-  exports:
-  - type: class
-    name: BloomHashIndex
-  - type: class
-    name: HashedBlock
-  - type: class
-    name: HashIndex
-  - type: function
-    name: _normalize_text
-  - type: function
-    name: _normalize_ast_text
-  - type: function
-    name: _ast_to_normalized_string
-  - type: function
-    name: _process_ast_node
-  - type: function
-    name: _get_placeholder
-  - type: function
-    name: _normalize_constant
-  - type: function
-    name: _hash_text
-  - type: function
-    name: hash_block
-  - type: function
-    name: hash_block_structural
-  - type: function
-    name: find_exact_duplicates
-  - type: function
-    name: find_structural_duplicates
-  - type: function
-    name: _hashed_block
-  - type: function
-    name: build_hash_index
-  - type: function
-    name: _find_duplicates
-  - type: function
-    name: _blocks_from_different_locations
-  classes:
-  - name: BloomHashIndex
-    bases: []
-    methods:
-    - name: __init__
-      arity: 1
-    - name: add
-      arity: 2
-    - name: get_duplicate_groups
-      arity: 0
-  - name: HashedBlock
-    bases: []
-    methods: []
-  - name: HashIndex
-    bases: []
-    methods: []
-  functions:
-  - name: _normalize_text
-    args:
-    - text
-    returns: null
-  - name: _normalize_ast_text
-    args:
-    - text
-    returns: null
-  - name: _ast_to_normalized_string
-    args:
-    - tree
-    returns: null
-  - name: _process_ast_node
-    args:
-    - node
-    - name_map
-    - counter
-    returns: null
-  - name: _get_placeholder
-    args:
-    - name
-    - name_map
-    - counter
-    returns: null
-  - name: _normalize_constant
-    args:
-    - value
-    returns: null
-  - name: _hash_text
-    args:
-    - text
-    - normalizer
-    returns: null
-  - name: hash_block
-    args:
-    - text
-    returns: null
-  - name: hash_block_structural
-    args:
-    - text
-    returns: null
-  - name: find_exact_duplicates
-    args:
-    - index
-    returns: null
-  - name: find_structural_duplicates
-    args:
-    - index
-    returns: null
-  - name: _hashed_block
-    args:
-    - block
-    returns: null
-  - name: build_hash_index
-    args:
-    - blocks
-    - min_lines
-    returns: null
-  - name: _find_duplicates
-    args:
-    - hash_dict
-    returns: null
-  - name: _blocks_from_different_locations
-    args:
-    - blocks
-    returns: null
-- path: src/redup/core/lazy_grouper.py
-  lines: 159
-  imports: []
-  exports:
-  - type: class
-    name: DuplicateGroupCollector
-  - type: function
-    name: find_exact_duplicates_lazy
-  - type: function
-    name: find_structural_duplicates_lazy
-  - type: function
-    name: _create_duplicate_group
-  - type: function
-    name: find_all_duplicates_lazy
-  classes:
-  - name: DuplicateGroupCollector
-    bases: []
-    methods:
-    - name: __init__
-      arity: 3
-    - name: collect
-      arity: 1
-    - name: collect_sorted
-      arity: 1
-  functions:
-  - name: find_exact_duplicates_lazy
-    args:
-    - index
-    - min_lines
-    returns: null
-  - name: find_structural_duplicates_lazy
-    args:
-    - index
-    - min_lines
-    returns: null
-  - name: _create_duplicate_group
-    args:
-    - hash_val
-    - blocks
-    - duplicate_type
-    returns: null
-  - name: find_all_duplicates_lazy
-    args:
-    - index
-    - min_lines
-    - include_exact
-    - include_structural
-    returns: null
-- path: src/redup/core/lsh_matcher.py
-  lines: 225
-  imports: []
-  exports:
-  - type: class
-    name: _SimpleMinHash
-  - type: class
-    name: LSHIndex
-  - type: function
-    name: _create_minhash
-  - type: function
-    name: _text_to_minhash_features
-  - type: function
-    name: _create_simple_minhash
-  - type: function
-    name: build_lsh_index
-  - type: function
-    name: find_near_duplicates
-  classes:
-  - name: _SimpleMinHash
-    bases: []
-    methods:
-    - name: __init__
-      arity: 2
-    - name: jaccard
-      arity: 1
-  - name: LSHIndex
-    bases: []
-    methods:
-    - name: __init__
-      arity: 2
-    - name: add
-      arity: 1
-    - name: find_near_duplicates
-      arity: 1
-    - name: _find_near_duplicates_simple
-      arity: 1
-    - name: find_all_near_duplicates
-      arity: 1
-  functions:
-  - name: _create_minhash
-    args:
-    - text
-    - num_perm
-    returns: null
-  - name: _text_to_minhash_features
-    args:
-    - text
-    - num_features
-    returns: null
-  - name: _create_simple_minhash
-    args:
-    - text
-    - num_perm
-    returns: null
-  - name: build_lsh_index
-    args:
-    - blocks
-    - threshold
-    - min_lines
-    returns: null
-  - name: find_near_duplicates
-    args:
-    - blocks
-    - threshold
-    - min_lines
-    returns: null
-- path: src/redup/core/matcher.py
-  lines: 107
-  imports: []
-  exports:
-  - type: class
-    name: MatchResult
-  - type: function
-    name: sequence_similarity
-  - type: function
-    name: fuzzy_similarity
-  - type: function
-    name: _compare_against_reference
-  - type: function
-    name: match_candidates
-  - type: function
-    name: refine_structural_matches
-  classes:
-  - name: MatchResult
-    bases: []
-    methods: []
-  functions:
-  - name: sequence_similarity
-    args:
-    - text_a
-    - text_b
-    returns: null
-  - name: fuzzy_similarity
-    args:
-    - text_a
-    - text_b
-    returns: null
-  - name: _compare_against_reference
-    args:
-    - candidates
-    - min_similarity
-    - similarity_fn
-    - method_fn
-    - skip_same_location
-    returns: null
-  - name: match_candidates
-    args:
-    - candidates
-    - min_similarity
-    returns: null
-  - name: refine_structural_matches
-    args:
-    - candidates
-    - min_similarity
-    returns: null
-- path: src/redup/core/models.py
-  lines: 216
-  imports: []
-  exports:
-  - type: class
-    name: DuplicateType
-  - type: class
-    name: RefactorAction
-  - type: class
-    name: RiskLevel
-  - type: class
-    name: ScanConfig
-  - type: class
-    name: DuplicateFragment
-  - type: class
-    name: DuplicateGroup
-  - type: class
-    name: RefactorSuggestion
-  - type: class
-    name: ScanStats
-  - type: class
-    name: DuplicationMap
-  classes:
-  - name: DuplicateType
-    bases:
-    - str
-    - Enum
-    methods: []
-  - name: RefactorAction
-    bases:
-    - str
-    - Enum
-    methods: []
-  - name: RiskLevel
-    bases:
-    - str
-    - Enum
-    methods: []
-  - name: ScanConfig
-    bases: []
-    methods: []
-  - name: DuplicateFragment
-    bases: []
-    methods: []
-  - name: DuplicateGroup
-    bases: []
-    methods: []
-  - name: RefactorSuggestion
-    bases: []
-    methods: []
-  - name: ScanStats
-    bases: []
-    methods: []
-  - name: DuplicationMap
-    bases: []
-    methods:
-    - name: sorted_by_impact
-      arity: 0
-  functions: []
-- path: src/redup/core/pipeline.py
-  lines: 714
-  imports: []
-  exports:
-  - type: function
-    name: _blocks_to_group
-  - type: function
-    name: _deduplicate_groups
-  - type: function
-    name: analyze
-  - type: function
-    name: analyze_optimized
-  - type: function
-    name: _ensure_config
-  - type: function
-    name: _scan_phase
-  - type: function
-    name: _scan_phase_parallel
-  - type: function
-    name: _process_blocks
-  - type: function
-    name: _find_duplicates_phase_optimized
-  - type: function
-    name: _find_duplicates_phase_lazy
-  - type: function
-    name: _find_exact_groups
-  - type: function
-    name: _find_structural_groups
-  - type: function
-    name: _deduplicate_phase
-  - type: function
-    name: _match_results_to_blocks
-  - type: function
-    name: _calculate_similarity
-  - type: function
-    name: _find_near_duplicate_groups
-  - type: function
-    name: _find_semantic_groups
-  - type: function
-    name: analyze_optimized
-  - type: function
-    name: analyze_parallel
-  classes: []
-  functions:
-  - name: _blocks_to_group
-    args:
-    - group_id
-    - blocks
-    - dup_type
-    - similarity
-    - normalized_hash
-    returns: null
-  - name: _deduplicate_groups
-    args:
-    - groups
-    returns: null
-  - name: analyze
-    args:
-    - config
-    - function_level_only
-    returns: null
-  - name: analyze_optimized
-    args:
-    - config
-    - function_level_only
-    - use_memory_cache
-    - max_cache_mb
-    returns: null
-  - name: _ensure_config
-    args:
-    - config
-    returns: null
-  - name: _scan_phase
-    args:
-    - config
-    - function_level_only
-    returns: null
-  - name: _scan_phase_parallel
-    args:
-    - config
-    - max_workers
-    returns: null
-  - name: _process_blocks
-    args:
-    - scanned_files
-    - function_level_only
-    returns: null
-  - name: _find_duplicates_phase_optimized
-    args:
-    - all_blocks
-    - config
-    returns: null
-  - name: _find_duplicates_phase_lazy
-    args:
-    - all_blocks
-    - config
-    - cache
-    returns: null
-  - name: _find_exact_groups
-    args:
-    - index
-    returns: null
-  - name: _find_structural_groups
-    args:
-    - index
-    - exact_groups_list
-    returns: null
-  - name: _deduplicate_phase
-    args:
-    - groups
-    returns: null
-  - name: _match_results_to_blocks
-    args:
-    - matches
-    returns: null
-  - name: _calculate_similarity
-    args:
-    - matches
-    returns: null
-  - name: _find_near_duplicate_groups
-    args:
-    - all_blocks
-    - config
-    returns: null
-  - name: _find_semantic_groups
-    args:
-    - blocks
-    - threshold
-    returns: null
-  - name: analyze_optimized
-    args:
-    - config
-    - function_level_only
-    - use_memory_cache
-    - max_cache_mb
-    returns: null
-  - name: analyze_parallel
-    args:
-    - config
-    - function_level_only
-    - max_workers
-    returns: null
-- path: src/redup/core/planner.py
-  lines: 110
-  imports: []
-  exports:
-  - type: function
-    name: _common_prefix
-  - type: function
-    name: _suggest_module_name
-  - type: function
-    name: _assess_risk
-  - type: function
-    name: _choose_action
-  - type: function
-    name: generate_suggestions
-  classes: []
-  functions:
-  - name: _common_prefix
-    args:
-    - paths
-    returns: null
-  - name: _suggest_module_name
-    args:
-    - group
-    returns: null
-  - name: _assess_risk
-    args:
-    - group
-    returns: null
-  - name: _choose_action
-    args:
-    - group
-    returns: null
-  - name: generate_suggestions
-    args:
-    - dup_map
-    returns: null
-- path: src/redup/core/python_parser.py
-  lines: 170
-  imports: []
-  exports:
-  - type: class
-    name: ParsedFunction
-  - type: function
-    name: _parse_with_libcst
-  - type: function
-    name: _parse_with_ast
-  - type: function
-    name: parse_python_functions
-  - type: function
-    name: parsed_to_code_blocks
-  classes:
-  - name: ParsedFunction
-    bases: []
-    methods: []
-  functions:
-  - name: _parse_with_libcst
-    args:
-    - source
-    - filepath
-    returns: null
-  - name: _parse_with_ast
-    args:
-    - source
-    - filepath
-    returns: null
-  - name: parse_python_functions
-    args:
-    - source
-    - filepath
-    returns: null
-  - name: parsed_to_code_blocks
-    args:
-    - parsed
-    - filepath
-    returns: null
-- path: src/redup/core/scanner.py
-  lines: 633
-  imports: []
-  exports:
-  - type: class
-    name: CodeBlock
-  - type: class
-    name: ScannedFile
-  - type: class
-    name: ScanStrategy
-  - type: class
-    name: MemoryFileCache
-  - type: function
-    name: _should_exclude
-  - type: function
-    name: _project_relative_path
-  - type: function
-    name: _collect_files
-  - type: function
-    name: _is_test_file
-  - type: function
-    name: _preload_files
-  - type: function
-    name: _lazy_read_files
-  - type: function
-    name: _scan_sequential
-  - type: function
-    name: _scan_parallel
-  - type: function
-    name: _scan_file_worker
-  - type: function
-    name: _should_process_file
-  - type: function
-    name: _extract_function_blocks_python
-  - type: function
-    name: _extract_sliding_blocks
-  - type: function
-    name: scan_project
-  - type: function
-    name: scan_project_ultra_fast
-  - type: function
-    name: scan_project_memory_optimized
-  - type: function
-    name: scan_project_parallel
-  - type: function
-    name: scan_project_parallel_memory_optimized
-  classes:
-  - name: CodeBlock
-    bases: []
-    methods: []
-  - name: ScannedFile
-    bases: []
-    methods: []
-  - name: ScanStrategy
-    bases: []
-    methods: []
-  - name: MemoryFileCache
-    bases: []
-    methods:
-    - name: __init__
-      arity: 1
-    - name: _estimate_size
-      arity: 1
-    - name: get_file_content
-      arity: 1
-    - name: _evict_oldest
-      arity: 1
-  functions:
-  - name: _should_exclude
-    args:
-    - path
-    - patterns
-    returns: null
-  - name: _project_relative_path
-    args:
-    - file_path
-    - project_root
-    returns: null
-  - name: _collect_files
-    args:
-    - config
-    returns: null
-  - name: _is_test_file
-    args:
-    - path
-    returns: null
-  - name: _preload_files
-    args:
-    - files
-    - max_cache_mb
-    returns: null
-  - name: _lazy_read_files
-    args:
-    - files
-    returns: null
-  - name: _scan_sequential
-    args:
-    - sources
-    - config
-    - function_level_only
-    returns: null
-  - name: _scan_parallel
-    args:
-    - sources
-    - config
-    - max_workers
-    - function_level_only
-    returns: null
-  - name: _scan_file_worker
-    args:
-    - args
-    returns: null
-  - name: _should_process_file
-    args:
-    - file_path
-    - project_root
-    - extensions
-    - include_tests
-    - max_file_size
-    returns: null
-  - name: _extract_function_blocks_python
-    args:
-    - content
-    - file_path
-    returns: null
-  - name: _extract_sliding_blocks
-    args:
-    - content
-    - file_path
-    returns: null
-  - name: scan_project
-    args:
-    - config
-    - strategy
-    - function_level_only
-    returns: null
-  - name: scan_project_ultra_fast
-    args:
-    - config
-    returns: null
-  - name: scan_project_memory_optimized
-    args:
-    - config
-    - max_cache_mb
-    returns: null
-  - name: scan_project_parallel
-    args:
-    - config
-    - max_workers
-    - function_level_only
-    returns: null
-  - name: scan_project_parallel_memory_optimized
-    args:
-    - config
-    - max_workers
-    - max_cache_mb
-    - function_level_only
-    returns: null
-- path: src/redup/core/semantic.py
-  lines: 174
-  imports: []
-  exports:
-  - type: class
-    name: SemanticMatch
-  - type: class
-    name: SemanticDetector
-  classes:
-  - name: SemanticMatch
-    bases: []
-    methods: []
-  - name: SemanticDetector
-    bases: []
-    methods:
-    - name: __init__
-      arity: 2
-    - name: _ensure_model
-      arity: 0
-    - name: find_semantic_duplicates
-      arity: 2
-    - name: find_semantic_duplicates_fast
-      arity: 2
-    - name: compute_semantic_similarity
-      arity: 2
-  functions: []
-- path: src/redup/core/ts_extractor.py
-  lines: 765
-  imports: []
-  exports:
-  - type: class
-    name: _LanguageRegistry
-  - type: function
-    name: _initialize_language_dispatcher
-  - type: function
-    name: _get_tree_sitter_language
-  - type: function
-    name: _extract_functions_javascript
-  - type: function
-    name: _extract_functions_go
-  - type: function
-    name: _extract_functions_rust
-  - type: function
-    name: _extract_functions_java
-  - type: function
-    name: extract_functions_treesitter
-  - type: function
-    name: _extract_functions_c_cpp
-  - type: function
-    name: _extract_blocks_html_xml
-  - type: function
-    name: _extract_blocks_css
-  - type: function
-    name: _extract_blocks_sql
-  - type: function
-    name: _extract_functions_lua
-  - type: function
-    name: _extract_functions_c_sharp
-  - type: function
-    name: _extract_functions_scala
-  - type: function
-    name: _extract_functions_kotlin
-  - type: function
-    name: _extract_functions_swift
-  - type: function
-    name: _extract_functions_objc
-  - type: function
-    name: _extract_functions_ruby
-  - type: function
-    name: _extract_functions_php
-  - type: function
-    name: _extract_functions_bash
-  - type: function
-    name: get_supported_languages
-  - type: function
-    name: is_language_supported
-  classes:
-  - name: _LanguageRegistry
-    bases: []
-    methods:
-    - name: __init__
-      arity: 0
-    - name: get_language
-      arity: 1
-  functions:
-  - name: _initialize_language_dispatcher
-    args: []
-    returns: null
-  - name: _get_tree_sitter_language
-    args:
-    - language_name
-    returns: null
-  - name: _extract_functions_javascript
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_go
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_rust
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_java
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: extract_functions_treesitter
-    args:
-    - source
-    - file_path
-    returns: null
-  - name: _extract_functions_c_cpp
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_blocks_html_xml
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_blocks_css
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_blocks_sql
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_lua
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_c_sharp
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_scala
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_kotlin
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_swift
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_objc
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_ruby
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_php
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: _extract_functions_bash
-    args:
-    - node
-    - source_lines
-    - file_path
-    returns: null
-  - name: get_supported_languages
-    args: []
-    returns: null
-  - name: is_language_supported
-    args:
-    - file_path
-    returns: null
-- path: src/redup/core/universal_fuzzy.py
-  lines: 449
-  imports: []
-  exports:
-  - type: class
-    name: UniversalSignature
-  - type: class
-    name: UniversalFuzzyExtractor
-  - type: class
-    name: UniversalFuzzyDetector
-  classes:
-  - name: UniversalSignature
-    bases: []
-    methods: []
-  - name: UniversalFuzzyExtractor
-    bases: []
-    methods:
-    - name: __init__
-      arity: 0
-    - name: extract_universal_signature
-      arity: 1
-    - name: _detect_language
-      arity: 1
-    - name: _normalize_code
-      arity: 2
-    - name: _remove_comments
-      arity: 2
-    - name: _normalize_identifiers
-      arity: 2
-    - name: _detect_component_type
-      arity: 2
-    - name: _extract_semantic_patterns
-      arity: 2
-    - name: _extract_metadata
-      arity: 2
-    - name: _compute_complexity
-      arity: 2
-    - name: _compute_structure_hash
-      arity: 1
-  - name: UniversalFuzzyDetector
-    bases: []
-    methods:
-    - name: __init__
-      arity: 1
-    - name: find_similar_components
-      arity: 1
-    - name: _compute_universal_similarity
-      arity: 2
-    - name: _compute_pattern_similarity
-      arity: 2
-    - name: _compute_metadata_similarity
-      arity: 2
-  functions: []
-- path: src/redup/core/utils/__init__.py
-  lines: 1
-  imports: []
-  exports: []
-  classes: []
-  functions: []
-- path: src/redup/core/utils/diff_helpers.py
-  lines: 162
-  imports: []
-  exports:
-  - type: class
-    name: _MatchResult
-  - type: class
-    name: GroupMatcher
-  - type: class
-    name: DiffCalculator
-  - type: function
-    name: _group_files
-  - type: function
-    name: _groups_match
-  classes:
-  - name: _MatchResult
-    bases: []
-    methods: []
-  - name: GroupMatcher
-    bases: []
-    methods:
-    - name: __init__
-      arity: 2
-    - name: _ensure_matches
-      arity: 0
-    - name: _match_score
-      arity: 1
-    - name: get_resolved_groups
-      arity: 0
-    - name: get_new_groups
-      arity: 0
-    - name: get_unchanged_groups
-      arity: 0
-  - name: DiffCalculator
-    bases: []
-    methods:
-    - name: calculate_diff_stats
-      arity: 2
-  functions:
-  - name: _group_files
-    args:
-    - group
-    returns: null
-  - name: _groups_match
-    args:
-    - group1
-    - group2
-    returns: null
-- path: src/redup/core/utils/duplicate_finders.py
-  lines: 36
-  imports: []
-  exports:
-  - type: function
-    name: create_duplicate_finder
-  classes: []
-  functions:
-  - name: create_duplicate_finder
-    args:
-    - hash_type
-    returns: null
-- path: src/redup/core/utils/function_extractor.py
-  lines: 148
-  imports: []
-  exports:
-  - type: class
-    name: FunctionExtractor
-  - type: function
-    name: _extract_java_class_name
-  classes:
-  - name: FunctionExtractor
-    bases: []
-    methods:
-    - name: __init__
-      arity: 3
-    - name: extract_functions
-      arity: 3
-    - name: _create_function_block
-      arity: 3
-    - name: _create_method_block
-      arity: 4
-  functions:
-  - name: _extract_java_class_name
-    args:
-    - node
-    returns: null
-- path: src/redup/core/utils/hash_utils.py
-  lines: 37
-  imports: []
-  exports:
-  - type: function
-    name: create_hash_function
-  classes: []
-  functions:
-  - name: create_hash_function
-    args:
-    - normalizer
-    returns: null
-- path: src/redup/core/utils/language_dispatcher.py
-  lines: 72
-  imports: []
-  exports:
-  - type: class
-    name: LanguageDispatcher
-  classes:
-  - name: LanguageDispatcher
-    bases: []
-    methods:
-    - name: __init__
-      arity: 0
-    - name: register_extractor
-      arity: 2
-    - name: register_group
-      arity: 2
-    - name: get_extractor
-      arity: 1
-    - name: extract_functions
-      arity: 4
-  functions: []
-- path: src/redup/mcp_server.py
-  lines: 675
-  imports: []
-  exports:
-  - type: function
-    name: _json_safe
-  - type: function
-    name: _resolve_path
-  - type: function
-    name: _parse_extensions
-  - type: function
-    name: _build_scan_config
-  - type: function
-    name: _run_analysis
-  - type: function
-    name: _estimate_code2llm_counts
-  - type: function
-    name: _handle_analyze_project
-  - type: function
-    name: _handle_suggest_refactoring
-  - type: function
-    name: _handle_compare_scans
-  - type: function
-    name: _handle_check_project
-  - type: function
-    name: _handle_project_info
-  - type: function
-    name: handle_initialize
-  - type: function
-    name: handle_tools_list
-  - type: function
-    name: handle_tools_call
-  - type: function
-    name: handle_request
-  - type: function
-    name: run_server
-  classes: []
-  functions:
-  - name: _json_safe
-    args:
-    - value
-    returns: null
-  - name: _resolve_path
-    args:
-    - raw
-    returns: null
-  - name: _parse_extensions
-    args:
-    - value
-    returns: null
-  - name: _build_scan_config
-    args:
-    - path
-    - params
-    returns: null
-  - name: _run_analysis
-    args:
-    - path
-    - params
-    returns: null
-  - name: _estimate_code2llm_counts
-    args:
-    - dup_map
-    returns: null
-  - name: _handle_analyze_project
-    args:
-    - params
-    returns: null
-  - name: _handle_suggest_refactoring
-    args:
-    - params
-    returns: null
-  - name: _handle_compare_scans
-    args:
-    - params
-    returns: null
-  - name: _handle_check_project
-    args:
-    - params
-    returns: null
-  - name: _handle_project_info
-    args:
-    - _
-    returns: null
-  - name: handle_initialize
-    args:
-    - request_id
-    returns: null
-  - name: handle_tools_list
-    args:
-    - request_id
-    returns: null
-  - name: handle_tools_call
-    args:
-    - request_id
-    - params
-    returns: null
-  - name: handle_request
-    args:
-    - request
-    returns: null
-  - name: run_server
-    args: []
-    returns: null
-- path: src/redup/reporters/__init__.py
-  lines: 1
-  imports: []
-  exports: []
-  classes: []
-  functions: []
-- path: src/redup/reporters/code2llm_reporter.py
-  lines: 209
-  imports: []
-  exports:
-  - type: function
-    name: _calculate_avg_cc
-  - type: function
-    name: _count_critical_functions
-  - type: function
-    name: _get_layers
-  - type: function
-    name: to_code2llm_toon
-  - type: function
-    name: to_code2llm_context
-  - type: function
-    name: export_code2llm
-  classes: []
-  functions:
-  - name: _calculate_avg_cc
-    args:
-    - dup_map
-    returns: null
-  - name: _count_critical_functions
-    args:
-    - dup_map
-    returns: null
-  - name: _get_layers
-    args:
-    - dup_map
-    returns: null
-  - name: to_code2llm_toon
-    args:
-    - dup_map
-    - files_scanned
-    - total_lines
-    - functions_count
-    - classes_count
-    returns: null
-  - name: to_code2llm_context
-    args:
-    - dup_map
-    - files_scanned
-    - total_lines
-    - functions_count
-    - classes_count
-    - modules
-    returns: null
-  - name: export_code2llm
-    args:
-    - dup_map
-    - output_dir
-    - files_scanned
-    - total_lines
-    - functions_count
-    - classes_count
-    returns: null
-- path: src/redup/reporters/enhanced_reporter.py
-  lines: 274
-  imports: []
-  exports:
-  - type: class
-    name: EnhancedReporter
-  classes:
-  - name: EnhancedReporter
-    bases: []
-    methods:
-    - name: __init__
-      arity: 1
-    - name: generate_metrics_report
-      arity: 0
-    - name: _get_scan_metrics
-      arity: 0
-    - name: _get_duplication_metrics
-      arity: 0
-    - name: _get_language_metrics
-      arity: 0
-    - name: _get_file_metrics
-      arity: 0
-    - name: _get_complexity_metrics
-      arity: 0
-    - name: _get_refactoring_metrics
-      arity: 0
-    - name: _bucket_similarities
-      arity: 1
-    - name: _bucket_group_sizes
-      arity: 1
-    - name: _calculate_complexity_score
-      arity: 0
-    - name: generate_visualization_data
-      arity: 0
-    - name: _get_duplication_chart_data
-      arity: 0
-    - name: _get_language_chart_data
-      arity: 0
-    - name: _get_file_chart_data
-      arity: 0
-    - name: _get_timeline_data
-      arity: 0
-    - name: save_enhanced_report
-      arity: 1
-  functions: []
-- path: src/redup/reporters/json_reporter.py
-  lines: 73
-  imports: []
-  exports:
-  - type: function
-    name: _group_to_dict
-  - type: function
-    name: _suggestion_to_dict
-  - type: function
-    name: to_json
-  classes: []
-  functions:
-  - name: _group_to_dict
-    args:
-    - group
-    - include_snippets
-    returns: null
-  - name: _suggestion_to_dict
-    args:
-    - s
-    returns: null
-  - name: to_json
-    args:
-    - dup_map
-    - indent
-    - include_snippets
-    returns: null
-- path: src/redup/reporters/markdown_reporter.py
-  lines: 90
-  imports: []
-  exports:
-  - type: function
-    name: to_markdown
-  classes: []
-  functions:
-  - name: to_markdown
-    args:
-    - dup_map
-    returns: null
-- path: src/redup/reporters/toon_reporter.py
-  lines: 106
-  imports: []
-  exports:
-  - type: function
-    name: _render_header
-  - type: function
-    name: _render_summary
-  - type: function
-    name: _render_duplicates
-  - type: function
-    name: _render_refactor
-  - type: function
-    name: _render_metrics_target
-  - type: function
-    name: to_toon
-  classes: []
-  functions:
-  - name: _render_header
-    args:
-    - dup_map
-    returns: null
-  - name: _render_summary
-    args:
-    - dup_map
-    returns: null
-  - name: _render_duplicates
-    args:
-    - groups
-    returns: null
-  - name: _render_refactor
-    args:
-    - suggestions
-    returns: null
-  - name: _render_metrics_target
-    args:
-    - dup_map
-    - groups
-    returns: null
-  - name: to_toon
-    args:
-    - dup_map
-    returns: null
-- path: src/redup/reporters/yaml_reporter.py
-  lines: 34
-  imports: []
-  exports:
-  - type: function
-    name: to_yaml
-  classes: []
-  functions:
-  - name: to_yaml
-    args:
-    - dup_map
-    returns: null
-- path: src/sitecustomize.py
-  lines: 4
-  imports: []
-  exports: []
-  classes: []
-  functions: []
+# redup | 45f 8290L | python:44,shell:1 | 2026-03-25
+# stats: 295 func | 0 cls | 45 mod | CC̄=3.7 | critical:2 | cycles:0
+# alerts[5]: fan-out _handle_analyze_project=23; fan-out _preload_files=20; fan-out _scan_sequential=16; fan-out scan_project=16; CC GroupMatcher._ensure_matches=15
+# hotspots[5]: _handle_analyze_project fan=23; _preload_files fan=20; _scan_sequential fan=16; scan_project fan=16; _find_duplicates_phase_lazy fan=15
+# evolution: baseline
+# Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
+M[45]:
+  benchmark.py,111
+  benchmarks/bench_libraries.py,160
+  project.sh,21
+  src/redup/__init__.py,25
+  src/redup/__main__.py,5
+  src/redup/cli_app/__init__.py,1
+  src/redup/cli_app/fuzzy_similarity.py,160
+  src/redup/cli_app/main.py,196
+  src/redup/cli_app/output_writer.py,79
+  src/redup/cli_app/scan_commands.py,164
+  src/redup/cli_app/scan_helpers.py,34
+  src/redup/config.py,182
+  src/redup/core/__init__.py,1
+  src/redup/core/cache.py,267
+  src/redup/core/config.py,171
+  src/redup/core/differ.py,209
+  src/redup/core/fuzzy_similarity.py,416
+  src/redup/core/hash_cache.py,104
+  src/redup/core/hasher.py,340
+  src/redup/core/lazy_grouper.py,159
+  src/redup/core/lsh_matcher.py,225
+  src/redup/core/matcher.py,107
+  src/redup/core/models.py,216
+  src/redup/core/pipeline.py,714
+  src/redup/core/planner.py,110
+  src/redup/core/python_parser.py,170
+  src/redup/core/scanner.py,633
+  src/redup/core/semantic.py,174
+  src/redup/core/ts_extractor.py,765
+  src/redup/core/universal_fuzzy.py,449
+  src/redup/core/utils/__init__.py,1
+  src/redup/core/utils/diff_helpers.py,162
+  src/redup/core/utils/duplicate_finders.py,36
+  src/redup/core/utils/function_extractor.py,148
+  src/redup/core/utils/hash_utils.py,37
+  src/redup/core/utils/language_dispatcher.py,72
+  src/redup/mcp_server.py,675
+  src/redup/reporters/__init__.py,1
+  src/redup/reporters/code2llm_reporter.py,209
+  src/redup/reporters/enhanced_reporter.py,274
+  src/redup/reporters/json_reporter.py,73
+  src/redup/reporters/markdown_reporter.py,90
+  src/redup/reporters/toon_reporter.py,106
+  src/redup/reporters/yaml_reporter.py,34
+  src/sitecustomize.py,4
+D:
+  src/redup/core/python_parser.py:
+    e: ParsedFunction,_parse_with_libcst,_parse_with_ast,parse_python_functions,parsed_to_code_blocks
+    ParsedFunction:  # A parsed Python function with metadata...
+    _parse_with_libcst(source;filepath)
+    _parse_with_ast(source;filepath)
+    parse_python_functions(source;filepath)
+    parsed_to_code_blocks(parsed;filepath)
+  src/redup/core/utils/diff_helpers.py:
+    e: _MatchResult,GroupMatcher,DiffCalculator,_group_files,_groups_match
+    _MatchResult:
+    GroupMatcher: __init__(2),_ensure_matches(0),_match_score(1),get_resolved_groups(0),get_new_groups(0),get_unchanged_groups(0)  # Match duplicate groups between two scan results...
+    DiffCalculator: calculate_diff_stats(2)  # Aggregate statistics for scan diffs...
+    _group_files(group)
+    _groups_match(group1;group2)
+  src/redup/core/differ.py:
+    e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
+    DiffResult:  # Result of comparing two reDUP scans...
+    _load_duplication_map(file_path)
+    _group_by_id(groups)
+    _groups_match(group1;group2)
+    compare_scans(before_file;after_file)
+    format_diff_result(diff)
+  src/redup/core/scanner.py:
+    e: CodeBlock,ScannedFile,ScanStrategy,MemoryFileCache,_should_exclude,_project_relative_path,_collect_files,_is_test_file,_preload_files,_lazy_read_files,_scan_sequential,_scan_parallel,_scan_file_worker,_should_process_file,_extract_function_blocks_python,_extract_sliding_blocks,scan_project,scan_project_ultra_fast,scan_project_memory_optimized,scan_project_parallel,scan_project_parallel_memory_optimized
+    CodeBlock:  # A contiguous block of source code lines...
+    ScannedFile:  # A file that has been read and split into blocks...
+    ScanStrategy:  # Configuration for HOW to scan — not WHAT to scan...
+    MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1)  # Cache file contents in RAM for faster access during scanning...
+    _should_exclude(path;patterns)
+    _project_relative_path(file_path;project_root)
+    _collect_files(config)
+    _is_test_file(path)
+    _preload_files(files;max_cache_mb)
+    _lazy_read_files(files)
+    _scan_sequential(sources;config;function_level_only)
+    _scan_parallel(sources;config;max_workers;function_level_only)
+    _scan_file_worker(args)
+    _should_process_file(file_path;project_root;extensions;include_tests;max_file_size)
+    _extract_function_blocks_python(content;file_path)
+    _extract_sliding_blocks(content;file_path)
+    scan_project(config;strategy;function_level_only)
+    scan_project_ultra_fast(config)
+    scan_project_memory_optimized(config;max_cache_mb)
+    scan_project_parallel(config;max_workers;function_level_only)
+    scan_project_parallel_memory_optimized(config;max_workers;max_cache_mb;function_level_only)
+  src/redup/mcp_server.py:
+    e: _json_safe,_resolve_path,_parse_extensions,_build_scan_config,_run_analysis,_estimate_code2llm_counts,_handle_analyze_project,_handle_suggest_refactoring,_handle_compare_scans,_handle_check_project,_handle_project_info,handle_initialize,handle_tools_list,handle_tools_call,handle_request,run_server
+    _json_safe(value)
+    _resolve_path(raw)
+    _parse_extensions(value)
+    _build_scan_config(path;params)
+    _run_analysis(path;params)
+    _estimate_code2llm_counts(dup_map)
+    _handle_analyze_project(params)
+    _handle_suggest_refactoring(params)
+    _handle_compare_scans(params)
+    _handle_check_project(params)
+    _handle_project_info(_)
+    handle_initialize(request_id)
+    handle_tools_list(request_id)
+    handle_tools_call(request_id;params)
+    handle_request(request)
+    run_server()
+  src/redup/reporters/markdown_reporter.py:
+    e: to_markdown
+    to_markdown(dup_map)
+  src/redup/cli_app/output_writer.py:
+    e: write_output,write_results
+    write_output(content;output;suffix)
+    write_results(dup_map;format;output;path)
+  src/redup/core/universal_fuzzy.py:
+    e: UniversalSignature,UniversalFuzzyExtractor,UniversalFuzzyDetector
+    UniversalSignature:  # Universal semantic signature for any code block...
+    UniversalFuzzyExtractor: __init__(0),extract_universal_signature(1),_detect_language(1),_normalize_code(2),_remove_comments(2),_normalize_identifiers(2),_detect_component_type(2),_extract_semantic_patterns(2),_extract_metadata(2),_compute_complexity(2),_compute_structure_hash(1)  # Universal fuzzy extractor for all supported languages and DS...
+    UniversalFuzzyDetector: __init__(1),find_similar_components(1),_compute_universal_similarity(2),_compute_pattern_similarity(2),_compute_metadata_similarity(2)  # Universal fuzzy similarity detector for all languages and DS...
+  src/redup/core/pipeline.py:
+    e: _blocks_to_group,_deduplicate_groups,analyze,analyze_optimized,_ensure_config,_scan_phase,_scan_phase_parallel,_process_blocks,_find_duplicates_phase_optimized,_find_duplicates_phase_lazy,_find_exact_groups,_find_structural_groups,_deduplicate_phase,_match_results_to_blocks,_calculate_similarity,_find_near_duplicate_groups,_find_semantic_groups,analyze_optimized,analyze_parallel
+    _blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
+    _deduplicate_groups(groups)
+    analyze(config;function_level_only)
+    analyze_optimized(config;function_level_only;use_memory_cache;max_cache_mb)
+    _ensure_config(config)
+    _scan_phase(config;function_level_only)
+    _scan_phase_parallel(config;max_workers)
+    _process_blocks(scanned_files;function_level_only)
+    _find_duplicates_phase_optimized(all_blocks;config)
+    _find_duplicates_phase_lazy(all_blocks;config;cache)
+    _find_exact_groups(index)
+    _find_structural_groups(index;exact_groups_list)
+    _deduplicate_phase(groups)
+    _match_results_to_blocks(matches)
+    _calculate_similarity(matches)
+    _find_near_duplicate_groups(all_blocks;config)
+    _find_semantic_groups(blocks;threshold)
+    analyze_optimized(config;function_level_only;use_memory_cache;max_cache_mb)
+    analyze_parallel(config;function_level_only;max_workers)
+  src/redup/reporters/code2llm_reporter.py:
+    e: _calculate_avg_cc,_count_critical_functions,_get_layers,to_code2llm_toon,to_code2llm_context,export_code2llm
+    _calculate_avg_cc(dup_map)
+    _count_critical_functions(dup_map)
+    _get_layers(dup_map)
+    to_code2llm_toon(dup_map;files_scanned;total_lines;functions_count;classes_count)
+    to_code2llm_context(dup_map;files_scanned;total_lines;functions_count;classes_count;modules)
+    export_code2llm(dup_map;output_dir;files_scanned;total_lines;functions_count;classes_count)
+  benchmarks/bench_libraries.py:
+    e: generate_test_project,benchmark,benchmark_hash_performance,benchmark_fuzzy_performance
+    generate_test_project(root;num_files;lines_per_file)
+    benchmark()
+    benchmark_hash_performance()
+    benchmark_fuzzy_performance()
+  src/redup/core/lsh_matcher.py:
+    e: _SimpleMinHash,LSHIndex,_create_minhash,_text_to_minhash_features,_create_simple_minhash,build_lsh_index,find_near_duplicates
+    _SimpleMinHash: __init__(2),jaccard(1)  # Simple MinHash implementation for fallback without datasketc...
+    LSHIndex: __init__(2),add(1),find_near_duplicates(1),_find_near_duplicates_simple(1),find_all_near_duplicates(1)  # LSH index for efficient near-duplicate detection...
+    _create_minhash(text;num_perm)
+    _text_to_minhash_features(text;num_features)
+    _create_simple_minhash(text;num_perm)
+    build_lsh_index(blocks;threshold;min_lines)
+    find_near_duplicates(blocks;threshold;min_lines)
+  src/redup/core/fuzzy_similarity.py:
+    e: ComponentSignature,HTMLComponentExtractor,CSSComponentExtractor,FuzzySimilarityDetector
+    ComponentSignature:  # Semantic signature of a component for fuzzy matching...
+    HTMLComponentExtractor: __init__(0),extract_component_signature(1),_normalize_html(1),_normalize_class_name(1),_detect_component_type(1),_extract_attributes(1),_extract_text_content(1),_compute_structure_hash(1)  # Extract HTML components with semantic normalization for fuzz...
+    CSSComponentExtractor: __init__(0),extract_component_signature(1),_extract_css_properties(1),_normalize_css_value(1),_detect_css_component_type(1),_compute_css_hash(1)  # Extract CSS components with semantic normalization for fuzzy...
+    FuzzySimilarityDetector: __init__(1),find_similar_components(1),_extract_signature(1),_compute_similarity(2),_compute_attribute_similarity(2),_compute_css_similarity(2)  # Detect fuzzy similarity between HTML/CSS components...
+  src/redup/config.py:
+    e: RedupConfig,get_default_filename,reload_config
+    RedupConfig: _env_name(1),_load_from_env(0),reload(1),get(2),set(2)  # Global configuration container for reDUP settings.
+
+Attribut...
+    get_default_filename(suffix)
+    reload_config(env_path)
+  src/redup/core/semantic.py:
+    e: SemanticMatch,SemanticDetector
+    SemanticMatch:  # A pair of semantically similar code blocks...
+    SemanticDetector: __init__(2),_ensure_model(0),find_semantic_duplicates(2),find_semantic_duplicates_fast(2),compute_semantic_similarity(2)  # Detects semantically similar code using transformer embeddin...
+  src/redup/core/hasher.py:
+    e: BloomHashIndex,HashedBlock,HashIndex,_normalize_text,_normalize_ast_text,_ast_to_normalized_string,_process_ast_node,_get_placeholder,_normalize_constant,_hash_text,hash_block,hash_block_structural,find_exact_duplicates,find_structural_duplicates,_hashed_block,build_hash_index,_find_duplicates,_blocks_from_different_locations
+    BloomHashIndex: __init__(1),add(2),get_duplicate_groups(0)  # Two-pass hash index: Bloom filter eliminates uniques in O(1)...
+    HashedBlock:  # A code block with its computed fingerprints...
+    HashIndex:  # Index mapping hashes to blocks for fast lookup...
+    _normalize_text(text)
+    _normalize_ast_text(text)
+    _ast_to_normalized_string(tree)
+    _process_ast_node(node;name_map;counter)
+    _get_placeholder(name;name_map;counter)
+    _normalize_constant(value)
+    _hash_text(text;normalizer)
+    hash_block(text)
+    hash_block_structural(text)
+    find_exact_duplicates(index)
+    find_structural_duplicates(index)
+    _hashed_block(block)
+    build_hash_index(blocks;min_lines)
+    _find_duplicates(hash_dict)
+    _blocks_from_different_locations(blocks)
+  src/redup/reporters/enhanced_reporter.py:
+    e: EnhancedReporter
+    EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
+  src/redup/reporters/toon_reporter.py:
+    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
+    _render_header(dup_map)
+    _render_summary(dup_map)
+    _render_duplicates(groups)
+    _render_refactor(suggestions)
+    _render_metrics_target(dup_map;groups)
+    to_toon(dup_map)
+  src/redup/core/lazy_grouper.py:
+    e: DuplicateGroupCollector,find_exact_duplicates_lazy,find_structural_duplicates_lazy,_create_duplicate_group,find_all_duplicates_lazy
+    DuplicateGroupCollector: __init__(3),collect(1),collect_sorted(1)  # Collector for lazy duplicate groups with optional limits.
+
+A...
+    find_exact_duplicates_lazy(index;min_lines)
+    find_structural_duplicates_lazy(index;min_lines)
+    _create_duplicate_group(hash_val;blocks;duplicate_type)
+    find_all_duplicates_lazy(index;min_lines;include_exact;include_structural)
+  src/redup/core/matcher.py:
+    e: MatchResult,sequence_similarity,fuzzy_similarity,_compare_against_reference,match_candidates,refine_structural_matches
+    MatchResult:  # Result of comparing two code blocks...
+    sequence_similarity(text_a;text_b)
+    fuzzy_similarity(text_a;text_b)
+    _compare_against_reference(candidates;min_similarity;similarity_fn;method_fn;skip_same_location)
+    match_candidates(candidates;min_similarity)
+    refine_structural_matches(candidates;min_similarity)
+  src/redup/core/planner.py:
+    e: _common_prefix,_suggest_module_name,_assess_risk,_choose_action,generate_suggestions
+    _common_prefix(paths)
+    _suggest_module_name(group)
+    _assess_risk(group)
+    _choose_action(group)
+    generate_suggestions(dup_map)
+  src/redup/core/ts_extractor.py:
+    e: _LanguageRegistry,_initialize_language_dispatcher,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_lua,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
+    _LanguageRegistry: __init__(0),get_language(1)  # Registry for tree-sitter language parsers...
+    _initialize_language_dispatcher()
+    _get_tree_sitter_language(language_name)
+    _extract_functions_javascript(node;source_lines;file_path)
+    _extract_functions_go(node;source_lines;file_path)
+    _extract_functions_rust(node;source_lines;file_path)
+    _extract_functions_java(node;source_lines;file_path)
+    extract_functions_treesitter(source;file_path)
+    _extract_functions_c_cpp(node;source_lines;file_path)
+    _extract_blocks_html_xml(node;source_lines;file_path)
+    _extract_blocks_css(node;source_lines;file_path)
+    _extract_blocks_sql(node;source_lines;file_path)
+    _extract_functions_lua(node;source_lines;file_path)
+    _extract_functions_c_sharp(node;source_lines;file_path)
+    _extract_functions_scala(node;source_lines;file_path)
+    _extract_functions_kotlin(node;source_lines;file_path)
+    _extract_functions_swift(node;source_lines;file_path)
+    _extract_functions_objc(node;source_lines;file_path)
+    _extract_functions_ruby(node;source_lines;file_path)
+    _extract_functions_php(node;source_lines;file_path)
+    _extract_functions_bash(node;source_lines;file_path)
+    get_supported_languages()
+    is_language_supported(file_path)
+  src/redup/cli_app/scan_commands.py:
+    e: scan_command,diff_command,check_command,config_command,info_command
+    scan_command(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental;memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
+    diff_command(before;after)
+    check_command(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
+    config_command(init;show)
+    info_command()
+  src/redup/core/config.py:
+    e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
+    _load_toml_file(file_path)
+    _get_config_from_pyproject()
+    _get_config_from_redup_toml()
+    load_config()
+    config_to_scan_config(config;path)
+    create_sample_redup_toml()
+  src/redup/reporters/json_reporter.py:
+    e: _group_to_dict,_suggestion_to_dict,to_json
+    _group_to_dict(group;include_snippets)
+    _suggestion_to_dict(s)
+    to_json(dup_map;indent;include_snippets)
+  src/redup/core/cache.py:
+    e: HashCache,hash_block_with_cache,build_hash_index_with_cache
+    HashCache: __init__(1),_init_tables(0),_get_file_hash(2),is_file_unchanged(2),get_cached_block_hashes(2),store_file_hashes(3),cleanup_old_entries(1),get_stats(0)  # SQLite-based cache for file and block hashes.
+
+Provides ~10x...
+    hash_block_with_cache(text;file_path;start;end;cache)
+    build_hash_index_with_cache(blocks;min_lines;cache)
+  src/redup/core/utils/function_extractor.py:
+    e: FunctionExtractor,_extract_java_class_name
+    FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
+    _extract_java_class_name(node)
+  src/redup/cli_app/fuzzy_similarity.py:
+    e: _apply_fuzzy_similarity,_validate_fuzzy_input,_extract_all_blocks,_separate_blocks_by_type,_analyze_blocks_with_detectors,_analyze_html_css_blocks,_analyze_other_language_blocks,_report_fuzzy_results,_report_similarity_by_groups
+    _apply_fuzzy_similarity(dup_map;threshold)
+    _validate_fuzzy_input(dup_map;threshold)
+    _extract_all_blocks(dup_map)
+    _separate_blocks_by_type(all_blocks)
+    _analyze_blocks_with_detectors(html_css_blocks;other_blocks;threshold)
+    _analyze_html_css_blocks(html_css_blocks;threshold)
+    _analyze_other_language_blocks(other_blocks;threshold)
+    _report_fuzzy_results(similar_pairs)
+    _report_similarity_by_groups(similar_pairs)
+  src/redup/reporters/yaml_reporter.py:
+    e: to_yaml
+    to_yaml(dup_map)
+  src/redup/core/utils/language_dispatcher.py:
+    e: LanguageDispatcher
+    LanguageDispatcher: __init__(0),register_extractor(2),register_group(2),get_extractor(1),extract_functions(4)  # Dispatches function extraction to appropriate language-speci...
+  benchmark.py:
+    e: benchmark_sequential_vs_parallel,benchmark_feature_performance
+    benchmark_sequential_vs_parallel()
+    benchmark_feature_performance()
+  src/redup/core/hash_cache.py:
+    e: HashCache,_config_to_hash
+    HashCache: __init__(1),_load(0),save(0),get_file_hash(1),is_unchanged(2),update(3),invalidate(1),get_cached_results(1),clear(0)  # Cache for file hashes to enable incremental scanning...
+    _config_to_hash(config)
+  src/redup/core/utils/hash_utils.py:
+    e: create_hash_function
+    create_hash_function(normalizer)
+  src/redup/core/utils/duplicate_finders.py:
+    e: create_duplicate_finder
+    create_duplicate_finder(hash_type)
+  src/redup/core/models.py:
+    e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats,DuplicationMap
+    DuplicateType(str,Enum):  # How the duplicate was detected...
+    RefactorAction(str,Enum):  # Proposed refactoring action...
+    RiskLevel(str,Enum):  # Risk of the proposed refactoring...
+    ScanConfig:  # Configuration for project scanning...
+    DuplicateFragment:  # A single occurrence of a duplicated code fragment...
+    DuplicateGroup:  # A cluster of duplicated code fragments...
+    RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
+    ScanStats:  # Statistics from the scanning phase...
+    DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
+  src/redup/cli_app/scan_helpers.py:
+    e: print_scan_header,print_scan_summary,apply_fuzzy_similarity
+    print_scan_header(path;ext_list;min_lines;min_similarity)
+    print_scan_summary(dup_map)
+    apply_fuzzy_similarity(dup_map;threshold)
+  src/redup/cli_app/main.py:
+    e: scan,diff,check,config,info
+    scan(path;format;output;extensions;min_lines;min_similarity;include_tests;no_functions_only;no_parallel;max_workers;incremental;no_memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
+    diff(before;after)
+    check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
+    config(init;show)
+    info()
+  src/redup/__init__.py:
+  src/redup/__main__.py:
+  src/redup/core/__init__.py:
+  src/sitecustomize.py:
+  src/redup/reporters/__init__.py:
+  src/redup/cli_app/__init__.py:
+  src/redup/core/utils/__init__.py:
+  project.sh:
