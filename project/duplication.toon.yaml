@@ -6,7 +6,7 @@ SUMMARY:
   dup_groups:    6
   dup_fragments: 19
   saved_lines:   69
-  scan_ms:       243
+  scan_ms:       597
 
 DUPLICATES[6] (ranked by impact):
   [8f10890085628ab3]   STRU  find_exact_duplicates_lazy  L=26 N=2 saved=26 sim=1.00

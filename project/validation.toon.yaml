@@ -1,10 +1,10 @@
-# vallm batch | 112f | 60✓ 52✗
+# vallm batch | 113f | 59✓ 54✗
 
 SUMMARY:
-  total: 112
-  passed: 60
-  failed: 52
-  success: 53.6%
+  total: 113
+  passed: 59
+  failed: 54
+  success: 52.2%
 
 FILES:
   [yaml]
@@ -31,6 +31,11 @@ FILES:
       score: 0.00
       issues: 1
         [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
+    ✗ project/validation.toon.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
     ✓ project/project.yaml
       verdict: pass
       score: 1.00
@@ -49,9 +54,11 @@ FILES:
       score: 0.00
       issues: 1
         [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
-    ✓ project/analysis.toon.yaml
-      verdict: pass
-      score: 1.00
+    ✗ project/analysis.toon.yaml
+      verdict: fail
+      score: 0.00
+      issues: 1
+        [error] syntax.tree_sitter: tree-sitter found 1 parse error(s) in yaml
     ✓ proxy_analysis/duplication.yaml
       verdict: pass
       score: 1.00
@@ -318,6 +325,7 @@ FAILED:
   ✗ project/prompt.txt: Unsupported file type
   ✗ project/evolution.yaml: Validation fail
   ✗ project/evolution.toon: Unsupported file type
+  ✗ project/validation.toon.yaml: Validation fail
   ✗ project/map.yaml: Validation fail
   ✗ project/map.toon.yaml: Validation fail
   ✗ project/flow.mmd: Unsupported file type
@@ -326,6 +334,7 @@ FAILED:
   ✗ project/README.md: Unsupported file type
   ✗ project/analysis.toon: Unsupported file type
   ✗ project/duplication.toon: Unsupported file type
+  ✗ project/analysis.toon.yaml: Validation fail
   ✗ proxy_analysis/duplication.toon: Unsupported file type
   ✗ toon/validation.txt: Unsupported file type
   ✗ src/redup/core/hasher.py: Validation fail
