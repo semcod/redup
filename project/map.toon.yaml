@@ -3,7 +3,7 @@ project: redup
 timestamp: '2026-03-25'
 stats:
   files: 45
-  lines: 8306
+  lines: 8316
   functions: 295
   languages:
     python: 44
@@ -310,7 +310,7 @@ modules:
     - threshold
     returns: null
 - path: src/redup/config.py
-  lines: 172
+  lines: 182
   imports: []
   exports:
   - type: class

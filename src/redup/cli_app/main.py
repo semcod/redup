@@ -83,7 +83,7 @@ def scan(
     no_functions_only: bool = typer.Option(
         False,
         "--no-functions-only",
-        help="Analyze all code, not just functions (default: functions-only for speed).",
+        help="Analyze all code, not just functions (default: functions-only mode is ON).",
     ),
     parallel: bool = typer.Option(
         False,

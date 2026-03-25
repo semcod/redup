@@ -1,85 +1,86 @@
 Using .gitignore from .
-Excluded 26130 files by .gitignore
-Validating 108 files...
-Processing 1/108: PERFORMANCE_OPTIMIZATIONS.md
-Processing 2/108: goal.yaml
-Processing 3/108: BUGFIX_SUMMARY.md
-Processing 4/108: test_universal_fuzzy.py
-Processing 5/108: SPRINT_2_PLAN.md
-Processing 6/108: MEMORY_OPTIMIZATION.md
-Processing 7/108: VERSION
-Processing 8/108: LICENSE
-Processing 9/108: test_fuzzy_similarity.py
-Processing 10/108: redup.toml
-Processing 11/108: pyproject.toml
-Processing 12/108: complexity_reduction_plan.md
-Processing 13/108: TODO.md
-Processing 14/108: benchmark.py
-Processing 15/108: CHANGELOG.md
-Processing 16/108: project.sh
-Processing 17/108: PERFORMANCE.md
-Processing 18/108: CONTINUATION_PLAN.md
-Processing 19/108: COMPLEXITY_REDUCTION_COMPLETE.md
-Processing 20/108: README.md
-Processing 21/108: redup_self_analysis/duplication.json
-Processing 22/108: docs/API.md
-Processing 23/108: docs/README.md
-Processing 24/108: code2llm_output/context.md
-Processing 25/108: code2llm_output/README.md
-Processing 26/108: code2llm_output/analysis.toon
-Processing 27/108: examples/01_basic_usage.py
-Processing 28/108: benchmarks/bench_libraries.py
+Excluded 26165 files by .gitignore
+Validating 109 files...
+Processing 1/109: PERFORMANCE_OPTIMIZATIONS.md
+Processing 2/109: goal.yaml
+Processing 3/109: BUGFIX_SUMMARY.md
+Processing 4/109: test_universal_fuzzy.py
+Processing 5/109: SPRINT_2_PLAN.md
+Processing 6/109: MEMORY_OPTIMIZATION.md
+Processing 7/109: VERSION
+Processing 8/109: LICENSE
+Processing 9/109: test_fuzzy_similarity.py
+Processing 10/109: redup.toml
+Processing 11/109: pyproject.toml
+Processing 12/109: complexity_reduction_plan.md
+Processing 13/109: TODO.md
+Processing 14/109: benchmark.py
+Processing 15/109: CHANGELOG.md
+Processing 16/109: project.sh
+Processing 17/109: PERFORMANCE.md
+Processing 18/109: CONTINUATION_PLAN.md
+Processing 19/109: COMPLEXITY_REDUCTION_COMPLETE.md
+Processing 20/109: README.md
+Processing 21/109: redup_self_analysis/duplication.json
+Processing 22/109: docs/API.md
+Processing 23/109: docs/README.md
+Processing 24/109: code2llm_output/context.md
+Processing 25/109: code2llm_output/README.md
+Processing 26/109: code2llm_output/analysis.toon
+Processing 27/109: examples/01_basic_usage.py
+Processing 28/109: benchmarks/bench_libraries.py
 
 ✗ benchmarks/bench_libraries.py (Python) - fail
   • python.import.resolvable: Module 'xxhash' not found (line 105)
-Processing 29/108: src/sitecustomize.py
-Processing 30/108: tests/test_matcher.py
-Processing 31/108: tests/test_hasher.py
-Processing 32/108: tests/__init__.py
-Processing 33/108: tests/test_mcp_server.py
-Processing 34/108: tests/test_planner.py
-Processing 35/108: tests/test_e2e.py
-Processing 36/108: tests/test_scanner.py
-Processing 37/108: tests/test_models.py
-Processing 38/108: tests/test_reporters.py
-Processing 39/108: tests/test_ts_extractor.py
-Processing 40/108: tests/test_pipeline.py
-Processing 41/108: project/validation.toon
-Processing 42/108: project/project.toon
-Processing 43/108: project/compact_flow.mmd
-Processing 44/108: project/validation_fixed.toon
-Processing 45/108: project/map.toon
-Processing 46/108: project/calls.mmd
-Processing 47/108: project/index.html
-Processing 48/108: project/flow.toon
-Processing 49/108: project/context.md
-Processing 50/108: project/prompt.txt
-Processing 51/108: project/duplication.toon.toon
-Processing 52/108: project/evolution.toon
-Processing 53/108: project/project.yaml
-Processing 54/108: project/map.toon.yaml
-Processing 55/108: project/flow.mmd
-Processing 56/108: project/dashboard.html
-Processing 57/108: project/evolution.toon.yaml
-Processing 58/108: project/README.md
-Processing 59/108: project/analysis.toon
-Processing 60/108: project/duplication.toon
-Processing 61/108: project/analysis.toon.yaml
-Processing 62/108: proxy_analysis/duplication.yaml
-Processing 63/108: proxy_analysis/duplication.json
-Processing 64/108: proxy_analysis/duplication.toon
-Processing 65/108: toon/validation.txt
-Processing 66/108: src/redup/config.py
-Processing 67/108: src/redup/__init__.py
-Processing 68/108: src/redup/__main__.py
-Processing 69/108: src/redup/mcp_server.py
-Processing 70/108: src/redup/core/config.py
-Processing 71/108: src/redup/core/hash_cache.py
-Processing 72/108: src/redup/core/universal_fuzzy.py
-Processing 73/108: src/redup/core/matcher.py
-Processing 74/108: src/redup/core/lazy_grouper.py
-Processing 75/108: src/redup/core/__init__.py
-Processing 76/108: src/redup/core/hasher.py
+Processing 29/109: src/sitecustomize.py
+Processing 30/109: tests/test_matcher.py
+Processing 31/109: tests/test_hasher.py
+Processing 32/109: tests/__init__.py
+Processing 33/109: tests/test_mcp_server.py
+Processing 34/109: tests/test_planner.py
+Processing 35/109: tests/test_e2e.py
+Processing 36/109: tests/test_scanner.py
+Processing 37/109: tests/test_models.py
+Processing 38/109: tests/test_reporters.py
+Processing 39/109: tests/test_ts_extractor.py
+Processing 40/109: tests/test_pipeline.py
+Processing 41/109: project/duplication.toonyaml
+Processing 42/109: project/validation.toon
+Processing 43/109: project/project.toon
+Processing 44/109: project/compact_flow.mmd
+Processing 45/109: project/validation_fixed.toon
+Processing 46/109: project/map.toon
+Processing 47/109: project/calls.mmd
+Processing 48/109: project/index.html
+Processing 49/109: project/flow.toon
+Processing 50/109: project/context.md
+Processing 51/109: project/prompt.txt
+Processing 52/109: project/duplication.toon.toon
+Processing 53/109: project/evolution.toon
+Processing 54/109: project/project.yaml
+Processing 55/109: project/map.toon.yaml
+Processing 56/109: project/flow.mmd
+Processing 57/109: project/dashboard.html
+Processing 58/109: project/evolution.toon.yaml
+Processing 59/109: project/README.md
+Processing 60/109: project/analysis.toon
+Processing 61/109: project/duplication.toon
+Processing 62/109: project/analysis.toon.yaml
+Processing 63/109: proxy_analysis/duplication.yaml
+Processing 64/109: proxy_analysis/duplication.json
+Processing 65/109: proxy_analysis/duplication.toon
+Processing 66/109: toon/validation.txt
+Processing 67/109: src/redup/config.py
+Processing 68/109: src/redup/__init__.py
+Processing 69/109: src/redup/__main__.py
+Processing 70/109: src/redup/mcp_server.py
+Processing 71/109: src/redup/core/config.py
+Processing 72/109: src/redup/core/hash_cache.py
+Processing 73/109: src/redup/core/universal_fuzzy.py
+Processing 74/109: src/redup/core/matcher.py
+Processing 75/109: src/redup/core/lazy_grouper.py
+Processing 76/109: src/redup/core/__init__.py
+Processing 77/109: src/redup/core/hasher.py
 
 ✗ src/redup/core/hasher.py (Python) - fail
   • python.import.resolvable: Module 'xxhash' not found (line 16)
@@ -88,9 +89,9 @@ Processing 76/108: src/redup/core/hasher.py
   • python.import.resolvable: Module 'utils.hash_utils' not found (line 216)
   • python.import.resolvable: Module 'utils.duplicate_finders' not found (line 222)
   • python.import.resolvable: Module 'utils.duplicate_finders' not found (line 228)
-Processing 77/108: src/redup/core/planner.py
-Processing 78/108: src/redup/core/scanner.py.backup
-Processing 79/108: src/redup/core/semantic.py
+Processing 78/109: src/redup/core/planner.py
+Processing 79/109: src/redup/core/scanner.py.backup
+Processing 80/109: src/redup/core/semantic.py
 
 ✗ src/redup/core/semantic.py (Python) - fail
   • python.import.resolvable: Module 'sentence_transformers' not found (line 64)
@@ -98,51 +99,51 @@ Processing 79/108: src/redup/core/semantic.py
   • python.import.resolvable: Module 'sentence_transformers' not found (line 126)
   • python.import.resolvable: Module 'sentence_transformers' not found (line 170)
   • python.import.resolvable: Module 'sentence_transformers' not found (line 36)
-Processing 80/108: src/redup/core/python_parser.py
+Processing 81/109: src/redup/core/python_parser.py
 
 ✗ src/redup/core/python_parser.py (Python) - fail
   • python.import.resolvable: Module 'libcst' not found (line 27)
-Processing 81/108: src/redup/core/scanner.py
-Processing 82/108: src/redup/core/models.py
-Processing 83/108: src/redup/core/pipeline.py
-Processing 84/108: src/redup/core/lsh_matcher.py
-Processing 85/108: src/redup/core/ts_extractor.py
-Processing 86/108: src/redup/core/fuzzy_similarity.py
-Processing 87/108: src/redup/core/cache.py
-Processing 88/108: src/redup/core/differ.py
-Processing 89/108: src/redup/reporters/markdown_reporter.py
-Processing 90/108: src/redup/reporters/code2llm_reporter.py
-Processing 91/108: src/redup/reporters/enhanced_reporter.py
-Processing 92/108: src/redup/reporters/__init__.py
-Processing 93/108: src/redup/reporters/json_reporter.py
-Processing 94/108: src/redup/reporters/toon_reporter.py
-Processing 95/108: src/redup/reporters/yaml_reporter.py
-Processing 96/108: src/redup/cli_app/scan_commands.py
-Processing 97/108: src/redup/cli_app/output_writer.py
-Processing 98/108: src/redup/cli_app/config_builder.py
-Processing 99/108: src/redup/cli_app/__init__.py
-Processing 100/108: src/redup/cli_app/scan_helpers.py
-Processing 101/108: src/redup/cli_app/main.py
-Processing 102/108: src/redup/cli_app/fuzzy_similarity.py
-Processing 103/108: src/redup/core/utils/function_extractor.py
+Processing 82/109: src/redup/core/scanner.py
+Processing 83/109: src/redup/core/models.py
+Processing 84/109: src/redup/core/pipeline.py
+Processing 85/109: src/redup/core/lsh_matcher.py
+Processing 86/109: src/redup/core/ts_extractor.py
+Processing 87/109: src/redup/core/fuzzy_similarity.py
+Processing 88/109: src/redup/core/cache.py
+Processing 89/109: src/redup/core/differ.py
+Processing 90/109: src/redup/reporters/markdown_reporter.py
+Processing 91/109: src/redup/reporters/code2llm_reporter.py
+Processing 92/109: src/redup/reporters/enhanced_reporter.py
+Processing 93/109: src/redup/reporters/__init__.py
+Processing 94/109: src/redup/reporters/json_reporter.py
+Processing 95/109: src/redup/reporters/toon_reporter.py
+Processing 96/109: src/redup/reporters/yaml_reporter.py
+Processing 97/109: src/redup/cli_app/scan_commands.py
+Processing 98/109: src/redup/cli_app/output_writer.py
+Processing 99/109: src/redup/cli_app/config_builder.py
+Processing 100/109: src/redup/cli_app/__init__.py
+Processing 101/109: src/redup/cli_app/scan_helpers.py
+Processing 102/109: src/redup/cli_app/main.py
+Processing 103/109: src/redup/cli_app/fuzzy_similarity.py
+Processing 104/109: src/redup/core/utils/function_extractor.py
 
 ✗ src/redup/core/utils/function_extractor.py (Python) - fail
   • python.import.resolvable: Module 'scanner' not found (line 4)
-Processing 104/108: src/redup/core/utils/__init__.py
-Processing 105/108: src/redup/core/utils/diff_helpers.py
-Processing 106/108: src/redup/core/utils/hash_utils.py
+Processing 105/109: src/redup/core/utils/__init__.py
+Processing 106/109: src/redup/core/utils/diff_helpers.py
+Processing 107/109: src/redup/core/utils/hash_utils.py
 
 ✗ src/redup/core/utils/hash_utils.py (Python) - fail
   • python.import.resolvable: Module 'hasher' not found (line 35)
   • python.import.resolvable: Module 'hasher' not found (line 6)
   • python.import.resolvable: Module 'hasher' not found (line 25)
   • python.import.resolvable: Module 'hasher' not found (line 21)
-Processing 107/108: src/redup/core/utils/duplicate_finders.py
+Processing 108/109: src/redup/core/utils/duplicate_finders.py
 
 ✗ src/redup/core/utils/duplicate_finders.py (Python) - fail
   • python.import.resolvable: Module 'hasher' not found (line 6)
   • python.import.resolvable: Module 'hasher' not found (line 21)
-Processing 108/108: src/redup/core/utils/language_dispatcher.py
+Processing 109/109: src/redup/core/utils/language_dispatcher.py
 
 ✗ src/redup/core/utils/language_dispatcher.py (Python) - fail
   • python.import.resolvable: Module 'scanner' not found (line 4)
