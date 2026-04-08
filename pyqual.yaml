@@ -1,0 +1,18 @@
+pipeline:
+  name: redup-quality-loop
+  profile: python-minimal
+
+  metrics:
+    cc_max: 15
+    coverage_min: 40     # current: ~44%
+    critical_max: 0
+
+  stages:
+    - name: test
+      run: .venv/bin/pytest tests/ --cov=src/redup --cov-report=json:.pyqual/coverage.json -q
+      when: always
+
+  env:
+    LLM_MODEL: openrouter/qwen/qwen3-coder-next
+    LLX_DEFAULT_TIER: balanced
+    LLX_VERBOSE: true

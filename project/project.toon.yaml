@@ -1,0 +1,57 @@
+# redup | 295 func | 37f | 10488L | python | 2026-03-31
+
+HEALTH:
+  CC̄=3.7  critical=17 (limit:10)  dup=1  cycles=1
+
+ALERTS[20]:
+  !!! high_fan_out     _handle_analyze_project = 23 (limit:10)
+  !!! high_fan_out     _preload_files = 20 (limit:10)
+  !!  high_fan_out     _scan_sequential = 16 (limit:10)
+  !!  high_fan_out     scan_project = 16 (limit:10)
+  !!  high_fan_out     _find_duplicates_phase_lazy = 15 (limit:10)
+  !!  high_fan_out     write_results = 15 (limit:10)
+  !!  high_fan_out     _load_duplication_map = 15 (limit:10)
+  !   cc_exceeded      GroupMatcher._ensure_matches = 15 (limit:15)
+  !   cc_exceeded      _parse_with_ast = 15 (limit:15)
+  !   high_fan_out     _scan_parallel = 14 (limit:10)
+
+MODULES[45] (top by size):
+  M[src/redup/core/ts_extractor.py] 765L C:1 F:24 CC↑7 D:1 (python)
+  M[src/redup/core/pipeline.py] 714L C:0 F:18 CC↑11 D:5 (python)
+  M[src/redup/mcp_server.py] 675L C:0 F:16 CC↑12 D:0 (python)
+  M[src/redup/core/scanner.py] 633L C:4 F:21 CC↑13 D:1 (python)
+  M[src/redup/core/universal_fuzzy.py] 449L C:3 F:16 CC↑11 D:0 (python)
+  M[src/redup/core/fuzzy_similarity.py] 416L C:4 F:20 CC↑10 D:0 (python)
+  M[src/redup/core/hasher.py] 340L C:3 F:18 CC↑8 D:7 (python)
+  M[src/redup/reporters/enhanced_reporter.py] 274L C:1 F:17 CC↑8 D:0 (python)
+  M[src/redup/core/cache.py] 267L C:1 F:10 CC↑5 D:1 (python)
+  M[src/redup/core/lsh_matcher.py] 225L C:2 F:12 CC↑10 D:1 (python)
+  M[src/redup/core/models.py] 216L C:9 F:1 CC↑1 D:0 (python)
+  M[src/redup/core/differ.py] 209L C:1 F:5 CC↑14 D:2 (python)
+  M[src/redup/reporters/code2llm_reporter.py] 209L C:0 F:6 CC↑11 D:2 (python)
+  M[src/redup/cli_app/main.py] 196L C:0 F:5 CC↑1 D:0 (python)
+  M[src/redup/config.py] 182L C:1 F:7 CC↑9 D:12 (python)
+  LANGS: python:44/shell:1
+
+HOTSPOTS[10]:
+  ★ _handle_analyze_project fan=23  // Analysis pipeline, 23 stages
+  ★ _preload_files fan=20  // Load ALL files into RAM at once for maximum speed.
+  ★ _scan_sequential fan=16  // Scan files sequentially.
+  ★ scan_project fan=16  // UNIFIED entry point for project scanning.
+
+Args:
+    config: Scan configuration
+
+  ★ _find_duplicates_phase_lazy fan=15  // Phase 3: Hash and find duplicates with caching and lazy evaluation.
+
+REFACTOR[10]:
+  [1] H/H Split god module src/redup/core/scanner.py (633L, 4 classes)
+  [2] H/H Split god module src/redup/mcp_server.py (675L, 0 classes)
+  [3] H/H Split god module src/redup/core/pipeline.py (714L, 0 classes)
+  [4] H/H Split god module src/redup/core/ts_extractor.py (765L, 1 classes)
+  [5] M/L Split GroupMatcher._ensure_matches (CC=15 → target CC<10)
+
+EVOLUTION:
+  2026-03-23 CC̄=3.4 crit=13 8616L // Automated analysis
+  2026-03-24 CC̄=3.7 crit=17 10319L // Automated analysis
+  2026-03-31 CC̄=3.7 crit=17 10488L // Automated analysis

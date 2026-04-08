@@ -1,0 +1,6 @@
+2026-04-08 14:34:37,704 - redsl.cli - INFO - reDSL refactor started: /home/tom/github/semcod/redup (max_actions=5, dry_run=True)
+2026-04-08 14:34:37,710 - redsl.analyzers.toon_analyzer - INFO - Found toon files: []
+2026-04-08 14:34:38,321 - redsl.analyzers.radon_analyzer - INFO - Enhanced 20 metrics, added 4 metrics and 0 alerts with radon CC data
+2026-04-08 14:34:38,321 - redsl.analyzers.python_analyzer - INFO - AST fallback: 66 py files, 10937 lines, 17 critical CC
+2026-04-08 14:34:38,322 - redsl.dsl.engine - INFO - Decision types: {'split_module': 7, 'remove_unused_imports': 19, 'fix_module_execution_block': 27, 'extract_constants': 34, 'simplify_conditionals': 5, 'extract_functions': 39, 'add_return_types': 11}
+2026-04-08 14:34:38,322 - redsl.dsl.engine - INFO - Evaluated 87 contexts → 142 decisions

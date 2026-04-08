@@ -119,8 +119,8 @@ def test_analyze_empty_project():
 def test_analyze_no_duplicates():
     with tempfile.TemporaryDirectory() as tmpdir:
         root = Path(tmpdir)
-        (root / "a.py").write_text("def foo():\n    return 1\n")
-        (root / "b.py").write_text("def bar():\n    return 2\n")
+        (root / "a.py").write_text("def foo(x):\n    if x > 0:\n        return x * 2\n    return -1\n")
+        (root / "b.py").write_text("def bar(items):\n    total = 0\n    for i in items:\n        total += i\n    return total\n")
 
         config = ScanConfig(root=root, min_block_lines=3)
         result = analyze(config=config, function_level_only=True)

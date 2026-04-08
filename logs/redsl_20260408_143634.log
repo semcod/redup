@@ -1,0 +1,43 @@
+2026-04-08 14:36:37,803 - redsl.cli - INFO - reDSL refactor started: /home/tom/github/semcod/redup (max_actions=3, dry_run=False)
+2026-04-08 14:36:37,810 - redsl.analyzers.toon_analyzer - INFO - Found toon files: []
+2026-04-08 14:36:38,884 - redsl.analyzers.radon_analyzer - INFO - Enhanced 20 metrics, added 4 metrics and 0 alerts with radon CC data
+2026-04-08 14:36:38,884 - redsl.analyzers.python_analyzer - INFO - AST fallback: 66 py files, 10937 lines, 17 critical CC
+2026-04-08 14:36:38,886 - redsl.dsl.engine - INFO - Decision types: {'split_module': 7, 'remove_unused_imports': 19, 'fix_module_execution_block': 27, 'extract_constants': 34, 'simplify_conditionals': 5, 'extract_functions': 39, 'add_return_types': 11}
+2026-04-08 14:36:38,886 - redsl.dsl.engine - INFO - Evaluated 87 contexts → 142 decisions
+2026-04-08 14:36:38,886 - redsl.execution.cycle - INFO - === CYCLE 1: PERCEIVE ===
+2026-04-08 14:36:38,887 - redsl.analyzers.toon_analyzer - INFO - Found toon files: []
+2026-04-08 14:36:40,037 - redsl.analyzers.radon_analyzer - INFO - Enhanced 20 metrics, added 4 metrics and 0 alerts with radon CC data
+2026-04-08 14:36:40,039 - redsl.analyzers.python_analyzer - INFO - AST fallback: 66 py files, 10937 lines, 17 critical CC
+2026-04-08 14:36:40,039 - redsl.execution.cycle - INFO - === CYCLE 1: DECIDE ===
+2026-04-08 14:36:40,044 - redsl.dsl.engine - INFO - Decision types: {'split_module': 7, 'remove_unused_imports': 19, 'fix_module_execution_block': 27, 'extract_constants': 34, 'simplify_conditionals': 5, 'extract_functions': 39, 'add_return_types': 11}
+2026-04-08 14:36:40,044 - redsl.dsl.engine - INFO - Evaluated 87 contexts → 142 decisions
+2026-04-08 14:36:41,048 - chromadb.telemetry.product.posthog - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2026-04-08 14:36:41,299 - redsl.memory - INFO - Memory layer 'refactor_episodic' initialized
+2026-04-08 14:36:41,817 - redsl.execution.resolution - INFO - Memory: found 3 similar past actions for src/redup/mcp_server.py
+2026-04-08 14:36:42,195 - redsl.execution.resolution - INFO - Memory: found 3 similar past actions for src/redup/core/scanner.py
+2026-04-08 14:36:42,453 - redsl.execution.resolution - INFO - Memory: found 3 similar past actions for src/redup/core/pipeline.py
+2026-04-08 14:36:42,453 - redsl.execution.cycle - INFO - === CYCLE 1: PLAN + EXECUTE ===
+2026-04-08 14:36:42,453 - redsl.execution.decision - INFO - Executing: split_module on src/redup/mcp_server.py (score=1.62)
+2026-04-08 14:36:42,462 - redsl.memory - INFO - Memory layer 'refactor_procedural' initialized
+2026-04-08 14:36:42,905 - redsl.execution.resolution - INFO - Found 2 relevant strategies in memory
+2026-04-08 14:36:42,925 - redsl.execution.decision - INFO - llx_router: split_module with critical complexity → gpt-4o → model=ollama/gpt-4o est_cost=$0.0780
+2026-04-08 14:36:42,952 - LiteLLM - INFO - 
+LiteLLM completion() model= gpt-4o; provider = ollama
+2026-04-08 14:36:42,977 - redsl.llm - ERROR - LLM call failed: litellm.APIConnectionError: OllamaException - The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+2026-04-08 14:36:42,978 - redsl.execution.decision - ERROR - Failed to execute decision split_god_module: litellm.APIConnectionError: OllamaException - The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+2026-04-08 14:36:42,978 - redsl.execution.decision - INFO - Executing: split_module on src/redup/core/scanner.py (score=1.62)
+2026-04-08 14:36:43,390 - redsl.execution.resolution - INFO - Found 2 relevant strategies in memory
+2026-04-08 14:36:43,398 - redsl.execution.decision - INFO - llx_router: split_module with critical complexity → gpt-4o → model=ollama/gpt-4o est_cost=$0.0755
+2026-04-08 14:36:43,399 - LiteLLM - INFO - 
+LiteLLM completion() model= gpt-4o; provider = ollama
+2026-04-08 14:36:43,422 - redsl.llm - ERROR - LLM call failed: litellm.APIConnectionError: OllamaException - The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+2026-04-08 14:36:43,422 - redsl.execution.decision - ERROR - Failed to execute decision split_god_module: litellm.APIConnectionError: OllamaException - The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+2026-04-08 14:36:43,422 - redsl.execution.decision - INFO - Executing: split_module on src/redup/core/pipeline.py (score=1.62)
+2026-04-08 14:36:43,750 - redsl.execution.resolution - INFO - Found 2 relevant strategies in memory
+2026-04-08 14:36:43,755 - redsl.execution.decision - INFO - llx_router: split_module with critical complexity → gpt-4o → model=ollama/gpt-4o est_cost=$0.0803
+2026-04-08 14:36:43,756 - LiteLLM - INFO - 
+LiteLLM completion() model= gpt-4o; provider = ollama
+2026-04-08 14:36:43,787 - redsl.llm - ERROR - LLM call failed: litellm.APIConnectionError: OllamaException - The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+2026-04-08 14:36:43,788 - redsl.execution.decision - ERROR - Failed to execute decision split_god_module: litellm.APIConnectionError: OllamaException - The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+2026-04-08 14:36:43,788 - redsl.execution.cycle - INFO - === CYCLE 1: REFLECT ===
+2026-04-08 14:36:43,793 - redsl.cli - INFO - reDSL refactor complete. Log: /home/tom/github/semcod/redup/logs/redsl_20260408_143634.log

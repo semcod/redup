@@ -1,0 +1,1670 @@
+name: Code Quality Improvement
+project_name: ''
+project_type: prefactoring
+domain: dev-tools
+goal: Improve code quality using prefact
+goals:
+- Fix all prefact-detected issues
+- Improve code maintainability
+- Ensure consistent code style
+quality_gates:
+- metric: Prefact Issues
+  threshold: '0'
+sprints:
+- id: sprint-1
+  name: Code Quality Improvements
+  duration: 2 weeks
+  objectives:
+  - Fix code quality issues
+  task_patterns:
+  - id: ticket-2c7fc6b5
+    name: Fix smart-return-type issues
+    description: Resolve 4 smart-return-type issues in benchmarks/bench_libraries.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - benchmarks/bench_libraries.py
+    rule_id: smart-return-type
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-cdd4fd93
+    name: Fix magic-numbers issues
+    description: Resolve 8 magic-numbers issues in benchmarks/bench_libraries.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - benchmarks/bench_libraries.py
+    rule_id: magic-numbers
+    count: 8
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8840cc9b
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in benchmarks/bench_libraries.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - benchmarks/bench_libraries.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-dc4dd45c
+    name: Fix smart-return-type issues
+    description: Resolve 1 smart-return-type issues in examples/01_basic_usage.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/01_basic_usage.py
+    rule_id: smart-return-type
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5f00b9e4
+    name: Fix ai-boilerplate issues
+    description: Resolve 2 ai-boilerplate issues in examples/01_basic_usage.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - examples/01_basic_usage.py
+    rule_id: ai-boilerplate
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6c953cba
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/__init__.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/__init__.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-92d43845
+    name: Fix smart-return-type issues
+    description: Resolve 2 smart-return-type issues in benchmark.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - benchmark.py
+    rule_id: smart-return-type
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-98e2c479
+    name: Fix magic-numbers issues
+    description: Resolve 3 magic-numbers issues in benchmark.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - benchmark.py
+    rule_id: magic-numbers
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f84a4719
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in benchmark.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - benchmark.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7e472b08
+    name: Fix string-concat issues
+    description: Resolve 2 string-concat issues in src/redup/cli_app/fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/cli_app/fuzzy_similarity.py
+    rule_id: string-concat
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-db16aed6
+    name: Fix unused-imports issues
+    description: Resolve 30 unused-imports issues in src/redup/cli_app/main.py
+    task_type: prefactor
+    priority: high
+    estimate: 3d
+    files:
+    - src/redup/cli_app/main.py
+    rule_id: unused-imports
+    count: 30
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1a38b250
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/cli_app/main.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/cli_app/main.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-a5f99f88
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/cli_app/output_writer.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/cli_app/output_writer.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8944020d
+    name: Fix duplicate-imports issues
+    description: Resolve 1 duplicate-imports issues in src/redup/cli_app/output_writer.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/cli_app/output_writer.py
+    rule_id: duplicate-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7ca42ec7
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/cli_app/scan_commands.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/cli_app/scan_commands.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f57c24f0
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/config.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1a5b94b4
+    name: Fix magic-numbers issues
+    description: Resolve 1 magic-numbers issues in src/redup/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/config.py
+    rule_id: magic-numbers
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-393e0a66
+    name: Fix llm-generated-code issues
+    description: Resolve 3 llm-generated-code issues in src/redup/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/config.py
+    rule_id: llm-generated-code
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-9b7361ea
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/cache.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/cache.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-e104cf2f
+    name: Fix magic-numbers issues
+    description: Resolve 1 magic-numbers issues in src/redup/core/cache.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/cache.py
+    rule_id: magic-numbers
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-04a4dde5
+    name: Fix llm-generated-code issues
+    description: Resolve 3 llm-generated-code issues in src/redup/core/cache.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/cache.py
+    rule_id: llm-generated-code
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-554aff75
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/differ.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/differ.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-23833edd
+    name: Fix duplicate-imports issues
+    description: Resolve 1 duplicate-imports issues in src/redup/core/differ.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/differ.py
+    rule_id: duplicate-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-2e613c6a
+    name: Fix magic-numbers issues
+    description: Resolve 4 magic-numbers issues in src/redup/core/differ.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/differ.py
+    rule_id: magic-numbers
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-3a37c64d
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/config.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6c4aa5f9
+    name: Fix duplicate-imports issues
+    description: Resolve 1 duplicate-imports issues in src/redup/core/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/config.py
+    rule_id: duplicate-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-a20d0974
+    name: Fix magic-numbers issues
+    description: Resolve 1 magic-numbers issues in src/redup/core/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/config.py
+    rule_id: magic-numbers
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-ff3165ea
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/redup/core/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/config.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-d73c42f2
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/fuzzy_similarity.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-628a958d
+    name: Fix magic-numbers issues
+    description: Resolve 4 magic-numbers issues in src/redup/core/fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/fuzzy_similarity.py
+    rule_id: magic-numbers
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f7ce0f76
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/hash_cache.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/hash_cache.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-18b89624
+    name: Fix duplicate-imports issues
+    description: Resolve 1 duplicate-imports issues in src/redup/core/hash_cache.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/hash_cache.py
+    rule_id: duplicate-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-731007fe
+    name: Fix relative-imports issues
+    description: Resolve 8 relative-imports issues in src/redup/core/hasher.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/redup/core/hasher.py
+    rule_id: relative-imports
+    count: 8
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-0ba5dc90
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/hasher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/hasher.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-59193771
+    name: Fix duplicate-imports issues
+    description: Resolve 1 duplicate-imports issues in src/redup/core/hasher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/hasher.py
+    rule_id: duplicate-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-af3d9098
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/core/hasher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/hasher.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1b96209d
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/lsh_matcher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/lsh_matcher.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5e956f96
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/lazy_grouper.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/lazy_grouper.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-56f5ea1f
+    name: Fix llm-generated-code issues
+    description: Resolve 2 llm-generated-code issues in src/redup/core/lazy_grouper.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/lazy_grouper.py
+    rule_id: llm-generated-code
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-341465c6
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/matcher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/matcher.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1020c57e
+    name: Fix smart-return-type issues
+    description: Resolve 3 smart-return-type issues in src/redup/core/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/pipeline.py
+    rule_id: smart-return-type
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-b074b983
+    name: Fix unused-imports issues
+    description: Resolve 10 unused-imports issues in src/redup/core/pipeline.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/redup/core/pipeline.py
+    rule_id: unused-imports
+    count: 10
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-cf0ab851
+    name: Fix duplicate-imports issues
+    description: Resolve 5 duplicate-imports issues in src/redup/core/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/pipeline.py
+    rule_id: duplicate-imports
+    count: 5
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-41ab3d0b
+    name: Fix magic-numbers issues
+    description: Resolve 1 magic-numbers issues in src/redup/core/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/pipeline.py
+    rule_id: magic-numbers
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-4ea798c3
+    name: Fix llm-generated-code issues
+    description: Resolve 4 llm-generated-code issues in src/redup/core/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/pipeline.py
+    rule_id: llm-generated-code
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-bc7b7113
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/planner.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/planner.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-a5a8a3ab
+    name: Fix magic-numbers issues
+    description: Resolve 4 magic-numbers issues in src/redup/core/planner.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/planner.py
+    rule_id: magic-numbers
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7a854d8c
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/models.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/models.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-e4d77feb
+    name: Fix magic-numbers issues
+    description: Resolve 1 magic-numbers issues in src/redup/core/models.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/models.py
+    rule_id: magic-numbers
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8a263b02
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/python_parser.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/python_parser.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c66bb8b3
+    name: Fix smart-return-type issues
+    description: Resolve 2 smart-return-type issues in src/redup/core/scanner.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner.py
+    rule_id: smart-return-type
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5cbbcf2e
+    name: Fix unused-imports issues
+    description: Resolve 6 unused-imports issues in src/redup/core/scanner.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/redup/core/scanner.py
+    rule_id: unused-imports
+    count: 6
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-42ddc063
+    name: Fix duplicate-imports issues
+    description: Resolve 3 duplicate-imports issues in src/redup/core/scanner.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner.py
+    rule_id: duplicate-imports
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-464bac4e
+    name: Fix magic-numbers issues
+    description: Resolve 3 magic-numbers issues in src/redup/core/scanner.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner.py
+    rule_id: magic-numbers
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1b9c96c6
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/redup/core/scanner.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-14486252
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/semantic.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/semantic.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c2cbcf8d
+    name: Fix duplicate-imports issues
+    description: Resolve 2 duplicate-imports issues in src/redup/core/semantic.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/semantic.py
+    rule_id: duplicate-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-338302df
+    name: Fix llm-generated-code issues
+    description: Resolve 3 llm-generated-code issues in src/redup/core/semantic.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/semantic.py
+    rule_id: llm-generated-code
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-ae7cc5f5
+    name: Fix duplicate-keys issues
+    description: Resolve 1 duplicate-keys issues in src/redup/core/ts_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/ts_extractor.py
+    rule_id: duplicate-keys
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-4895f09f
+    name: Fix string-concat issues
+    description: Resolve 3 string-concat issues in src/redup/core/ts_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/ts_extractor.py
+    rule_id: string-concat
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6611230d
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/ts_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/ts_extractor.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-13dd47f9
+    name: Fix magic-numbers issues
+    description: Resolve 19 magic-numbers issues in src/redup/core/ts_extractor.py
+    task_type: prefactor
+    priority: high
+    estimate: 3d
+    files:
+    - src/redup/core/ts_extractor.py
+    rule_id: magic-numbers
+    count: 19
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-37aaf6e7
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/universal_fuzzy.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/universal_fuzzy.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-fd1d9b09
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/core/universal_fuzzy.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/universal_fuzzy.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5744c502
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/utils/diff_helpers.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/diff_helpers.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8acd77aa
+    name: Fix relative-imports issues
+    description: Resolve 4 relative-imports issues in src/redup/core/utils/duplicate_finders.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/utils/duplicate_finders.py
+    rule_id: relative-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1f61bb8b
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/core/utils/duplicate_finders.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/utils/duplicate_finders.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-e1c4c8ff
+    name: Fix duplicate-imports issues
+    description: Resolve 1 duplicate-imports issues in src/redup/core/utils/duplicate_finders.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/duplicate_finders.py
+    rule_id: duplicate-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-02fdba0d
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/redup/core/utils/duplicate_finders.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/duplicate_finders.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8670de54
+    name: Fix relative-imports issues
+    description: Resolve 2 relative-imports issues in src/redup/core/utils/function_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/function_extractor.py
+    rule_id: relative-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-90ab87c1
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/core/utils/function_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/function_extractor.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-21a6cd7e
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/redup/core/utils/function_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/function_extractor.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8b3615b2
+    name: Fix relative-imports issues
+    description: Resolve 8 relative-imports issues in src/redup/core/utils/hash_utils.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/redup/core/utils/hash_utils.py
+    rule_id: relative-imports
+    count: 8
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-4ae54052
+    name: Fix duplicate-imports issues
+    description: Resolve 5 duplicate-imports issues in src/redup/core/utils/hash_utils.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/utils/hash_utils.py
+    rule_id: duplicate-imports
+    count: 5
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-dd65eee9
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/redup/core/utils/hash_utils.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/hash_utils.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-524b6794
+    name: Fix relative-imports issues
+    description: Resolve 2 relative-imports issues in src/redup/core/utils/language_dispatcher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/utils/language_dispatcher.py
+    rule_id: relative-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5e23722c
+    name: Fix llm-generated-code issues
+    description: Resolve 4 llm-generated-code issues in src/redup/core/utils/language_dispatcher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/utils/language_dispatcher.py
+    rule_id: llm-generated-code
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-888f69a9
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/mcp_server.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/mcp_server.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f8c8d01d
+    name: Fix magic-numbers issues
+    description: Resolve 5 magic-numbers issues in src/redup/mcp_server.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/mcp_server.py
+    rule_id: magic-numbers
+    count: 5
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-87601abe
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/mcp_server.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/mcp_server.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-18281355
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in src/redup/reporters/code2llm_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/reporters/code2llm_reporter.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-99e47040
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/reporters/code2llm_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/code2llm_reporter.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-22063dba
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in src/redup/reporters/code2llm_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/code2llm_reporter.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-fd761812
+    name: Fix unused-imports issues
+    description: Resolve 10 unused-imports issues in src/redup/reporters/enhanced_reporter.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/redup/reporters/enhanced_reporter.py
+    rule_id: unused-imports
+    count: 10
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-301bea04
+    name: Fix magic-numbers issues
+    description: Resolve 1 magic-numbers issues in src/redup/reporters/enhanced_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/enhanced_reporter.py
+    rule_id: magic-numbers
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6351a12c
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/reporters/json_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/json_reporter.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6f5ef110
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/reporters/markdown_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/markdown_reporter.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-b6419427
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/reporters/markdown_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/markdown_reporter.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-43a68362
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/reporters/toon_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/toon_reporter.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5394cbb4
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/reporters/toon_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/toon_reporter.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-60a995b6
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/reporters/yaml_reporter.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/reporters/yaml_reporter.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-332ebe03
+    name: Fix smart-return-type issues
+    description: Resolve 3 smart-return-type issues in test_fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - test_fuzzy_similarity.py
+    rule_id: smart-return-type
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-e396c763
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in test_fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - test_fuzzy_similarity.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-3ed82fa6
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in test_fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - test_fuzzy_similarity.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7c6342ca
+    name: Fix smart-return-type issues
+    description: Resolve 5 smart-return-type issues in test_universal_fuzzy.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - test_universal_fuzzy.py
+    rule_id: smart-return-type
+    count: 5
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-84e26b6b
+    name: Fix unused-imports issues
+    description: Resolve 4 unused-imports issues in test_universal_fuzzy.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - test_universal_fuzzy.py
+    rule_id: unused-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-144c1897
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in test_universal_fuzzy.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - test_universal_fuzzy.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5bffe6eb
+    name: Fix outdated-dependency issues
+    description: Resolve 1 outdated-dependency issues in pyproject.toml
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - pyproject.toml
+    rule_id: outdated-dependency
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-4291afa7
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/__init__.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/__init__.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-2befcd88
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in src/redup/cli_app/scan_commands.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/cli_app/scan_commands.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6566470e
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/config.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/config.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1cb140db
+    name: Fix wildcard-imports issues
+    description: Resolve 1 wildcard-imports issues in src/redup/core/fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/fuzzy_similarity.py
+    rule_id: wildcard-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7b1a7682
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/core/fuzzy_similarity.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/fuzzy_similarity.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-0294be2e
+    name: Fix wildcard-imports issues
+    description: Resolve 8 wildcard-imports issues in src/redup/core/hasher.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/redup/core/hasher.py
+    rule_id: wildcard-imports
+    count: 8
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-e0032b99
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/core/hasher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/hasher.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1e85a016
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in src/redup/core/lazy_grouper.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/lazy_grouper.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-2ab3bdbb
+    name: Fix string-concat issues
+    description: Resolve 5 string-concat issues in src/redup/core/lsh_matcher.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/lsh_matcher.py
+    rule_id: string-concat
+    count: 5
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-4d363d4d
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in src/redup/core/models.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/models.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-750551da
+    name: Fix string-concat issues
+    description: Resolve 2 string-concat issues in src/redup/core/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/pipeline.py
+    rule_id: string-concat
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-267e250a
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/core/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/pipeline.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-e917d7df
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/scanner/__init__.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner/__init__.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-a95d59ea
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in src/redup/core/python_parser.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/python_parser.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c7ae2a3b
+    name: Fix string-concat issues
+    description: Resolve 2 string-concat issues in src/redup/core/scanner_cache.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_cache.py
+    rule_id: string-concat
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-df9cad03
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/scanner_loader.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_loader.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-abd35fdb
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/core/scanner_loader.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_loader.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-80563ab8
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/scanner_filters.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_filters.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f810bc7b
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in src/redup/core/scanner_models.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_models.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-fb33c264
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in src/redup/core/scanner_types.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_types.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-27be0090
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in src/redup/core/scanner_types.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_types.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-726cd54f
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in src/redup/core/semantic.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/semantic.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-a8d9f79d
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in src/redup/core/scanner_utils.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/scanner_utils.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c5e2ac84
+    name: Fix wildcard-imports issues
+    description: Resolve 1 wildcard-imports issues in src/redup/core/ts_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/ts_extractor.py
+    rule_id: wildcard-imports
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c4ed8409
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/core/ts_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/ts_extractor.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5e4f0e92
+    name: Fix string-concat issues
+    description: Resolve 6 string-concat issues in src/redup/core/universal_fuzzy.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - src/redup/core/universal_fuzzy.py
+    rule_id: string-concat
+    count: 6
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7db3b597
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in src/redup/core/universal_fuzzy.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/core/universal_fuzzy.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-cbad466e
+    name: Fix string-concat issues
+    description: Resolve 5 string-concat issues in src/redup/core/utils/function_extractor.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - src/redup/core/utils/function_extractor.py
+    rule_id: string-concat
+    count: 5
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7b777b94
+    name: Fix wildcard-imports issues
+    description: Resolve 3 wildcard-imports issues in src/redup/mcp_server.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - src/redup/mcp_server.py
+    rule_id: wildcard-imports
+    count: 3
+    model_hints:
+      planning: balanced
+      implementation: balanced

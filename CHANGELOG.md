@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.4.16] - 2026-04-08
+
+### Test
+- Update tests/test_pipeline.py
+
+### Other
+- Update logs/redsl_20260408_095047.log
+- Update logs/redsl_20260408_095108.log
+- Update logs/redsl_20260408_101646.log
+- Update logs/redsl_20260408_141144.log
+- Update logs/redsl_20260408_141306.log
+- Update logs/redsl_20260408_143435.log
+- Update logs/redsl_20260408_143634.log
+- Update planfile.yaml
+- Update prefact.yaml
+- Update project/project.toon.yaml
+- ... and 4 more files
+
 ## [0.4.15] - 2026-03-25
 
 ### Docs
