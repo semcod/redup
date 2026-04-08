@@ -7,7 +7,6 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from redup.core.hasher import HashedBlock, _normalize_text
-from redup.core.lsh_matcher import find_near_duplicates
 
 
 @dataclass
@@ -78,7 +77,10 @@ def match_candidates(
     candidates: list[HashedBlock],
     min_similarity: float = 0.85,
 ) -> list[MatchResult]:
-    """Compare all pairs in a candidate group and return matches above threshold."""
+    """Compare all pairs in a candidate group and return matches above threshold.
+
+    Uses the first block as reference and compares all others against it.
+    """
     return _compare_against_reference(
         candidates,
         min_similarity,
@@ -91,7 +93,11 @@ def refine_structural_matches(
     candidates: list[HashedBlock],
     min_similarity: float = 0.80,
 ) -> list[MatchResult]:
-    """For structural hash collisions, verify with text similarity."""
+    """For structural hash collisions, verify with text similarity.
+
+    Structural hashes normalize variable names, so we use a lower threshold
+    and verify the overall shape matches.
+    """
     return _compare_against_reference(
         candidates,
         min_similarity,
@@ -99,13 +105,3 @@ def refine_structural_matches(
         lambda _sim: "structural",
         skip_same_location=True,
     )
-
-
-__all__ = [
-    "MatchResult",
-    "sequence_similarity",
-    "fuzzy_similarity",
-    "match_candidates",
-    "refine_structural_matches",
-    "find_near_duplicates",
-]

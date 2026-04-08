@@ -3,285 +3,122 @@
 from __future__ import annotations
 
 import ast
-import functools
 import hashlib
 import re
 from collections import defaultdict
-from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Callable
 
-# Fast hash implementation with fallback
 try:
     import xxhash
-    def _fast_hash(data: bytes) -> str:
-        return xxhash.xxh64(data).hexdigest()[:16]
 except ImportError:
-    def _fast_hash(data: bytes) -> str:
-        return hashlib.sha256(data).hexdigest()[:16]
-
-# Bloom filter for pre-screening
-try:
-    from pybloom_live import ScalableBloomFilter
-    _USE_BLOOM = True
-except ImportError:
-    _USE_BLOOM = False
+    xxhash = None
 
 from redup.core.scanner import CodeBlock
 
-# Cache for normalization results - avoids re-parsing same text
-_normalize_cache: dict[str, str] = {}
-_MAX_CACHE_SIZE = 10000
 
-# Pre-compile regex patterns for performance
-_COMMENT_RE = re.compile(r'#.*$')
+def _fast_hash(data: bytes) -> str:
+    """Return a short stable hash string for the given bytes."""
+    if xxhash is not None:
+        return xxhash.xxh64(data).hexdigest()[:16]
+    return hashlib.sha256(data).hexdigest()[:16]
+
+
+_normalize_cache: dict[str, str] = {}
+_MAX_CACHE_SIZE = 10_000
+_COMMENT_RE = re.compile(r"#.*$")
 _MULTILINE_STRING_RE = re.compile(r'^\s*("""|\'\'\')')
 
 
 def _normalize_text(text: str) -> str:
-    """Normalize code text for comparison.
+    """Normalize code text for comparison."""
+    cached = _normalize_cache.get(text)
+    if cached is not None:
+        return cached
 
-    Strips comments, normalizes whitespace, lowercases identifiers
-    that look like local variables.
-    
-    Optimized: Uses list comprehension and pre-compiled regex for 2x speedup.
-    """
-    global _normalize_cache
-    
-    # Check cache first
-    if text in _normalize_cache:
-        return _normalize_cache[text]
-    
-    # Vectorized: single list comprehension pass instead of loop
-    lines = text.splitlines()
-    result_lines = [
-        processed for line in lines
-        if (line.strip() and not _MULTILINE_STRING_RE.match(line))
-        for processed in [_COMMENT_RE.sub("", line).strip()]
-        if processed  # Skip empty lines (only comments)
-    ]
+    result_lines: list[str] = []
+    for line in text.splitlines():
+        if _MULTILINE_STRING_RE.match(line):
+            continue
+        cleaned = _COMMENT_RE.sub("", line).strip()
+        if cleaned:
+            result_lines.append(cleaned)
+
     result = "\n".join(result_lines)
-    
-    # Cache result with LRU eviction (faster: pop first instead of slice)
     if len(_normalize_cache) >= _MAX_CACHE_SIZE:
-        # Remove oldest entry (first inserted)
         _normalize_cache.pop(next(iter(_normalize_cache)))
     _normalize_cache[text] = result
-    
-    return result
-
-
-def _normalize_ast_text(text: str) -> str:
-    """Deeper normalization: replace variable names and literals with placeholders.
-
-    This catches structural clones where only names differ.
-    Uses Python AST when possible for accurate normalization.
-    """
-    global _normalize_cache
-    
-    # Check cache first
-    cache_key = f"ast:{text}"
-    if cache_key in _normalize_cache:
-        return _normalize_cache[cache_key]
-    
-    result = None
-    
-    # Try AST-based normalization for Python code
-    try:
-        tree = ast.parse(text)
-        result = _ast_to_normalized_string(tree)
-    except SyntaxError:
-        pass
-
-    if result is None:
-        # Fallback: text-based normalization
-        result = _normalize_text(text)
-        result = re.sub(r'"[^"]*"', '"__STR__"', result)
-        result = re.sub(r"'[^']*'", "'__STR__'", result)
-        result = re.sub(r'\b\d+\.?\d*\b', "__NUM__", result)
-    
-    # Cache result with LRU eviction
-    if len(_normalize_cache) >= _MAX_CACHE_SIZE:
-        _normalize_cache = dict(list(_normalize_cache.items())[_MAX_CACHE_SIZE // 2:])
-    _normalize_cache[cache_key] = result
-    
     return result
 
 
 def _ast_to_normalized_string(tree: object) -> str:
-    """Convert an AST to a normalized string with placeholders for names.
+    """Convert an AST to a coarse structural fingerprint."""
+    import ast as _ast
 
-    Replaces all user-defined identifiers with positional placeholders
-    while preserving control flow structure, operators, and builtins.
-    
-    Optimized: Single-pass AST walk with batch processing for 1.5x speedup.
-    """
-    import ast
+    tokens: list[str] = []
+    for node in _ast.walk(tree):
+        if isinstance(node, (_ast.Load, _ast.Store, _ast.Del, _ast.Param)):
+            continue
+        if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef)):
+            token = "FUNC"
+        elif isinstance(node, _ast.ClassDef):
+            token = "CLASS"
+        elif isinstance(node, _ast.Name):
+            token = "IDENT"
+        elif isinstance(node, _ast.arg):
+            token = "ARG"
+        elif isinstance(node, _ast.Attribute):
+            token = "ATTR"
+        elif isinstance(node, _ast.Constant):
+            token = f"CONST_{type(node.value).__name__}"
+        elif isinstance(node, _ast.BinOp):
+            token = f"BINOP_{type(node.op).__name__}"
+        elif isinstance(node, _ast.Compare):
+            token = "CMP_" + "_".join(type(op).__name__ for op in node.ops)
+        else:
+            token = type(node).__name__.upper()
+        tokens.append(token)
 
-    name_map: dict[str, str] = {}
-    counter = [0]
-    parts: list[str] = []
-
-    # Batch process all nodes in single walk - O(n) instead of O(n²)
-    for node in ast.walk(tree):
-        handler = _AST_HANDLERS.get(type(node))
-        if handler:
-            parts.append(handler(node, name_map, counter))
-
-    return " ".join(parts)
-
-
-def _process_ast_node(
-    node,
-    name_map: dict[str, str],
-    counter: list[int]
-) -> str | None:
-    """Process a single AST node and return its normalized representation."""
-
-    handler = _AST_HANDLERS.get(type(node))
-    return handler(node, name_map, counter) if handler else None
+    return " ".join(tokens)
 
 
-# Dispatch table for AST node types - reduces complexity from CC=14 to CC=2
-_AST_HANDLERS: dict[type, Callable] = {
-    ast.Name: lambda n, nm, c: _get_placeholder(n.id, nm, c),
-    ast.arg: lambda n, nm, c: _get_placeholder(n.arg, nm, c),
-    ast.FunctionDef: lambda n, nm, c: f"DEF({_get_placeholder(n.name, nm, c)})",
-    ast.AsyncFunctionDef: lambda n, nm, c: f"DEF({_get_placeholder(n.name, nm, c)})",
-    ast.ClassDef: lambda n, nm, c: f"CLASS({_get_placeholder(n.name, nm, c)})",
-    ast.Constant: lambda n, nm, c: _normalize_constant(n.value),
-    ast.If: lambda n, nm, c: "IF",
-    ast.For: lambda n, nm, c: "FOR",
-    ast.While: lambda n, nm, c: "WHILE",
-    ast.Return: lambda n, nm, c: "RETURN",
-    ast.Call: lambda n, nm, c: "CALL",
-    ast.BinOp: lambda n, nm, c: f"BINOP({type(n.op).__name__})",
-    ast.Compare: lambda n, nm, c: f"CMP({','.join(type(op).__name__ for op in n.ops)})",
-}
+def _normalize_ast_text(text: str) -> str:
+    """Deeper normalization: replace variable names and literals with placeholders."""
+    cache_key = f"ast:{text}"
+    cached = _normalize_cache.get(cache_key)
+    if cached is not None:
+        return cached
 
-
-def _get_placeholder(
-    name: str,
-    name_map: dict[str, str],
-    counter: list[int]
-) -> str:
-    """Get or create a placeholder for a name."""
-    BUILTINS = {
-        "print", "len", "range", "int", "float", "str", "list", "dict",
-        "set", "tuple", "bool", "None", "True", "False", "type", "isinstance",
-        "hasattr", "getattr", "setattr", "super", "property", "staticmethod",
-        "classmethod", "round", "abs", "max", "min", "sum", "sorted",
-        "enumerate", "zip", "map", "filter", "any", "all", "open",
-        "self", "cls", "return", "if", "else", "for", "while", "with",
-        "try", "except", "finally", "raise", "yield", "import", "from",
-        "class", "def", "pass", "break", "continue", "and", "or", "not",
-        "in", "is", "lambda", "global", "nonlocal", "assert", "del",
-    }
-
-    if name in BUILTINS or (name.startswith("__") and name.endswith("__")):
-        return name
-
-    if name not in name_map:
-        name_map[name] = f"_V{counter[0]}"
-        counter[0] += 1
-
-    return name_map[name]
-
-
-def _normalize_constant(value: Any) -> str:
-    """Normalize constant values."""
-    if isinstance(value, str):
-        return "__STR__"
-    elif isinstance(value, (int, float)):
-        return "__NUM__"
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        result = _normalize_text(text)
+        result = re.sub(r'"[^"]*"', '"__STR__"', result)
+        result = re.sub(r"'[^']*'", "'__STR__'", result)
+        result = re.sub(r'\b\d+\.?\d*\b', "__NUM__", result)
     else:
-        return str(type(value).__name__)
+        result = _ast_to_normalized_string(tree)
+
+    if len(_normalize_cache) >= _MAX_CACHE_SIZE:
+        _normalize_cache.pop(next(iter(_normalize_cache)))
+    _normalize_cache[cache_key] = result
+    return result
 
 
 def _hash_text(text: str, normalizer: Callable[[str], str]) -> str:
-    """Generic hash function with configurable normalizer - uses fast xxhash or SHA-256 fallback."""
+    """Hash normalized text using the configured normalizer."""
     normalized = normalizer(text)
-    # Use fast xxhash if available, otherwise fallback to SHA-256
     return _fast_hash(normalized.encode("utf-8"))
 
 
 def hash_block(text: str) -> str:
-    """SHA-256 hash of normalized text."""
-    from .utils.hash_utils import hash_block as _hash_block
-    return _hash_block(text)
+    """SHA-256-compatible hash of normalized text."""
+    return _hash_text(text, _normalize_text)
 
 
 def hash_block_structural(text: str) -> str:
-    """SHA-256 hash of deeply normalized text (variable names replaced)."""
-    from .utils.hash_utils import hash_block_structural as _hash_block_structural
-    return _hash_block_structural(text)
-
-
-def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
-    """Find groups of blocks with identical normalized text."""
-    from .utils.duplicate_finders import find_exact_duplicates as _find_exact_duplicates
-    return _find_exact_duplicates(index)
-
-
-def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
-    """Find groups of blocks with identical structure (names may differ)."""
-    from .utils.duplicate_finders import find_structural_duplicates as _find_structural_duplicates
-    return _find_structural_duplicates(index)
-
-
-def _hashed_block(block: CodeBlock) -> HashedBlock:
-    return HashedBlock(
-        block=block,
-        exact_hash=hash_block(block.text),
-        structural_hash=hash_block_structural(block.text),
-    )
-
-
-class BloomHashIndex:
-    """Two-pass hash index: Bloom filter eliminates uniques in O(1)."""
-
-    def __init__(self, expected_items: int = 100_000):
-        if _USE_BLOOM:
-            self._bloom = ScalableBloomFilter(
-                initial_capacity=expected_items,
-                error_rate=0.001,
-            )
-        else:
-            self._bloom = None
-        self._seen_hashes: set[str] = set()
-        self._candidates: dict[str, list] = defaultdict(list)
-
-    def add(self, hash_val: str, block: 'HashedBlock') -> bool:
-        """Add a hash. Returns True if this is a POTENTIAL duplicate.
-
-        First pass: Bloom filter says "maybe seen" or "definitely not seen".
-        Only "maybe seen" blocks go into the candidates dict.
-        """
-        if self._bloom is not None:
-            if hash_val in self._bloom:
-                # Maybe duplicate — add to candidates
-                self._candidates[hash_val].append(block)
-                return True
-            else:
-                # Definitely first time — skip
-                self._bloom.add(hash_val)
-                # Still need to track for the second occurrence
-                if hash_val in self._seen_hashes:
-                    self._candidates[hash_val].append(block)
-                    return True
-                self._seen_hashes.add(hash_val)
-                return False
-        else:
-            # Fallback: plain set
-            if hash_val in self._seen_hashes:
-                self._candidates[hash_val].append(block)
-                return True
-            self._seen_hashes.add(hash_val)
-            return False
-
-    def get_duplicate_groups(self) -> dict[str, list]:
-        """Return only groups with 2+ blocks."""
-        return {h: blocks for h, blocks in self._candidates.items() if len(blocks) > 1}
+    """Hash of deeply normalized text (variable names replaced)."""
+    return _hash_text(text, _normalize_ast_text)
 
 
 @dataclass
@@ -301,40 +138,65 @@ class HashIndex:
     structural: dict[str, list[HashedBlock]] = field(default_factory=lambda: defaultdict(list))
 
 
-def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
-    """Build a hash index from a list of code blocks.
-
-    Only indexes function-level blocks (those with function_name set)
-    and blocks above the minimum line threshold.
-    Uses Bloom filter pre-screening to eliminate unique blocks early.
-    """
-    index = HashIndex()
-    bloom = BloomHashIndex(expected_items=len(blocks))
-
-    for block in blocks:
-        if block.line_count < min_lines:
-            continue
-
-        hb = _hashed_block(block)
-
-        # Bloom filter pre-screens — only potential duplicates enter the index
-        bloom.add(hb.exact_hash, hb)
-        index.exact[hb.exact_hash].append(hb)
-        index.structural[hb.structural_hash].append(hb)
-
-    return index
-
-
-def _find_duplicates(hash_dict: dict[str, list[HashedBlock]]) -> dict[str, list[HashedBlock]]:
-    """Generic duplicate finder for any hash dictionary."""
-    return {
-        h: blocks
-        for h, blocks in hash_dict.items()
-        if len(blocks) > 1 and _blocks_from_different_locations(blocks)
-    }
+def _hashed_block(block: CodeBlock) -> HashedBlock:
+    return HashedBlock(
+        block=block,
+        exact_hash=hash_block(block.text),
+        structural_hash=hash_block_structural(block.text),
+    )
 
 
 def _blocks_from_different_locations(blocks: list[HashedBlock]) -> bool:
     """Check that at least two blocks are from different file:line locations."""
     locations = {(b.block.file, b.block.line_start) for b in blocks}
     return len(locations) > 1
+
+
+def _find_duplicates(hash_dict: dict[str, list[HashedBlock]]) -> dict[str, list[HashedBlock]]:
+    """Generic duplicate finder for any hash dictionary."""
+    return {
+        hash_value: blocks
+        for hash_value, blocks in hash_dict.items()
+        if len(blocks) > 1 and _blocks_from_different_locations(blocks)
+    }
+
+
+def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
+    """Build a hash index from a list of code blocks."""
+    index = HashIndex()
+
+    for block in blocks:
+        if block.line_count < min_lines:
+            continue
+
+        hashed_block = _hashed_block(block)
+        index.exact[hashed_block.exact_hash].append(hashed_block)
+        index.structural[hashed_block.structural_hash].append(hashed_block)
+
+    return index
+
+
+def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
+    """Find groups of blocks with identical normalized text."""
+    return _find_duplicates(index.exact)
+
+
+def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
+    """Find groups of blocks with identical structure (names may differ)."""
+    return _find_duplicates(index.structural)
+
+
+__all__ = [
+    "HashedBlock",
+    "HashIndex",
+    "build_hash_index",
+    "find_exact_duplicates",
+    "find_structural_duplicates",
+    "hash_block",
+    "hash_block_structural",
+    "_normalize_text",
+    "_normalize_ast_text",
+    "_hash_text",
+    "_blocks_from_different_locations",
+    "_find_duplicates",
+]

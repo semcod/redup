@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.4.17] - 2026-04-08
+
+### Other
+- Update logs/redsl_20260408_144520.log
+- Update src/redup/core/hasher.py.bak
+- Update src/redup/core/matcher.py.bak
+- Update src/redup/core/planner.py.bak
+- Update src/redup/core/scanner.py.bak
+
 ## [0.4.16] - 2026-04-08
 
 ### Test

@@ -108,6 +108,3 @@ def generate_suggestions(dup_map: DuplicationMap) -> list[RefactorSuggestion]:
         )
 
     return suggestions
-
-
-__all__ = ["generate_suggestions"]

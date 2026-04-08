@@ -1,0 +1,109 @@
+2026-04-08 14:45:23,139 - redsl.cli - INFO - reDSL refactor started: /home/tom/github/semcod/redup (max_actions=3, dry_run=False)
+2026-04-08 14:45:23,146 - redsl.analyzers.toon_analyzer - INFO - Found toon files: []
+2026-04-08 14:45:23,918 - redsl.analyzers.radon_analyzer - INFO - Enhanced 20 metrics, added 4 metrics and 0 alerts with radon CC data
+2026-04-08 14:45:23,918 - redsl.analyzers.python_analyzer - INFO - AST fallback: 66 py files, 10937 lines, 17 critical CC
+2026-04-08 14:45:23,920 - redsl.dsl.engine - INFO - Decision types: {'split_module': 7, 'remove_unused_imports': 19, 'fix_module_execution_block': 27, 'extract_constants': 34, 'simplify_conditionals': 5, 'extract_functions': 39, 'add_return_types': 11}
+2026-04-08 14:45:23,920 - redsl.dsl.engine - INFO - Evaluated 87 contexts → 142 decisions
+2026-04-08 14:45:23,920 - redsl.execution.cycle - INFO - === CYCLE 1: PERCEIVE ===
+2026-04-08 14:45:23,921 - redsl.analyzers.toon_analyzer - INFO - Found toon files: []
+2026-04-08 14:45:24,644 - redsl.analyzers.radon_analyzer - INFO - Enhanced 20 metrics, added 4 metrics and 0 alerts with radon CC data
+2026-04-08 14:45:24,645 - redsl.analyzers.python_analyzer - INFO - AST fallback: 66 py files, 10937 lines, 17 critical CC
+2026-04-08 14:45:24,645 - redsl.execution.cycle - INFO - === CYCLE 1: DECIDE ===
+2026-04-08 14:45:24,646 - redsl.dsl.engine - INFO - Decision types: {'split_module': 7, 'remove_unused_imports': 19, 'fix_module_execution_block': 27, 'extract_constants': 34, 'simplify_conditionals': 5, 'extract_functions': 39, 'add_return_types': 11}
+2026-04-08 14:45:24,646 - redsl.dsl.engine - INFO - Evaluated 87 contexts → 142 decisions
+2026-04-08 14:45:25,320 - chromadb.telemetry.product.posthog - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2026-04-08 14:45:25,463 - redsl.memory - INFO - Memory layer 'refactor_episodic' initialized
+2026-04-08 14:45:25,854 - redsl.execution.resolution - INFO - Memory: found 3 similar past actions for src/redup/mcp_server.py
+2026-04-08 14:45:26,102 - redsl.execution.resolution - INFO - Memory: found 3 similar past actions for src/redup/core/scanner.py
+2026-04-08 14:45:26,338 - redsl.execution.resolution - INFO - Memory: found 3 similar past actions for src/redup/core/pipeline.py
+2026-04-08 14:45:26,338 - redsl.execution.cycle - INFO - === CYCLE 1: PLAN + EXECUTE ===
+2026-04-08 14:45:26,338 - redsl.execution.decision - INFO - Executing: split_module on src/redup/mcp_server.py (score=1.62)
+2026-04-08 14:45:26,345 - redsl.memory - INFO - Memory layer 'refactor_procedural' initialized
+2026-04-08 14:45:26,587 - redsl.execution.resolution - INFO - Found 2 relevant strategies in memory
+2026-04-08 14:45:26,606 - redsl.execution.decision - INFO - llx_router: split_module with critical complexity → gpt-4o → model=ollama/qwen2.5-coder:7b est_cost=$0.0780
+2026-04-08 14:45:26,794 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:46:24,837 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:46:25,040 - redsl.refactors.engine - INFO - Generated proposal: split_module for src/redup/mcp_server.py (confidence=0.81)
+2026-04-08 14:46:25,041 - redsl.refactors.engine - INFO - Reflection round 1/2
+2026-04-08 14:46:25,240 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:47:59,732 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:47:59,961 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:48:43,203 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:48:43,204 - redsl.llm - INFO - Reflection complete: critique + improvement applied
+2026-04-08 14:48:43,206 - redsl.refactors.engine - INFO - Reflection round 2/2
+2026-04-08 14:48:43,396 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:49:32,559 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:49:32,728 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:50:14,137 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:50:14,142 - redsl.llm - INFO - Reflection complete: critique + improvement applied
+2026-04-08 14:50:18,024 - redsl.refactors.engine - INFO - vallm score=1.00 → confidence=0.885
+2026-04-08 14:50:18,025 - redsl.refactors.engine - INFO - Applied change to src/redup/config_handler.py
+2026-04-08 14:50:18,025 - redsl.refactors.engine - INFO - Applied change to src/redup/analysis_logic.py
+2026-04-08 14:50:18,025 - redsl.refactors.engine - INFO - Applied change to src/redup/reporters.py
+2026-04-08 14:50:18,025 - redsl.refactors.engine - INFO - Applied change to src/redup/utils.py
+2026-04-08 14:50:18,267 - redsl.memory - INFO - Memory layer 'refactor_semantic' initialized
+2026-04-08 14:50:18,510 - redsl.execution.decision - INFO - Executing: split_module on src/redup/core/scanner.py (score=1.62)
+2026-04-08 14:50:18,738 - redsl.execution.resolution - INFO - Found 2 relevant strategies in memory
+2026-04-08 14:50:18,742 - redsl.execution.decision - INFO - llx_router: split_module with critical complexity → gpt-4o → model=ollama/qwen2.5-coder:7b est_cost=$0.0755
+2026-04-08 14:50:18,881 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:51:47,700 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:51:47,700 - redsl.refactors.engine - INFO - Generated proposal: split_module for src/redup/core/scanner.py (confidence=0.81)
+2026-04-08 14:51:47,701 - redsl.refactors.engine - INFO - Reflection round 1/2
+2026-04-08 14:51:47,881 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:52:42,592 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:52:42,792 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:53:31,274 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:53:31,277 - redsl.llm - INFO - Reflection complete: critique + improvement applied
+2026-04-08 14:53:31,278 - redsl.refactors.engine - INFO - Reflection round 2/2
+2026-04-08 14:53:31,540 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:54:08,280 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:54:08,454 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:55:03,665 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:55:03,665 - redsl.llm - INFO - Reflection complete: critique + improvement applied
+2026-04-08 14:55:03,667 - redsl.refactors.engine - WARNING - Proposal validation failed: ['Syntax error in src/redup/core/models.py: unexpected unindent (models.py, line 13)']
+2026-04-08 14:55:03,965 - redsl.execution.decision - INFO - Executing: split_module on src/redup/core/pipeline.py (score=1.62)
+2026-04-08 14:55:04,191 - redsl.execution.resolution - INFO - Found 2 relevant strategies in memory
+2026-04-08 14:55:04,197 - redsl.execution.decision - INFO - llx_router: split_module with critical complexity → gpt-4o → model=ollama/qwen2.5-coder:7b est_cost=$0.0803
+2026-04-08 14:55:04,361 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:55:43,570 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:55:43,571 - redsl.refactors.engine - INFO - Generated proposal: split_module for src/redup/core/pipeline.py (confidence=0.81)
+2026-04-08 14:55:43,574 - redsl.refactors.engine - INFO - Reflection round 1/2
+2026-04-08 14:55:43,722 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:56:09,955 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:56:10,096 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:56:21,621 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:56:21,621 - redsl.llm - INFO - Reflection complete: critique + improvement applied
+2026-04-08 14:56:21,622 - redsl.refactors.engine - INFO - Reflection round 2/2
+2026-04-08 14:56:21,752 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:56:38,793 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:56:38,933 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:56:55,251 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:56:55,252 - redsl.llm - INFO - Reflection complete: critique + improvement applied
+2026-04-08 14:57:00,607 - redsl.refactors.engine - INFO - vallm score=1.00 → confidence=0.885
+2026-04-08 14:57:00,608 - redsl.refactors.engine - INFO - Applied change to src/redup/core/scanner.py
+2026-04-08 14:57:00,608 - redsl.refactors.engine - INFO - Applied change to src/redup/core/hasher.py
+2026-04-08 14:57:00,609 - redsl.refactors.engine - INFO - Applied change to src/redup/core/matcher.py
+2026-04-08 14:57:00,609 - redsl.refactors.engine - INFO - Applied change to src/redup/core/grouper.py
+2026-04-08 14:57:00,609 - redsl.refactors.engine - INFO - Applied change to src/redup/core/planner.py
+2026-04-08 14:57:01,190 - redsl.execution.cycle - INFO - === CYCLE 1: REFLECT ===
+2026-04-08 14:57:01,324 - LiteLLM - INFO - 
+LiteLLM completion() model= qwen2.5-coder:7b; provider = ollama
+2026-04-08 14:57:09,146 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2026-04-08 14:57:09,366 - redsl.execution.reflector - INFO - Cycle reflection: It appears that there was a syntax error in the `src/redup/core/models.py` file at line 13 due to an unexpected unindent. This suggests that there might be an issue with the indentation of your code, 
+2026-04-08 14:57:09,366 - redsl.dsl.rule_generator - INFO - RuleGenerator: generated 0 rules (min_support=3)
+2026-04-08 14:57:09,372 - redsl.cli - INFO - reDSL refactor complete. Log: /home/tom/github/semcod/redup/logs/redsl_20260408_144520.log
