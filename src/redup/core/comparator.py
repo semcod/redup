@@ -228,6 +228,47 @@ def _find_lsh_matches(
     return matches
 
 
+def _is_cross_project_match(
+    match, a_files: set[str], b_files: set[str]
+) -> bool:
+    """Check if a semantic match spans both projects."""
+    return (
+        (match.block_a.file in a_files and match.block_b.file in b_files) or
+        (match.block_a.file in b_files and match.block_b.file in a_files)
+    )
+
+
+def _normalize_match_order(
+    match, a_files: set[str]
+) -> tuple[CodeBlock, CodeBlock]:
+    """Normalize block order so project_a block is always first."""
+    if match.block_a.file in a_files:
+        return match.block_a, match.block_b
+    return match.block_b, match.block_a
+
+
+def _create_cross_project_match(
+    block_a: CodeBlock,
+    block_b: CodeBlock,
+    similarity: float,
+    proj_a: str,
+    proj_b: str,
+) -> CrossProjectMatch:
+    """Create a CrossProjectMatch from normalized blocks."""
+    return CrossProjectMatch(
+        project_a=proj_a,
+        project_b=proj_b,
+        file_a=block_a.file,
+        file_b=block_b.file,
+        function_a=block_a.function_name or "",
+        function_b=block_b.function_name or "",
+        similarity=similarity,
+        similarity_type="semantic",
+        lines_a=(block_a.line_start, block_a.line_end),
+        lines_b=(block_b.line_start, block_b.line_end),
+    )
+
+
 def _find_semantic_matches(
     blocks_a: list[CodeBlock],
     blocks_b: list[CodeBlock],
@@ -256,29 +297,10 @@ def _find_semantic_matches(
 
     cross: list[CrossProjectMatch] = []
     for m in semantic_matches:
-        is_cross = (
-            (m.block_a.file in a_files and m.block_b.file in b_files) or
-            (m.block_a.file in b_files and m.block_b.file in a_files)
-        )
-        if not is_cross:
+        if not _is_cross_project_match(m, a_files, b_files):
             continue
 
-        # Normalize order so project_a is always first
-        if m.block_a.file in a_files:
-            ba, bb = m.block_a, m.block_b
-        else:
-            ba, bb = m.block_b, m.block_a
+        ba, bb = _normalize_match_order(m, a_files)
+        cross.append(_create_cross_project_match(ba, bb, m.similarity, proj_a, proj_b))
 
-        cross.append(CrossProjectMatch(
-            project_a=proj_a,
-            project_b=proj_b,
-            file_a=ba.file,
-            file_b=bb.file,
-            function_a=ba.function_name or "",
-            function_b=bb.function_name or "",
-            similarity=m.similarity,
-            similarity_type="semantic",
-            lines_a=(ba.line_start, ba.line_end),
-            lines_b=(bb.line_start, bb.line_end),
-        ))
     return cross

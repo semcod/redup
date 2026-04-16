@@ -150,60 +150,66 @@ def compare_scans(before_file: Path, after_file: Path) -> DiffResult:
     )
 
 
+def _format_group_header(title: str, width: int) -> list[str]:
+    """Format a section header for group listing."""
+    return [f"{title}:", "-" * width, ""]
+
+
+def _format_group_details(group: DuplicateGroup, label: str) -> list[str]:
+    """Format a single group's details."""
+    return [
+        f"  [{group.id}] {group.duplicate_type.value.upper()} {group.normalized_name or 'unnamed'}",
+        f"    {label}: {group.saved_lines_potential} lines",
+        f"    Files: {', '.join(frag.file for frag in group.fragments)}",
+    ]
+
+
+def _format_groups_section(
+    groups: list[DuplicateGroup],
+    title: str,
+    width: int,
+    label: str,
+) -> list[str]:
+    """Format a section of groups if any exist."""
+    if not groups:
+        return []
+    
+    lines = _format_group_header(title, width)
+    for group in sorted(groups, key=lambda g: g.saved_lines_potential, reverse=True):
+        lines.extend(_format_group_details(group, label))
+    lines.append("")
+    return lines
+
+
+def _format_assessment(new_lines: int, resolved_lines: int) -> str:
+    """Format the overall change assessment."""
+    total_change = new_lines - resolved_lines
+    if total_change > 0:
+        return f"Overall: +{total_change} lines of duplication added"
+    elif total_change < 0:
+        return f"Overall: {total_change} lines of duplication eliminated"
+    return "Overall: No net change in duplication"
+
+
 def format_diff_result(diff: DiffResult) -> str:
     """Format a DiffResult as a human-readable string."""
-    lines = []
+    lines = [
+        "reDUP Diff Analysis",
+        "=" * 50,
+        "",
+        "Summary:",
+        f"  RESOLVED: {diff.resolved_count} groups eliminated (saved {diff.resolved_lines} lines)",
+        f"  NEW: {diff.new_count} groups added (potential {diff.new_lines} lines)",
+        f"  UNCHANGED: {diff.unchanged_count} groups remain ({diff.unchanged_lines} lines)",
+        "",
+    ]
     
-    # Header
-    lines.append("reDUP Diff Analysis")
-    lines.append("=" * 50)
-    lines.append("")
-    
-    # Summary
-    lines.append("Summary:")
-    lines.append(f"  RESOLVED: {diff.resolved_count} groups eliminated (saved {diff.resolved_lines} lines)")
-    lines.append(f"  NEW: {diff.new_count} groups added (potential {diff.new_lines} lines)")
-    lines.append(f"  UNCHANGED: {diff.unchanged_count} groups remain ({diff.unchanged_lines} lines)")
-    lines.append("")
-    
-    # Resolved groups
-    if diff.resolved_groups:
-        lines.append("Resolved Groups:")
-        lines.append("-" * 20)
-        for group in sorted(diff.resolved_groups, key=lambda g: g.saved_lines_potential, reverse=True):
-            lines.append(f"  [{group.id}] {group.duplicate_type.value.upper()} {group.normalized_name or 'unnamed'}")
-            lines.append(f"    Saved: {group.saved_lines_potential} lines")
-            lines.append(f"    Files: {', '.join(frag.file for frag in group.fragments)}")
-        lines.append("")
-    
-    # New groups
-    if diff.new_groups:
-        lines.append("New Groups:")
-        lines.append("-" * 15)
-        for group in sorted(diff.new_groups, key=lambda g: g.saved_lines_potential, reverse=True):
-            lines.append(f"  [{group.id}] {group.duplicate_type.value.upper()} {group.normalized_name or 'unnamed'}")
-            lines.append(f"    Potential: {group.saved_lines_potential} lines")
-            lines.append(f"    Files: {', '.join(frag.file for frag in group.fragments)}")
-        lines.append("")
-    
-    # Unchanged groups
-    if diff.unchanged_groups:
-        lines.append("Unchanged Groups:")
-        lines.append("-" * 20)
-        for group in sorted(diff.unchanged_groups, key=lambda g: g.saved_lines_potential, reverse=True):
-            lines.append(f"  [{group.id}] {group.duplicate_type.value.upper()} {group.normalized_name or 'unnamed'}")
-            lines.append(f"    Lines: {group.saved_lines_potential}")
-        lines.append("")
+    # Add group sections
+    lines.extend(_format_groups_section(diff.resolved_groups, "Resolved Groups", 20, "Saved"))
+    lines.extend(_format_groups_section(diff.new_groups, "New Groups", 15, "Potential"))
+    lines.extend(_format_groups_section(diff.unchanged_groups, "Unchanged Groups", 20, "Lines"))
     
     # Overall assessment
-    total_change = diff.new_lines - diff.resolved_lines
-    if total_change > 0:
-        assessment = f"Overall: +{total_change} lines of duplication added"
-    elif total_change < 0:
-        assessment = f"Overall: {total_change} lines of duplication eliminated"
-    else:
-        assessment = "Overall: No net change in duplication"
-    
-    lines.append(assessment)
+    lines.append(_format_assessment(diff.new_lines, diff.resolved_lines))
     
     return "\n".join(lines)
