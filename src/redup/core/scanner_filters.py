@@ -1,34 +1,10 @@
 """Path and file selection helpers for the scanner."""
 from __future__ import annotations
 
-import fnmatch
-from functools import lru_cache
 from pathlib import Path
 
 from redup.core.models import ScanConfig
-
-
-@lru_cache(maxsize=1000)
-def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
-    """Check if a path matches any exclusion pattern with support for negation."""
-    name = path.name
-    str_path = str(path)
-    for pattern in patterns:
-        if not pattern.startswith('!'):
-            if fnmatch.fnmatch(name, pattern) or fnmatch.fnmatch(str_path, pattern):
-                return True
-            for part in path.parts:
-                if fnmatch.fnmatch(part, pattern):
-                    return True
-    for pattern in patterns:
-        if pattern.startswith('!'):
-            include_pattern = pattern[1:]
-            if fnmatch.fnmatch(name, include_pattern) or fnmatch.fnmatch(str_path, include_pattern):
-                return False
-            for part in path.parts:
-                if fnmatch.fnmatch(part, include_pattern):
-                    return False
-    return False
+from redup.core.scanner_cache import _should_exclude
 
 
 def _project_relative_path(file_path: Path, project_root: Path) -> Path:

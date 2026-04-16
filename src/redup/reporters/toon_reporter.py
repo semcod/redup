@@ -165,6 +165,44 @@ def _render_quick_wins(dup_map: DuplicationMap) -> list[str]:
     return lines
 
 
+def _calculate_group_effort(group: DuplicateGroup) -> tuple[str, str, float]:
+    """Calculate effort estimate for a single group.
+    
+    Returns: (name, difficulty, minutes)
+    """
+    name = group.normalized_name or group.fragments[0].function_name or f"block_{group.id[:8]}"
+    files = {frag.file for frag in group.fragments}
+    packages = {f.split(os.sep)[0] for f in files if os.sep in f}
+
+    base_min = group.saved_lines_potential * 2.0  # ~2 min per saved line
+    if len(packages) >= 2:
+        base_min *= 2.0  # cross-package doubles effort
+    if group.total_lines > 30:
+        base_min *= 1.5  # large blocks are harder
+
+    difficulty = "easy" if base_min < 30 else "medium" if base_min < 90 else "hard"
+    return name, difficulty, base_min
+
+
+def _format_estimate_lines(
+    estimates: list[tuple[str, str, int, float]],
+    total_minutes: float,
+) -> list[str]:
+    """Format effort estimate lines."""
+    hours = total_minutes / 60
+    lines: list[str] = [f"EFFORT_ESTIMATE (total ≈ {hours:.1f}h):"]
+    
+    for name, diff, saved, mins in estimates[:10]:
+        lines.append(f"  {diff:<6} {name:<35} saved={saved}L  ~{mins:.0f}min")
+    
+    if len(estimates) > 10:
+        remaining = sum(m for _, _, _, m in estimates[10:])
+        lines.append(f"  ... +{len(estimates) - 10} more (~{remaining:.0f}min)")
+    
+    lines.append("")
+    return lines
+
+
 def _render_effort_estimate(dup_map: DuplicationMap) -> list[str]:
     """Render effort estimate per duplicate group.
 
@@ -179,34 +217,14 @@ def _render_effort_estimate(dup_map: DuplicationMap) -> list[str]:
     for group in dup_map.sorted_by_impact():
         if group.saved_lines_potential == 0:
             continue
-        name = group.normalized_name or group.fragments[0].function_name or f"block_{group.id[:8]}"
-        files = {frag.file for frag in group.fragments}
-        packages = {f.split(os.sep)[0] for f in files if os.sep in f}
-
-        base_min = group.saved_lines_potential * 2.0  # ~2 min per saved line
-        if len(packages) >= 2:
-            base_min *= 2.0  # cross-package doubles effort
-        if group.total_lines > 30:
-            base_min *= 1.5  # large blocks are harder
-
-        difficulty = "easy" if base_min < 30 else "medium" if base_min < 90 else "hard"
-        estimates.append((name, difficulty, group.saved_lines_potential, base_min))
-        total_minutes += base_min
+        name, difficulty, minutes = _calculate_group_effort(group)
+        estimates.append((name, difficulty, group.saved_lines_potential, minutes))
+        total_minutes += minutes
 
     if not estimates:
         return []
 
-    hours = total_minutes / 60
-    lines: list[str] = [
-        f"EFFORT_ESTIMATE (total ≈ {hours:.1f}h):",
-    ]
-    for name, diff, saved, mins in estimates[:10]:
-        lines.append(f"  {diff:<6} {name:<35} saved={saved}L  ~{mins:.0f}min")
-    if len(estimates) > 10:
-        remaining = sum(m for _, _, _, m in estimates[10:])
-        lines.append(f"  ... +{len(estimates) - 10} more (~{remaining:.0f}min)")
-    lines.append("")
-    return lines
+    return _format_estimate_lines(estimates, total_minutes)
 
 
 def _saved_for_suggestion(s, dup_map: DuplicationMap) -> int:

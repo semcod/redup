@@ -45,7 +45,9 @@ all = [
     "redup[lsh]",
     "redup[semantic]",
     "redup[compare]",
+    "redup[tasks]",
 ]
+tasks = ["planfile>=0.4.0"]
 compare = ["networkx>=3.0"]
 llm = ["litellm>=1.0"]
 fast = ["xxhash>=3.0", "libcst>=1.0", "pybloom-live>=4.0"]

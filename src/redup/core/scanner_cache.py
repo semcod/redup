@@ -50,24 +50,40 @@ class MemoryFileCache:
                 self.current_memory -= self._estimate_size(oldest_content)
 
 
+def _matches_pattern(name: str, str_path: str, path_parts: tuple[str, ...], pattern: str) -> bool:
+    """Check if path matches a single pattern."""
+    if fnmatch.fnmatch(name, pattern) or fnmatch.fnmatch(str_path, pattern):
+        return True
+    return any(fnmatch.fnmatch(part, pattern) for part in path_parts)
+
+
+def _matches_any_exclude(name: str, str_path: str, path_parts: tuple[str, ...], patterns: tuple[str, ...]) -> bool:
+    """Check if path matches any exclusion pattern."""
+    return any(
+        _matches_pattern(name, str_path, path_parts, p)
+        for p in patterns if not p.startswith('!')
+    )
+
+
+def _matches_any_include(name: str, str_path: str, path_parts: tuple[str, ...], patterns: tuple[str, ...]) -> bool:
+    """Check if path matches any include (negation) pattern."""
+    return any(
+        _matches_pattern(name, str_path, path_parts, p[1:])
+        for p in patterns if p.startswith('!')
+    )
+
+
 @functools.lru_cache(maxsize=1000)
 def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
     """Check if a path matches any exclusion pattern with support for negation."""
     name = path.name
     str_path = str(path)
-    for pattern in patterns:
-        if not pattern.startswith('!'):
-            if fnmatch.fnmatch(name, pattern) or fnmatch.fnmatch(str_path, pattern):
-                return True
-            for part in path.parts:
-                if fnmatch.fnmatch(part, pattern):
-                    return True
-    for pattern in patterns:
-        if pattern.startswith('!'):
-            include_pattern = pattern[1:]
-            if fnmatch.fnmatch(name, include_pattern) or fnmatch.fnmatch(str_path, include_pattern):
-                return False
-            for part in path.parts:
-                if fnmatch.fnmatch(part, include_pattern):
-                    return False
+    path_parts = path.parts
+
+    if _matches_any_exclude(name, str_path, path_parts, patterns):
+        return True
+
+    if _matches_any_include(name, str_path, path_parts, patterns):
+        return False
+
     return False
