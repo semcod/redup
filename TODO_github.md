@@ -195,7 +195,7 @@ tasks:
   - id: refactor__create_sample_redup_toml__2x_d
     title: Refactor: create_sample_redup_toml (2x duplication)
     priority: critical
-    labels: ['refactoring', 'duplication']
+    labels: ['refactoring', 'technical-debt', 'duplicate']
     description: |
       ## Duplication Analysis
       
@@ -203,7 +203,7 @@ tasks:
   - id: refactor____init____2x_duplication_
     title: Refactor: __init__ (2x duplication)
     priority: critical
-    labels: ['refactoring', 'duplication']
+    labels: ['refactoring', 'technical-debt', 'duplicate']
     description: |
       ## Duplication Analysis
       
@@ -211,7 +211,7 @@ tasks:
   - id: refactor__find_exact_duplicates_lazy__2x
     title: Refactor: find_exact_duplicates_lazy (2x duplication)
     priority: major
-    labels: ['refactoring', 'duplication']
+    labels: ['refactoring', 'technical-debt', 'duplicate']
     description: |
       ## Duplication Analysis
       
@@ -219,7 +219,7 @@ tasks:
   - id: refactor___is_test_file__2x_duplication_
     title: Refactor: _is_test_file (2x duplication)
     priority: minor
-    labels: ['refactoring', 'duplication']
+    labels: ['refactoring', 'technical-debt', 'duplicate']
     description: |
       ## Duplication Analysis
       
@@ -227,7 +227,7 @@ tasks:
   - id: refactor__get_supported_languages__2x_du
     title: Refactor: get_supported_languages (2x duplication)
     priority: minor
-    labels: ['refactoring', 'duplication']
+    labels: ['refactoring', 'technical-debt', 'duplicate']
     description: |
       ## Duplication Analysis
       

@@ -5,12 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from redup.core.models import (
-    CodeBlock,
-    DuplicateGroup,
-    DuplicateType,
-    DuplicationMap,
-)
+from redup.core.models import DuplicateGroup, DuplicateType, DuplicationMap
+from redup.core.scanner_models import CodeBlock
 
 # Skip all tests if planfile is not installed
 pytestmark = pytest.mark.skipif(
@@ -30,26 +26,18 @@ def create_test_duplication_map() -> DuplicationMap:
     """Create a test duplication map with sample data."""
     blocks = [
         CodeBlock(
-            id="test-1",
             file="src/utils.py",
             function_name="process_data",
             line_start=10,
             line_end=20,
-            lines_of_code=10,
-            hash="abc123",
-            content="def process_data(): pass",
-            language=".py",
+            text="def process_data(): pass",
         ),
         CodeBlock(
-            id="test-2",
             file="src/helpers.py",
             function_name="process_data",
             line_start=5,
             line_end=15,
-            lines_of_code=10,
-            hash="abc123",
-            content="def process_data(): pass",
-            language=".py",
+            text="def process_data(): pass",
         ),
     ]
 
