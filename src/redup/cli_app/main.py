@@ -214,5 +214,14 @@ def info() -> None:
     return info_command()
 
 
+# Import and add tasks command
+try:
+    from redup.cli_app.tasks_command import tasks as tasks_command, app as tasks_app
+    app.add_typer(tasks_app, name="tasks", help="Export duplications as tasks to TODO.md")
+except ImportError:
+    # tasks command requires optional planfile dependency
+    pass
+
+
 if __name__ == "__main__":
     app()

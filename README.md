@@ -251,6 +251,57 @@ redup scan . --min-lines 5 --min-sim 0.9
 
 # Show installed optional dependencies
 redup info
+
+# Export duplications as tasks to TODO.md (requires: pip install redup[tasks])
+redup tasks ./my-project
+
+# Export with GitHub sync
+redup tasks ./my-project --backend github --milestone "Sprint 1"
+
+# Export with GitLab sync and custom output
+redup tasks ./my-project -b gitlab -o refactoring-tasks.md
+
+# Preview tasks without creating files
+redup tasks ./my-project --dry-run
+```
+
+### Task Management with Planfile (Optional)
+
+When you install `redup[tasks]`, you can export duplication findings as
+actionable tasks in TODO.md format with synchronization to GitHub, GitLab,
+or Jira:
+
+```bash
+# Install with planfile support
+pip install redup[tasks]
+
+# Generate TODO.md from duplications
+redup tasks ./my-project --output TODO.md
+
+# The generated TODO.md includes:
+# - Priority-based task organization (critical/major/minor)
+# - Difficulty estimation (easy/medium/hard)
+# - Line savings potential
+# - Detailed refactoring suggestions
+# - Planfile export configuration
+```
+
+Example TODO.md output:
+```markdown
+# TODO - Duplication Refactoring Tasks
+
+## CRITICAL (3 tasks)
+- [ ] **Refactor: process_file (4x duplication)** 🔴
+   Priority: critical | Savings: 124L
+   <details>
+   Extract function to shared utility module.
+   Files: src/core/scanner.py, src/core/planner.py, ...
+   </details>
+
+## MAJOR (5 tasks)
+- [ ] **Refactor: validate_input (3x duplication)** 🟡
+   Priority: major | Savings: 45L
+   ...
 ```
 
 ### Configuration
