@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__version__ = "0.4.19"
+__version__ = "0.4.20"
 
 # Click compatibility shim for older typer versions
 # This must run before any typer imports

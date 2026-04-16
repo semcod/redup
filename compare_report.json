@@ -1,0 +1,687 @@
+{
+  "project_a": "/home/tom/github/maskservice/c2004",
+  "project_b": "/home/tom/github/oqlos/oqlos",
+  "stats": {
+    "a": {
+      "files": 551,
+      "lines": 70758
+    },
+    "b": {
+      "files": 99,
+      "lines": 14849
+    }
+  },
+  "total_matches": 35,
+  "shared_loc_potential": 430,
+  "recommendation": {
+    "decision": "keep_separate",
+    "rationale": "Projects are 1.0% similar \u2014 distinct concerns, no refactoring needed.",
+    "overlap_pct": 0.0096,
+    "shared_loc": 822,
+    "confidence": 0.9
+  },
+  "communities": [
+    {
+      "name": "create_nfo_setup",
+      "similarity": 1.0,
+      "loc": 95,
+      "members": [
+        {
+          "project": "A",
+          "file": "shared/nfo_config_factory.py",
+          "function": "create_nfo_setup"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/shared/config_factory.py",
+          "function": "create_nfo_setup"
+        }
+      ]
+    },
+    {
+      "name": "resolve_release_version",
+      "similarity": 1.0,
+      "loc": 84,
+      "members": [
+        {
+          "project": "A",
+          "file": "shared/release_version.py",
+          "function": "resolve_release_version"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
+          "function": "resolve_release_version"
+        }
+      ]
+    },
+    {
+      "name": "setup_nfo",
+      "similarity": 1.0,
+      "loc": 58,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/shared/config_factory.py",
+          "function": "setup_nfo"
+        },
+        {
+          "project": "A",
+          "file": "shared/nfo_config_factory.py",
+          "function": "setup_nfo"
+        }
+      ]
+    },
+    {
+      "name": "create_version_router",
+      "similarity": 1.0,
+      "loc": 49,
+      "members": [
+        {
+          "project": "A",
+          "file": "shared/_endpoint_helpers.py",
+          "function": "create_version_router"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/shared/version_endpoint.py",
+          "function": "create_version_router"
+        }
+      ]
+    },
+    {
+      "name": "normalize_set_value",
+      "similarity": 1.0,
+      "loc": 42,
+      "members": [
+        {
+          "project": "A",
+          "file": "scripts/scenarios/xml2dsl_utils.py",
+          "function": "normalize_set_value"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/tools/xml_import/_utils.py",
+          "function": "normalize_set_value"
+        }
+      ]
+    },
+    {
+      "name": "build_version_payload",
+      "similarity": 1.0,
+      "loc": 39,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/shared/version_endpoint.py",
+          "function": "build_version_payload"
+        },
+        {
+          "project": "A",
+          "file": "shared/_endpoint_helpers.py",
+          "function": "build_version_payload"
+        }
+      ]
+    },
+    {
+      "name": "websocket_endpoint",
+      "similarity": 1.0,
+      "loc": 38,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/api/main.py",
+          "function": "websocket_endpoint"
+        },
+        {
+          "project": "A",
+          "file": "backend/firmware/main.py",
+          "function": "websocket_endpoint"
+        }
+      ]
+    },
+    {
+      "name": "normalize_flow_value",
+      "similarity": 1.0,
+      "loc": 36,
+      "members": [
+        {
+          "project": "A",
+          "file": "scripts/scenarios/xml2dsl_utils.py",
+          "function": "normalize_flow_value"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/tools/xml_import/_utils.py",
+          "function": "normalize_flow_value"
+        }
+      ]
+    },
+    {
+      "name": "normalize_output_name",
+      "similarity": 1.0,
+      "loc": 32,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/tools/xml_import/_utils.py",
+          "function": "normalize_output_name"
+        },
+        {
+          "project": "A",
+          "file": "scripts/scenarios/xml2dsl_utils.py",
+          "function": "normalize_output_name"
+        }
+      ]
+    },
+    {
+      "name": "shared_util_5",
+      "similarity": 1.0,
+      "loc": 28,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/shared/logs_query.py",
+          "function": "resolve_logs_db_path"
+        },
+        {
+          "project": "A",
+          "file": "shared/logs_query.py",
+          "function": "resolve_logs_db_path"
+        },
+        {
+          "project": "A",
+          "file": "shared/nfo_config_factory.py",
+          "function": "_resolve_logs_db_path"
+        }
+      ]
+    },
+    {
+      "name": "get_logs",
+      "similarity": 1.0,
+      "loc": 26,
+      "members": [
+        {
+          "project": "A",
+          "file": "backend/firmware/api/logs.py",
+          "function": "get_logs"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/api/logs.py",
+          "function": "get_logs"
+        }
+      ]
+    },
+    {
+      "name": "_run_git",
+      "similarity": 1.0,
+      "loc": 26,
+      "members": [
+        {
+          "project": "A",
+          "file": "shared/release_version.py",
+          "function": "_run_git"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
+          "function": "_run_git"
+        }
+      ]
+    },
+    {
+      "name": "clean_version",
+      "similarity": 1.0,
+      "loc": 20,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
+          "function": "clean_version"
+        },
+        {
+          "project": "A",
+          "file": "shared/release_version.py",
+          "function": "clean_version"
+        }
+      ]
+    },
+    {
+      "name": "_format_range",
+      "similarity": 1.0,
+      "loc": 20,
+      "members": [
+        {
+          "project": "A",
+          "file": "scripts/scenarios/xml2dsl_generators.py",
+          "function": "_format_range"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/tools/xml_import/generators.py",
+          "function": "_format_range"
+        }
+      ]
+    },
+    {
+      "name": "_mode_symbol",
+      "similarity": 1.0,
+      "loc": 16,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/tools/xml_import/generators.py",
+          "function": "_mode_symbol"
+        },
+        {
+          "project": "A",
+          "file": "scripts/scenarios/xml2dsl_generators.py",
+          "function": "_mode_symbol"
+        }
+      ]
+    },
+    {
+      "name": "health_check",
+      "similarity": 1.0,
+      "loc": 14,
+      "members": [
+        {
+          "project": "A",
+          "file": "backend/firmware/main.py",
+          "function": "health_check"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/api/main.py",
+          "function": "health_check"
+        }
+      ]
+    },
+    {
+      "name": "_read_version_from_package_json",
+      "similarity": 1.0,
+      "loc": 14,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
+          "function": "_read_version_from_package_json"
+        },
+        {
+          "project": "A",
+          "file": "shared/release_version.py",
+          "function": "_read_version_from_package_json"
+        }
+      ]
+    },
+    {
+      "name": "_read_version_from_text",
+      "similarity": 1.0,
+      "loc": 14,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
+          "function": "_read_version_from_text"
+        },
+        {
+          "project": "A",
+          "file": "shared/release_version.py",
+          "function": "_read_version_from_text"
+        }
+      ]
+    },
+    {
+      "name": "version_info",
+      "similarity": 1.0,
+      "loc": 14,
+      "members": [
+        {
+          "project": "A",
+          "file": "shared/_endpoint_helpers.py",
+          "function": "version_info"
+        },
+        {
+          "project": "B",
+          "file": "oqlos/shared/version_endpoint.py",
+          "function": "version_info"
+        }
+      ]
+    },
+    {
+      "name": "status",
+      "similarity": 1.0,
+      "loc": 12,
+      "members": [
+        {
+          "project": "B",
+          "file": "oqlos/api/main.py",
+          "function": "status"
+        },
+        {
+          "project": "A",
+          "file": "backend/firmware/main.py",
+          "function": "status"
+        }
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "create_nfo_setup",
+      "func_b": "create_nfo_setup",
+      "file_a": "shared/nfo_config_factory.py",
+      "file_b": "oqlos/shared/config_factory.py",
+      "loc": 53
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "resolve_release_version",
+      "func_b": "resolve_release_version",
+      "file_a": "shared/release_version.py",
+      "file_b": "oqlos/shared/release_version.py",
+      "loc": 42
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "setup_nfo",
+      "func_b": "setup_nfo",
+      "file_a": "shared/nfo_config_factory.py",
+      "file_b": "oqlos/shared/config_factory.py",
+      "loc": 29
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "create_version_router",
+      "func_b": "create_version_router",
+      "file_a": "shared/_endpoint_helpers.py",
+      "file_b": "oqlos/shared/version_endpoint.py",
+      "loc": 25
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "normalize_set_value",
+      "func_b": "normalize_set_value",
+      "file_a": "scripts/scenarios/xml2dsl_utils.py",
+      "file_b": "oqlos/tools/xml_import/_utils.py",
+      "loc": 21
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "build_version_payload",
+      "func_b": "build_version_payload",
+      "file_a": "shared/_endpoint_helpers.py",
+      "file_b": "oqlos/shared/version_endpoint.py",
+      "loc": 20
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "websocket_endpoint",
+      "func_b": "websocket_endpoint",
+      "file_a": "backend/firmware/main.py",
+      "file_b": "oqlos/api/main.py",
+      "loc": 19
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "normalize_flow_value",
+      "func_b": "normalize_flow_value",
+      "file_a": "scripts/scenarios/xml2dsl_utils.py",
+      "file_b": "oqlos/tools/xml_import/_utils.py",
+      "loc": 18
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "normalize_output_name",
+      "func_b": "normalize_output_name",
+      "file_a": "scripts/scenarios/xml2dsl_utils.py",
+      "file_b": "oqlos/tools/xml_import/_utils.py",
+      "loc": 16
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "get_logs",
+      "func_b": "get_logs",
+      "file_a": "backend/firmware/api/logs.py",
+      "file_b": "oqlos/api/logs.py",
+      "loc": 13
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_run_git",
+      "func_b": "_run_git",
+      "file_a": "shared/release_version.py",
+      "file_b": "oqlos/shared/release_version.py",
+      "loc": 13
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_resolve_logs_db_path",
+      "func_b": "resolve_logs_db_path",
+      "file_a": "shared/nfo_config_factory.py",
+      "file_b": "oqlos/shared/logs_query.py",
+      "loc": 10
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "clean_version",
+      "func_b": "clean_version",
+      "file_a": "shared/release_version.py",
+      "file_b": "oqlos/shared/release_version.py",
+      "loc": 10
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_format_range",
+      "func_b": "_format_range",
+      "file_a": "scripts/scenarios/xml2dsl_generators.py",
+      "file_b": "oqlos/tools/xml_import/generators.py",
+      "loc": 10
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "resolve_logs_db_path",
+      "func_b": "resolve_logs_db_path",
+      "file_a": "shared/logs_query.py",
+      "file_b": "oqlos/shared/logs_query.py",
+      "loc": 9
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_mode_symbol",
+      "func_b": "_mode_symbol",
+      "file_a": "scripts/scenarios/xml2dsl_generators.py",
+      "file_b": "oqlos/tools/xml_import/generators.py",
+      "loc": 8
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "health_check",
+      "func_b": "health_check",
+      "file_a": "backend/firmware/main.py",
+      "file_b": "oqlos/api/main.py",
+      "loc": 7
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_read_version_from_package_json",
+      "func_b": "_read_version_from_package_json",
+      "file_a": "shared/release_version.py",
+      "file_b": "oqlos/shared/release_version.py",
+      "loc": 7
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_read_version_from_text",
+      "func_b": "_read_version_from_text",
+      "file_a": "shared/release_version.py",
+      "file_b": "oqlos/shared/release_version.py",
+      "loc": 7
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "version_info",
+      "func_b": "version_info",
+      "file_a": "shared/_endpoint_helpers.py",
+      "file_b": "oqlos/shared/version_endpoint.py",
+      "loc": 7
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "status",
+      "func_b": "status",
+      "file_a": "backend/firmware/main.py",
+      "file_b": "oqlos/api/main.py",
+      "loc": 6
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "is_available",
+      "func_b": "is_available",
+      "file_a": "_archive/dsl/firmware_adapter.py",
+      "file_b": "oqlos/hardware/firmware_adapter.py",
+      "loc": 6
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_mode_action",
+      "func_b": "_mode_action",
+      "file_a": "scripts/scenarios/xml2dsl_generators.py",
+      "file_b": "oqlos/tools/xml_import/generators.py",
+      "loc": 6
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_get_client",
+      "func_b": "_get_client",
+      "file_a": "_archive/dsl/firmware_adapter.py",
+      "file_b": "oqlos/hardware/firmware_adapter.py",
+      "loc": 5
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_parse_numeric",
+      "func_b": "_parse_numeric",
+      "file_a": "_archive/dsl/firmware_adapter.py",
+      "file_b": "oqlos/hardware/firmware_adapter.py",
+      "loc": 4
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "read_state",
+      "func_b": "read_state",
+      "file_a": "_archive/dsl/firmware_adapter.py",
+      "file_b": "oqlos/hardware/firmware_adapter.py",
+      "loc": 4
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "slugify",
+      "func_b": "slugify",
+      "file_a": "scripts/scenarios/xml2dsl_utils.py",
+      "file_b": "oqlos/tools/xml_import/_utils.py",
+      "loc": 4
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "close",
+      "func_b": "close",
+      "file_a": "_archive/dsl/firmware_adapter.py",
+      "file_b": "oqlos/hardware/firmware_adapter.py",
+      "loc": 3
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_resolve_peripheral",
+      "func_b": "_resolve_peripheral",
+      "file_a": "_archive/dsl/firmware_adapter.py",
+      "file_b": "oqlos/hardware/firmware_adapter.py",
+      "loc": 3
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "reset_peripherals",
+      "func_b": "reset_peripherals",
+      "file_a": "_archive/dsl/firmware_adapter.py",
+      "file_b": "oqlos/hardware/firmware_adapter.py",
+      "loc": 3
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "get_logger",
+      "func_b": "get_logger",
+      "file_a": "backend/shared/logger.py",
+      "file_b": "oqlos/shared/logger.py",
+      "loc": 3
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "get_logger",
+      "func_b": "get_logger",
+      "file_a": "shared/logger.py",
+      "file_b": "oqlos/shared/logger.py",
+      "loc": 3
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "_connect",
+      "func_b": "_connect",
+      "file_a": "shared/logs_query.py",
+      "file_b": "oqlos/shared/logs_query.py",
+      "loc": 3
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "is_pump_output",
+      "func_b": "is_pump_output",
+      "file_a": "scripts/scenarios/xml2dsl_utils.py",
+      "file_b": "oqlos/tools/xml_import/_utils.py",
+      "loc": 3
+    },
+    {
+      "type": "structural",
+      "similarity": 1.0,
+      "func_a": "is_compressor_output",
+      "func_b": "is_compressor_output",
+      "file_a": "scripts/scenarios/xml2dsl_utils.py",
+      "file_b": "oqlos/tools/xml_import/_utils.py",
+      "loc": 3
+    }
+  ]
+}

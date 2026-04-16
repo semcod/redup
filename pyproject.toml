@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redup"
-version = "0.4.19"
+version = "0.4.20"
 description = "Code duplication analyzer and refactoring planner for LLMs"
 readme = "README.md"
 license = "Apache-2.0"
@@ -44,7 +44,10 @@ all = [
     "redup[ast]",
     "redup[lsh]",
     "redup[semantic]",
+    "redup[compare]",
 ]
+compare = ["networkx>=3.0"]
+llm = ["litellm>=1.0"]
 fast = ["xxhash>=3.0", "libcst>=1.0", "pybloom-live>=4.0"]
 fuzzy = ["rapidfuzz>=3.0"]
 ast = [

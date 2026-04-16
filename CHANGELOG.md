@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.4.20] - 2026-04-16
+
+### Docs
+- Update README.md
+
+### Test
+- Update tests/test_compare.py
+
+### Other
+- Update compare_report.json
+- Update project/duplication.toon.yaml
+
 ## [0.4.19] - 2026-04-16
 
 ### Docs

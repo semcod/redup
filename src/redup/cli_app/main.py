@@ -123,6 +123,28 @@ def scan(
 
 
 @app.command()
+def compare(
+    project_a: Path = typer.Argument(..., help="Root directory of the first project."),
+    project_b: Path = typer.Argument(..., help="Root directory of the second project."),
+    threshold: float = typer.Option(0.75, "--threshold", "-t", help="Minimum similarity threshold."),
+    semantic: bool = typer.Option(False, "--semantic", help="Enable semantic similarity (slow, requires redup[semantic])."),
+    extensions: str | None = typer.Option(None, "--ext", "-e", help="Comma-separated file extensions to scan."),
+    min_lines: int = typer.Option(3, "--min-lines", help="Minimum block size (lines)."),
+    no_community: bool = typer.Option(False, "--no-community", help="Skip community detection (no networkx needed)."),
+    output: Path | None = typer.Option(None, "--output", "-o", help="Write JSON report to file."),
+    refactor_plan: bool = typer.Option(False, "--refactor-plan", help="Generate LLM-powered refactoring TODO list."),
+    llm_model: str | None = typer.Option(None, "--llm-model", help="LLM model for refactoring plan (default: from LLM_MODEL env)."),
+    env_file: Path | None = typer.Option(None, "--env", help="Path to .env file with API keys."),
+) -> None:
+    """Compare two projects and recommend refactoring strategy (merge / extract / keep separate)."""
+    from redup.cli_app.compare_command import compare_command
+    return compare_command(
+        project_a, project_b, threshold, semantic, extensions,
+        min_lines, no_community, output, refactor_plan, llm_model, env_file,
+    )
+
+
+@app.command()
 def diff(
     before: Path = typer.Argument(..., help="Path to the earlier scan JSON file."),
     after: Path = typer.Argument(..., help="Path to the later scan JSON file."),
