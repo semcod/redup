@@ -61,38 +61,82 @@ def _get_model(model_override: str | None = None) -> str:
     return os.getenv("LLM_MODEL", "openrouter/x-ai/grok-code-fast-1")
 
 
+def _resolve_stats(report: dict) -> tuple[dict, dict]:
+    """Extract project stats, supporting both compact and legacy formats."""
+    stats = report.get("stats", {})
+    stats_a = stats.get("a") or report.get("stats_a", {})
+    stats_b = stats.get("b") or report.get("stats_b", {})
+    return stats_a, stats_b
+
+
+def _normalize_match(m: dict) -> dict:
+    """Normalize a single match from compact or legacy format."""
+    loc = m.get("loc")
+    if loc is None and "lines_a" in m:
+        loc = max(
+            m["lines_a"][1] - m["lines_a"][0],
+            m["lines_b"][1] - m["lines_b"][0],
+        )
+    else:
+        loc = loc or 0
+
+    return {
+        "func_a": m.get("func_a") or m.get("function_a", ""),
+        "func_b": m.get("func_b") or m.get("function_b", ""),
+        "file_a": m.get("file_a", ""),
+        "file_b": m.get("file_b", ""),
+        "similarity": m.get("similarity", 1.0),
+        "type": m.get("type") or m.get("similarity_type", "structural"),
+        "loc": loc,
+    }
+
+
+def _build_match_list(report: dict, limit: int = 30) -> list[dict]:
+    """Build, sort, and limit match list from report."""
+    raw_matches = report.get("matches", [])
+    match_list = [_normalize_match(m) for m in raw_matches]
+    match_list.sort(key=lambda x: x["loc"], reverse=True)
+    return match_list[:limit]
+
+
+def _format_communities(communities: list[dict]) -> str:
+    """Format communities section for prompt."""
+    if not communities:
+        return ""
+
+    lines = ["\n## Detected Code Communities (clusters of related duplicates)\n"]
+    for c in communities[:10]:
+        name = c.get("name") or c.get("extraction_candidate_name", "?")
+        loc = c.get("loc") or c.get("total_loc", 0)
+        sim = c.get("similarity") or c.get("avg_similarity", 0)
+        members = c.get("members", [])
+        lines.append(
+            f"- **{name}**: {loc} LOC, "
+            f"{len(members)} members, avg sim={sim:.2f}\n"
+        )
+    return "".join(lines)
+
+
+def _format_matches_section(matches: list[dict]) -> str:
+    """Format the matches section for prompt."""
+    lines = []
+    for i, m in enumerate(matches, 1):
+        lines.append(
+            f"{i}. `{m['func_a']}` (A:{m['file_a']}, {m['loc']}L) "
+            f"↔ `{m['func_b']}` (B:{m['file_b']}) "
+            f"— {m['type']} sim={m['similarity']:.2f}\n"
+        )
+    return "".join(lines)
+
+
 def _build_prompt(report: dict) -> str:
     """Build a compact prompt from comparison report data.
 
     Performance-optimised: sends only structured metadata, not raw code.
     Supports both compact (new) and verbose (legacy) report formats.
     """
-    # Resolve stats — compact uses "stats.a/b", legacy uses "stats_a/stats_b"
-    stats = report.get("stats", {})
-    stats_a = stats.get("a") or report.get("stats_a", {})
-    stats_b = stats.get("b") or report.get("stats_b", {})
-
-    # Matches are already deduplicated in compact format
-    raw_matches = report.get("matches", [])
-    match_list: list[dict] = []
-    for m in raw_matches:
-        match_list.append({
-            "func_a": m.get("func_a") or m.get("function_a", ""),
-            "func_b": m.get("func_b") or m.get("function_b", ""),
-            "file_a": m.get("file_a", ""),
-            "file_b": m.get("file_b", ""),
-            "similarity": m.get("similarity", 1.0),
-            "type": m.get("type") or m.get("similarity_type", "structural"),
-            "loc": m.get("loc") or (
-                max(m["lines_a"][1] - m["lines_a"][0], m["lines_b"][1] - m["lines_b"][0])
-                if "lines_a" in m else 0
-            ),
-        })
-
-    # Sort by LOC descending, limit to top 30 for token efficiency
-    match_list.sort(key=lambda x: x["loc"], reverse=True)
-    top_matches = match_list[:30]
-
+    stats_a, stats_b = _resolve_stats(report)
+    top_matches = _build_match_list(report)
     communities = report.get("communities", [])
     rec = report.get("recommendation", {})
     overlap = rec.get("overlap_pct") or rec.get("overlap_percent", 0)
@@ -110,27 +154,16 @@ and produce an actionable refactoring TODO list.
 
 ## Top Duplicate Matches (function pairs found in both projects)
 """
+    prompt += _format_matches_section(top_matches)
+    prompt += _format_communities(communities)
+    prompt += _get_prompt_instructions()
 
-    for i, m in enumerate(top_matches, 1):
-        prompt += (
-            f"{i}. `{m['func_a']}` (A:{m['file_a']}, {m['loc']}L) "
-            f"↔ `{m['func_b']}` (B:{m['file_b']}) "
-            f"— {m['type']} sim={m['similarity']:.2f}\n"
-        )
+    return prompt
 
-    if communities:
-        prompt += "\n## Detected Code Communities (clusters of related duplicates)\n"
-        for c in communities[:10]:
-            name = c.get("name") or c.get("extraction_candidate_name", "?")
-            loc = c.get("loc") or c.get("total_loc", 0)
-            sim = c.get("similarity") or c.get("avg_similarity", 0)
-            members = c.get("members", [])
-            prompt += (
-                f"- **{name}**: {loc} LOC, "
-                f"{len(members)} members, avg sim={sim:.2f}\n"
-            )
 
-    prompt += """
+def _get_prompt_instructions() -> str:
+    """Return the instructions section of the prompt."""
+    return """
 ## Instructions
 Generate a JSON array of refactoring tasks. Each task:
 ```json
@@ -161,8 +194,6 @@ Return ONLY valid JSON:
   "tasks": [...]
 }
 ```"""
-
-    return prompt
 
 
 def generate_refactor_plan(
