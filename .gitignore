@@ -22,3 +22,6 @@ htmlcov/
 .*
 !.gitignore
 !.redup/
+
+# Environment variables
+.env

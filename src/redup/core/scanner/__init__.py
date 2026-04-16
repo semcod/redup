@@ -107,40 +107,115 @@ def _read_source_text(file_path: Path, cache: MemoryFileCache | None = None) -> 
         return None
 
 
+def _get_source_for_file(
+    file_path: Path,
+    preloaded_sources: dict[Path, str] | None,
+    file_cache: MemoryFileCache | None,
+) -> str | None:
+    """Get source text for a file from preloaded sources or cache."""
+    if preloaded_sources is not None:
+        return preloaded_sources.get(file_path)
+    return _read_source_text(file_path, file_cache)
+
+
+def _extract_blocks_for_file(
+    source: str,
+    relative_path: str,
+    file_ext: str,
+    function_level_only: bool,
+    min_block_lines: int,
+) -> list[CodeBlock]:
+    """Extract code blocks from a file based on its type."""
+    blocks: list[CodeBlock] = []
+
+    # Extract function-level blocks
+    if file_ext == ".py":
+        blocks = _extract_function_blocks_python(source, relative_path)
+    else:
+        try:
+            from redup.core.ts_extractor import extract_functions_treesitter
+            blocks = extract_functions_treesitter(source, relative_path)
+        except ImportError:
+            pass
+
+    # Add sliding window blocks if not function-only mode
+    if not function_level_only:
+        blocks.extend(_extract_sliding_blocks(source, relative_path, min_block_lines))
+
+    return blocks
+
+
+def _process_single_file(
+    file_path: Path,
+    config: ScanConfig,
+    preloaded_sources: dict[Path, str] | None,
+    file_cache: MemoryFileCache | None,
+    function_level_only: bool,
+) -> ScannedFile | None:
+    """Process a single file and return ScannedFile or None if skipped."""
+    source = _get_source_for_file(file_path, preloaded_sources, file_cache)
+    if source is None:
+        return None
+
+    lines = source.splitlines()
+    relative_path = str(_project_relative_path(file_path, config.root))
+
+    blocks = _extract_blocks_for_file(
+        source, relative_path, file_path.suffix,
+        function_level_only, config.min_block_lines
+    )
+
+    return ScannedFile(
+        path=relative_path,
+        lines=lines,
+        blocks=blocks,
+    )
+
+
+def _init_strategy(strategy: ScanStrategy | bool | None, function_level_only: bool | None) -> tuple[ScanStrategy, bool]:
+    """Initialize scan strategy and function-level flag."""
+    if isinstance(strategy, bool):
+        if function_level_only is None:
+            function_level_only = strategy
+        strategy = None
+    if strategy is None:
+        strategy = ScanStrategy()
+    if function_level_only is None:
+        function_level_only = False
+    return strategy, function_level_only
+
+
+def _init_file_loading(
+    files: list[Path],
+    strategy: ScanStrategy,
+) -> tuple[dict[Path, str] | None, MemoryFileCache | None]:
+    """Initialize file loading based on strategy."""
+    if strategy.preload_to_ram:
+        return _preload_files(files, strategy.max_cache_mb), None
+    elif strategy.memory_cache:
+        return None, MemoryFileCache(strategy.max_cache_mb)
+    return None, None
+
+
 def scan_project(
     config: ScanConfig | None = None,
     strategy: ScanStrategy | bool | None = None,
     function_level_only: bool | None = None,
 ) -> tuple[list[ScannedFile], ScanStats]:
     """Scan a project and return files with their extracted code blocks."""
-    if isinstance(strategy, bool):
-        if function_level_only is None:
-            function_level_only = strategy
-        strategy = None
-
+    # Load config if not provided
     if config is None:
         from redup.core.config import config_to_scan_config, load_config
-
         config = config_to_scan_config(load_config(), Path.cwd())
 
     config = _normalize_scan_config(config)
-
-    if strategy is None:
-        strategy = ScanStrategy()
-    if function_level_only is None:
-        function_level_only = False
+    strategy, function_level_only = _init_strategy(strategy, function_level_only)
 
     files = sorted(_collect_files(config))
     if not files:
         return [], ScanStats()
 
-    preloaded_sources: dict[Path, str] | None = None
-    file_cache: MemoryFileCache | None = None
-
-    if strategy.preload_to_ram:
-        preloaded_sources = _preload_files(files, strategy.max_cache_mb)
-    elif strategy.memory_cache:
-        file_cache = MemoryFileCache(strategy.max_cache_mb)
+    preloaded_sources, file_cache = _init_file_loading(files, strategy)
 
     start_time = time.monotonic()
     scanned_files: list[ScannedFile] = []
@@ -148,42 +223,13 @@ def scan_project(
     total_blocks = 0
 
     for file_path in files:
-        if preloaded_sources is not None:
-            source = preloaded_sources.get(file_path)
-            if source is None:
-                continue
-        else:
-            source = _read_source_text(file_path, file_cache)
-            if source is None:
-                continue
-
-        lines = source.splitlines()
-        relative_path = str(_project_relative_path(file_path, config.root))
-
-        if file_path.suffix == ".py":
-            blocks = _extract_function_blocks_python(source, relative_path)
-        else:
-            blocks = []
-            try:
-                from redup.core.ts_extractor import extract_functions_treesitter
-            except ImportError:
-                extract_functions_treesitter = None
-
-            if extract_functions_treesitter is not None:
-                blocks = extract_functions_treesitter(source, relative_path)
-
-        if not function_level_only:
-            blocks.extend(_extract_sliding_blocks(source, relative_path, config.min_block_lines))
-
-        scanned_files.append(
-            ScannedFile(
-                path=relative_path,
-                lines=lines,
-                blocks=blocks,
-            )
+        scanned = _process_single_file(
+            file_path, config, preloaded_sources, file_cache, function_level_only
         )
-        total_lines += len(lines)
-        total_blocks += len(blocks)
+        if scanned is not None:
+            scanned_files.append(scanned)
+            total_lines += len(scanned.lines)
+            total_blocks += len(scanned.blocks)
 
     stats = ScanStats(
         files_scanned=len(scanned_files),

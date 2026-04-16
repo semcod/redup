@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+## [0.4.19] - 2026-04-16
+
+### Docs
+- Update README.md
+- Update docs/API.md
+- Update project/README.md
+- Update project/context.md
+
+### Test
+- Update tests/test_cli_import_compat.py
+
+### Other
+- Update .gitignore
+- Update coverage.json
+- Update project/analysis.toon
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/dashboard.html
+- Update project/duplication.toon
+- ... and 21 more files
+
 ## [0.4.18] - 2026-04-08
 
 ## [0.4.17] - 2026-04-08

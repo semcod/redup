@@ -27,7 +27,7 @@ def _apply_fuzzy_similarity(dup_map: DuplicationMap, threshold: float) -> Duplic
     return dup_map
 
 
-def _validate_fuzzy_input(dup_map: DuplicationMap, threshold: float) -> 'FuzzyValidationResult':
+def _validate_fuzzy_input(dup_map: DuplicationMap, threshold: float):
     """Validate input parameters for fuzzy similarity analysis."""
     from dataclasses import dataclass
     

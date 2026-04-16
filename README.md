@@ -5,7 +5,22 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.18-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.19-green.svg)](https://pypi.org/project/redup/)
+
+
+## AI Cost Tracking
+
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.19-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$7.50-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-14.3h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
+
+- 🤖 **LLM usage:** $7.5000 (60 commits)
+- 👤 **Human dev:** ~$1432 (14.3h @ $100/h, 30min dedup)
+
+Generated on 2026-04-16 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/qwen/qwen3-coder-next)
+
+---
+
+
 
 reDUP scans codebases for duplicated functions, blocks, and structural patterns — then builds a prioritized refactoring map that LLMs can consume to eliminate redundancy systematically.
 
@@ -300,8 +315,7 @@ pytest
 
 ## License
 
-Apache License 2.0 - see [LICENSE](LICENSE) for details.
-
+Licensed under Apache-2.0.
 ## Author
 
-Created by **Tom Sapletta** - [tom@sapletta.com](mailto:tom@sapletta.com)
+Tom Sapletta

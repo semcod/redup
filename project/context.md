@@ -4,12 +4,12 @@
 
 - **Project**: /home/tom/github/semcod/redup
 - **Primary Language**: python
-- **Languages**: python: 45, shell: 1
+- **Languages**: python: 65, shell: 1
 - **Analysis Mode**: static
-- **Total Functions**: 296
-- **Total Classes**: 41
-- **Modules**: 46
-- **Entry Points**: 174
+- **Total Functions**: 312
+- **Total Classes**: 44
+- **Modules**: 66
+- **Entry Points**: 179
 
 ## Architecture by Module
 
@@ -18,24 +18,10 @@
 - **Classes**: 1
 - **File**: `ts_extractor.py`
 
-### src.redup.core.scanner
-- **Functions**: 21
-- **Classes**: 4
-- **File**: `scanner.py`
-
 ### src.redup.core.fuzzy_similarity
 - **Functions**: 20
 - **Classes**: 4
 - **File**: `fuzzy_similarity.py`
-
-### src.redup.core.pipeline
-- **Functions**: 19
-- **File**: `pipeline.py`
-
-### src.redup.core.hasher
-- **Functions**: 18
-- **Classes**: 3
-- **File**: `hasher.py`
 
 ### src.redup.reporters.enhanced_reporter
 - **Functions**: 17
@@ -47,14 +33,23 @@
 - **Classes**: 3
 - **File**: `universal_fuzzy.py`
 
-### src.redup.mcp_server
-- **Functions**: 16
-- **File**: `mcp_server.py`
+### src.redup.core.scanner
+- **Functions**: 14
+- **File**: `__init__.py`
+
+### src.redup.core.hasher
+- **Functions**: 13
+- **Classes**: 2
+- **File**: `hasher.py`
 
 ### src.redup.core.lsh_matcher
 - **Functions**: 12
 - **Classes**: 2
 - **File**: `lsh_matcher.py`
+
+### src.redup.mcp.handlers
+- **Functions**: 12
+- **File**: `handlers.py`
 
 ### src.redup.core.hash_cache
 - **Functions**: 10
@@ -89,6 +84,10 @@
 - **Functions**: 6
 - **File**: `config.py`
 
+### src.redup.core.pipeline.duplicate_finder
+- **Functions**: 6
+- **File**: `duplicate_finder.py`
+
 ### src.redup.reporters.code2llm_reporter
 - **Functions**: 6
 - **File**: `code2llm_reporter.py`
@@ -97,18 +96,22 @@
 - **Functions**: 6
 - **File**: `toon_reporter.py`
 
+### src.redup.core.scanner_cache
+- **Functions**: 5
+- **Classes**: 1
+- **File**: `scanner_cache.py`
+
 ### src.redup.core.planner
 - **Functions**: 5
 - **File**: `planner.py`
 
-### src.redup.core.semantic
-- **Functions**: 5
-- **Classes**: 2
-- **File**: `semantic.py`
-
 ## Key Entry Points
 
 Main execution flows into the system:
+
+### src.redup.core.scanner_loader._preload_files
+> Load ALL files into RAM at once for maximum speed.
+- **Calls**: time.time, files.sort, len, print, time.time, Progress, progress.add_task, progress.console.print
 
 ### benchmarks.bench_libraries.benchmark
 > Run benchmark with current library configuration.
@@ -118,29 +121,15 @@ Main execution flows into the system:
 > Compare sequential vs parallel scanning performance.
 - **Calls**: print, print, ScanConfig, print, time.time, src.redup.core.pipeline.analyze, print, print
 
-### src.redup.mcp_server._handle_analyze_project
-- **Calls**: src.redup.mcp_server._resolve_path, src.redup.mcp_server._run_analysis, None.lower, ValueError, params.get, FileNotFoundError, src.redup.reporters.json_reporter.to_json, src.redup.reporters.yaml_reporter.to_yaml
-
 ### examples.01_basic_usage.main
 - **Calls**: ScanConfig, src.redup.core.pipeline.analyze, print, print, print, print, print, print
 
-### src.redup.core.scanner._scan_file_worker
-> Worker function for parallel file scanning.
-- **Calls**: src.redup.core.scanner._should_process_file, ScannedFile, content.splitlines, ScannedFile, open, f.read, ScannedFile, str
-
 ### src.redup.core.utils.diff_helpers.GroupMatcher._ensure_matches
-- **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, self.before_groups.items, remaining_before.sort, remaining_after.sort, self.after_groups.get, src.redup.core.utils.diff_helpers._groups_match, enumerate
-
-### src.redup.mcp_server._handle_check_project
-- **Calls**: src.redup.mcp_server._resolve_path, src.redup.mcp_server._run_analysis, int, int, json.dumps, params.get, FileNotFoundError, params.get
+- **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, self.before_groups.items, remaining_before.sort, remaining_after.sort, self.after_groups.get, src.redup.core.differ._groups_match, enumerate
 
 ### src.redup.cli_app.main.scan
 > Scan a project for code duplicates.
 - **Calls**: app.command, typer.Argument, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option
-
-### src.redup.core.pipeline._find_duplicates_phase_lazy
-> Phase 3: Hash and find duplicates with caching and lazy evaluation.
-- **Calls**: time.time, list, src.redup.core.pipeline._find_near_duplicate_groups, groups.extend, groups.sort, src.redup.core.cache.build_hash_index_with_cache, block_hash_cache.items, src.redup.core.hasher.build_hash_index
 
 ### src.redup.core.semantic.SemanticDetector.find_semantic_duplicates
 > Find semantically similar code blocks using embeddings.
@@ -158,12 +147,17 @@ Pipeline:
 > Get duplication analysis metrics.
 - **Calls**: sum, sum, Counter, len, dict, self._bucket_similarities, max, len
 
-### src.redup.mcp_server.run_server
-- **Calls**: print, None.join, print, sorted, line.strip, json.loads, src.redup.mcp_server.handle_request, print
-
 ### src.redup.core.ts_extractor._extract_functions_javascript
 > Extract functions from JavaScript/TypeScript using tree-sitter.
 - **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, name_node.text.decode
+
+### src.redup.mcp.server.run_server
+> Run the MCP server (entry point).
+- **Calls**: print, None.join, print, sorted, line.strip, TOOL_SCHEMA_REDUP.keys, json.loads, src.redup.mcp.server.handle_request
+
+### src.redup.mcp.handlers.handle_check_project
+> Check project against quality gates.
+- **Calls**: src.redup.mcp.utils.resolve_path, src.redup.mcp.handlers._run_analysis, int, int, src.redup.mcp.handlers._check_thresholds, json.dumps, params.get, FileNotFoundError
 
 ### benchmarks.bench_libraries.benchmark_hash_performance
 > Benchmark hash performance specifically.
@@ -185,9 +179,13 @@ Pipeline:
 > Normalize class names to patterns.
 - **Calls**: class_str.split, None.join, cls.startswith, normalized.append, cls.startswith, normalized.append, cls.startswith, normalized.append
 
-### src.redup.core.pipeline._find_structural_groups
+### src.redup.core.pipeline.duplicate_finder.find_structural_groups
 > Find structural duplicate groups.
-- **Calls**: src.redup.config.RedupConfig.set, src.redup.core.hasher.find_structural_duplicates, enumerate, exact_hashes.add, structural_groups.items, len, src.redup.core.matcher.refine_structural_matches, src.redup.core.pipeline._match_results_to_blocks
+- **Calls**: src.redup.config.RedupConfig.set, src.redup.core.hasher.find_structural_duplicates, enumerate, exact_hashes.add, structural_groups.items, len, src.redup.core.matcher.refine_structural_matches, src.redup.core.pipeline.groups.match_results_to_blocks
+
+### src.redup.mcp.handlers.handle_analyze_project
+> Analyze a project and return formatted results.
+- **Calls**: src.redup.mcp.utils.resolve_path, src.redup.mcp.handlers._run_analysis, None.lower, src.redup.mcp.handlers._format_analysis_result, params.get, FileNotFoundError, path.exists, path.is_dir
 
 ### src.redup.config.RedupConfig._load_from_env
 > Load configuration from environment variables.
@@ -201,9 +199,6 @@ Pipeline:
 > Compute similarity between metadata dictionaries.
 - **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, len, len, meta1.keys, meta2.keys, value_similarities.append, value_similarities.append
 
-### src.redup.mcp_server._handle_suggest_refactoring
-- **Calls**: src.redup.mcp_server._resolve_path, src.redup.mcp_server._run_analysis, EnhancedReporter, json.dumps, params.get, FileNotFoundError, reporter.generate_metrics_report, src.redup.mcp_server._json_safe
-
 ### src.redup.core.fuzzy_similarity.HTMLComponentExtractor._extract_attributes
 > Extract key attributes for comparison.
 - **Calls**: re.findall, re.search, re.findall, None.join, None.lower, None.join, sorted, sorted
@@ -216,6 +211,14 @@ Pipeline:
 > Compute similarity between attribute dictionaries.
 - **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, attrs1.keys, attrs2.keys, len, len, value_similarities.append, value_similarities.append
 
+### src.redup.core.cache.HashCache.store_file_hashes
+> Store file and block hashes in cache.
+- **Calls**: self._get_file_hash, time.time, self.db.execute, self.db.execute, self.db.commit, file_path.stat, self.db.executemany, str
+
+### src.redup.core.hasher._normalize_ast_text
+> Deeper normalization: replace variable names and literals with placeholders.
+- **Calls**: _normalize_cache.get, ast.parse, src.redup.core.hasher._ast_to_normalized_string, len, _normalize_cache.pop, src.redup.core.hasher._normalize_text, re.sub, re.sub
+
 ### src.redup.core.ts_extractor._extract_functions_ruby
 > Extract functions from Ruby using tree-sitter.
 - **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, name_node.text.decode
@@ -224,86 +227,72 @@ Pipeline:
 > Extract functions from PHP using tree-sitter.
 - **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, blocks.append, parent.child_by_field_name, CodeBlock
 
-### src.redup.core.cache.HashCache.store_file_hashes
-> Store file and block hashes in cache.
-- **Calls**: self._get_file_hash, time.time, self.db.execute, self.db.execute, self.db.commit, file_path.stat, self.db.executemany, str
+### src.redup.mcp.handlers.handle_suggest_refactoring
+> Analyze and return refactoring suggestions.
+- **Calls**: src.redup.mcp.utils.resolve_path, src.redup.mcp.handlers._run_analysis, EnhancedReporter, json.dumps, params.get, FileNotFoundError, reporter.generate_metrics_report, src.redup.mcp.utils.json_safe
 
 ## Process Flows
 
 Key execution flows identified:
 
-### Flow 1: benchmark
+### Flow 1: _preload_files
+```
+_preload_files [src.redup.core.scanner_loader]
+```
+
+### Flow 2: benchmark
 ```
 benchmark [benchmarks.bench_libraries]
   └─> generate_test_project
 ```
 
-### Flow 2: benchmark_sequential_vs_parallel
+### Flow 3: benchmark_sequential_vs_parallel
 ```
 benchmark_sequential_vs_parallel [benchmark]
-```
-
-### Flow 3: _handle_analyze_project
-```
-_handle_analyze_project [src.redup.mcp_server]
-  └─> _resolve_path
-  └─> _run_analysis
-      └─> _build_scan_config
-          └─> _parse_extensions
-          └─ →> config_to_scan_config
 ```
 
 ### Flow 4: main
 ```
 main [examples.01_basic_usage]
   └─ →> analyze
-      └─> _ensure_config
-      └─> _scan_phase
+      └─ →> ensure_config
+      └─ →> scan_phase
           └─ →> scan_project
 ```
 
-### Flow 5: _scan_file_worker
-```
-_scan_file_worker [src.redup.core.scanner]
-  └─> _should_process_file
-      └─> _project_relative_path
-      └─> _should_exclude
-```
-
-### Flow 6: _ensure_matches
+### Flow 5: _ensure_matches
 ```
 _ensure_matches [src.redup.core.utils.diff_helpers.GroupMatcher]
   └─ →> set
   └─ →> set
 ```
 
-### Flow 7: _handle_check_project
-```
-_handle_check_project [src.redup.mcp_server]
-  └─> _resolve_path
-  └─> _run_analysis
-      └─> _build_scan_config
-          └─> _parse_extensions
-          └─ →> config_to_scan_config
-```
-
-### Flow 8: scan
+### Flow 6: scan
 ```
 scan [src.redup.cli_app.main]
 ```
 
-### Flow 9: _find_duplicates_phase_lazy
-```
-_find_duplicates_phase_lazy [src.redup.core.pipeline]
-  └─> _find_near_duplicate_groups
-      └─ →> find_near_duplicates
-          └─ →> _create_minhash
-```
-
-### Flow 10: find_semantic_duplicates
+### Flow 7: find_semantic_duplicates
 ```
 find_semantic_duplicates [src.redup.core.semantic.SemanticDetector]
   └─ →> set
+```
+
+### Flow 8: benchmark_feature_performance
+```
+benchmark_feature_performance [benchmark]
+  └─ →> analyze_parallel
+      └─ →> ensure_config
+```
+
+### Flow 9: _get_duplication_metrics
+```
+_get_duplication_metrics [src.redup.reporters.enhanced_reporter.EnhancedReporter]
+```
+
+### Flow 10: _extract_functions_javascript
+```
+_extract_functions_javascript [src.redup.core.ts_extractor]
 ```
 
 ## Key Classes
@@ -378,10 +367,10 @@ Attributes can be set via:
 - **Methods**: 5
 - **Key Methods**: src.redup.core.utils.language_dispatcher.LanguageDispatcher.__init__, src.redup.core.utils.language_dispatcher.LanguageDispatcher.register_extractor, src.redup.core.utils.language_dispatcher.LanguageDispatcher.register_group, src.redup.core.utils.language_dispatcher.LanguageDispatcher.get_extractor, src.redup.core.utils.language_dispatcher.LanguageDispatcher.extract_functions
 
-### src.redup.core.scanner.MemoryFileCache
+### src.redup.core.scanner_cache.MemoryFileCache
 > Cache file contents in RAM for faster access during scanning.
 - **Methods**: 4
-- **Key Methods**: src.redup.core.scanner.MemoryFileCache.__init__, src.redup.core.scanner.MemoryFileCache._estimate_size, src.redup.core.scanner.MemoryFileCache.get_file_content, src.redup.core.scanner.MemoryFileCache._evict_oldest
+- **Key Methods**: src.redup.core.scanner_cache.MemoryFileCache.__init__, src.redup.core.scanner_cache.MemoryFileCache._estimate_size, src.redup.core.scanner_cache.MemoryFileCache.get_file_content, src.redup.core.scanner_cache.MemoryFileCache._evict_oldest
 
 ### src.redup.core.models.DuplicateGroup
 > A cluster of duplicated code fragments.
@@ -405,15 +394,14 @@ Allows collecting lazy groups with limits
 - **Methods**: 3
 - **Key Methods**: src.redup.core.lazy_grouper.DuplicateGroupCollector.__init__, src.redup.core.lazy_grouper.DuplicateGroupCollector.collect, src.redup.core.lazy_grouper.DuplicateGroupCollector.collect_sorted
 
-### src.redup.core.hasher.BloomHashIndex
-> Two-pass hash index: Bloom filter eliminates uniques in O(1).
-- **Methods**: 3
-- **Key Methods**: src.redup.core.hasher.BloomHashIndex.__init__, src.redup.core.hasher.BloomHashIndex.add, src.redup.core.hasher.BloomHashIndex.get_duplicate_groups
-
 ### src.redup.core.lsh_matcher._SimpleMinHash
 > Simple MinHash implementation for fallback without datasketch.
 - **Methods**: 2
 - **Key Methods**: src.redup.core.lsh_matcher._SimpleMinHash.__init__, src.redup.core.lsh_matcher._SimpleMinHash.jaccard
+
+### src.redup.core.ts_extractor.config.LanguageRegistry
+- **Methods**: 2
+- **Key Methods**: src.redup.core.ts_extractor.config.LanguageRegistry.__init__, src.redup.core.ts_extractor.config.LanguageRegistry.get_language
 
 ## Data Transformation Functions
 
@@ -423,8 +411,12 @@ Key functions that process and transform data:
 > Invalidate cache for a file or entire cache.
 - **Output to**: str, self._cache.pop
 
-### src.redup.mcp_server._parse_extensions
+### src.redup.utils._parse_extensions
 - **Output to**: isinstance, value.split, list, None.strip, extensions.append
+
+### src.redup.analysis_logic._parse_extensions
+> Parse comma-separated extension string into list.
+- **Output to**: e.strip, ext_string.split, e.strip
 
 ### src.redup.core.python_parser._parse_with_libcst
 > Fast path — libcst CST parsing.
@@ -442,32 +434,44 @@ Key functions that process and transform data:
 > Convert ParsedFunction list to CodeBlock list for pipeline compatibility.
 - **Output to**: CodeBlock
 
-### src.redup.core.hasher._process_ast_node
-> Process a single AST node and return its normalized representation.
-- **Output to**: _AST_HANDLERS.get, type, handler
+### src.redup.core.scanner._process_single_file
+> Process a single file and return ScannedFile or None if skipped.
+- **Output to**: src.redup.core.scanner._get_source_for_file, source.splitlines, str, src.redup.core.scanner._extract_blocks_for_file, ScannedFile
 
-### src.redup.core.scanner._should_process_file
-> Check if file should be processed in parallel scan.
-- **Output to**: src.redup.core.scanner._project_relative_path, src.redup.core.scanner._should_exclude, Path, tuple, src.redup.core.scanner._is_test_file
+### src.redup.core.pipeline.phases.process_blocks
+> Phase 2: Extract and filter code blocks with memory optimization.
+- **Output to**: range, len, all_blocks.append
 
 ### src.redup.cli_app.fuzzy_similarity._validate_fuzzy_input
 > Validate input parameters for fuzzy similarity analysis.
 - **Output to**: FuzzyValidationResult, FuzzyValidationResult, FuzzyValidationResult
 
-### src.redup.core.pipeline._process_blocks
-> Phase 2: Extract and filter code blocks with memory optimization.
-- **Output to**: range, len, all_blocks.append
+### src.redup.mcp.utils.parse_extensions
+- **Output to**: isinstance, value.split, list, None.strip, None.strip
 
 ### src.redup.core.differ.format_diff_result
 > Format a DiffResult as a human-readable string.
 - **Output to**: lines.append, lines.append, lines.append, lines.append, lines.append
+
+### src.redup.mcp.handlers._format_analysis_result
+> Format analysis result based on output format.
+- **Output to**: ValueError, src.redup.reporters.json_reporter.to_json, src.redup.reporters.yaml_reporter.to_yaml, src.redup.reporters.toon_reporter.to_toon, src.redup.reporters.markdown_reporter.to_markdown
+
+### src.redup.mcp.handlers._format_top_groups
+> Format top groups by impact for response.
+- **Output to**: round, dup_map.sorted_by_impact, min
 
 ## Behavioral Patterns
 
 ### recursion__json_safe
 - **Type**: recursion
 - **Confidence**: 0.90
-- **Functions**: src.redup.mcp_server._json_safe
+- **Functions**: src.redup.utils._json_safe
+
+### recursion_json_safe
+- **Type**: recursion
+- **Confidence**: 0.90
+- **Functions**: src.redup.mcp.utils.json_safe
 
 ### state_machine_EnhancedReporter
 - **Type**: state_machine
@@ -481,43 +485,43 @@ Functions exposed as public API (no underscore prefix):
 - `src.redup.reporters.markdown_reporter.to_markdown` - 54 calls
 - `src.redup.reporters.code2llm_reporter.to_code2llm_context` - 36 calls
 - `src.redup.core.differ.format_diff_result` - 35 calls
+- `src.redup.core.pipeline.analyze_optimized` - 29 calls
 - `benchmarks.bench_libraries.benchmark` - 27 calls
 - `benchmark.benchmark_sequential_vs_parallel` - 26 calls
 - `src.redup.cli_app.scan_commands.scan_command` - 26 calls
 - `src.redup.cli_app.output_writer.write_results` - 25 calls
 - `examples.01_basic_usage.main` - 23 calls
 - `src.redup.cli_app.scan_commands.config_command` - 23 calls
-- `src.redup.core.pipeline.analyze_optimized` - 20 calls
-- `src.redup.cli_app.scan_commands.check_command` - 19 calls
+- `src.redup.core.scanner.scan_project` - 20 calls
 - `src.redup.core.pipeline.analyze_parallel` - 19 calls
+- `src.redup.cli_app.scan_commands.check_command` - 19 calls
 - `src.redup.core.config.config_to_scan_config` - 18 calls
+- `src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy` - 17 calls
 - `src.redup.reporters.code2llm_reporter.to_code2llm_toon` - 17 calls
 - `src.redup.cli_app.main.scan` - 17 calls
 - `src.redup.core.semantic.SemanticDetector.find_semantic_duplicates` - 16 calls
-- `src.redup.core.scanner.scan_project` - 16 calls
 - `benchmark.benchmark_feature_performance` - 15 calls
-- `src.redup.mcp_server.run_server` - 14 calls
+- `src.redup.mcp.server.run_server` - 14 calls
+- `src.redup.mcp.handlers.handle_check_project` - 14 calls
 - `benchmarks.bench_libraries.benchmark_hash_performance` - 13 calls
+- `src.redup.core.pipeline.duplicate_finder.find_near_duplicate_groups` - 13 calls
 - `benchmarks.bench_libraries.benchmark_fuzzy_performance` - 12 calls
+- `src.redup.core.pipeline.duplicate_finder.find_structural_groups` - 12 calls
+- `src.redup.mcp.handlers.handle_analyze_project` - 12 calls
 - `src.redup.core.cache.HashCache.store_file_hashes` - 11 calls
+- `src.redup.mcp.handlers.handle_suggest_refactoring` - 11 calls
 - `src.redup.core.ts_extractor.extract_functions_treesitter` - 10 calls
 - `src.redup.cli_app.main.check` - 10 calls
 - `src.redup.core.differ.compare_scans` - 10 calls
 - `src.redup.core.universal_fuzzy.UniversalFuzzyExtractor.extract_universal_signature` - 9 calls
 - `src.redup.core.planner.generate_suggestions` - 9 calls
 - `src.redup.core.lsh_matcher.LSHIndex.find_near_duplicates` - 9 calls
+- `src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized` - 9 calls
 - `src.redup.cli_app.scan_commands.info_command` - 9 calls
 - `src.redup.core.utils.diff_helpers.DiffCalculator.calculate_diff_stats` - 9 calls
 - `src.redup.config.RedupConfig.reload` - 8 calls
 - `src.redup.core.config.load_config` - 8 calls
 - `src.redup.core.lsh_matcher.LSHIndex.add` - 8 calls
-- `src.redup.core.pipeline.analyze` - 8 calls
-- `src.redup.core.semantic.SemanticDetector.find_semantic_duplicates_fast` - 7 calls
-- `src.redup.core.hasher.build_hash_index` - 7 calls
-- `src.redup.core.lsh_matcher.LSHIndex.find_all_near_duplicates` - 7 calls
-- `src.redup.core.cache.HashCache.get_stats` - 7 calls
-- `src.redup.reporters.toon_reporter.to_toon` - 7 calls
-- `src.redup.core.utils.function_extractor.FunctionExtractor.extract_functions` - 7 calls
 
 ## System Interactions
 
@@ -525,6 +529,10 @@ How components interact:
 
 ```mermaid
 graph TD
+    _preload_files --> time
+    _preload_files --> sort
+    _preload_files --> len
+    _preload_files --> print
     benchmark --> TemporaryDirectory
     benchmark --> Path
     benchmark --> generate_test_projec
@@ -533,28 +541,24 @@ graph TD
     benchmark_sequential --> print
     benchmark_sequential --> ScanConfig
     benchmark_sequential --> time
-    _handle_analyze_proj --> _resolve_path
-    _handle_analyze_proj --> _run_analysis
-    _handle_analyze_proj --> lower
-    _handle_analyze_proj --> ValueError
-    _handle_analyze_proj --> get
     main --> ScanConfig
     main --> analyze
     main --> print
-    _scan_file_worker --> _should_process_file
-    _scan_file_worker --> ScannedFile
-    _scan_file_worker --> splitlines
-    _scan_file_worker --> open
     _ensure_matches --> set
     _ensure_matches --> items
     _ensure_matches --> sort
-    _handle_check_projec --> _resolve_path
-    _handle_check_projec --> _run_analysis
-    _handle_check_projec --> int
-    _handle_check_projec --> dumps
     scan --> command
     scan --> Argument
     scan --> Option
+    find_semantic_duplic --> _ensure_model
+    find_semantic_duplic --> encode
+    find_semantic_duplic --> cos_sim
+    find_semantic_duplic --> set
+    find_semantic_duplic --> range
+    benchmark_feature_pe --> print
+    benchmark_feature_pe --> time
+    benchmark_feature_pe --> analyze_parallel
+    _get_duplication_met --> sum
 ```
 
 ## Reverse Engineering Guidelines

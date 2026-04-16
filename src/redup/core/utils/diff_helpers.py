@@ -47,15 +47,13 @@ class GroupMatcher:
         self.after_groups = after_groups
         self._matches: list[_MatchResult] | None = None
 
-    def _ensure_matches(self) -> None:
-        if self._matches is not None:
-            return
-
-        matches: list[_MatchResult] = []
-        matched_before: set[str] = set()
-        matched_after: set[str] = set()
-
-        # First, prefer exact id matches when the groups are otherwise compatible.
+    def _match_exact_ids(
+        self,
+        matches: list[_MatchResult],
+        matched_before: set[str],
+        matched_after: set[str],
+    ) -> None:
+        """First pass: match groups with identical IDs if compatible."""
         for group_id, before_group in self.before_groups.items():
             after_group = self.after_groups.get(group_id)
             if after_group is None:
@@ -65,7 +63,12 @@ class GroupMatcher:
                 matched_before.add(group_id)
                 matched_after.add(group_id)
 
-        # Then, match remaining groups by structural similarity.
+    def _get_remaining_groups(
+        self,
+        matched_before: set[str],
+        matched_after: set[str],
+    ) -> tuple[list[DuplicateGroup], list[DuplicateGroup]]:
+        """Get groups that haven't been matched yet, sorted by impact."""
         remaining_before = [
             group
             for group_id, group in self.before_groups.items()
@@ -80,21 +83,46 @@ class GroupMatcher:
         remaining_before.sort(key=lambda group: group.impact_score, reverse=True)
         remaining_after.sort(key=lambda group: group.impact_score, reverse=True)
 
+        return remaining_before, remaining_after
+
+    def _find_best_match(
+        self,
+        before_group: DuplicateGroup,
+        remaining_after: list[DuplicateGroup],
+        matched_after: set[str],
+    ) -> int | None:
+        """Find the best matching group index from remaining_after."""
+        best_index: int | None = None
+        best_score = -1.0
+
+        for index, after_group in enumerate(remaining_after):
+            if after_group.id in matched_after:
+                continue
+            if not _groups_match(before_group, after_group):
+                continue
+
+            score = self._match_score(before_group, after_group)
+            if score > best_score:
+                best_score = score
+                best_index = index
+
+        return best_index
+
+    def _match_similar_groups(
+        self,
+        matches: list[_MatchResult],
+        matched_before: set[str],
+        matched_after: set[str],
+    ) -> None:
+        """Second pass: match remaining groups by structural similarity."""
+        remaining_before, remaining_after = self._get_remaining_groups(
+            matched_before, matched_after
+        )
+
         for before_group in remaining_before:
-            best_index: int | None = None
-            best_score = -1.0
-
-            for index, after_group in enumerate(remaining_after):
-                if after_group.id in matched_after:
-                    continue
-                if not _groups_match(before_group, after_group):
-                    continue
-
-                score = self._match_score(before_group, after_group)
-                if score > best_score:
-                    best_score = score
-                    best_index = index
-
+            best_index = self._find_best_match(
+                before_group, remaining_after, matched_after
+            )
             if best_index is None:
                 continue
 
@@ -102,6 +130,17 @@ class GroupMatcher:
             matched_before.add(before_group.id)
             matched_after.add(after_group.id)
             matches.append(_MatchResult(before=before_group, after=after_group))
+
+    def _ensure_matches(self) -> None:
+        if self._matches is not None:
+            return
+
+        matches: list[_MatchResult] = []
+        matched_before: set[str] = set()
+        matched_after: set[str] = set()
+
+        self._match_exact_ids(matches, matched_before, matched_after)
+        self._match_similar_groups(matches, matched_before, matched_after)
 
         self._matches = matches
 

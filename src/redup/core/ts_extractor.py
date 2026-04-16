@@ -46,6 +46,23 @@ def _initialize_language_dispatcher() -> None:
     language_dispatcher.register_extractor("xml", _extract_blocks_html_xml)
     language_dispatcher.register_extractor("css", _extract_blocks_css)
     language_dispatcher.register_extractor("sql", _extract_blocks_sql)
+    
+    # Register web framework languages
+    language_dispatcher.register_extractor("svelte", _extract_blocks_html_xml)
+    language_dispatcher.register_extractor("vue", _extract_blocks_html_xml)
+    
+    # Register data formats (use HTML/XML extractor for structure)
+    language_dispatcher.register_extractor("json", _extract_blocks_html_xml)
+    language_dispatcher.register_extractor("yaml", _extract_blocks_html_xml)
+    language_dispatcher.register_extractor("toml", _extract_blocks_html_xml)
+    language_dispatcher.register_extractor("markdown", _extract_blocks_html_xml)
+    
+    # Register DSL languages
+    language_dispatcher.register_extractor("graphql", _extract_blocks_sql)
+    language_dispatcher.register_extractor("dockerfile", _extract_blocks_sql)
+    language_dispatcher.register_extractor("make", _extract_blocks_sql)
+    language_dispatcher.register_extractor("nginx", _extract_blocks_sql)
+    language_dispatcher.register_extractor("vim", _extract_blocks_sql)
 
 
 # Language mappings for tree-sitter

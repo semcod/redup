@@ -1,10 +1,6 @@
-# 📚 API Documentation
-
 ## Overview
 
 reDUP provides a clean, well-documented API for programmatic code duplication analysis.
-
-## Core API
 
 ### `ScanConfig`
 
@@ -72,8 +68,6 @@ blocks = scan_project(config)
 
 `list[CodeBlock]` - Raw code blocks from scanning.
 
-## Data Models
-
 ### `DuplicationMap`
 
 ```python
@@ -129,8 +123,6 @@ class RefactorSuggestion:
     rationale: str
 ```
 
-## Reporters
-
 ### JSON Reporter
 
 ```python
@@ -171,8 +163,6 @@ from redup.reporters.yaml_reporter import to_yaml
 yaml_output = to_yaml(duplication_map)
 Path("duplicates.yaml").write_text(yaml_output)
 ```
-
-## Examples
 
 ### Basic Usage
 

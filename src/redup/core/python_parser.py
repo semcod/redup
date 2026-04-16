@@ -90,56 +90,71 @@ def _parse_with_libcst(source: str, filepath: str) -> list[ParsedFunction]:
     return functions
 
 
+def _build_parent_map(tree: ast.AST) -> dict[int, ast.ClassDef]:
+    """Build a mapping of function node ids to their parent class nodes."""
+    parent_map: dict[int, ast.ClassDef] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef):
+            for child in ast.walk(node):
+                if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    parent_map[id(child)] = node
+    return parent_map
+
+
+def _extract_decorators(node: ast.FunctionDef | ast.AsyncFunctionDef) -> list[str] | None:
+    """Extract decorator names from a function node."""
+    decorators = []
+    for decorator in node.decorator_list:
+        if isinstance(decorator, ast.Name):
+            decorators.append(decorator.id)
+        elif isinstance(decorator, ast.Attribute):
+            decorators.append(ast.unparse(decorator))
+    return decorators if decorators else None
+
+
+def _extract_function_info(
+    node: ast.FunctionDef | ast.AsyncFunctionDef,
+    parent_map: dict[int, ast.ClassDef],
+    lines: list[str],
+) -> ParsedFunction:
+    """Extract metadata from a function node and create a ParsedFunction."""
+    start = node.lineno
+    end = node.end_lineno or start
+    text = "\n".join(lines[start - 1:end])
+    class_node = parent_map.get(id(node))
+
+    arg_count = len(node.args.args)
+    has_return = any(isinstance(n, ast.Return) for n in ast.walk(node))
+    decorators = _extract_decorators(node)
+
+    return ParsedFunction(
+        name=node.name,
+        start_line=start,
+        end_line=end,
+        text=text,
+        class_name=class_node.name if class_node else None,
+        arg_count=arg_count,
+        has_return=has_return,
+        decorators=decorators,
+    )
+
+
 def _parse_with_ast(source: str, filepath: str) -> list[ParsedFunction]:
     """Fallback — stdlib ast parsing."""
     import ast
-    functions: list[ParsedFunction] = []
+
     try:
         tree = ast.parse(source)
     except SyntaxError:
         return []
 
     lines = source.splitlines()
-    parent_map: dict[int, ast.ClassDef] = {}
-    
-    # Build parent map for class context
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
-            for child in ast.walk(node):
-                if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    parent_map[id(child)] = node
+    parent_map = _build_parent_map(tree)
 
+    functions: list[ParsedFunction] = []
     for node in ast.walk(tree):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            start = node.lineno
-            end = node.end_lineno or start
-            text = "\n".join(lines[start - 1:end])
-            class_node = parent_map.get(id(node))
-            
-            # Count arguments
-            arg_count = len(node.args.args)
-            
-            # Check for return statements
-            has_return = any(isinstance(n, ast.Return) for n in ast.walk(node))
-            
-            # Extract decorators
-            decorators = []
-            for decorator in node.decorator_list:
-                if isinstance(decorator, ast.Name):
-                    decorators.append(decorator.id)
-                elif isinstance(decorator, ast.Attribute):
-                    decorators.append(ast.unparse(decorator))
-            
-            functions.append(ParsedFunction(
-                name=node.name,
-                start_line=start,
-                end_line=end,
-                text=text,
-                class_name=class_node.name if class_node else None,
-                arg_count=arg_count,
-                has_return=has_return,
-                decorators=decorators if decorators else None,
-            ))
+            functions.append(_extract_function_info(node, parent_map, lines))
 
     return functions
 
