@@ -1,25 +1,25 @@
-# code2llm/evolution | 307 func | 51f | 2026-04-16
+# code2llm/evolution | 374 func | 68f | 2026-04-16
 
 NEXT[3] (ranked by impact):
   [1] !! SPLIT           src/redup/core/ts_extractor.py
       WHY: 782L, 1 classes, max CC=7
       EFFORT: ~4h  IMPACT: 5474
 
-  [2] !  SPLIT-FUNC      _parse_with_ast  CC=15  fan=13
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 195
+  [2] !  SPLIT-FUNC      _build_prompt  CC=16  fan=12
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 192
 
-  [3] !  SPLIT-FUNC      GroupMatcher._ensure_matches  CC=15  fan=13
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 195
+  [3] !  SPLIT-FUNC      _render_effort_estimate  CC=17  fan=6
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 102
 
 
 RISKS[1]:
   ⚠ Splitting src/redup/core/ts_extractor.py may break 24 import paths
 
 METRICS-TARGET:
-  CC̄:          3.7 → ≤2.6
-  max-CC:      15 → ≤7
+  CC̄:          3.8 → ≤2.7
+  max-CC:      17 → ≤8
   god-modules: 1 → 0
   high-CC(≥15): 2 → ≤1
   hub-types:   0 → ≤0
@@ -49,4 +49,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.7 → now CC̄=3.7
+  prev CC̄=3.9 → now CC̄=3.8

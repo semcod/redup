@@ -2,6 +2,31 @@
 
 ## [Unreleased]
 
+## [0.4.21] - 2026-04-16
+
+### Docs
+- Update README.md
+- Update docs/API.md
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Test
+- Update tests/test_reporters.py
+
+### Other
+- Update compare_report.json
+- Update compare_report_test.json
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/duplication.toon.yaml
+- Update project/evolution.toon.yaml
+- Update project/flow.mmd
+- ... and 7 more files
+
 ## [0.4.20] - 2026-04-16
 
 ### Docs

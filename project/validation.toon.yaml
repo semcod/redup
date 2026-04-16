@@ -1,7 +1,17 @@
-# vallm batch | 124f | 94✓ 0⚠ 1✗ | 2026-04-16
+# vallm batch | 147f | 116✓ 2⚠ 1✗ | 2026-04-16
 
 SUMMARY:
-  scanned: 124  passed: 94 (75.8%)  warnings: 0  errors: 1  unsupported: 29
+  scanned: 147  passed: 116 (78.9%)  warnings: 2  errors: 1  unsupported: 30
+
+WARNINGS[2]{path,score}:
+  src/redup/core/refactor_advisor.py,0.97
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_build_prompt has cyclomatic complexity 16 (max: 15),64
+      complexity.lizard_cc,warning,_build_prompt: CC=16 exceeds limit 15,64
+  src/redup/reporters/toon_reporter.py,0.97
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_render_effort_estimate has cyclomatic complexity 17 (max: 15),168
+      complexity.lizard_cc,warning,_render_effort_estimate: CC=17 exceeds limit 15,168
 
 ERRORS[1]{path,score}:
   src/redup/core/semantic.py,0.79
@@ -14,4 +24,4 @@ ERRORS[1]{path,score}:
 UNSUPPORTED[3]{bucket,count}:
   *.md,17
   *.txt,2
-  other,10
+  other,11

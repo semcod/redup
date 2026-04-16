@@ -1,138 +1,138 @@
-# redup/duplication | 15 groups | 86f 10453L | 2026-04-16
+# redup/duplication | 15 groups | 84f 10217L | 2026-04-16
 
 SUMMARY:
-  files_scanned: 86
-  total_lines:   10453
+  files_scanned: 84
+  total_lines:   10217
   dup_groups:    15
   dup_fragments: 36
   saved_lines:   217
-  scan_ms:       3620
+  scan_ms:       382
 
 HOTSPOTS[7] (files with most duplication):
-  src/redup/core/ts_extractor.py  dup=74L  groups=4  frags=11  (0.7%)
-  src/redup/core/scanner_utils.py  dup=70L  groups=3  frags=3  (0.7%)
-  src/redup/core/scanner_loader.py  dup=52L  groups=1  frags=1  (0.5%)
-  src/redup/core/lazy_grouper.py  dup=43L  groups=1  frags=2  (0.4%)
-  src/redup/core/scanner_filters.py  dup=38L  groups=3  frags=3  (0.4%)
-  src/redup/core/ts_extractor/config.py  dup=36L  groups=1  frags=1  (0.3%)
-  src/redup/core/scanner_cache.py  dup=20L  groups=1  frags=1  (0.2%)
+  redup/core/ts_extractor.py  dup=74L  groups=4  frags=11  (0.7%)
+  redup/core/scanner_utils.py  dup=70L  groups=3  frags=3  (0.7%)
+  redup/core/scanner_loader.py  dup=52L  groups=1  frags=1  (0.5%)
+  redup/core/lazy_grouper.py  dup=43L  groups=1  frags=2  (0.4%)
+  redup/core/scanner_filters.py  dup=38L  groups=3  frags=3  (0.4%)
+  redup/core/ts_extractor/config.py  dup=36L  groups=1  frags=1  (0.4%)
+  redup/core/scanner_cache.py  dup=20L  groups=1  frags=1  (0.2%)
 
 DUPLICATES[15] (ranked by impact):
-  [7421f3e71c9fdda8] ! EXAC  _preload_files  L=52 N=2 saved=52 sim=1.00
-      src/redup/core/scanner_loader.py:9-60  (_preload_files)
-      src/redup/core/scanner_utils.py:53-104  (_preload_files)
-  [d843d384d08fffbe] ! EXAC  __init__  L=36 N=2 saved=36 sim=1.00
-      src/redup/core/ts_extractor/config.py:29-64  (__init__)
-      src/redup/core/ts_extractor.py:183-218  (__init__)
-  [8731099102506c63]   STRU  find_exact_duplicates_lazy  L=26 N=2 saved=26 sim=1.00
-      src/redup/core/lazy_grouper.py:12-37  (find_exact_duplicates_lazy)
-      src/redup/core/lazy_grouper.py:40-56  (find_structural_duplicates_lazy)
-  [89048b51ede555ba]   STRU  _extract_functions_go  L=3 N=8 saved=21 sim=1.00
-      src/redup/core/ts_extractor.py:317-319  (_extract_functions_go)
-      src/redup/core/ts_extractor.py:322-324  (_extract_functions_rust)
-      src/redup/core/ts_extractor.py:327-329  (_extract_functions_java)
-      src/redup/core/ts_extractor.py:530-532  (_extract_functions_lua)
-      src/redup/core/ts_extractor.py:595-597  (_extract_functions_scala)
-      src/redup/core/ts_extractor.py:600-602  (_extract_functions_kotlin)
-      src/redup/core/ts_extractor.py:605-607  (_extract_functions_swift)
-      src/redup/core/ts_extractor.py:610-612  (_extract_functions_objc)
-  [74f3cfc9acd01e9f]   EXAC  _should_exclude  L=20 N=2 saved=20 sim=1.00
-      src/redup/core/scanner_cache.py:54-73  (_should_exclude)
-      src/redup/core/scanner_filters.py:12-31  (_should_exclude)
-  [78e9f81cc328dc08]   EXAC  _is_test_file  L=12 N=2 saved=12 sim=1.00
-      src/redup/core/scanner_filters.py:42-53  (_is_test_file)
-      src/redup/core/scanner_utils.py:18-29  (_is_test_file)
-  [cb19b8637d01c3c6]   STRU  get_supported_languages  L=11 N=2 saved=11 sim=1.00
-      src/redup/core/ts_extractor/main.py:84-94  (get_supported_languages)
-      src/redup/core/ts_extractor.py:761-771  (get_supported_languages)
-  [d3f949329026b5c4]   EXAC  _extract_class_name  L=9 N=2 saved=9 sim=1.00
-      src/redup/core/ts_extractor/extractors/dotnet.py:11-19  (_extract_class_name)
-      src/redup/core/ts_extractor/extractors/php.py:11-19  (_extract_class_name)
-  [72c74d349a04b282]   EXAC  _project_relative_path  L=6 N=2 saved=6 sim=1.00
-      src/redup/core/scanner_filters.py:34-39  (_project_relative_path)
-      src/redup/core/scanner_utils.py:10-15  (_project_relative_path)
-  [af9a6eab9017f21b]   STRU  _analyze_html_css_blocks  L=6 N=2 saved=6 sim=1.00
-      src/redup/cli_app/fuzzy_similarity.py:99-104  (_analyze_html_css_blocks)
-      src/redup/cli_app/fuzzy_similarity.py:107-112  (_analyze_other_language_blocks)
-  [7f38e1bdaa5f7558]   STRU  _extract_function_declaration  L=5 N=2 saved=5 sim=1.00
-      src/redup/core/ts_extractor/extractors/web.py:11-15  (_extract_function_declaration)
-      src/redup/core/ts_extractor/extractors/web.py:18-22  (_extract_method_definition)
-  [03b02877d174dcc7]   EXAC  handle_interrupt  L=4 N=2 saved=4 sim=1.00
-      src/redup/core/pipeline/__init__.py:123-126  (handle_interrupt)
-      src/redup/core/pipeline/__init__.py:220-223  (handle_interrupt)
-  [fa186ff2c6a98c8f]   STRU  hash_block  L=3 N=2 saved=3 sim=1.00
-      src/redup/core/hasher.py:114-116  (hash_block)
-      src/redup/core/hasher.py:119-121  (hash_block_structural)
-  [6b3b696d28ff02d3]   STRU  find_exact_duplicates  L=3 N=2 saved=3 sim=1.00
-      src/redup/core/hasher.py:179-181  (find_exact_duplicates)
-      src/redup/core/hasher.py:184-186  (find_structural_duplicates)
-  [1d0928d305d3d3ab]   STRU  _get_tree_sitter_language  L=3 N=2 saved=3 sim=1.00
-      src/redup/core/ts_extractor/main.py:17-19  (_get_tree_sitter_language)
-      src/redup/core/ts_extractor.py:244-246  (_get_tree_sitter_language)
+  [13e2207f2235bb42] ! EXAC  _preload_files  L=52 N=2 saved=52 sim=1.00
+      redup/core/scanner_loader.py:9-60  (_preload_files)
+      redup/core/scanner_utils.py:53-104  (_preload_files)
+  [564d795253a4d77e] ! EXAC  __init__  L=36 N=2 saved=36 sim=1.00
+      redup/core/ts_extractor/config.py:29-64  (__init__)
+      redup/core/ts_extractor.py:183-218  (__init__)
+  [f9993352566057e2]   STRU  find_exact_duplicates_lazy  L=26 N=2 saved=26 sim=1.00
+      redup/core/lazy_grouper.py:12-37  (find_exact_duplicates_lazy)
+      redup/core/lazy_grouper.py:40-56  (find_structural_duplicates_lazy)
+  [aceed17801fd5eab]   STRU  _extract_functions_go  L=3 N=8 saved=21 sim=1.00
+      redup/core/ts_extractor.py:317-319  (_extract_functions_go)
+      redup/core/ts_extractor.py:322-324  (_extract_functions_rust)
+      redup/core/ts_extractor.py:327-329  (_extract_functions_java)
+      redup/core/ts_extractor.py:530-532  (_extract_functions_lua)
+      redup/core/ts_extractor.py:595-597  (_extract_functions_scala)
+      redup/core/ts_extractor.py:600-602  (_extract_functions_kotlin)
+      redup/core/ts_extractor.py:605-607  (_extract_functions_swift)
+      redup/core/ts_extractor.py:610-612  (_extract_functions_objc)
+  [f48205bef036490c]   EXAC  _should_exclude  L=20 N=2 saved=20 sim=1.00
+      redup/core/scanner_cache.py:54-73  (_should_exclude)
+      redup/core/scanner_filters.py:12-31  (_should_exclude)
+  [942f4d9ca24ea6c6]   EXAC  _is_test_file  L=12 N=2 saved=12 sim=1.00
+      redup/core/scanner_filters.py:42-53  (_is_test_file)
+      redup/core/scanner_utils.py:18-29  (_is_test_file)
+  [a1f05b27526f854f]   STRU  get_supported_languages  L=11 N=2 saved=11 sim=1.00
+      redup/core/ts_extractor/main.py:84-94  (get_supported_languages)
+      redup/core/ts_extractor.py:761-771  (get_supported_languages)
+  [4f911264caf89b59]   EXAC  _extract_class_name  L=9 N=2 saved=9 sim=1.00
+      redup/core/ts_extractor/extractors/dotnet.py:11-19  (_extract_class_name)
+      redup/core/ts_extractor/extractors/php.py:11-19  (_extract_class_name)
+  [5c98c3b290cc964f]   EXAC  _project_relative_path  L=6 N=2 saved=6 sim=1.00
+      redup/core/scanner_filters.py:34-39  (_project_relative_path)
+      redup/core/scanner_utils.py:10-15  (_project_relative_path)
+  [e3dc4781be464665]   STRU  _analyze_html_css_blocks  L=6 N=2 saved=6 sim=1.00
+      redup/cli_app/fuzzy_similarity.py:99-104  (_analyze_html_css_blocks)
+      redup/cli_app/fuzzy_similarity.py:107-112  (_analyze_other_language_blocks)
+  [03ae9c9486552925]   STRU  _extract_function_declaration  L=5 N=2 saved=5 sim=1.00
+      redup/core/ts_extractor/extractors/web.py:11-15  (_extract_function_declaration)
+      redup/core/ts_extractor/extractors/web.py:18-22  (_extract_method_definition)
+  [6ffbb36246294349]   EXAC  handle_interrupt  L=4 N=2 saved=4 sim=1.00
+      redup/core/pipeline/__init__.py:123-126  (handle_interrupt)
+      redup/core/pipeline/__init__.py:220-223  (handle_interrupt)
+  [b7ae77230bef684c]   STRU  hash_block  L=3 N=2 saved=3 sim=1.00
+      redup/core/hasher.py:114-116  (hash_block)
+      redup/core/hasher.py:119-121  (hash_block_structural)
+  [05dfc46abe0918b4]   STRU  find_exact_duplicates  L=3 N=2 saved=3 sim=1.00
+      redup/core/hasher.py:179-181  (find_exact_duplicates)
+      redup/core/hasher.py:184-186  (find_structural_duplicates)
+  [010e49186ddfd823]   STRU  _get_tree_sitter_language  L=3 N=2 saved=3 sim=1.00
+      redup/core/ts_extractor/main.py:17-19  (_get_tree_sitter_language)
+      redup/core/ts_extractor.py:244-246  (_get_tree_sitter_language)
 
 REFACTOR[15] (ranked by priority):
-  [1] ◐ extract_module     → src/redup/core/utils/_preload_files.py
+  [1] ◐ extract_module     → redup/core/utils/_preload_files.py
       WHY: 2 occurrences of 52-line block across 2 files — saves 52 lines
-      FILES: src/redup/core/scanner_loader.py, src/redup/core/scanner_utils.py
-  [2] ◐ extract_function   → src/redup/core/utils/__init__.py
+      FILES: redup/core/scanner_loader.py, redup/core/scanner_utils.py
+  [2] ◐ extract_function   → redup/core/utils/__init__.py
       WHY: 2 occurrences of 36-line block across 2 files — saves 36 lines
-      FILES: src/redup/core/ts_extractor.py, src/redup/core/ts_extractor/config.py
-  [3] ○ extract_function   → src/redup/core/utils/find_exact_duplicates_lazy.py
+      FILES: redup/core/ts_extractor.py, redup/core/ts_extractor/config.py
+  [3] ○ extract_function   → redup/core/utils/find_exact_duplicates_lazy.py
       WHY: 2 occurrences of 26-line block across 1 files — saves 26 lines
-      FILES: src/redup/core/lazy_grouper.py
-  [4] ○ extract_function   → src/redup/core/utils/_extract_functions_go.py
+      FILES: redup/core/lazy_grouper.py
+  [4] ○ extract_function   → redup/core/utils/_extract_functions_go.py
       WHY: 8 occurrences of 3-line block across 1 files — saves 21 lines
-      FILES: src/redup/core/ts_extractor.py
-  [5] ○ extract_function   → src/redup/core/utils/_should_exclude.py
+      FILES: redup/core/ts_extractor.py
+  [5] ○ extract_function   → redup/core/utils/_should_exclude.py
       WHY: 2 occurrences of 20-line block across 2 files — saves 20 lines
-      FILES: src/redup/core/scanner_cache.py, src/redup/core/scanner_filters.py
-  [6] ○ extract_function   → src/redup/core/utils/_is_test_file.py
+      FILES: redup/core/scanner_cache.py, redup/core/scanner_filters.py
+  [6] ○ extract_function   → redup/core/utils/_is_test_file.py
       WHY: 2 occurrences of 12-line block across 2 files — saves 12 lines
-      FILES: src/redup/core/scanner_filters.py, src/redup/core/scanner_utils.py
-  [7] ○ extract_function   → src/redup/core/utils/get_supported_languages.py
+      FILES: redup/core/scanner_filters.py, redup/core/scanner_utils.py
+  [7] ○ extract_function   → redup/core/utils/get_supported_languages.py
       WHY: 2 occurrences of 11-line block across 2 files — saves 11 lines
-      FILES: src/redup/core/ts_extractor.py, src/redup/core/ts_extractor/main.py
-  [8] ○ extract_function   → src/redup/core/ts_extractor/extractors/utils/_extract_class_name.py
+      FILES: redup/core/ts_extractor.py, redup/core/ts_extractor/main.py
+  [8] ○ extract_function   → redup/core/ts_extractor/extractors/utils/_extract_class_name.py
       WHY: 2 occurrences of 9-line block across 2 files — saves 9 lines
-      FILES: src/redup/core/ts_extractor/extractors/dotnet.py, src/redup/core/ts_extractor/extractors/php.py
-  [9] ○ extract_function   → src/redup/core/utils/_project_relative_path.py
+      FILES: redup/core/ts_extractor/extractors/dotnet.py, redup/core/ts_extractor/extractors/php.py
+  [9] ○ extract_function   → redup/core/utils/_project_relative_path.py
       WHY: 2 occurrences of 6-line block across 2 files — saves 6 lines
-      FILES: src/redup/core/scanner_filters.py, src/redup/core/scanner_utils.py
-  [10] ○ extract_function   → src/redup/cli_app/utils/_analyze_html_css_blocks.py
+      FILES: redup/core/scanner_filters.py, redup/core/scanner_utils.py
+  [10] ○ extract_function   → redup/cli_app/utils/_analyze_html_css_blocks.py
       WHY: 2 occurrences of 6-line block across 1 files — saves 6 lines
-      FILES: src/redup/cli_app/fuzzy_similarity.py
-  [11] ○ extract_function   → src/redup/core/ts_extractor/extractors/utils/_extract_function_declaration.py
+      FILES: redup/cli_app/fuzzy_similarity.py
+  [11] ○ extract_function   → redup/core/ts_extractor/extractors/utils/_extract_function_declaration.py
       WHY: 2 occurrences of 5-line block across 1 files — saves 5 lines
-      FILES: src/redup/core/ts_extractor/extractors/web.py
-  [12] ○ extract_function   → src/redup/core/pipeline/utils/handle_interrupt.py
+      FILES: redup/core/ts_extractor/extractors/web.py
+  [12] ○ extract_function   → redup/core/pipeline/utils/handle_interrupt.py
       WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
-      FILES: src/redup/core/pipeline/__init__.py
-  [13] ○ extract_function   → src/redup/core/utils/hash_block.py
+      FILES: redup/core/pipeline/__init__.py
+  [13] ○ extract_function   → redup/core/utils/hash_block.py
       WHY: 2 occurrences of 3-line block across 1 files — saves 3 lines
-      FILES: src/redup/core/hasher.py
-  [14] ○ extract_function   → src/redup/core/utils/find_exact_duplicates.py
+      FILES: redup/core/hasher.py
+  [14] ○ extract_function   → redup/core/utils/find_exact_duplicates.py
       WHY: 2 occurrences of 3-line block across 1 files — saves 3 lines
-      FILES: src/redup/core/hasher.py
-  [15] ○ extract_function   → src/redup/core/utils/_get_tree_sitter_language.py
+      FILES: redup/core/hasher.py
+  [15] ○ extract_function   → redup/core/utils/_get_tree_sitter_language.py
       WHY: 2 occurrences of 3-line block across 2 files — saves 3 lines
-      FILES: src/redup/core/ts_extractor.py, src/redup/core/ts_extractor/main.py
+      FILES: redup/core/ts_extractor.py, redup/core/ts_extractor/main.py
 
 QUICK_WINS[8] (low risk, high savings — do first):
-  [3] extract_function   saved=26L  → src/redup/core/utils/find_exact_duplicates_lazy.py
+  [3] extract_function   saved=26L  → redup/core/utils/find_exact_duplicates_lazy.py
       FILES: lazy_grouper.py
-  [4] extract_function   saved=21L  → src/redup/core/utils/_extract_functions_go.py
+  [4] extract_function   saved=21L  → redup/core/utils/_extract_functions_go.py
       FILES: ts_extractor.py
-  [5] extract_function   saved=20L  → src/redup/core/utils/_should_exclude.py
+  [5] extract_function   saved=20L  → redup/core/utils/_should_exclude.py
       FILES: scanner_cache.py, scanner_filters.py
-  [6] extract_function   saved=12L  → src/redup/core/utils/_is_test_file.py
+  [6] extract_function   saved=12L  → redup/core/utils/_is_test_file.py
       FILES: scanner_filters.py, scanner_utils.py
-  [7] extract_function   saved=11L  → src/redup/core/utils/get_supported_languages.py
+  [7] extract_function   saved=11L  → redup/core/utils/get_supported_languages.py
       FILES: ts_extractor.py, main.py
-  [8] extract_function   saved=9L  → src/redup/core/ts_extractor/extractors/utils/_extract_class_name.py
+  [8] extract_function   saved=9L  → redup/core/ts_extractor/extractors/utils/_extract_class_name.py
       FILES: dotnet.py, php.py
-  [9] extract_function   saved=6L  → src/redup/core/utils/_project_relative_path.py
+  [9] extract_function   saved=6L  → redup/core/utils/_project_relative_path.py
       FILES: scanner_filters.py, scanner_utils.py
-  [10] extract_function   saved=6L  → src/redup/cli_app/utils/_analyze_html_css_blocks.py
+  [10] extract_function   saved=6L  → redup/cli_app/utils/_analyze_html_css_blocks.py
       FILES: fuzzy_similarity.py
 
 EFFORT_ESTIMATE (total ≈ 8.7h):

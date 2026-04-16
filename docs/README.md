@@ -29,6 +29,8 @@ pip install -e .
 
 ```bash
 pip install redup[all]    # all optional features
+pip install redup[compare]    # compare features
+pip install redup[llm]    # LLM integration (litellm)
 pip install redup[fast]    # fast features
 pip install redup[fuzzy]    # fuzzy features
 pip install redup[ast]    # ast features
@@ -156,7 +158,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 ## Requirements
 
 - Python >= >=3.10
-- pyyaml >=6.0- typer >=0.12.0- rich >=13.0- pydantic >=2.0- tomli >=2.0; python_version<'3.11'- python-dotenv >=1.0
+- pyyaml >=6.0- typer >=0.12.0- rich >=13.0- pydantic >=2.0- tomli >=2.0; python_version<'3.11'- python-dotenv >=1.0- goal >=2.1.0- costs >=0.1.20- pfix >=0.1.60
 
 ## Contributing
 

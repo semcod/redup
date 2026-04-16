@@ -5,15 +5,15 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.20-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.21-green.svg)](https://pypi.org/project/redup/)
 
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.20-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.21-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![AI Cost](https://img.shields.io/badge/AI%20Cost-$7.50-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-15.3h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
 
-- 🤖 **LLM usage:** $7.5000 (61 commits)
+- 🤖 **LLM usage:** $7.5000 (62 commits)
 - 👤 **Human dev:** ~$1532 (15.3h @ $100/h, 30min dedup)
 
 Generated on 2026-04-16 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/qwen/qwen3-coder-next)
@@ -35,9 +35,156 @@ reDUP scans codebases for duplicated functions, blocks, and structural patterns 
 - **Refactoring planner** — generates concrete extract/inline suggestions
 - **Multiple output formats**: JSON, YAML, TOON, Markdown
 - **Configuration system** — TOML files and environment variables
-- **CLI commands**: `scan`, `diff`, `check`, `config`, `info`
+- **CLI commands**: `scan`, `compare`, `diff`, `check`, `config`, `info`
+- **Cross-project comparison** — detect shared code between projects with merge/extract recommendations
 - **CI integration** with configurable quality gates
 - **Clean output** — no syntax warnings from external libraries
+
+## New Features (v0.4.20)
+
+### 🤖 MCP Server
+
+Full MCP (Model Context Protocol) server for AI assistant integration:
+
+```bash
+# Start MCP server
+redup-mcp
+
+# Or HTTP mode
+redup-mcp --transport http --port 8000
+```
+
+**Available Tools:**
+- `analyze_project` — Full duplication analysis
+- `find_duplicates` — Quick duplicate detection
+- `check_project` — Quality gate check
+- `compare_projects` — Cross-project comparison
+- `suggest_refactoring` — AI-powered refactoring suggestions
+- `project_info` — Project metadata
+
+### 🌐 Universal Fuzzy Similarity Detection
+
+Cross-language duplicate detection across all 35+ supported languages:
+
+```bash
+# Detect similar code across languages
+redup scan . --fuzzy --fuzzy-threshold 0.65
+```
+
+**Cross-Language Matching:**
+- JavaScript ↔ Python functions: ~65% similarity
+- Docker ↔ YAML configs: ~40% similarity
+- Auth patterns across languages: ~70% similarity
+
+**Supported Patterns:**
+- Functions, classes, API endpoints
+- Database queries, web components
+- Auth/validation, error handling, logging
+- Configuration, infrastructure code
+
+### 🌳 Modular Tree-Sitter Extractor
+
+Refactored tree-sitter extraction with clean, modular architecture:
+
+```
+ts_extractor/
+├── extractors/          # Modular per-language extractors
+│   ├── c_family.py      # C, C++, C#, Objective-C
+│   ├── go.py            # Go
+│   ├── java.py          # Java, Scala, Kotlin
+│   ├── markup.py        # HTML, XML, Svelte, Vue
+│   ├── web.py           # JavaScript, TypeScript
+│   └── ...
+├── dispatcher.py        # Smart language routing
+├── config.py            # Language registry
+└── main.py              # Unified API
+```
+
+**Benefits:**
+- Easier to add new languages
+- Better testability
+- Cleaner separation of concerns
+- 35+ languages supported
+
+---
+
+## New Features (v0.5.0+)
+
+### 🌐 Universal Fuzzy Similarity Detection
+
+Cross-language fuzzy matching for detecting similar code patterns across **all 35+ supported languages**:
+
+```bash
+# Detect similar patterns across different languages
+redup scan . --fuzzy --ext .py,.js,.ts
+
+# Cross-project comparison with fuzzy matching
+redup compare ./project-a ./project-b --fuzzy --threshold 0.65
+```
+
+**Features:**
+- Detects similar functions, API endpoints, validation logic across languages (e.g., JS ↔ Python)
+- Pattern recognition: authentication, error handling, database queries, web components
+- Language-agnostic signature generation with identifier normalization
+- Complexity scoring (0.0-1.0) for each detected pattern
+
+**Example patterns detected:**
+- Express.js route handler ↔ Flask endpoint (70% similarity)
+- Docker Compose service ↔ Kubernetes deployment (40% similarity)
+- Auth middleware patterns across frameworks
+
+### 🧩 Modular ts_extractor Architecture
+
+The tree-sitter multi-language extractor has been refactored from a 782-line god module into a clean package:
+
+```
+redup/core/ts_extractor/
+├── extractors/
+│   ├── web.py        # JavaScript/TypeScript
+│   ├── c_family.py   # C/C++
+│   ├── dotnet.py     # C#
+│   ├── ruby.py       # Ruby
+│   ├── php.py        # PHP
+│   └── ...           # 10+ language-specific modules
+```
+
+**Benefits:**
+- Better maintainability (avg 100 lines per module vs 782)
+- Easier to add new language extractors
+- Shared base utilities for common operations
+- Full backward compatibility maintained
+
+### 🎯 Enriched TOON Reporter
+
+The TOON format now includes actionable sections for practical refactoring:
+
+- **HOTSPOTS** — Top 7 files with most duplicated lines (where to focus effort)
+- **QUICK_WINS** — Low-risk, high-savings suggestions (do first)
+- **DEPENDENCY_RISK** — Duplicates spanning multiple packages (cross-module risk)
+- **EFFORT_ESTIMATE** — Time estimates per task with difficulty (easy/medium/hard)
+
+### 🤖 LLM-Powered Refactoring Plans
+
+Generate AI-assisted refactoring TODO lists from cross-project comparisons:
+
+```bash
+redup compare ./project-a ./project-b --refactor-plan --env .env --output report.json
+```
+
+- Uses `litellm` for flexible LLM provider support
+- Compact metadata-only prompts for efficiency
+- Structured JSON output with prioritized tasks
+- Token usage tracking
+
+### 📊 Simplified Compare Reports
+
+Cross-project comparison reports are now more compact and human-readable:
+
+- Relative file paths instead of absolute
+- Matches deduplicated by function pair
+- Communities with compact member dicts
+- Filtered trivial entries to reduce noise
+- ~60% smaller JSON size
 
 ## Installation
 
@@ -52,6 +199,8 @@ pip install redup[all]       # Everything
 pip install redup[fuzzy]     # rapidfuzz for better similarity matching
 pip install redup[ast]       # tree-sitter for multi-language AST
 pip install redup[lsh]       # datasketch for LSH near-duplicate detection
+pip install redup[compare]   # networkx for cross-project community detection
+pip install redup[llm]       # litellm for LLM-powered refactoring plans
 ```
 
 ## Quick Start
@@ -76,6 +225,15 @@ redup check . --max-groups 10 --max-lines 100
 
 # Compare two scans
 redup diff before.json after.json
+
+# Cross-project comparison (merge vs extract decision)
+redup compare ./project-a ./project-b --threshold 0.75
+
+# With LLM-powered refactoring plan (requires litellm + .env with API keys)
+redup compare ./project-a ./project-b --refactor-plan --env .env --output comparison.json
+
+# Specify custom LLM model
+redup compare ./project-a ./project-b --refactor-plan --llm-model openrouter/anthropic/claude-3.5-sonnet
 
 # Initialize configuration
 redup config --init
@@ -158,24 +316,51 @@ Path("duplication.json").write_text(to_json(result))
 ### TOON (LLM-optimized)
 
 ```
-# redup/duplication | 3 groups | 12f 4200L | 2026-03-22
+# redup/duplication | 15 groups | 86f 10453L | 2026-04-16
 
 SUMMARY:
-  files_scanned: 12
-  total_lines:   4200
-  dup_groups:    3
-  saved_lines:   84
+  files_scanned: 86
+  total_lines:   10453
+  dup_groups:    15
+  dup_fragments: 36
+  saved_lines:   217
+  scan_ms:       3620
 
-DUPLICATES[3] (ranked by impact):
-  [E0001] !! EXAC  calculate_tax  L=8 N=3 saved=16 sim=1.00
-      billing.py:1-8  (calculate_tax)
-      shipping.py:1-8  (calculate_tax)
-      returns.py:1-8  (calculate_tax)
+HOTSPOTS[7] (files with most duplication):
+  src/redup/core/ts_extractor.py  dup=74L  groups=4  frags=11  (0.7%)
+  src/redup/core/scanner_utils.py  dup=70L  groups=3  frags=3  (0.7%)
+  src/redup/core/scanner_loader.py  dup=52L  groups=1  frags=1  (0.5%)
 
-REFACTOR[1] (ranked by priority):
-  [1] ○ extract_function   → utils/calculate_tax.py
-      WHY: 3 occurrences of 8-line block across 3 files — saves 16 lines
-      FILES: billing.py, shipping.py, returns.py
+DUPLICATES[15] (ranked by impact):
+  [E0001] ! EXAC  _preload_files  L=52 N=2 saved=52 sim=1.00
+      src/redup/core/scanner_loader.py:9-60  (_preload_files)
+      src/redup/core/scanner_utils.py:53-104  (_preload_files)
+
+REFACTOR[15] (ranked by priority):
+  [1] ◐ extract_module     → src/redup/core/utils/_preload_files.py
+      WHY: 2 occurrences of 52-line block across 2 files — saves 52 lines
+      FILES: src/redup/core/scanner_loader.py, src/redup/core/scanner_utils.py
+
+QUICK_WINS[8] (low risk, high savings — do first):
+  [3] extract_function   saved=26L  → src/redup/core/utils/find_exact_duplicates_lazy.py
+      FILES: lazy_grouper.py
+  [4] extract_function   saved=21L  → src/redup/core/utils/_extract_functions_go.py
+      FILES: ts_extractor.py
+
+DEPENDENCY_RISK[3] (duplicates spanning multiple packages):
+  validate_input  packages=2  files=2
+      api/routes/users.py
+      services/auth/validate.py
+
+EFFORT_ESTIMATE (total ≈ 8.7h):
+  hard   _preload_files                      saved=52L  ~156min
+  hard   __init__                            saved=36L  ~108min
+  medium find_exact_duplicates_lazy          saved=26L  ~52min
+  easy   _is_test_file                       saved=12L  ~24min
+
+METRICS-TARGET:
+  dup_groups:  15 → 0
+  saved_lines: 217 lines recoverable
 ```
 
 ### JSON (machine-readable)
@@ -209,19 +394,156 @@ REFACTOR[1] (ranked by priority):
 }
 ```
 
+## Cross-Project Comparison
+
+The `redup compare` command analyzes two separate projects to detect shared code and recommends a refactoring strategy:
+
+- **Merge projects** — if >60% code overlap
+- **Extract shared library** — if 5-60% overlap with well-defined clusters
+- **Keep separate** — if <5% overlap
+
+### CLI Usage
+
+```bash
+# Basic comparison
+redup compare ./project-a ./project-b --threshold 0.75
+
+# With semantic similarity (slower, more accurate)
+redup compare ./project-a ./project-b --semantic --threshold 0.70
+
+# Multi-language projects
+redup compare ./backend ./frontend --ext ".py,.js,.ts" --threshold 0.80
+
+# Skip community detection (faster, no networkx required)
+redup compare ./a ./b --no-community
+
+# Generate LLM-powered refactoring plan (requires redup[llm])
+redup compare ./a ./b --refactor-plan --env .env --output plan.json
+```
+
+### Sample Output
+
+```
+Comparing project-a ↔ project-b (threshold=0.75)
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃      Cross-Project Comparison                        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Metric                  │ Value                      │
+├─────────────────────────┼────────────────────────────┤
+│ Project A files         │ 42                         │
+│ Project B files         │ 38                         │
+│ Project A lines         │ 8500                       │
+│ Project B lines         │ 7200                       │
+│ Cross matches           │ 15                         │
+│ Shared LOC (potential)  │ 1200                       │
+└─────────────────────────┴────────────────────────────┘
+
+Recommendation: extract_shared_lib
+15% overlap (1200 shared lines, 5 clusters). Extract to shared library.
+Confidence: 80%
+
+Top Communities (shared code candidates):
+┏━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━━┓
+┃ ID ┃ Name                 ┃ Similarity ┃ LOC ┃ Members  ┃
+┡━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━━┩
+│  0 │ validate_input       │ 0.89       │ 180 │ 5        │
+│  1 │ parse_config         │ 0.82       │ 140 │ 4        │
+│  2 │ format_response      │ 0.76       │ 100 │ 3        │
+└────┴──────────────────────┴────────────┴─────┴──────────┘
+```
+
+### Report JSON Structure
+
+```json
+{
+  "project_a": "./project-a",
+  "project_b": "./project-b",
+  "stats": {
+    "a": {"files": 42, "lines": 8500},
+    "b": {"files": 38, "lines": 7200}
+  },
+  "total_matches": 15,
+  "shared_loc_potential": 1200,
+  "recommendation": {
+    "decision": "extract_shared_lib",
+    "rationale": "15% overlap (1200 shared lines, 5 clusters). Extract to shared library.",
+    "overlap_pct": 0.1523,
+    "shared_loc": 1200,
+    "confidence": 0.8
+  },
+  "communities": [
+    {
+      "name": "validate_input",
+      "similarity": 0.89,
+      "loc": 180,
+      "members": [
+        {"project": "A", "file": "api/validators.py", "function": "validate_input"},
+        {"project": "B", "file": "utils/validation.py", "function": "validate_input"}
+      ]
+    }
+  ],
+  "matches": [...]
+}
+```
+
+### Algorithm Overview
+
+The comparison uses a **3-tier similarity detection**:
+
+1. **Structural hash** — exact AST matches (fast, O(n+m))
+2. **LSH (Locality Sensitive Hashing)** — near-duplicates via MinHash
+3. **Semantic similarity** — CodeBERT embeddings (optional, slowest)
+
+Matches are deduplicated by `(function_a, function_b, file_a, file_b)` with the highest similarity score retained.
+
+### Community Detection
+
+Requires `networkx` (`pip install redup[compare]`).
+
+Uses **greedy modularity communities** on a similarity graph where:
+- Nodes = functions from both projects
+- Edges = similarity score (filtered by `--threshold`)
+- Communities = clusters of mutually similar functions
+
+Each community gets a generated name based on longest common prefix of its member functions (e.g., `validate_*` → `validate_input`).
+
 ## Architecture
 
 ```
 src/redup/
 ├── __init__.py            # Public API
 ├── __main__.py            # python -m redup
+├── mcp_server.py          # MCP server entry point (re-exports from mcp package)
+├── mcp/                   # MCP server package
+│   ├── __init__.py        # Public MCP API
+│   ├── handlers.py        # Tool handlers
+│   ├── schemas.py         # JSON-RPC schemas
+│   ├── server.py          # JSON-RPC server core
+│   └── utils.py           # Shared utilities
 ├── core/
 │   ├── models.py          # Pydantic data models
 │   ├── scanner.py         # File discovery + block extraction
+│   ├── scanner/           # Scanner package
+│   │   ├── __init__.py    # Public scanner API
+│   │   ├── cache.py       # Memory cache
+│   │   ├── filters.py     # File filtering
+│   │   ├── loader.py      # File preloading
+│   │   └── types.py       # Scanner types
 │   ├── hasher.py          # SHA-256 / structural fingerprinting
 │   ├── matcher.py         # Fuzzy similarity comparison
 │   ├── planner.py         # Refactoring suggestion generator
-│   └── pipeline.py        # Orchestrator: scan → hash → match → plan
+│   ├── pipeline.py        # Legacy: re-exports from pipeline package
+│   └── pipeline/          # Pipeline package (new)
+│       ├── __init__.py    # analyze(), analyze_optimized(), analyze_parallel()
+│       ├── phases.py      # scan_phase(), process_blocks()
+│       ├── duplicate_finder.py  # Duplicate finding phases
+│       └── groups.py      # Group creation, deduplication
+│   └── ts_extractor/        # Tree-sitter extraction (35+ languages)
+│       ├── __init__.py    # Public API
+│       ├── main.py        # Core extraction API
+│       ├── dispatcher.py  # Language routing
+│       ├── config.py      # Language registry
+│       └── extractors/    # Per-language extractors
 ├── reporters/
 │   ├── json_reporter.py   # JSON output
 │   ├── yaml_reporter.py   # YAML output
@@ -242,7 +564,45 @@ src/redup/
 7. REPORT    Export to JSON / YAML / TOON
 ```
 
-## Recent Improvements (v0.2.0)
+## Recent Improvements (v0.5.0)
+
+### 🏗️ **Modular Architecture Refactoring**
+
+Major internal restructuring for better maintainability and extensibility:
+
+#### MCP Server Package
+The MCP server has been split from a 675-line monolith into a clean package:
+```
+redup/mcp/
+├── __init__.py      # Public API
+├── handlers.py      # 8 tool handlers
+├── schemas.py       # JSON-RPC schemas
+├── server.py        # Server core
+└── utils.py         # Utilities
+```
+- **82% code reduction** in main file
+- **Backward compatible**: `mcp_server.py` re-exports all APIs
+- **Better testability**: Isolated handlers can be tested independently
+
+#### Pipeline Package
+The analysis pipeline (714 lines) now lives in a modular package:
+```
+redup/core/pipeline/
+├── __init__.py          # analyze(), analyze_optimized(), analyze_parallel()
+├── phases.py            # scan_phase(), process_blocks()
+├── duplicate_finder.py  # find_exact_groups(), find_structural_groups(), etc.
+└── groups.py            # deduplicate_groups(), blocks_to_group(), etc.
+```
+- **66% reduction** in main orchestrator file
+- **Phases can be used independently** for custom workflows
+- **Cleaner separation** of concerns
+
+#### Scanner Improvements
+The scanner has been refactored with extracted helpers:
+- `_init_strategy()` - Strategy initialization
+- `_process_single_file()` - Per-file processing
+- `_extract_blocks_for_file()` - Block extraction
+- **Reduced CC** and **fan-out** in main `scan_project()` function
 
 ### 🎯 **Sprint 1 Refactoring Complete**
 - **Reduced cyclomatic complexity** from CC̄=4.2 to CC̄=3.5

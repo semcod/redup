@@ -4,25 +4,26 @@ flowchart TD
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
     subgraph Core
-        benchmark__benchmark_sequential_vs_parallel["benchmark_sequential_vs_parall"]
-        benchmark__benchmark_feature_performance["benchmark_feature_performance"]
         src__redup__config__RedupConfig___env_name["_env_name"]
         src__redup__config__RedupConfig___load_from_env["_load_from_env"]
         src__redup__config__RedupConfig__reload["reload"]
         src__redup__config__RedupConfig__get["get"]
         src__redup__config__reload_config["reload_config"]
-        src__redup__mcp_server___build_legacy_tool_schema["_build_legacy_tool_schema"]
+        benchmark__benchmark_sequential_vs_parallel["benchmark_sequential_vs_parall"]
+        benchmark__benchmark_feature_performance["benchmark_feature_performance"]
+        src__redup__utils___resolve_path["_resolve_path"]
+        src__redup__utils___parse_extensions["_parse_extensions"]
         src__redup__core__hash_cache__HashCache___load["_load"]
         src__redup__core__hash_cache__HashCache__save["save"]
         src__redup__core__hash_cache__HashCache__get_file_hash["get_file_hash"]
         src__redup__core__hash_cache__HashCache__is_unchanged["is_unchanged"]
         src__redup__core__hash_cache__HashCache__update["update"]
         src__redup__core__hash_cache__HashCache__invalidate["invalidate"]
-        src__redup__core__hash_cache__HashCache__get_cached_results["get_cached_results"]
-        ...["+168 more"]
+        ...["+201 more"]
     end
 
     subgraph Exporters
+        src__redup__cli_app__compare_command___export_json["_export_json"]
     end
 
-    class benchmark__benchmark_sequential_vs_parallel,benchmark__benchmark_feature_performance,src__redup__config__RedupConfig___env_name,src__redup__config__RedupConfig___load_from_env,src__redup__config__RedupConfig__reload,src__redup__config__RedupConfig__get,src__redup__config__reload_config,src__redup__mcp_server___build_legacy_tool_schema,src__redup__core__hash_cache__HashCache___load,src__redup__core__hash_cache__HashCache__save entry
+    class src__redup__config__RedupConfig___env_name,src__redup__config__RedupConfig___load_from_env,src__redup__config__RedupConfig__reload,src__redup__config__RedupConfig__get,src__redup__config__reload_config,benchmark__benchmark_sequential_vs_parallel,benchmark__benchmark_feature_performance,src__redup__utils___resolve_path,src__redup__utils___parse_extensions,src__redup__core__hash_cache__HashCache___load entry

@@ -1,51 +1,54 @@
-# redup | 311 func | 52f | 10808L | python | 2026-04-16
+# redup | 378 func | 69f | 13195L | python | 2026-04-16
 
 HEALTH:
-  CC̄=3.8  critical=20 (limit:10)  dup=4  cycles=2
+  CC̄=3.8  critical=23 (limit:10)  dup=4  cycles=3
 
 ALERTS[20]:
   !!! high_fan_out     _preload_files = 20 (limit:10)
   !!! high_fan_out     _preload_files = 20 (limit:10)
+  !!  high_fan_out     detect_communities = 18 (limit:10)
   !!  high_fan_out     analyze_optimized = 18 (limit:10)
   !!  high_fan_out     find_duplicates_phase_lazy = 15 (limit:10)
-  !!  high_fan_out     write_results = 15 (limit:10)
   !!  high_fan_out     _load_duplication_map = 15 (limit:10)
-  !   cc_exceeded      _parse_with_ast = 15 (limit:15)
-  !   cc_exceeded      GroupMatcher._ensure_matches = 15 (limit:15)
+  !!  high_fan_out     write_results = 15 (limit:10)
+  !   cc_exceeded      _render_effort_estimate = 17 (limit:15)
+  !   cc_exceeded      _build_prompt = 16 (limit:15)
   !   high_fan_out     scan_project = 14 (limit:10)
-  !   high_fan_out     _format_analysis_result = 14 (limit:10)
 
-MODULES[65] (top by size):
+MODULES[85] (top by size):
   M[src/redup/core/ts_extractor.py] 782L C:1 F:24 CC↑7 D:1 (python)
   M[src/redup/core/universal_fuzzy.py] 449L C:3 F:16 CC↑11 D:0 (python)
   M[src/redup/core/fuzzy_similarity.py] 416L C:4 F:20 CC↑10 D:0 (python)
+  M[src/redup/cli_app/compare_command.py] 350L C:0 F:16 CC↑6 D:1 (python)
   M[src/redup/mcp/handlers.py] 343L C:0 F:12 CC↑12 D:0 (python)
+  M[src/redup/core/refactor_advisor.py] 328L C:2 F:7 CC↑16 D:1 (python)
   M[src/redup/core/pipeline/__init__.py] 304L C:0 F:3 CC↑14 D:5 (python)
-  M[src/redup/core/scanner/__init__.py] 303L C:0 F:14 CC↑10 D:2 (python)
+  M[src/redup/core/scanner/__init__.py] 303L C:0 F:14 CC↑10 D:3 (python)
+  M[src/redup/core/comparator.py] 284L C:2 F:5 CC↑14 D:1 (python)
   M[src/redup/reporters/enhanced_reporter.py] 274L C:1 F:17 CC↑8 D:0 (python)
   M[src/redup/core/cache.py] 267L C:1 F:10 CC↑5 D:1 (python)
   M[src/redup/core/pipeline/duplicate_finder.py] 262L C:0 F:6 CC↑11 D:1 (python)
+  M[src/redup/reporters/toon_reporter.py] 252L C:0 F:11 CC↑17 D:3 (python)
   M[src/redup/core/lsh_matcher.py] 225L C:2 F:12 CC↑10 D:1 (python)
-  M[src/redup/core/models.py] 216L C:9 F:1 CC↑1 D:0 (python)
-  M[src/redup/core/differ.py] 209L C:1 F:5 CC↑14 D:3 (python)
-  M[src/redup/reporters/code2llm_reporter.py] 209L C:0 F:6 CC↑11 D:2 (python)
-  M[src/redup/core/hasher.py] 202L C:2 F:13 CC↑12 D:7 (python)
-  M[src/redup/cli_app/main.py] 196L C:0 F:5 CC↑1 D:0 (python)
-  LANGS: python:64/shell:1
+  M[src/redup/cli_app/main.py] 218L C:0 F:6 CC↑1 D:0 (python)
+  LANGS: python:84/shell:1
 
 HOTSPOTS[10]:
   ★ _preload_files fan=20  // Load ALL files into RAM at once for maximum speed.
   ★ _preload_files fan=20  // Load ALL files into RAM at once for maximum speed.
+  ★ detect_communities fan=18  // Build similarity graph and detect communities via networkx.
+
+Args:
+    compariso
   ★ analyze_optimized fan=18  // Analysis pipeline, 18 stages
   ★ find_duplicates_phase_lazy fan=15  // Phase 3: Hash and find duplicates with caching and lazy evaluation.
-  ★ write_results fan=15  // Write analysis results in specified format.
 
-REFACTOR[8]:
+REFACTOR[9]:
   [1] H/H Split god module src/redup/core/ts_extractor.py (782L, 1 classes)
-  [2] M/L Split _parse_with_ast (CC=15 → target CC<10)
-  [3] M/L Split GroupMatcher._ensure_matches (CC=15 → target CC<10)
+  [2] M/L Split _build_prompt (CC=16 → target CC<10)
+  [3] M/L Split _render_effort_estimate (CC=17 → target CC<10)
   [4] M/L Break circular dependency: src.redup.utils._json_safe
-  [5] M/L Break circular dependency: src.redup.mcp.utils.json_safe
+  [5] M/L Break circular dependency: src.redup.core.ts_extractor.extractors.base.traverse_tree
 
 EVOLUTION:
-  2026-04-16 CC̄=3.8 crit=20 10808L // Automated analysis
+  2026-04-16 CC̄=3.8 crit=23 13195L // Automated analysis

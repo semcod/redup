@@ -4,7 +4,7 @@
   "stats": {
     "a": {
       "files": 551,
-      "lines": 70758
+      "lines": 70922
     },
     "b": {
       "files": 99,
@@ -44,13 +44,13 @@
       "loc": 84,
       "members": [
         {
-          "project": "B",
-          "file": "oqlos/shared/release_version.py",
+          "project": "A",
+          "file": "shared/release_version.py",
           "function": "resolve_release_version"
         },
         {
-          "project": "A",
-          "file": "shared/release_version.py",
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
           "function": "resolve_release_version"
         }
       ]
@@ -95,13 +95,13 @@
       "loc": 42,
       "members": [
         {
-          "project": "A",
-          "file": "scripts/scenarios/xml2dsl_utils.py",
+          "project": "B",
+          "file": "oqlos/tools/xml_import/_utils.py",
           "function": "normalize_set_value"
         },
         {
-          "project": "B",
-          "file": "oqlos/tools/xml_import/_utils.py",
+          "project": "A",
+          "file": "scripts/scenarios/xml2dsl_utils.py",
           "function": "normalize_set_value"
         }
       ]
@@ -112,13 +112,13 @@
       "loc": 39,
       "members": [
         {
-          "project": "A",
-          "file": "shared/_endpoint_helpers.py",
+          "project": "B",
+          "file": "oqlos/shared/version_endpoint.py",
           "function": "build_version_payload"
         },
         {
-          "project": "B",
-          "file": "oqlos/shared/version_endpoint.py",
+          "project": "A",
+          "file": "shared/_endpoint_helpers.py",
           "function": "build_version_payload"
         }
       ]
@@ -180,11 +180,6 @@
       "loc": 28,
       "members": [
         {
-          "project": "A",
-          "file": "shared/logs_query.py",
-          "function": "resolve_logs_db_path"
-        },
-        {
           "project": "B",
           "file": "oqlos/shared/logs_query.py",
           "function": "resolve_logs_db_path"
@@ -193,6 +188,11 @@
           "project": "A",
           "file": "shared/nfo_config_factory.py",
           "function": "_resolve_logs_db_path"
+        },
+        {
+          "project": "A",
+          "file": "shared/logs_query.py",
+          "function": "resolve_logs_db_path"
         }
       ]
     },
@@ -236,13 +236,13 @@
       "loc": 20,
       "members": [
         {
-          "project": "A",
-          "file": "shared/release_version.py",
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
           "function": "clean_version"
         },
         {
-          "project": "B",
-          "file": "oqlos/shared/release_version.py",
+          "project": "A",
+          "file": "shared/release_version.py",
           "function": "clean_version"
         }
       ]
@@ -287,13 +287,13 @@
       "loc": 14,
       "members": [
         {
-          "project": "B",
-          "file": "oqlos/api/main.py",
+          "project": "A",
+          "file": "backend/firmware/main.py",
           "function": "health_check"
         },
         {
-          "project": "A",
-          "file": "backend/firmware/main.py",
+          "project": "B",
+          "file": "oqlos/api/main.py",
           "function": "health_check"
         }
       ]
@@ -304,13 +304,13 @@
       "loc": 14,
       "members": [
         {
-          "project": "B",
-          "file": "oqlos/shared/release_version.py",
+          "project": "A",
+          "file": "shared/release_version.py",
           "function": "_read_version_from_package_json"
         },
         {
-          "project": "A",
-          "file": "shared/release_version.py",
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
           "function": "_read_version_from_package_json"
         }
       ]
@@ -321,13 +321,13 @@
       "loc": 14,
       "members": [
         {
-          "project": "A",
-          "file": "shared/release_version.py",
+          "project": "B",
+          "file": "oqlos/shared/release_version.py",
           "function": "_read_version_from_text"
         },
         {
-          "project": "B",
-          "file": "oqlos/shared/release_version.py",
+          "project": "A",
+          "file": "shared/release_version.py",
           "function": "_read_version_from_text"
         }
       ]
@@ -338,13 +338,13 @@
       "loc": 14,
       "members": [
         {
-          "project": "A",
-          "file": "shared/_endpoint_helpers.py",
+          "project": "B",
+          "file": "oqlos/shared/version_endpoint.py",
           "function": "version_info"
         },
         {
-          "project": "B",
-          "file": "oqlos/shared/version_endpoint.py",
+          "project": "A",
+          "file": "shared/_endpoint_helpers.py",
           "function": "version_info"
         }
       ]
@@ -355,13 +355,13 @@
       "loc": 12,
       "members": [
         {
-          "project": "B",
-          "file": "oqlos/api/main.py",
+          "project": "A",
+          "file": "backend/firmware/main.py",
           "function": "status"
         },
         {
-          "project": "A",
-          "file": "backend/firmware/main.py",
+          "project": "B",
+          "file": "oqlos/api/main.py",
           "function": "status"
         }
       ]
@@ -683,110 +683,5 @@
       "file_b": "oqlos/tools/xml_import/_utils.py",
       "loc": 3
     }
-  ],
-  "refactor_plan": {
-    "summary": "The analysis reveals significant code duplication between Project A (maskservice) and Project B (oqlos), with 35 identical function pairs totaling 430 shared LOC. Despite the recommendation to keep projects separate, refactoring to extract shared utilities into a common package could reduce maintenance overhead and improve consistency. Prioritized tasks focus on high-LOC clusters like NFO config and release version handling, balancing savings with extraction difficulty.",
-    "model": "openrouter/x-ai/grok-code-fast-1",
-    "prompt_tokens": 2190,
-    "completion_tokens": 1442,
-    "duration_ms": 7024.947956999313,
-    "tasks": [
-      {
-        "priority": "high",
-        "action": "Extract shared NFO config functions",
-        "description": "Create a new shared package (e.g., shared_nfo) and move identical functions create_nfo_setup and setup_nfo from A:shared/nfo_config_factory.py and B:oqlos/shared/config_factory.py into it. Update imports in both projects to reference the shared package.",
-        "files_a": [
-          "shared/nfo_config_factory.py"
-        ],
-        "files_b": [
-          "oqlos/shared/config_factory.py"
-        ],
-        "estimated_loc_saved": 153,
-        "difficulty": "medium"
-      },
-      {
-        "priority": "high",
-        "action": "Extract shared release version utilities",
-        "description": "Extract functions resolve_release_version, _run_git, clean_version, _read_version_from_package_json, and _read_version_from_text from A:shared/release_version.py and B:oqlos/shared/release_version.py into a new shared package (e.g., shared_version). Modify both projects to import from the shared package.",
-        "files_a": [
-          "shared/release_version.py"
-        ],
-        "files_b": [
-          "oqlos/shared/release_version.py"
-        ],
-        "estimated_loc_saved": 79,
-        "difficulty": "medium"
-      },
-      {
-        "priority": "high",
-        "action": "Extract shared version endpoint helpers",
-        "description": "Move create_version_router, build_version_payload, and version_info from A:shared/_endpoint_helpers.py and B:oqlos/shared/version_endpoint.py to a shared package (e.g., shared_endpoints). Update imports in both projects accordingly.",
-        "files_a": [
-          "shared/_endpoint_helpers.py"
-        ],
-        "files_b": [
-          "oqlos/shared/version_endpoint.py"
-        ],
-        "estimated_loc_saved": 66,
-        "difficulty": "medium"
-      },
-      {
-        "priority": "medium",
-        "action": "Extract shared XML import utilities",
-        "description": "Consolidate normalize_set_value, normalize_flow_value, normalize_output_name, and slugify from A:scripts/scenarios/xml2dsl_utils.py and B:oqlos/tools/xml_import/_utils.py into a shared package (e.g., shared_xml_utils). Adjust imports in both projects.",
-        "files_a": [
-          "scripts/scenarios/xml2dsl_utils.py"
-        ],
-        "files_b": [
-          "oqlos/tools/xml_import/_utils.py"
-        ],
-        "estimated_loc_saved": 63,
-        "difficulty": "easy"
-      },
-      {
-        "priority": "medium",
-        "action": "Extract shared firmware adapter methods",
-        "description": "Extract is_available, _get_client, _parse_numeric, read_state, close, _resolve_peripheral, and reset_peripherals from A:_archive/dsl/firmware_adapter.py and B:oqlos/hardware/firmware_adapter.py into a shared package (e.g., shared_firmware). Update references in both projects.",
-        "files_a": [
-          "_archive/dsl/firmware_adapter.py"
-        ],
-        "files_b": [
-          "oqlos/hardware/firmware_adapter.py"
-        ],
-        "estimated_loc_saved": 30,
-        "difficulty": "medium"
-      },
-      {
-        "priority": "medium",
-        "action": "Extract shared logs and API endpoints",
-        "description": "Move websocket_endpoint, get_logs, health_check, status, and resolve_logs_db_path from A:backend/firmware/main.py, A:backend/firmware/api/logs.py, A:shared/logs_query.py, A:shared/nfo_config_factory.py and corresponding B files into a shared package (e.g., shared_api). Update imports.",
-        "files_a": [
-          "backend/firmware/main.py",
-          "backend/firmware/api/logs.py",
-          "shared/logs_query.py",
-          "shared/nfo_config_factory.py"
-        ],
-        "files_b": [
-          "oqlos/api/main.py",
-          "oqlos/api/logs.py",
-          "oqlos/shared/logs_query.py"
-        ],
-        "estimated_loc_saved": 39,
-        "difficulty": "easy"
-      },
-      {
-        "priority": "low",
-        "action": "Extract shared XML generators",
-        "description": "Consolidate _format_range, _mode_symbol, and _mode_action from A:scripts/scenarios/xml2dsl_generators.py and B:oqlos/tools/xml_import/generators.py into a shared package (e.g., shared_generators). Modify imports in both projects.",
-        "files_a": [
-          "scripts/scenarios/xml2dsl_generators.py"
-        ],
-        "files_b": [
-          "oqlos/tools/xml_import/generators.py"
-        ],
-        "estimated_loc_saved": 24,
-        "difficulty": "easy"
-      }
-    ]
-  }
+  ]
 }

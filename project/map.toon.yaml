@@ -1,10 +1,10 @@
-# redup | 65f 8482L | shell:1,python:64 | 2026-04-16
-# stats: 311 func | 0 cls | 65 mod | CC̄=3.8 | critical:2 | cycles:0
-# alerts[5]: fan-out _preload_files=20; fan-out _preload_files=20; fan-out analyze_optimized=18; CC GroupMatcher._ensure_matches=15; CC _parse_with_ast=15
-# hotspots[5]: _preload_files fan=20; _preload_files fan=20; analyze_optimized fan=18; find_duplicates_phase_lazy fan=15; write_results fan=15
-# evolution: CC̄ 3.7→3.8 (regressed +0.1)
+# redup | 84f 9847L | shell:1,python:83 | 2026-04-16
+# stats: 378 func | 0 cls | 84 mod | CC̄=3.8 | critical:2 | cycles:0
+# alerts[5]: fan-out _preload_files=20; fan-out _preload_files=20; fan-out analyze_optimized=18; fan-out detect_communities=18; CC _render_effort_estimate=17
+# hotspots[5]: _preload_files fan=20; _preload_files fan=20; detect_communities fan=18; analyze_optimized fan=18; find_duplicates_phase_lazy fan=15
+# evolution: CC̄ 3.9→3.8 (improved -0.1)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[65]:
+M[84]:
   benchmark.py,111
   benchmarks/bench_libraries.py,160
   project.sh,20
@@ -12,8 +12,9 @@ M[65]:
   src/redup/__main__.py,5
   src/redup/analysis_logic.py,26
   src/redup/cli_app/__init__.py,1
+  src/redup/cli_app/compare_command.py,350
   src/redup/cli_app/fuzzy_similarity.py,160
-  src/redup/cli_app/main.py,196
+  src/redup/cli_app/main.py,218
   src/redup/cli_app/output_writer.py,79
   src/redup/cli_app/scan_commands.py,164
   src/redup/cli_app/scan_helpers.py,34
@@ -21,7 +22,10 @@ M[65]:
   src/redup/config_handler.py,22
   src/redup/core/__init__.py,1
   src/redup/core/cache.py,267
+  src/redup/core/community.py,121
+  src/redup/core/comparator.py,284
   src/redup/core/config.py,171
+  src/redup/core/decision.py,96
   src/redup/core/differ.py,209
   src/redup/core/fuzzy_similarity.py,416
   src/redup/core/grouper.py,15
@@ -37,7 +41,8 @@ M[65]:
   src/redup/core/pipeline/phases.py,48
   src/redup/core/pipeline_utils.py,27
   src/redup/core/planner.py,113
-  src/redup/core/python_parser.py,170
+  src/redup/core/python_parser.py,185
+  src/redup/core/refactor_advisor.py,328
   src/redup/core/scanner/__init__.py,303
   src/redup/core/scanner_cache.py,73
   src/redup/core/scanner_filters.py,74
@@ -46,11 +51,24 @@ M[65]:
   src/redup/core/scanner_types.py,41
   src/redup/core/scanner_utils.py,104
   src/redup/core/semantic.py,174
-  src/redup/core/ts_extractor.py,782
+  src/redup/core/ts_extractor/__init__.py,43
   src/redup/core/ts_extractor/config.py,76
+  src/redup/core/ts_extractor/dispatcher.py,82
+  src/redup/core/ts_extractor/extractors/__init__.py,23
+  src/redup/core/ts_extractor/extractors/base.py,75
+  src/redup/core/ts_extractor/extractors/c_family.py,41
+  src/redup/core/ts_extractor/extractors/dotnet.py,51
+  src/redup/core/ts_extractor/extractors/markup.py,41
+  src/redup/core/ts_extractor/extractors/php.py,48
+  src/redup/core/ts_extractor/extractors/query.py,40
+  src/redup/core/ts_extractor/extractors/ruby.py,46
+  src/redup/core/ts_extractor/extractors/shell.py,31
+  src/redup/core/ts_extractor/extractors/stylesheet.py,46
+  src/redup/core/ts_extractor/extractors/web.py,64
+  src/redup/core/ts_extractor/main.py,115
   src/redup/core/universal_fuzzy.py,449
   src/redup/core/utils/__init__.py,1
-  src/redup/core/utils/diff_helpers.py,162
+  src/redup/core/utils/diff_helpers.py,201
   src/redup/core/utils/duplicate_finders.py,36
   src/redup/core/utils/function_extractor.py,148
   src/redup/core/utils/hash_utils.py,37
@@ -61,35 +79,50 @@ M[65]:
   src/redup/mcp/server.py,140
   src/redup/mcp/utils.py,20
   src/redup/mcp_server.py,83
+  src/redup/mcp_server_clean.py,0
   src/redup/reporters/__init__.py,1
   src/redup/reporters/code2llm_reporter.py,209
   src/redup/reporters/enhanced_reporter.py,274
   src/redup/reporters/json_reporter.py,73
   src/redup/reporters/markdown_reporter.py,90
-  src/redup/reporters/toon_reporter.py,106
+  src/redup/reporters/toon_reporter.py,252
   src/redup/reporters/yaml_reporter.py,34
   src/redup/utils.py,47
   src/sitecustomize.py,4
 D:
-  src/redup/core/python_parser.py:
-    e: ParsedFunction,_parse_with_libcst,_parse_with_ast,parse_python_functions,parsed_to_code_blocks
-    ParsedFunction:  # A parsed Python function with metadata...
-    _parse_with_libcst(source;filepath)
-    _parse_with_ast(source;filepath)
-    parse_python_functions(source;filepath)
-    parsed_to_code_blocks(parsed;filepath)
-  src/redup/core/utils/diff_helpers.py:
-    e: _MatchResult,GroupMatcher,DiffCalculator,_group_files,_groups_match
-    _MatchResult:
-    GroupMatcher: __init__(2),_ensure_matches(0),_match_score(1),get_resolved_groups(0),get_new_groups(0),get_unchanged_groups(0)  # Match duplicate groups between two scan results...
-    DiffCalculator: calculate_diff_stats(2)  # Aggregate statistics for scan diffs...
-    _group_files(group)
-    _groups_match(group1;group2)
-  src/redup/core/pipeline/__init__.py:
-    e: analyze,analyze_optimized,analyze_parallel
-    analyze(config;function_level_only)
-    analyze_optimized(config;function_level_only;use_memory_cache;max_cache_mb)
-    analyze_parallel(config;function_level_only;max_workers)
+  src/redup/reporters/toon_reporter.py:
+    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_hotspots,_render_dependency_risk,_render_quick_wins,_render_effort_estimate,_saved_for_suggestion,_render_metrics_target,to_toon
+    _render_header(dup_map)
+    _render_summary(dup_map)
+    _render_duplicates(groups)
+    _render_refactor(suggestions)
+    _render_hotspots(dup_map)
+    _render_dependency_risk(dup_map)
+    _render_quick_wins(dup_map)
+    _render_effort_estimate(dup_map)
+    _saved_for_suggestion(s;dup_map)
+    _render_metrics_target(dup_map;groups)
+    to_toon(dup_map)
+  src/redup/core/refactor_advisor.py:
+    e: RefactorTask,RefactorPlan,_load_env,_get_model,_build_prompt,generate_refactor_plan,_parse_llm_response,format_plan_markdown,format_plan_json
+    RefactorTask:  # A single refactoring action item...
+    RefactorPlan:  # Complete LLM-generated refactoring plan...
+    _load_env(env_path)
+    _get_model(model_override)
+    _build_prompt(report)
+    generate_refactor_plan(report;env_path;model)
+    _parse_llm_response(raw)
+    format_plan_markdown(plan)
+    format_plan_json(plan)
+  src/redup/core/comparator.py:
+    e: CrossProjectMatch,CrossProjectComparison,compare_projects,_scan_project_blocks,_find_hash_matches,_find_lsh_matches,_find_semantic_matches
+    CrossProjectMatch:  # A pair of similar functions from two different projects...
+    CrossProjectComparison:  # Full comparison result between two projects...
+    compare_projects(project_a;project_b;similarity_threshold;use_semantic;extensions;min_lines;functions_only)
+    _scan_project_blocks(root;extensions;min_lines;functions_only)
+    _find_hash_matches(blocks_a;blocks_b;proj_a;proj_b)
+    _find_lsh_matches(blocks_a;blocks_b;threshold;proj_a;proj_b)
+    _find_semantic_matches(blocks_a;blocks_b;threshold;proj_a;proj_b)
   src/redup/core/differ.py:
     e: DiffResult,_load_duplication_map,_group_by_id,_groups_match,compare_scans,format_diff_result
     DiffResult:  # Result of comparing two reDUP scans...
@@ -98,6 +131,11 @@ D:
     _groups_match(group1;group2)
     compare_scans(before_file;after_file)
     format_diff_result(diff)
+  src/redup/core/pipeline/__init__.py:
+    e: analyze,analyze_optimized,analyze_parallel
+    analyze(config;function_level_only)
+    analyze_optimized(config;function_level_only;use_memory_cache;max_cache_mb)
+    analyze_parallel(config;function_level_only;max_workers)
   src/redup/core/scanner_cache.py:
     e: MemoryFileCache,_should_exclude
     MemoryFileCache: __init__(1),_estimate_size(1),get_file_content(1),_evict_oldest(1)  # Cache file contents in RAM for faster access during scanning...
@@ -113,9 +151,6 @@ D:
     _project_relative_path(file_path;project_root)
     _is_test_file(path)
     _collect_files(config)
-    _preload_files(files;max_cache_mb)
-  src/redup/core/scanner_loader.py:
-    e: _preload_files
     _preload_files(files;max_cache_mb)
   src/redup/core/hasher.py:
     e: HashedBlock,HashIndex,_fast_hash,_normalize_text,_ast_to_normalized_string,_normalize_ast_text,_hash_text,hash_block,hash_block_structural,_hashed_block,_blocks_from_different_locations,_find_duplicates,build_hash_index,find_exact_duplicates,find_structural_duplicates
@@ -134,6 +169,9 @@ D:
     build_hash_index(blocks;min_lines)
     find_exact_duplicates(index)
     find_structural_duplicates(index)
+  src/redup/core/scanner_loader.py:
+    e: _preload_files
+    _preload_files(files;max_cache_mb)
   src/redup/reporters/markdown_reporter.py:
     e: to_markdown
     to_markdown(dup_map)
@@ -160,6 +198,11 @@ D:
     UniversalSignature:  # Universal semantic signature for any code block...
     UniversalFuzzyExtractor: __init__(0),extract_universal_signature(1),_detect_language(1),_normalize_code(2),_remove_comments(2),_normalize_identifiers(2),_detect_component_type(2),_extract_semantic_patterns(2),_extract_metadata(2),_compute_complexity(2),_compute_structure_hash(1)  # Universal fuzzy extractor for all supported languages and DS...
     UniversalFuzzyDetector: __init__(1),find_similar_components(1),_compute_universal_similarity(2),_compute_pattern_similarity(2),_compute_metadata_similarity(2)  # Universal fuzzy similarity detector for all languages and DS...
+  src/redup/core/community.py:
+    e: CodeCommunity,detect_communities,_longest_common_prefix
+    CodeCommunity:  # A cluster of similar functions across projects — refactoring...
+    detect_communities(comparison;min_similarity)
+    _longest_common_prefix(names)
   src/redup/core/pipeline/duplicate_finder.py:
     e: find_exact_groups,find_structural_groups,find_near_duplicate_groups,find_semantic_groups,find_duplicates_phase_optimized,find_duplicates_phase_lazy
     find_exact_groups(index)
@@ -229,17 +272,16 @@ Attribut...
     e: SemanticMatch,SemanticDetector
     SemanticMatch:  # A pair of semantically similar code blocks...
     SemanticDetector: __init__(2),_ensure_model(0),find_semantic_duplicates(2),find_semantic_duplicates_fast(2),compute_semantic_similarity(2)  # Detects semantically similar code using transformer embeddin...
+  src/redup/core/ts_extractor/main.py:
+    e: _get_tree_sitter_language,_get_dispatcher,extract_functions_treesitter,get_supported_languages,is_language_supported
+    _get_tree_sitter_language(language_name)
+    _get_dispatcher()
+    extract_functions_treesitter(source;file_path)
+    get_supported_languages()
+    is_language_supported(file_path)
   src/redup/reporters/enhanced_reporter.py:
     e: EnhancedReporter
     EnhancedReporter: __init__(1),generate_metrics_report(0),_get_scan_metrics(0),_get_duplication_metrics(0),_get_language_metrics(0),_get_file_metrics(0),_get_complexity_metrics(0),_get_refactoring_metrics(0),_bucket_similarities(1),_bucket_group_sizes(1),_calculate_complexity_score(0),generate_visualization_data(0),_get_duplication_chart_data(0),_get_language_chart_data(0),_get_file_chart_data(0),_get_timeline_data(0),save_enhanced_report(1)  # Enhanced reporter with detailed metrics and visualizations...
-  src/redup/reporters/toon_reporter.py:
-    e: _render_header,_render_summary,_render_duplicates,_render_refactor,_render_metrics_target,to_toon
-    _render_header(dup_map)
-    _render_summary(dup_map)
-    _render_duplicates(groups)
-    _render_refactor(suggestions)
-    _render_metrics_target(dup_map;groups)
-    to_toon(dup_map)
   src/redup/mcp/utils.py:
     e: json_safe,resolve_path,parse_extensions
     json_safe(value)
@@ -269,31 +311,6 @@ A...
     _compare_against_reference(candidates;min_similarity;similarity_fn;method_fn;skip_same_location)
     match_candidates(candidates;min_similarity)
     refine_structural_matches(candidates;min_similarity)
-  src/redup/core/ts_extractor.py:
-    e: _LanguageRegistry,_initialize_language_dispatcher,_get_tree_sitter_language,_extract_functions_javascript,_extract_functions_go,_extract_functions_rust,_extract_functions_java,extract_functions_treesitter,_extract_functions_c_cpp,_extract_blocks_html_xml,_extract_blocks_css,_extract_blocks_sql,_extract_functions_lua,_extract_functions_c_sharp,_extract_functions_scala,_extract_functions_kotlin,_extract_functions_swift,_extract_functions_objc,_extract_functions_ruby,_extract_functions_php,_extract_functions_bash,get_supported_languages,is_language_supported
-    _LanguageRegistry: __init__(0),get_language(1)  # Registry for tree-sitter language parsers...
-    _initialize_language_dispatcher()
-    _get_tree_sitter_language(language_name)
-    _extract_functions_javascript(node;source_lines;file_path)
-    _extract_functions_go(node;source_lines;file_path)
-    _extract_functions_rust(node;source_lines;file_path)
-    _extract_functions_java(node;source_lines;file_path)
-    extract_functions_treesitter(source;file_path)
-    _extract_functions_c_cpp(node;source_lines;file_path)
-    _extract_blocks_html_xml(node;source_lines;file_path)
-    _extract_blocks_css(node;source_lines;file_path)
-    _extract_blocks_sql(node;source_lines;file_path)
-    _extract_functions_lua(node;source_lines;file_path)
-    _extract_functions_c_sharp(node;source_lines;file_path)
-    _extract_functions_scala(node;source_lines;file_path)
-    _extract_functions_kotlin(node;source_lines;file_path)
-    _extract_functions_swift(node;source_lines;file_path)
-    _extract_functions_objc(node;source_lines;file_path)
-    _extract_functions_ruby(node;source_lines;file_path)
-    _extract_functions_php(node;source_lines;file_path)
-    _extract_functions_bash(node;source_lines;file_path)
-    get_supported_languages()
-    is_language_supported(file_path)
   src/redup/cli_app/scan_commands.py:
     e: scan_command,diff_command,check_command,config_command,info_command
     scan_command(path;format;output;extensions;min_lines;min_similarity;include_tests;functions_only;parallel;max_workers;incremental;memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
@@ -301,10 +318,22 @@ A...
     check_command(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config_command(init;show)
     info_command()
+  src/redup/core/decision.py:
+    e: RefactorDecision,DecisionRecommendation,recommend
+    RefactorDecision(str,Enum):
+    DecisionRecommendation:  # Actionable recommendation produced by the decision engine...
+    recommend(comparison;communities)
   src/redup/core/pipeline_utils.py:
     e: blocks_to_group,deduplicate_groups
     blocks_to_group(group_id;blocks;dup_type;similarity;normalized_hash)
     deduplicate_groups(groups)
+  src/redup/core/utils/diff_helpers.py:
+    e: _MatchResult,GroupMatcher,DiffCalculator,_group_files,_groups_match
+    _MatchResult:
+    GroupMatcher: __init__(2),_match_exact_ids(3),_get_remaining_groups(2),_find_best_match(3),_match_similar_groups(3),_ensure_matches(0),_match_score(1),get_resolved_groups(0),get_new_groups(0),get_unchanged_groups(0)  # Match duplicate groups between two scan results...
+    DiffCalculator: calculate_diff_stats(2)  # Aggregate statistics for scan diffs...
+    _group_files(group)
+    _groups_match(group1;group2)
   src/redup/core/pipeline/phases.py:
     e: ensure_config,scan_phase,scan_phase_parallel,process_blocks
     ensure_config(config)
@@ -317,6 +346,24 @@ A...
     deduplicate_groups(groups)
     match_results_to_blocks(matches)
     calculate_similarity(matches)
+  src/redup/cli_app/compare_command.py:
+    e: compare_command,_parse_extensions,_print_summary_table,_detect_communities,_print_recommendation,_print_communities_table,_print_match_details,_generate_llm_plan,_export_json,_short_path,_make_relative_path,_deduplicate_matches,_compact_community,_filter_significant_communities,_build_recommendation_dict,_build_json_report
+    compare_command(project_a;project_b;threshold;semantic;extensions;min_lines;no_community;output;refactor_plan;llm_model;env_file)
+    _parse_extensions(extensions)
+    _print_summary_table(comparison)
+    _detect_communities(comparison;threshold;no_community)
+    _print_recommendation(comparison;communities)
+    _print_communities_table(communities)
+    _print_match_details(comparison)
+    _generate_llm_plan(report;refactor_plan;env_file;llm_model;comparison)
+    _export_json(report;output)
+    _short_path(path;max_parts)
+    _make_relative_path(path;proj_a;proj_b)
+    _deduplicate_matches(matches;proj_a;proj_b)
+    _compact_community(c;proj_a;proj_b)
+    _filter_significant_communities(communities;proj_a;proj_b)
+    _build_recommendation_dict(comparison;communities)
+    _build_json_report(comparison;communities)
   src/redup/core/config.py:
     e: _load_toml_file,_get_config_from_pyproject,_get_config_from_redup_toml,load_config,config_to_scan_config,create_sample_redup_toml
     _load_toml_file(file_path)
@@ -325,6 +372,16 @@ A...
     load_config()
     config_to_scan_config(config;path)
     create_sample_redup_toml()
+  src/redup/core/python_parser.py:
+    e: ParsedFunction,_parse_with_libcst,_build_parent_map,_extract_decorators,_extract_function_info,_parse_with_ast,parse_python_functions,parsed_to_code_blocks
+    ParsedFunction:  # A parsed Python function with metadata...
+    _parse_with_libcst(source;filepath)
+    _build_parent_map(tree)
+    _extract_decorators(node)
+    _extract_function_info(node;parent_map;lines)
+    _parse_with_ast(source;filepath)
+    parse_python_functions(source;filepath)
+    parsed_to_code_blocks(parsed;filepath)
   src/redup/core/cache.py:
     e: HashCache,hash_block_with_cache,build_hash_index_with_cache
     HashCache: __init__(1),_init_tables(0),_get_file_hash(2),is_file_unchanged(2),get_cached_block_hashes(2),store_file_hashes(3),cleanup_old_entries(1),get_stats(0)  # SQLite-based cache for file and block hashes.
@@ -332,6 +389,19 @@ A...
 Provides ~10x...
     hash_block_with_cache(text;file_path;start;end;cache)
     build_hash_index_with_cache(blocks;min_lines;cache)
+  src/redup/core/ts_extractor/extractors/dotnet.py:
+    e: _extract_class_name,extract_functions_c_sharp
+    _extract_class_name(node)
+    extract_functions_c_sharp(node;source_lines;file_path)
+  src/redup/core/ts_extractor/extractors/php.py:
+    e: _extract_class_name,extract_functions_php
+    _extract_class_name(node)
+    extract_functions_php(node;source_lines;file_path)
+  src/redup/core/ts_extractor/extractors/base.py:
+    e: traverse_tree,get_node_text,create_code_block
+    traverse_tree(node;source_lines;file_path;matchers;depth;max_depth)
+    get_node_text(node)
+    create_code_block(node;source_lines;file_path;function_name;class_name)
   src/redup/core/utils/function_extractor.py:
     e: FunctionExtractor,_extract_java_class_name
     FunctionExtractor: __init__(3),extract_functions(3),_create_function_block(3),_create_method_block(4)  # Generic function extractor that can be configured for differ...
@@ -389,6 +459,18 @@ Provides ~10x...
   src/redup/mcp_server.py:
     e: _build_legacy_tool_schema
     _build_legacy_tool_schema()
+  src/redup/core/ts_extractor/dispatcher.py:
+    e: initialize_language_dispatcher
+    initialize_language_dispatcher()
+  src/redup/core/ts_extractor/extractors/web.py:
+    e: _extract_function_declaration,_extract_method_definition,_extract_arrow_function,extract_functions_javascript
+    _extract_function_declaration(node;source_lines;file_path)
+    _extract_method_definition(node;source_lines;file_path)
+    _extract_arrow_function(node;source_lines;file_path)
+    extract_functions_javascript(node;source_lines;file_path)
+  src/redup/core/ts_extractor/extractors/ruby.py:
+    e: extract_functions_ruby
+    extract_functions_ruby(node;source_lines;file_path)
   src/redup/core/models.py:
     e: DuplicateType,RefactorAction,RiskLevel,ScanConfig,DuplicateFragment,DuplicateGroup,RefactorSuggestion,ScanStats,DuplicationMap
     DuplicateType(str,Enum):  # How the duplicate was detected...
@@ -400,14 +482,30 @@ Provides ~10x...
     RefactorSuggestion:  # A concrete refactoring proposal for a duplicate group...
     ScanStats:  # Statistics from the scanning phase...
     DuplicationMap: sorted_by_impact(0)  # Complete result of a reDUP analysis run...
+  src/redup/core/ts_extractor/extractors/query.py:
+    e: extract_blocks_sql
+    extract_blocks_sql(node;source_lines;file_path)
+  src/redup/core/ts_extractor/extractors/c_family.py:
+    e: extract_functions_c_cpp
+    extract_functions_c_cpp(node;source_lines;file_path)
+  src/redup/core/ts_extractor/extractors/markup.py:
+    e: extract_blocks_html_xml
+    extract_blocks_html_xml(node;source_lines;file_path)
+  src/redup/core/ts_extractor/extractors/stylesheet.py:
+    e: extract_blocks_css
+    extract_blocks_css(node;source_lines;file_path)
+  src/redup/core/ts_extractor/extractors/shell.py:
+    e: extract_functions_bash
+    extract_functions_bash(node;source_lines;file_path)
   src/redup/cli_app/scan_helpers.py:
     e: print_scan_header,print_scan_summary,apply_fuzzy_similarity
     print_scan_header(path;ext_list;min_lines;min_similarity)
     print_scan_summary(dup_map)
     apply_fuzzy_similarity(dup_map;threshold)
   src/redup/cli_app/main.py:
-    e: scan,diff,check,config,info
+    e: scan,compare,diff,check,config,info
     scan(path;format;output;extensions;min_lines;min_similarity;include_tests;no_functions_only;no_parallel;max_workers;incremental;no_memory_cache;max_cache_mb;fuzzy;fuzzy_threshold)
+    compare(project_a;project_b;threshold;semantic;extensions;min_lines;no_community;output;refactor_plan;llm_model;env_file)
     diff(before;after)
     check(path;max_groups;max_saved_lines;extensions;min_lines;min_similarity;include_tests)
     config(init;show)
@@ -416,11 +514,12 @@ Provides ~10x...
     e: _make_check_properties
     _make_check_properties()
   project.sh:
+  src/sitecustomize.py:
   src/redup/reporters/__init__.py:
   src/redup/__init__.py:
   src/redup/__main__.py:
-  src/sitecustomize.py:
   src/redup/config_handler.py:
+  src/redup/mcp_server_clean.py:
   src/redup/core/scanner_types.py:
     e: CodeBlock,ScannedFile,ScanStrategy
     CodeBlock:  # A contiguous block of source code lines...
@@ -433,6 +532,8 @@ Provides ~10x...
     CodeBlock:  # A contiguous block of source code lines...
     ScannedFile:  # A file that has been read and split into blocks...
     ScanStrategy:  # Configuration for HOW to scan — not WHAT to scan...
+  src/redup/core/ts_extractor/__init__.py:
+  src/redup/core/ts_extractor/extractors/__init__.py:
   src/redup/core/utils/__init__.py:
   src/redup/cli_app/__init__.py:
   src/redup/mcp/__init__.py:
