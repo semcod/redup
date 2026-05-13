@@ -25,11 +25,15 @@ def _sample_map() -> DuplicationMap:
                 normalized_hash="abc123",
                 fragments=[
                     DuplicateFragment(
-                        file="billing.py", line_start=1, line_end=8,
+                        file="billing.py",
+                        line_start=1,
+                        line_end=8,
                         function_name="calculate_tax",
                     ),
                     DuplicateFragment(
-                        file="shipping.py", line_start=1, line_end=8,
+                        file="shipping.py",
+                        line_start=1,
+                        line_end=8,
                         function_name="calculate_tax",
                     ),
                 ],
@@ -54,6 +58,7 @@ def test_json_reporter_with_suggestions():
     dm = _sample_map()
     # Generate suggestions via planner
     from redup.core.planner import generate_suggestions
+
     dm.suggestions = generate_suggestions(dm)
 
     output = to_json(dm)
@@ -118,11 +123,15 @@ def _rich_map() -> DuplicationMap:
                 normalized_hash="aaa",
                 fragments=[
                     DuplicateFragment(
-                        file="api/routes/users.py", line_start=10, line_end=45,
+                        file="api/routes/users.py",
+                        line_start=10,
+                        line_end=45,
                         function_name="validate_input",
                     ),
                     DuplicateFragment(
-                        file="services/auth/validate.py", line_start=5, line_end=40,
+                        file="services/auth/validate.py",
+                        line_start=5,
+                        line_end=40,
                         function_name="validate_input",
                     ),
                 ],
@@ -135,11 +144,15 @@ def _rich_map() -> DuplicationMap:
                 normalized_hash="bbb",
                 fragments=[
                     DuplicateFragment(
-                        file="utils/dates.py", line_start=1, line_end=14,
+                        file="utils/dates.py",
+                        line_start=1,
+                        line_end=14,
                         function_name="format_date",
                     ),
                     DuplicateFragment(
-                        file="utils/display.py", line_start=20, line_end=33,
+                        file="utils/display.py",
+                        line_start=20,
+                        line_end=33,
                         function_name="format_date_display",
                     ),
                 ],
@@ -152,11 +165,15 @@ def _rich_map() -> DuplicationMap:
                 normalized_hash="ccc",
                 fragments=[
                     DuplicateFragment(
-                        file="api/main.py", line_start=1, line_end=8,
+                        file="api/main.py",
+                        line_start=1,
+                        line_end=8,
                         function_name="get_logger",
                     ),
                     DuplicateFragment(
-                        file="services/main.py", line_start=1, line_end=8,
+                        file="services/main.py",
+                        line_start=1,
+                        line_end=8,
                         function_name="get_logger",
                     ),
                 ],
@@ -219,8 +236,12 @@ def test_toon_single_package_no_dependency_risk():
                 normalized_name="helper",
                 normalized_hash="xxx",
                 fragments=[
-                    DuplicateFragment(file="utils/a.py", line_start=1, line_end=10, function_name="helper"),
-                    DuplicateFragment(file="utils/b.py", line_start=1, line_end=10, function_name="helper"),
+                    DuplicateFragment(
+                        file="utils/a.py", line_start=1, line_end=10, function_name="helper"
+                    ),
+                    DuplicateFragment(
+                        file="utils/b.py", line_start=1, line_end=10, function_name="helper"
+                    ),
                 ],
             ),
         ],

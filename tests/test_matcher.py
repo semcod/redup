@@ -54,12 +54,14 @@ def test_refine_structural_same_location_skipped():
     text = "x = 1\ny = 2\nz = 3"
     a = HashedBlock(
         block=CodeBlock(file="a.py", line_start=1, line_end=3, text=text, function_name="f"),
-        exact_hash="x", structural_hash="y",
+        exact_hash="x",
+        structural_hash="y",
     )
     # Same file and line — should be skipped
     b = HashedBlock(
         block=CodeBlock(file="a.py", line_start=1, line_end=3, text=text, function_name="f"),
-        exact_hash="x", structural_hash="y",
+        exact_hash="x",
+        structural_hash="y",
     )
     matches = refine_structural_matches([a, b], min_similarity=0.5)
     assert len(matches) == 0

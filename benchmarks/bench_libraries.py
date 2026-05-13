@@ -5,12 +5,12 @@ fast libraries (xxhash, rapidfuzz, libcst, pybloom-live) compared
 to their stdlib fallbacks.
 """
 
-import time
-import tempfile
-from pathlib import Path
-
 # Test with proper PYTHONPATH
 import sys
+import tempfile
+import time
+from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from redup.core.models import ScanConfig
@@ -54,9 +54,13 @@ def benchmark():
 
         # Check which fast libraries are available
         libs = {}
-        for name, pkg in [("xxhash", "xxhash"), ("rapidfuzz", "rapidfuzz"),
-                          ("libcst", "libcst"), ("pybloom", "pybloom_live"),
-                          ("sentence-transformers", "sentence_transformers")]:
+        for name, pkg in [
+            ("xxhash", "xxhash"),
+            ("rapidfuzz", "rapidfuzz"),
+            ("libcst", "libcst"),
+            ("pybloom", "pybloom_live"),
+            ("sentence-transformers", "sentence_transformers"),
+        ]:
             try:
                 __import__(pkg)
                 libs[name] = "✓"
@@ -64,7 +68,7 @@ def benchmark():
                 libs[name] = "✗"
 
         print(f"\nLibraries: {libs}")
-        
+
         # Performance tips
         tips = []
         if libs.get("xxhash") == "✗":
@@ -77,7 +81,7 @@ def benchmark():
             tips.append("Install pybloom-live to eliminate 90% of non-duplicates")
         if libs.get("sentence-transformers") == "✗":
             tips.append("Install sentence-transformers for semantic duplicate detection")
-            
+
         if tips:
             print("\nPerformance tips:")
             for tip in tips:
@@ -89,20 +93,21 @@ def benchmark():
 def benchmark_hash_performance():
     """Benchmark hash performance specifically."""
     print("\n=== Hash Performance Benchmark ===")
-    
+
     import hashlib
-    
+
     text = b"def foo():\n    return 42\n" * 100
-    
+
     # Test SHA-256
     t0 = time.perf_counter()
     for _ in range(100_000):
         hashlib.sha256(text).hexdigest()[:16]
     sha_time = time.perf_counter() - t0
-    
+
     # Test xxhash if available
     try:
         import xxhash
+
         t0 = time.perf_counter()
         for _ in range(100_000):
             xxhash.xxh64(text).hexdigest()[:16]
@@ -116,27 +121,30 @@ def benchmark_hash_performance():
 def benchmark_fuzzy_performance():
     """Benchmark fuzzy matching performance."""
     print("\n=== Fuzzy Matching Performance Benchmark ===")
-    
+
     from difflib import SequenceMatcher
-    
+
     text1 = "def calculate_tax(amount, rate):"
     text2 = "def calculate_tax(rate, amount):"
-    
+
     # Test difflib
     t0 = time.perf_counter()
     for _ in range(10_000):
         SequenceMatcher(None, text1, text2).ratio()
     difflib_time = time.perf_counter() - t0
-    
+
     # Test rapidfuzz if available
     try:
         from rapidfuzz import fuzz
+
         t0 = time.perf_counter()
         for _ in range(10_000):
             fuzz.ratio(text1, text2) / 100.0
         rapidfuzz_time = time.perf_counter() - t0
         speedup = difflib_time / rapidfuzz_time
-        print(f"difflib: {difflib_time:.3f}s  rapidfuzz: {rapidfuzz_time:.3f}s  speedup: {speedup:.1f}x")
+        print(
+            f"difflib: {difflib_time:.3f}s  rapidfuzz: {rapidfuzz_time:.3f}s  speedup: {speedup:.1f}x"
+        )
     except ImportError:
         print(f"difflib: {difflib_time:.3f}s  rapidfuzz: not available (install for 70x speedup)")
 
@@ -144,15 +152,15 @@ def benchmark_fuzzy_performance():
 if __name__ == "__main__":
     print("reDUP Library Performance Benchmark")
     print("=" * 40)
-    
+
     # Run individual benchmarks
     benchmark_hash_performance()
     benchmark_fuzzy_performance()
-    
+
     # Run full pipeline benchmark
     print("\n=== Full Pipeline Benchmark ===")
     benchmark()
-    
+
     print("\nInstall fast libraries:")
     print("  pip install redup[fast]     # xxhash + libcst + pybloom-live")
     print("  pip install redup[fuzzy]    # rapidfuzz")

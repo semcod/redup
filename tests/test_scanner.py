@@ -31,7 +31,7 @@ def test_is_test_file():
 
 
 def test_extract_function_blocks_python():
-    source = '''
+    source = """
 def hello():
     print("hello")
 
@@ -41,7 +41,7 @@ def world():
 class Foo:
     def bar(self):
         return 42
-'''
+"""
     blocks = _extract_function_blocks_python(source, "test.py")
     names = {b.function_name for b in blocks}
     assert "hello" in names

@@ -63,10 +63,10 @@ def process_return(item_id):
 
     # A unique file with no duplicates
     (root / "unique.py").write_text(
-        '''def something_unique():
+        """def something_unique():
     x = [i**2 for i in range(100)]
     return sum(x)
-''',
+""",
         encoding="utf-8",
     )
 
@@ -84,8 +84,7 @@ def test_analyze_finds_duplicates():
 
         # The calculate_tax function is duplicated 3 times
         tax_groups = [
-            g for g in result.groups
-            if g.normalized_name and "calculate_tax" in g.normalized_name
+            g for g in result.groups if g.normalized_name and "calculate_tax" in g.normalized_name
         ]
         assert len(tax_groups) >= 1
         assert tax_groups[0].occurrences == 3
@@ -119,8 +118,12 @@ def test_analyze_empty_project():
 def test_analyze_no_duplicates():
     with tempfile.TemporaryDirectory() as tmpdir:
         root = Path(tmpdir)
-        (root / "a.py").write_text("def foo(x):\n    if x > 0:\n        return x * 2\n    return -1\n")
-        (root / "b.py").write_text("def bar(items):\n    total = 0\n    for i in items:\n        total += i\n    return total\n")
+        (root / "a.py").write_text(
+            "def foo(x):\n    if x > 0:\n        return x * 2\n    return -1\n"
+        )
+        (root / "b.py").write_text(
+            "def bar(items):\n    total = 0\n    for i in items:\n        total += i\n    return total\n"
+        )
 
         config = ScanConfig(root=root, min_block_lines=3)
         result = analyze(config=config, function_level_only=True)

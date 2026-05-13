@@ -20,6 +20,7 @@ runner = CliRunner()
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def project_with_duplicates(tmp_path: Path) -> Path:
     """Create a realistic project with known duplicates."""
@@ -78,7 +79,7 @@ def process_return(item_id):
     )
 
     (tmp_path / "unique.py").write_text(
-        '''def something_unique():
+        """def something_unique():
     x = [i**2 for i in range(100)]
     return sum(x)
 
@@ -86,7 +87,7 @@ def process_return(item_id):
 def another_unique():
     data = {"key": "value", "count": 42}
     return data
-''',
+""",
         encoding="utf-8",
     )
     return tmp_path
@@ -110,6 +111,7 @@ def no_duplicates_project(tmp_path: Path) -> Path:
 # CLI: redup info
 # ---------------------------------------------------------------------------
 
+
 class TestCLIInfo:
     def test_info_shows_version(self):
         result = runner.invoke(app, ["info"])
@@ -125,6 +127,7 @@ class TestCLIInfo:
 # CLI: redup scan — TOON output
 # ---------------------------------------------------------------------------
 
+
 class TestCLIScanToon:
     def test_scan_toon_stdout(self, project_with_duplicates: Path):
         result = runner.invoke(app, ["scan", str(project_with_duplicates), "-f", "toon"])
@@ -135,9 +138,9 @@ class TestCLIScanToon:
 
     def test_scan_toon_to_file(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
-        result = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "toon", "-o", str(out)
-        ])
+        result = runner.invoke(
+            app, ["scan", str(project_with_duplicates), "-f", "toon", "-o", str(out)]
+        )
         assert result.exit_code == 0
         toon_file = out / "duplication.toon.yaml"
         assert toon_file.exists()
@@ -151,8 +154,7 @@ class TestCLIScanToon:
         assert "0 duplicate groups" in result.output
 
     def test_scan_no_duplicates(self, no_duplicates_project: Path):
-        result = runner.invoke(app, [
-            "scan", str(no_duplicates_project), "-f", "toon"        ])
+        result = runner.invoke(app, ["scan", str(no_duplicates_project), "-f", "toon"])
         assert result.exit_code == 0
         assert "0 duplicate groups" in result.output
 
@@ -161,10 +163,10 @@ class TestCLIScanToon:
 # CLI: redup scan — JSON output
 # ---------------------------------------------------------------------------
 
+
 class TestCLIScanJSON:
     def test_scan_json_stdout_parseable(self, project_with_duplicates: Path):
-        result = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "json"        ])
+        result = runner.invoke(app, ["scan", str(project_with_duplicates), "-f", "json"])
         assert result.exit_code == 0
         # Extract JSON from output (skip the info lines at the top)
         lines = result.output.strip().split("\n")
@@ -177,9 +179,9 @@ class TestCLIScanJSON:
 
     def test_scan_json_to_file(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
-        result = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "json",
-            "-o", str(out)        ])
+        result = runner.invoke(
+            app, ["scan", str(project_with_duplicates), "-f", "json", "-o", str(out)]
+        )
         assert result.exit_code == 0
         json_file = out / "duplication.json"
         assert json_file.exists()
@@ -190,9 +192,7 @@ class TestCLIScanJSON:
 
     def test_json_contains_fragment_details(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
-        runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "json",
-            "-o", str(out)        ])
+        runner.invoke(app, ["scan", str(project_with_duplicates), "-f", "json", "-o", str(out)])
         data = json.loads((out / "duplication.json").read_text())
         group = data["groups"][0]
         assert "fragments" in group
@@ -206,12 +206,13 @@ class TestCLIScanJSON:
 # CLI: redup scan — YAML output
 # ---------------------------------------------------------------------------
 
+
 class TestCLIScanYAML:
     def test_scan_yaml_to_file(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
-        result = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "yaml",
-            "-o", str(out)        ])
+        result = runner.invoke(
+            app, ["scan", str(project_with_duplicates), "-f", "yaml", "-o", str(out)]
+        )
         assert result.exit_code == 0
         yaml_file = out / "duplication.yaml"
         assert yaml_file.exists()
@@ -224,12 +225,13 @@ class TestCLIScanYAML:
 # CLI: redup scan --format all
 # ---------------------------------------------------------------------------
 
+
 class TestCLIScanAll:
     def test_format_all_creates_three_files(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
-        result = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out)        ])
+        result = runner.invoke(
+            app, ["scan", str(project_with_duplicates), "-f", "all", "-o", str(out)]
+        )
         assert result.exit_code == 0
         assert (out / "duplication.json").exists()
         assert (out / "duplication.yaml").exists()
@@ -237,26 +239,20 @@ class TestCLIScanAll:
 
     def test_format_all_json_valid(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
-        runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out)        ])
+        runner.invoke(app, ["scan", str(project_with_duplicates), "-f", "all", "-o", str(out)])
         data = json.loads((out / "duplication.json").read_text())
         assert data["summary"]["total_groups"] >= 1
 
     def test_format_all_toon_has_refactor(self, project_with_duplicates: Path, tmp_path: Path):
         out = tmp_path / "output"
-        runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out)        ])
+        runner.invoke(app, ["scan", str(project_with_duplicates), "-f", "all", "-o", str(out)])
         toon = (out / "duplication.toon.yaml").read_text()
         assert "REFACTOR" in toon
 
     def test_all_three_formats_consistent(self, project_with_duplicates: Path, tmp_path: Path):
         """All formats should report the same number of groups."""
         out = tmp_path / "output"
-        runner.invoke(app, [
-            "scan", str(project_with_duplicates), "-f", "all",
-            "-o", str(out)        ])
+        runner.invoke(app, ["scan", str(project_with_duplicates), "-f", "all", "-o", str(out)])
         json_data = json.loads((out / "duplication.json").read_text())
         toon_text = (out / "duplication.toon.yaml").read_text()
         yaml_text = (out / "duplication.yaml").read_text()
@@ -270,22 +266,21 @@ class TestCLIScanAll:
 # CLI: options
 # ---------------------------------------------------------------------------
 
+
 class TestCLIOptions:
     def test_custom_extensions(self, tmp_path: Path):
         (tmp_path / "code.js").write_text("function foo() { return 1; }\n")
-        result = runner.invoke(app, [
-            "scan", str(tmp_path), "--ext", ".js", "-f", "toon"
-        ])
+        result = runner.invoke(app, ["scan", str(tmp_path), "--ext", ".js", "-f", "toon"])
         assert result.exit_code == 0
         assert "1 files" in result.output or "files" in result.output.lower()
 
     def test_min_lines_filter(self, project_with_duplicates: Path):
-        result_low = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "--min-lines", "3",
-            "-f", "toon"        ])
-        result_high = runner.invoke(app, [
-            "scan", str(project_with_duplicates), "--min-lines", "20",
-            "-f", "toon"        ])
+        result_low = runner.invoke(
+            app, ["scan", str(project_with_duplicates), "--min-lines", "3", "-f", "toon"]
+        )
+        result_high = runner.invoke(
+            app, ["scan", str(project_with_duplicates), "--min-lines", "20", "-f", "toon"]
+        )
         assert result_low.exit_code == 0
         assert result_high.exit_code == 0
 
@@ -295,9 +290,9 @@ class TestCLIOptions:
         (tmp_path / "main.py").write_text("def foo():\n    return 1\n")
 
         result_no_tests = runner.invoke(app, ["scan", str(tmp_path), "-f", "toon"])
-        result_with_tests = runner.invoke(app, [
-            "scan", str(tmp_path), "-f", "toon", "--include-tests"
-        ])
+        result_with_tests = runner.invoke(
+            app, ["scan", str(tmp_path), "-f", "toon", "--include-tests"]
+        )
         assert result_no_tests.exit_code == 0
         assert result_with_tests.exit_code == 0
 
@@ -306,20 +301,24 @@ class TestCLIOptions:
 # E2E: python -m redup
 # ---------------------------------------------------------------------------
 
+
 class TestPythonModule:
     def test_python_m_redup_info(self):
         result = subprocess.run(
             [sys.executable, "-m", "redup", "info"],
-            capture_output=True, text=True, timeout=10,
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         assert result.returncode == 0
         assert "reDUP v" in result.stdout
 
     def test_python_m_redup_scan(self, project_with_duplicates: Path):
         result = subprocess.run(
-            [sys.executable, "-m", "redup", "scan", str(project_with_duplicates),
-             "-f", "toon"],
-            capture_output=True, text=True, timeout=30,
+            [sys.executable, "-m", "redup", "scan", str(project_with_duplicates), "-f", "toon"],
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         assert result.returncode == 0
         assert "DUPLICATES" in result.stdout
@@ -329,21 +328,36 @@ class TestPythonModule:
 # E2E: full roundtrip — scan → JSON → parse → verify content
 # ---------------------------------------------------------------------------
 
+
 class TestFullRoundtrip:
     def test_roundtrip_json(self, project_with_duplicates: Path, tmp_path: Path):
         """Full pipeline: real files on disk → CLI → JSON → parse → verify."""
         out = tmp_path / "results"
         result = subprocess.run(
-            [sys.executable, "-m", "redup", "scan", str(project_with_duplicates),
-             "-f", "json", "-o", str(out), "--min-sim", "0.5", "--include-tests"],
-            capture_output=True, text=True, timeout=30,
+            [
+                sys.executable,
+                "-m",
+                "redup",
+                "scan",
+                str(project_with_duplicates),
+                "-f",
+                "json",
+                "-o",
+                str(out),
+                "--min-sim",
+                "0.5",
+                "--include-tests",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
-        
+
         # Debug output
         print(f"Return code: {result.returncode}")
         print(f"Stdout: {result.stdout}")
         print(f"Stderr: {result.stderr}")
-        
+
         assert result.returncode == 0
 
         json_file = out / "duplication.json"
@@ -351,13 +365,15 @@ class TestFullRoundtrip:
 
         data = json.loads(json_file.read_text())
         print(f"JSON data keys: {list(data.keys())}")
-        if 'stats' in data:
+        if "stats" in data:
             print(f"Stats: {data['stats']}")
-        if 'groups' in data:
+        if "groups" in data:
             print(f"Groups found: {len(data['groups'])}")
-            for i, group in enumerate(data['groups']):
-                print(f"  Group {i}: {group.get('normalized_name', 'unnamed')} - {group.get('occurrences', 0)} occurrences")
-        
+            for i, group in enumerate(data["groups"]):
+                print(
+                    f"  Group {i}: {group.get('normalized_name', 'unnamed')} - {group.get('occurrences', 0)} occurrences"
+                )
+
         self._verify_json_structure(data)
         self._verify_calculate_tax_group(data)
 
@@ -377,10 +393,7 @@ class TestFullRoundtrip:
 
     def _verify_calculate_tax_group(self, data: dict) -> None:
         """Verify the calculate_tax group specifically - relaxed for now."""
-        tax_groups = [
-            g for g in data["groups"]
-            if g.get("normalized_name") == "calculate_tax"
-        ]
+        tax_groups = [g for g in data["groups"] if g.get("normalized_name") == "calculate_tax"]
         # Skip this check for now since scanner has issues finding duplicates
         if len(tax_groups) >= 1:
             tax = tax_groups[0]
@@ -404,9 +417,20 @@ class TestFullRoundtrip:
         """Full pipeline: real files → CLI → all 3 formats → cross-validate."""
         out = tmp_path / "results"
         subprocess.run(
-            [sys.executable, "-m", "redup", "scan", str(project_with_duplicates),
-             "-f", "all", "-o", str(out)],
-            capture_output=True, text=True, timeout=30,
+            [
+                sys.executable,
+                "-m",
+                "redup",
+                "scan",
+                str(project_with_duplicates),
+                "-f",
+                "all",
+                "-o",
+                str(out),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
 
         # All files created
@@ -426,6 +450,7 @@ class TestFullRoundtrip:
 
         # YAML parseable
         import yaml
+
         yaml_data = yaml.safe_load((out / "duplication.yaml").read_text())
         assert yaml_data["summary"]["total_groups"] == json_groups
         assert yaml_data["summary"]["total_saved_lines"] == json_saved
@@ -439,9 +464,10 @@ class TestFullRoundtrip:
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             result = subprocess.run(
-                [sys.executable, "-m", "redup", "scan", str(src_dir),
-                 "-f", "json", "-o", str(out)],
-                capture_output=True, text=True, timeout=30,
+                [sys.executable, "-m", "redup", "scan", str(src_dir), "-f", "json", "-o", str(out)],
+                capture_output=True,
+                text=True,
+                timeout=30,
             )
             assert result.returncode == 0
             json_file = out / "duplication.json"

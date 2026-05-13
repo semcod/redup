@@ -1,14 +1,9 @@
 """Tests for tree-sitter multi-language extraction."""
 
-from pathlib import Path
-
-import pytest
-
 from redup.core.ts_extractor import (
     _LANGUAGE_MAPPING,
     _language_registry,
     extract_functions_treesitter,
-    get_supported_languages,
     is_language_supported,
 )
 
@@ -181,6 +176,7 @@ class TestHTMLExtraction:
     def test_html_extraction_structure(self):
         """Test that HTML extraction function exists."""
         from redup.core.ts_extractor import _extract_blocks_html_xml
+
         # Function should exist and be callable
         assert callable(_extract_blocks_html_xml)
 
@@ -191,6 +187,7 @@ class TestCSSExtraction:
     def test_css_extraction_structure(self):
         """Test that CSS extraction function exists."""
         from redup.core.ts_extractor import _extract_blocks_css
+
         # Function should exist and be callable
         assert callable(_extract_blocks_css)
 
@@ -201,6 +198,7 @@ class TestSQLExtraction:
     def test_sql_extraction_structure(self):
         """Test that SQL extraction function exists."""
         from redup.core.ts_extractor import _extract_blocks_sql
+
         # Function should exist and be callable
         assert callable(_extract_blocks_sql)
 
@@ -211,6 +209,7 @@ class TestCExtraction:
     def test_c_extraction_structure(self):
         """Test that C extraction function exists."""
         from redup.core.ts_extractor import _extract_functions_c_cpp
+
         # Function should exist and be callable
         assert callable(_extract_functions_c_cpp)
 
@@ -221,5 +220,6 @@ class TestLuaExtraction:
     def test_lua_extraction_structure(self):
         """Test that Lua extraction function exists."""
         from redup.core.ts_extractor import _extract_functions_lua
+
         # Function should exist and be callable
         assert callable(_extract_functions_lua)

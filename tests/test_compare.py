@@ -10,12 +10,11 @@ import pytest
 from redup.core.comparator import (
     CrossProjectComparison,
     CrossProjectMatch,
-    compare_projects,
     _find_hash_matches,
+    compare_projects,
 )
 from redup.core.decision import RefactorDecision, recommend
 from redup.core.scanner_models import CodeBlock
-
 
 # ---------------------------------------------------------------------------
 # Fixtures: two tiny on-disk projects with overlapping code
@@ -71,10 +70,23 @@ def disjoint_projects(tmp_path: Path):
 # Unit tests: _find_hash_matches
 # ---------------------------------------------------------------------------
 
+
 class TestFindHashMatches:
     def test_identical_blocks_detected(self):
-        block_a = CodeBlock(file="a/f.py", line_start=1, line_end=4, text=_SHARED_FUNC, function_name="validate_email")
-        block_b = CodeBlock(file="b/g.py", line_start=1, line_end=4, text=_SHARED_FUNC, function_name="validate_email")
+        block_a = CodeBlock(
+            file="a/f.py",
+            line_start=1,
+            line_end=4,
+            text=_SHARED_FUNC,
+            function_name="validate_email",
+        )
+        block_b = CodeBlock(
+            file="b/g.py",
+            line_start=1,
+            line_end=4,
+            text=_SHARED_FUNC,
+            function_name="validate_email",
+        )
 
         matches = _find_hash_matches([block_a], [block_b], "/a", "/b")
         assert len(matches) == 1
@@ -82,8 +94,12 @@ class TestFindHashMatches:
         assert matches[0].similarity_type == "structural"
 
     def test_different_blocks_no_match(self):
-        block_a = CodeBlock(file="a/f.py", line_start=1, line_end=2, text=_UNIQUE_A, function_name="compute_tax")
-        block_b = CodeBlock(file="b/g.py", line_start=1, line_end=2, text=_UNIQUE_B, function_name="format_currency")
+        block_a = CodeBlock(
+            file="a/f.py", line_start=1, line_end=2, text=_UNIQUE_A, function_name="compute_tax"
+        )
+        block_b = CodeBlock(
+            file="b/g.py", line_start=1, line_end=2, text=_UNIQUE_B, function_name="format_currency"
+        )
 
         matches = _find_hash_matches([block_a], [block_b], "/a", "/b")
         assert len(matches) == 0
@@ -92,6 +108,7 @@ class TestFindHashMatches:
 # ---------------------------------------------------------------------------
 # Integration tests: compare_projects
 # ---------------------------------------------------------------------------
+
 
 class TestCompareProjects:
     def test_shared_function_detected(self, twin_projects):
@@ -117,20 +134,28 @@ class TestCompareProjects:
 # Unit tests: community detection
 # ---------------------------------------------------------------------------
 
+
 class TestCommunityDetection:
     def _make_comparison(self, n_matches: int = 5) -> CrossProjectComparison:
         matches = []
         for i in range(n_matches):
-            matches.append(CrossProjectMatch(
-                project_a="/a", project_b="/b",
-                file_a=f"a/f{i}.py", file_b=f"b/g{i}.py",
-                function_a=f"validate_{i}", function_b=f"validate_{i}",
-                similarity=0.90,
-                similarity_type="structural",
-                lines_a=(1, 10), lines_b=(1, 10),
-            ))
+            matches.append(
+                CrossProjectMatch(
+                    project_a="/a",
+                    project_b="/b",
+                    file_a=f"a/f{i}.py",
+                    file_b=f"b/g{i}.py",
+                    function_a=f"validate_{i}",
+                    function_b=f"validate_{i}",
+                    similarity=0.90,
+                    similarity_type="structural",
+                    lines_a=(1, 10),
+                    lines_b=(1, 10),
+                )
+            )
         return CrossProjectComparison(
-            project_a=Path("/a"), project_b=Path("/b"),
+            project_a=Path("/a"),
+            project_b=Path("/b"),
             matches=matches,
             stats_a={"files": 10, "lines": 500},
             stats_b={"files": 8, "lines": 400},
@@ -143,6 +168,7 @@ class TestCommunityDetection:
             pytest.skip("networkx not installed")
 
         from redup.core.community import detect_communities
+
         comparison = self._make_comparison()
         communities = detect_communities(comparison, min_similarity=0.70)
         assert isinstance(communities, list)
@@ -154,8 +180,10 @@ class TestCommunityDetection:
             pytest.skip("networkx not installed")
 
         from redup.core.community import detect_communities
+
         comparison = CrossProjectComparison(
-            project_a=Path("/a"), project_b=Path("/b"),
+            project_a=Path("/a"),
+            project_b=Path("/b"),
             stats_a={"files": 1, "lines": 10},
             stats_b={"files": 1, "lines": 10},
         )
@@ -167,10 +195,12 @@ class TestCommunityDetection:
 # Unit tests: decision engine
 # ---------------------------------------------------------------------------
 
+
 class TestDecision:
     def test_keep_separate_when_no_overlap(self):
         comparison = CrossProjectComparison(
-            project_a=Path("/a"), project_b=Path("/b"),
+            project_a=Path("/a"),
+            project_b=Path("/b"),
             stats_a={"files": 10, "lines": 1000},
             stats_b={"files": 10, "lines": 1000},
         )
@@ -180,14 +210,18 @@ class TestDecision:
 
     def test_merge_when_high_overlap(self):
         from redup.core.community import CodeCommunity
+
         comparison = CrossProjectComparison(
-            project_a=Path("/a"), project_b=Path("/b"),
+            project_a=Path("/a"),
+            project_b=Path("/b"),
             stats_a={"files": 10, "lines": 500},
             stats_b={"files": 10, "lines": 500},
         )
         big_community = CodeCommunity(
-            id=0, members=[("/a", "x"), ("/b", "y")],
-            avg_similarity=0.95, total_loc=700,
+            id=0,
+            members=[("/a", "x"), ("/b", "y")],
+            avg_similarity=0.95,
+            total_loc=700,
             extraction_candidate_name="shared",
         )
         rec = recommend(comparison, communities=[big_community])
@@ -195,14 +229,18 @@ class TestDecision:
 
     def test_extract_shared_lib_moderate_overlap(self):
         from redup.core.community import CodeCommunity
+
         comparison = CrossProjectComparison(
-            project_a=Path("/a"), project_b=Path("/b"),
+            project_a=Path("/a"),
+            project_b=Path("/b"),
             stats_a={"files": 10, "lines": 500},
             stats_b={"files": 10, "lines": 500},
         )
         community = CodeCommunity(
-            id=0, members=[("/a", "x"), ("/b", "y")],
-            avg_similarity=0.85, total_loc=250,
+            id=0,
+            members=[("/a", "x"), ("/b", "y")],
+            avg_similarity=0.85,
+            total_loc=250,
             extraction_candidate_name="validate_",
         )
         rec = recommend(comparison, communities=[community])

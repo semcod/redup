@@ -6,10 +6,10 @@ import json
 import tempfile
 from pathlib import Path
 
-from redup.mcp_server import handle_request
-from redup.reporters.json_reporter import to_json
 from redup.core.models import ScanConfig
 from redup.core.pipeline import analyze
+from redup.mcp_server import handle_request
+from redup.reporters.json_reporter import to_json
 
 
 def _create_test_project(root: Path) -> None:
@@ -65,10 +65,10 @@ def process_return(item_id):
     )
 
     (root / "unique.py").write_text(
-        '''def something_unique():
+        """def something_unique():
     x = [i**2 for i in range(100)]
     return sum(x)
-''',
+""",
         encoding="utf-8",
     )
 

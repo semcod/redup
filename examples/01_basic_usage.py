@@ -10,11 +10,11 @@ from redup.reporters.toon_reporter import to_toon
 def main():
     # Configure scan
     config = ScanConfig(
-        root=Path("."),           # project root
-        extensions=[".py"],       # file types to scan
-        min_block_lines=3,        # minimum block size
-        min_similarity=0.85,      # fuzzy match threshold
-        include_tests=False,      # skip test files
+        root=Path("."),  # project root
+        extensions=[".py"],  # file types to scan
+        min_block_lines=3,  # minimum block size
+        min_similarity=0.85,  # fuzzy match threshold
+        include_tests=False,  # skip test files
     )
 
     # Run analysis
@@ -31,8 +31,10 @@ def main():
     # Show top duplicates
     for group in result.sorted_by_impact()[:5]:
         name = group.normalized_name or group.id
-        print(f"  [{group.id}] {name} — {group.occurrences}x, "
-              f"{group.total_lines}L, saves {group.saved_lines_potential}L")
+        print(
+            f"  [{group.id}] {name} — {group.occurrences}x, "
+            f"{group.total_lines}L, saves {group.saved_lines_potential}L"
+        )
         for frag in group.fragments:
             print(f"    {frag.file}:{frag.line_start}-{frag.line_end}")
     print()
