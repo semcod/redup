@@ -1,4 +1,5 @@
 """Project scanner public API compatibility layer."""
+
 from __future__ import annotations
 
 import time
@@ -13,7 +14,7 @@ from redup.core.scanner_filters import (
     _should_exclude,
 )
 from redup.core.scanner_loader import _preload_files
-from redup.core.scanner_types import CodeBlock, ScanStrategy, ScannedFile
+from redup.core.scanner_types import CodeBlock, ScannedFile, ScanStrategy
 
 
 def _normalize_scan_config(config: ScanConfig) -> ScanConfig:
@@ -134,6 +135,7 @@ def _extract_blocks_for_file(
     else:
         try:
             from redup.core.ts_extractor import extract_functions_treesitter
+
             blocks = extract_functions_treesitter(source, relative_path)
         except ImportError:
             pass
@@ -161,8 +163,7 @@ def _process_single_file(
     relative_path = str(_project_relative_path(file_path, config.root))
 
     blocks = _extract_blocks_for_file(
-        source, relative_path, file_path.suffix,
-        function_level_only, config.min_block_lines
+        source, relative_path, file_path.suffix, function_level_only, config.min_block_lines
     )
 
     return ScannedFile(
@@ -172,7 +173,9 @@ def _process_single_file(
     )
 
 
-def _init_strategy(strategy: ScanStrategy | bool | None, function_level_only: bool | None) -> tuple[ScanStrategy, bool]:
+def _init_strategy(
+    strategy: ScanStrategy | bool | None, function_level_only: bool | None
+) -> tuple[ScanStrategy, bool]:
     """Initialize scan strategy and function-level flag."""
     if isinstance(strategy, bool):
         if function_level_only is None:
@@ -206,6 +209,7 @@ def scan_project(
     # Load config if not provided
     if config is None:
         from redup.core.config import config_to_scan_config, load_config
+
         config = config_to_scan_config(load_config(), Path.cwd())
 
     config = _normalize_scan_config(config)
@@ -241,7 +245,9 @@ def scan_project(
     return scanned_files, stats
 
 
-def scan_project_ultra_fast(config: ScanConfig | None = None) -> tuple[list[ScannedFile], ScanStats]:
+def scan_project_ultra_fast(
+    config: ScanConfig | None = None,
+) -> tuple[list[ScannedFile], ScanStats]:
     """Legacy compatibility wrapper for preload-to-RAM scanning."""
     strategy = ScanStrategy(preload_to_ram=True)
     return scan_project(config, strategy)
@@ -283,21 +289,21 @@ def scan_project_parallel_memory_optimized(
 
 
 __all__ = [
-    'CodeBlock',
-    'ScannedFile',
-    'ScanStrategy',
-    'MemoryFileCache',
-    'ScanConfig',
-    'ScanStats',
-    '_should_exclude',
-    '_project_relative_path',
-    '_collect_files',
-    '_is_test_file',
-    '_preload_files',
-    '_extract_function_blocks_python',
-    'scan_project',
-    'scan_project_ultra_fast',
-    'scan_project_memory_optimized',
-    'scan_project_parallel',
-    'scan_project_parallel_memory_optimized',
+    "CodeBlock",
+    "ScannedFile",
+    "ScanStrategy",
+    "MemoryFileCache",
+    "ScanConfig",
+    "ScanStats",
+    "_should_exclude",
+    "_project_relative_path",
+    "_collect_files",
+    "_is_test_file",
+    "_preload_files",
+    "_extract_function_blocks_python",
+    "scan_project",
+    "scan_project_ultra_fast",
+    "scan_project_memory_optimized",
+    "scan_project_parallel",
+    "scan_project_parallel_memory_optimized",
 ]

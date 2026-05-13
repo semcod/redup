@@ -7,7 +7,6 @@ like CodeBERT to find functionally similar code despite different implementation
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 from redup.core.scanner import CodeBlock
 
@@ -15,6 +14,7 @@ from redup.core.scanner import CodeBlock
 @dataclass
 class SemanticMatch:
     """A pair of semantically similar code blocks."""
+
     block_a: CodeBlock
     block_b: CodeBlock
     similarity: float
@@ -34,6 +34,7 @@ class SemanticDetector:
         if self._model is None:
             try:
                 from sentence_transformers import SentenceTransformer
+
                 self._model = SentenceTransformer(self.model_name)
             except ImportError:
                 raise ImportError(
@@ -56,13 +57,12 @@ class SemanticDetector:
         Args:
             blocks: List of code blocks to analyze
             batch_size: Batch size for encoding (for memory efficiency)
-            
+
         Returns:
             List of semantic matches sorted by similarity (highest first)
         """
         self._ensure_model()
         from sentence_transformers import util
-        import torch
 
         if len(blocks) < 2:
             return []
@@ -88,19 +88,23 @@ class SemanticDetector:
                 score = cos_scores[i][j].item()
                 if score >= self.threshold:
                     # Skip same-file same-function matches
-                    if blocks[i].file == blocks[j].file and \
-                       blocks[i].line_start == blocks[j].line_start:
+                    if (
+                        blocks[i].file == blocks[j].file
+                        and blocks[i].line_start == blocks[j].line_start
+                    ):
                         continue
 
                     pair = (min(i, j), max(i, j))
                     if pair not in seen:
                         seen.add(pair)
-                        matches.append(SemanticMatch(
-                            block_a=blocks[i],
-                            block_b=blocks[j],
-                            similarity=score,
-                            model=self.model_name,
-                        ))
+                        matches.append(
+                            SemanticMatch(
+                                block_a=blocks[i],
+                                block_b=blocks[j],
+                                similarity=score,
+                                model=self.model_name,
+                            )
+                        )
 
         # Sort by similarity (highest first)
         matches.sort(key=lambda m: m.similarity, reverse=True)
@@ -118,7 +122,7 @@ class SemanticDetector:
         Args:
             blocks: List of code blocks to analyze
             top_k: Maximum number of top similar pairs to return
-            
+
         Returns:
             List of semantic matches sorted by similarity (highest first)
         """
@@ -144,25 +148,29 @@ class SemanticDetector:
         for score, i, j in pairs:
             if score >= self.threshold:
                 # Skip same-file same-function matches
-                if blocks[i].file == blocks[j].file and \
-                   blocks[i].line_start == blocks[j].line_start:
+                if (
+                    blocks[i].file == blocks[j].file
+                    and blocks[i].line_start == blocks[j].line_start
+                ):
                     continue
-                matches.append(SemanticMatch(
-                    block_a=blocks[i],
-                    block_b=blocks[j],
-                    similarity=float(score),
-                    model=self.model_name,
-                ))
+                matches.append(
+                    SemanticMatch(
+                        block_a=blocks[i],
+                        block_b=blocks[j],
+                        similarity=float(score),
+                        model=self.model_name,
+                    )
+                )
 
         return matches
 
     def compute_semantic_similarity(self, text_a: str, text_b: str) -> float:
         """Compute semantic similarity between two code snippets.
-        
+
         Args:
             text_a: First code snippet
             text_b: Second code snippet
-            
+
         Returns:
             Similarity score between 0.0 and 1.0
         """

@@ -1,0 +1,73 @@
+app {
+  name: "redup";
+  version: "0.4.22";
+}
+
+interface[type="cli"] {
+  framework: argparse;
+}
+interface[type="cli"] page[name="redup"] {
+
+}
+
+workflow[name="install"] {
+  trigger: "manual";
+  step-1: run cmd=pip install -e .[dev];
+}
+
+workflow[name="test"] {
+  trigger: "manual";
+  step-1: run cmd=pytest -q;
+}
+
+workflow[name="lint"] {
+  trigger: "manual";
+  step-1: run cmd=ruff check .;
+}
+
+workflow[name="fmt"] {
+  trigger: "manual";
+  step-1: run cmd=ruff format .;
+}
+
+workflow[name="build"] {
+  trigger: "manual";
+  step-1: run cmd=python -m build;
+}
+
+workflow[name="health"] {
+  trigger: "manual";
+  step-1: run cmd=docker compose ps;
+  step-2: run cmd=docker compose exec app echo "Health check passed";
+}
+
+workflow[name="clean"] {
+  trigger: "manual";
+  step-1: run cmd=rm -rf build/ dist/ *.egg-info;
+}
+
+deploy {
+  target: docker-compose;
+}
+
+environment[name="local"] {
+  runtime: docker-compose;
+  env_file: ".env";
+}
+
+workflow[name="all"] {
+  trigger: "manual";
+  step-1: run cmd=taskfile run install;
+  step-2: run cmd=taskfile run lint;
+  step-3: run cmd=taskfile run test;
+}
+
+workflow[name="help"] {
+  trigger: "manual";
+  step-1: run cmd=taskfile list;
+}
+
+workflow[name="format"] {
+  trigger: "manual";
+  step-1: run cmd=ruff format .;
+}

@@ -6,8 +6,8 @@ import ast
 import hashlib
 import re
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
 
 try:
     import xxhash
@@ -95,7 +95,7 @@ def _normalize_ast_text(text: str) -> str:
         result = _normalize_text(text)
         result = re.sub(r'"[^"]*"', '"__STR__"', result)
         result = re.sub(r"'[^']*'", "'__STR__'", result)
-        result = re.sub(r'\b\d+\.?\d*\b', "__NUM__", result)
+        result = re.sub(r"\b\d+\.?\d*\b", "__NUM__", result)
     else:
         result = _ast_to_normalized_string(tree)
 

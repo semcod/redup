@@ -1,54 +1,55 @@
-# redup | 378 func | 69f | 13195L | python | 2026-04-16
+# redup | 410 func | 70f | 13962L | python | 2026-04-19
 
 HEALTH:
-  CC̄=3.8  critical=23 (limit:10)  dup=4  cycles=3
+  CC̄=3.6  critical=19 (limit:10)  dup=4  cycles=0
 
 ALERTS[20]:
-  !!! high_fan_out     _preload_files = 20 (limit:10)
-  !!! high_fan_out     _preload_files = 20 (limit:10)
   !!  high_fan_out     detect_communities = 18 (limit:10)
   !!  high_fan_out     analyze_optimized = 18 (limit:10)
-  !!  high_fan_out     find_duplicates_phase_lazy = 15 (limit:10)
+  !!  high_fan_out     tasks = 16 (limit:10)
   !!  high_fan_out     _load_duplication_map = 15 (limit:10)
+  !!  high_fan_out     find_duplicates_phase_lazy = 15 (limit:10)
   !!  high_fan_out     write_results = 15 (limit:10)
-  !   cc_exceeded      _render_effort_estimate = 17 (limit:15)
-  !   cc_exceeded      _build_prompt = 16 (limit:15)
   !   high_fan_out     scan_project = 14 (limit:10)
+  !   high_fan_out     _format_analysis_result = 14 (limit:10)
+  !   high_fan_out     _parse_llm_response = 13 (limit:10)
+  !   high_fan_out     SemanticDetector.find_semantic_duplicates = 13 (limit:10)
 
-MODULES[85] (top by size):
+MODULES[88] (top by size):
   M[src/redup/core/ts_extractor.py] 782L C:1 F:24 CC↑7 D:1 (python)
   M[src/redup/core/universal_fuzzy.py] 449L C:3 F:16 CC↑11 D:0 (python)
   M[src/redup/core/fuzzy_similarity.py] 416L C:4 F:20 CC↑10 D:0 (python)
+  M[src/redup/core/refactor_advisor.py] 359L C:2 F:13 CC↑9 D:1 (python)
   M[src/redup/cli_app/compare_command.py] 350L C:0 F:16 CC↑6 D:1 (python)
   M[src/redup/mcp/handlers.py] 343L C:0 F:12 CC↑12 D:0 (python)
-  M[src/redup/core/refactor_advisor.py] 328L C:2 F:7 CC↑16 D:1 (python)
-  M[src/redup/core/pipeline/__init__.py] 304L C:0 F:3 CC↑14 D:5 (python)
+  M[src/redup/integrations/planfile_integration.py] 308L C:3 F:8 CC↑12 D:0 (python)
+  M[src/redup/core/comparator.py] 306L C:2 F:8 CC↑8 D:1 (python)
+  M[src/redup/core/pipeline/__init__.py] 304L C:0 F:3 CC↑14 D:6 (python)
   M[src/redup/core/scanner/__init__.py] 303L C:0 F:14 CC↑10 D:3 (python)
-  M[src/redup/core/comparator.py] 284L C:2 F:5 CC↑14 D:1 (python)
   M[src/redup/reporters/enhanced_reporter.py] 274L C:1 F:17 CC↑8 D:0 (python)
+  M[src/redup/reporters/toon_reporter.py] 270L C:0 F:13 CC↑13 D:3 (python)
   M[src/redup/core/cache.py] 267L C:1 F:10 CC↑5 D:1 (python)
   M[src/redup/core/pipeline/duplicate_finder.py] 262L C:0 F:6 CC↑11 D:1 (python)
-  M[src/redup/reporters/toon_reporter.py] 252L C:0 F:11 CC↑17 D:3 (python)
-  M[src/redup/core/lsh_matcher.py] 225L C:2 F:12 CC↑10 D:1 (python)
-  M[src/redup/cli_app/main.py] 218L C:0 F:6 CC↑1 D:0 (python)
-  LANGS: python:84/shell:1
+  M[src/redup/cli_app/main.py] 227L C:0 F:6 CC↑1 D:0 (python)
+  LANGS: python:87/shell:1
 
 HOTSPOTS[10]:
-  ★ _preload_files fan=20  // Load ALL files into RAM at once for maximum speed.
-  ★ _preload_files fan=20  // Load ALL files into RAM at once for maximum speed.
   ★ detect_communities fan=18  // Build similarity graph and detect communities via networkx.
 
 Args:
     compariso
   ★ analyze_optimized fan=18  // Analysis pipeline, 18 stages
+  ★ tasks fan=16  // Export duplication findings as tasks to TODO.md.
+
+Creates a TODO.md file with re
+  ★ _load_duplication_map fan=15  // Load a DuplicationMap from a JSON file.
   ★ find_duplicates_phase_lazy fan=15  // Phase 3: Hash and find duplicates with caching and lazy evaluation.
 
-REFACTOR[9]:
+REFACTOR[4]:
   [1] H/H Split god module src/redup/core/ts_extractor.py (782L, 1 classes)
-  [2] M/L Split _build_prompt (CC=16 → target CC<10)
-  [3] M/L Split _render_effort_estimate (CC=17 → target CC<10)
-  [4] M/L Break circular dependency: src.redup.utils._json_safe
-  [5] M/L Break circular dependency: src.redup.core.ts_extractor.extractors.base.traverse_tree
+  [2] M/M Reduce detect_communities fan-out (currently 18)
+  [3] M/M Reduce analyze_optimized fan-out (currently 18)
+  [4] M/M Reduce tasks fan-out (currently 16)
 
 EVOLUTION:
-  2026-04-16 CC̄=3.8 crit=23 13195L // Automated analysis
+  2026-04-19 CC̄=3.6 crit=19 13962L // Automated analysis

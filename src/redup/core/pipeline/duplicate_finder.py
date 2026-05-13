@@ -6,20 +6,25 @@ import time
 from typing import TYPE_CHECKING
 
 from redup.core.cache import HashCache, build_hash_index_with_cache
-from redup.core.hasher import HashIndex, build_hash_index, find_exact_duplicates, find_structural_duplicates
+from redup.core.hasher import (
+    HashIndex,
+    build_hash_index,
+    find_exact_duplicates,
+    find_structural_duplicates,
+)
 from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.matcher import refine_structural_matches
 from redup.core.models import DuplicateFragment, DuplicateGroup, DuplicateType, ScanConfig
 from redup.core.scanner_types import CodeBlock
 
 if TYPE_CHECKING:
-    from redup.core.pipeline.groups import calculate_similarity, blocks_to_group, match_results_to_blocks
+    pass
 
 
 def find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:
     """Find exact duplicate groups."""
     from redup.core.pipeline.groups import blocks_to_group
-    
+
     groups: list[DuplicateGroup] = []
     exact_groups = find_exact_duplicates(index)
 
@@ -42,8 +47,12 @@ def find_structural_groups(
     index: HashIndex, exact_groups_list: list[DuplicateGroup]
 ) -> list[DuplicateGroup]:
     """Find structural duplicate groups."""
-    from redup.core.pipeline.groups import blocks_to_group, calculate_similarity, match_results_to_blocks
-    
+    from redup.core.pipeline.groups import (
+        blocks_to_group,
+        calculate_similarity,
+        match_results_to_blocks,
+    )
+
     groups: list[DuplicateGroup] = []
     exact_hashes: set[str] = set()
     for group in exact_groups_list:
@@ -80,12 +89,12 @@ def find_near_duplicate_groups(
     groups: list[DuplicateGroup] = []
 
     # Check if LSH is enabled
-    if not getattr(config, 'lsh_enabled', True):
+    if not getattr(config, "lsh_enabled", True):
         return groups
 
     # Only use LSH for blocks larger than configured threshold
-    lsh_min_lines = getattr(config, 'lsh_min_lines', 50)
-    lsh_threshold = getattr(config, 'lsh_threshold', 0.8)
+    lsh_min_lines = getattr(config, "lsh_min_lines", 50)
+    lsh_threshold = getattr(config, "lsh_threshold", 0.8)
 
     # Filter blocks for LSH
     lsh_blocks = [b for b in all_blocks if b.line_count >= lsh_min_lines]
@@ -96,9 +105,7 @@ def find_near_duplicate_groups(
     try:
         # Find near-duplicates
         near_dup_groups = find_near_duplicates(
-            lsh_blocks,
-            threshold=lsh_threshold,
-            min_lines=lsh_min_lines
+            lsh_blocks, threshold=lsh_threshold, min_lines=lsh_min_lines
         )
 
         for i, (group_id, block_similarities) in enumerate(near_dup_groups.items(), 1):
@@ -110,14 +117,16 @@ def find_near_duplicate_groups(
             avg_similarity = 0.0
 
             for block, similarity in block_similarities:
-                fragments.append(DuplicateFragment(
-                    file=block.file,
-                    line_start=block.line_start,
-                    line_end=block.line_end,
-                    text=block.text,
-                    function_name=block.function_name,
-                    class_name=block.class_name,
-                ))
+                fragments.append(
+                    DuplicateFragment(
+                        file=block.file,
+                        line_start=block.line_start,
+                        line_end=block.line_end,
+                        text=block.text,
+                        function_name=block.function_name,
+                        class_name=block.class_name,
+                    )
+                )
                 avg_similarity += similarity
 
             if len(fragments) >= 2:
@@ -143,9 +152,7 @@ def find_near_duplicate_groups(
     return groups
 
 
-def find_semantic_groups(
-    blocks: list[CodeBlock], threshold: float = 0.80
-) -> list[DuplicateGroup]:
+def find_semantic_groups(blocks: list[CodeBlock], threshold: float = 0.80) -> list[DuplicateGroup]:
     """Tier 4: Semantic duplicate detection via embeddings."""
     try:
         from redup.core.semantic import SemanticDetector
@@ -163,27 +170,29 @@ def find_semantic_groups(
 
     groups: list[DuplicateGroup] = []
     for i, match in enumerate(matches):
-        groups.append(DuplicateGroup(
-            id=f"M{i+1:04d}",
-            duplicate_type=DuplicateType.SEMANTIC,
-            fragments=[
-                DuplicateFragment(
-                    file=match.block_a.file,
-                    line_start=match.block_a.line_start,
-                    line_end=match.block_a.line_end,
-                    text=match.block_a.text,
-                    function_name=match.block_a.function_name,
-                ),
-                DuplicateFragment(
-                    file=match.block_b.file,
-                    line_start=match.block_b.line_start,
-                    line_end=match.block_b.line_end,
-                    text=match.block_b.text,
-                    function_name=match.block_b.function_name,
-                ),
-            ],
-            similarity_score=match.similarity,
-        ))
+        groups.append(
+            DuplicateGroup(
+                id=f"M{i + 1:04d}",
+                duplicate_type=DuplicateType.SEMANTIC,
+                fragments=[
+                    DuplicateFragment(
+                        file=match.block_a.file,
+                        line_start=match.block_a.line_start,
+                        line_end=match.block_a.line_end,
+                        text=match.block_a.text,
+                        function_name=match.block_a.function_name,
+                    ),
+                    DuplicateFragment(
+                        file=match.block_b.file,
+                        line_start=match.block_b.line_start,
+                        line_end=match.block_b.line_end,
+                        text=match.block_b.text,
+                        function_name=match.block_b.function_name,
+                    ),
+                ],
+                similarity_score=match.similarity,
+            )
+        )
 
     return groups
 
@@ -193,8 +202,7 @@ def find_duplicates_phase_optimized(
 ) -> list[DuplicateGroup]:
     """Phase 3: Hash and find duplicate groups with performance optimizations."""
     from redup.core.lazy_grouper import find_all_duplicates_lazy
-    from redup.core.pipeline.groups import deduplicate_groups
-    
+
     start_time = time.time()
 
     # Build hash index with progress tracking
@@ -221,8 +229,7 @@ def find_duplicates_phase_lazy(
 ) -> list[DuplicateGroup]:
     """Phase 3: Hash and find duplicates with caching and lazy evaluation."""
     from redup.core.lazy_grouper import find_all_duplicates_lazy
-    from redup.core.pipeline.groups import deduplicate_groups
-    
+
     start_time = time.time()
 
     # Build hash index with optional caching
@@ -255,7 +262,9 @@ def find_duplicates_phase_lazy(
     processing_time = (time.time() - start_time) * 1000
     if cache is not None:
         cache_stats = cache.get_stats()
-        print(f"Duplicate finding completed in {processing_time:.1f}ms (cache: {cache_stats.get('cached_files', 0)} files)")
+        print(
+            f"Duplicate finding completed in {processing_time:.1f}ms (cache: {cache_stats.get('cached_files', 0)} files)"
+        )
     else:
         print(f"Duplicate finding completed in {processing_time:.1f}ms")
 

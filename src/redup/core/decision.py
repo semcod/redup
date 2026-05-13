@@ -9,8 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 
-from redup.core.comparator import CrossProjectComparison
 from redup.core.community import CodeCommunity
+from redup.core.comparator import CrossProjectComparison
 
 
 class RefactorDecision(str, Enum):
@@ -81,8 +81,7 @@ def recommend(
     else:
         decision = RefactorDecision.KEEP_SEPARATE
         rationale = (
-            f"Projects are {overlap:.1%} similar — distinct concerns, "
-            f"no refactoring needed."
+            f"Projects are {overlap:.1%} similar — distinct concerns, no refactoring needed."
         )
         confidence = 0.9
 

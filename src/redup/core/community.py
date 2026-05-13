@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from redup.core.comparator import CrossProjectComparison, CrossProjectMatch
+from redup.core.comparator import CrossProjectComparison
 
 
 @dataclass
@@ -42,8 +42,7 @@ def detect_communities(
         import networkx as nx
     except ImportError:
         raise ImportError(
-            "networkx is required for community detection. "
-            "Install with: pip install redup[compare]"
+            "networkx is required for community detection. Install with: pip install redup[compare]"
         )
 
     G = nx.Graph()
@@ -98,13 +97,15 @@ def detect_communities(
 
         common_name = _longest_common_prefix(func_names) or f"shared_util_{i}"
 
-        communities.append(CodeCommunity(
-            id=i,
-            members=members,
-            avg_similarity=avg_sim,
-            total_loc=total_loc,
-            extraction_candidate_name=common_name,
-        ))
+        communities.append(
+            CodeCommunity(
+                id=i,
+                members=members,
+                avg_similarity=avg_sim,
+                total_loc=total_loc,
+                extraction_candidate_name=common_name,
+            )
+        )
 
     return sorted(communities, key=lambda c: c.total_loc, reverse=True)
 

@@ -1,5 +1,3 @@
-import json
-import platform
 import sys
 from enum import Enum
 from pathlib import Path
@@ -8,7 +6,6 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from redup import __version__
 
 def _json_safe(value: Any) -> Any:
     if isinstance(value, Enum):
@@ -23,6 +20,7 @@ def _json_safe(value: Any) -> Any:
         return [_json_safe(item) for item in value]
     return value
 
+
 def _resolve_path(raw: Any) -> Path:
     if raw is None:
         raise ValueError("Path is required")
@@ -30,6 +28,7 @@ def _resolve_path(raw: Any) -> Path:
     if not path.is_absolute():
         path = Path.cwd() / path
     return path.resolve()
+
 
 def _parse_extensions(value: Any) -> list[str] | None:
     if value is None:

@@ -2,22 +2,28 @@
 
 from __future__ import annotations
 
+# Configuration and registry
+from redup.core.ts_extractor.config import LANGUAGE_MAPPING, language_registry
+from redup.core.ts_extractor.extractors.c_family import (
+    extract_functions_c_cpp as _extract_functions_c_cpp,
+)
+
+# Internal extractor functions (needed by tests) - exported with underscore prefix
+from redup.core.ts_extractor.extractors.markup import (
+    extract_blocks_html_xml as _extract_blocks_html_xml,
+)
+from redup.core.ts_extractor.extractors.query import extract_blocks_sql as _extract_blocks_sql
+from redup.core.ts_extractor.extractors.shell import (
+    extract_functions_bash as _extract_functions_bash,
+)
+from redup.core.ts_extractor.extractors.stylesheet import extract_blocks_css as _extract_blocks_css
+
 # Main API functions
 from redup.core.ts_extractor.main import (
     extract_functions_treesitter,
     get_supported_languages,
     is_language_supported,
 )
-
-# Configuration and registry
-from redup.core.ts_extractor.config import LANGUAGE_MAPPING, language_registry
-
-# Internal extractor functions (needed by tests) - exported with underscore prefix
-from redup.core.ts_extractor.extractors.markup import extract_blocks_html_xml as _extract_blocks_html_xml
-from redup.core.ts_extractor.extractors.stylesheet import extract_blocks_css as _extract_blocks_css
-from redup.core.ts_extractor.extractors.query import extract_blocks_sql as _extract_blocks_sql
-from redup.core.ts_extractor.extractors.c_family import extract_functions_c_cpp as _extract_functions_c_cpp
-from redup.core.ts_extractor.extractors.shell import extract_functions_bash as _extract_functions_bash
 
 # Backward compatibility aliases
 _LANGUAGE_MAPPING = LANGUAGE_MAPPING

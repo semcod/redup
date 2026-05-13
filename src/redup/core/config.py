@@ -14,7 +14,7 @@ except ImportError:
     except ImportError:
         tomllib = None
 
-from redup.config import config as global_config, reload_config
+from redup.config import config as global_config
 from redup.core.models import ScanConfig
 
 
@@ -22,10 +22,10 @@ def _load_toml_file(file_path: Path) -> dict[str, Any]:
     """Load TOML file and return as dictionary."""
     if tomllib is None:
         return {}
-    
+
     if not file_path.exists():
         return {}
-    
+
     try:
         with open(file_path, "rb") as f:
             return tomllib.load(f)
@@ -48,7 +48,7 @@ def _get_config_from_redup_toml() -> dict[str, Any]:
 
 def load_config() -> dict[str, Any]:
     """Load reDUP configuration from available sources.
-    
+
     Priority order:
     1. Environment variables (REDUP_*)
     2. .env file in current directory (auto-loaded via redup.config)
@@ -65,13 +65,13 @@ def load_config() -> dict[str, Any]:
         "output": global_config.DEFAULT_OUTPUT_DIR,
         "format": global_config.DEFAULT_FORMAT,
     }
-    
+
     # Load from redup.toml
     config.update(_get_config_from_redup_toml())
-    
+
     # Load from pyproject.toml (overwrites redup.toml)
     config.update(_get_config_from_pyproject())
-    
+
     # Override with environment variables
     env_mappings = {
         "REDUP_EXTENSIONS": ("extensions", str),
@@ -83,7 +83,7 @@ def load_config() -> dict[str, Any]:
         "REDUP_MAX_GROUPS": ("max_groups", int),
         "REDUP_MAX_LINES": ("max_lines", int),
     }
-    
+
     for env_var, (key, type_func) in env_mappings.items():
         value = os.getenv(env_var)
         if value is not None:
@@ -94,7 +94,7 @@ def load_config() -> dict[str, Any]:
                     config[key] = type_func(value)
             except (ValueError, TypeError):
                 pass  # Ignore invalid environment variables
-    
+
     return config
 
 
@@ -102,14 +102,15 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     """Convert configuration dict to ScanConfig object."""
     extensions = config.get("extensions", ".py")
     if isinstance(extensions, str):
-        ext_list = [e.strip() if e.startswith(".") else f".{e.strip()}" 
-                   for e in extensions.split(",")]
+        ext_list = [
+            e.strip() if e.startswith(".") else f".{e.strip()}" for e in extensions.split(",")
+        ]
     else:
         ext_list = extensions
-    
+
     scan_config = config.get("scan", {})
     lsh_config = config.get("lsh", {})
-    
+
     return ScanConfig(
         root=path,
         extensions=ext_list,

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 from redup.core.models import DuplicateGroup
 
@@ -42,7 +42,9 @@ class _MatchResult:
 class GroupMatcher:
     """Match duplicate groups between two scan results."""
 
-    def __init__(self, before_groups: dict[str, DuplicateGroup], after_groups: dict[str, DuplicateGroup]) -> None:
+    def __init__(
+        self, before_groups: dict[str, DuplicateGroup], after_groups: dict[str, DuplicateGroup]
+    ) -> None:
         self.before_groups = before_groups
         self.after_groups = after_groups
         self._matches: list[_MatchResult] | None = None
@@ -75,9 +77,7 @@ class GroupMatcher:
             if group_id not in matched_before
         ]
         remaining_after = [
-            group
-            for group_id, group in self.after_groups.items()
-            if group_id not in matched_after
+            group for group_id, group in self.after_groups.items() if group_id not in matched_after
         ]
 
         remaining_before.sort(key=lambda group: group.impact_score, reverse=True)
@@ -120,9 +120,7 @@ class GroupMatcher:
         )
 
         for before_group in remaining_before:
-            best_index = self._find_best_match(
-                before_group, remaining_after, matched_after
-            )
+            best_index = self._find_best_match(before_group, remaining_after, matched_after)
             if best_index is None:
                 continue
 
@@ -153,9 +151,15 @@ class GroupMatcher:
         file_score = overlap / union if union else 0.0
 
         score = file_score
-        if before_group.normalized_hash and before_group.normalized_hash == after_group.normalized_hash:
+        if (
+            before_group.normalized_hash
+            and before_group.normalized_hash == after_group.normalized_hash
+        ):
             score += 1.0
-        if before_group.normalized_name and before_group.normalized_name == after_group.normalized_name:
+        if (
+            before_group.normalized_name
+            and before_group.normalized_name == after_group.normalized_name
+        ):
             score += 0.5
         score += max(0.0, 1.0 - abs(before_group.similarity_score - after_group.similarity_score))
         return score
@@ -164,13 +168,19 @@ class GroupMatcher:
         """Groups that disappeared between scans."""
         self._ensure_matches()
         matched_before = {match.before.id for match in self._matches or []}
-        return [group for group_id, group in self.before_groups.items() if group_id not in matched_before]
+        return [
+            group
+            for group_id, group in self.before_groups.items()
+            if group_id not in matched_before
+        ]
 
     def get_new_groups(self) -> list[DuplicateGroup]:
         """Groups that appeared in the later scan."""
         self._ensure_matches()
         matched_after = {match.after.id for match in self._matches or []}
-        return [group for group_id, group in self.after_groups.items() if group_id not in matched_after]
+        return [
+            group for group_id, group in self.after_groups.items() if group_id not in matched_after
+        ]
 
     def get_unchanged_groups(self) -> list[DuplicateGroup]:
         """Groups that are present in both scans."""

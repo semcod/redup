@@ -48,8 +48,8 @@ handle_initialize = handle_initialize
 run_server = run_server
 
 # Backward compatibility: rebuild TOOL_SCHEMA_REDUP in legacy format
-import json
 from typing import Any
+
 
 def _build_legacy_tool_schema() -> dict[str, Any]:
     """Build legacy tool schema format for backward compatibility."""

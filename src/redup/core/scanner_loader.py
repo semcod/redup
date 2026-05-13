@@ -1,4 +1,5 @@
 """File loading and preload helpers for scanner operations."""
+
 from __future__ import annotations
 
 # Re-export _preload_files from scanner_utils to avoid duplication

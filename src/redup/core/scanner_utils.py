@@ -1,4 +1,5 @@
 """Scanner file-collection and file-loading utilities."""
+
 import mmap
 import time
 from pathlib import Path
@@ -19,12 +20,12 @@ def _is_test_file(path: Path) -> bool:
     """Check if file is a test file."""
     name = path.name.lower()
     dir_parts = [part.lower() for part in path.parts]
-    if any(('pytest-' in part for part in dir_parts)):
+    if any("pytest-" in part for part in dir_parts):
         return False
-    test_patterns = ['test_', '_test.', 'tests.', 'spec_', '_spec.']
-    if any((pattern in name for pattern in test_patterns)):
+    test_patterns = ["test_", "_test.", "tests.", "spec_", "_spec."]
+    if any(pattern in name for pattern in test_patterns):
         return True
-    if any(('test' in part and 'pytest-' not in part for part in dir_parts)):
+    if any("test" in part and "pytest-" not in part for part in dir_parts):
         return True
     return False
 
@@ -32,7 +33,7 @@ def _is_test_file(path: Path) -> bool:
 def _collect_files(config: ScanConfig) -> list[Path]:
     """Collect all files to scan based on configuration."""
     files: list[Path] = []
-    for file_path in config.root.rglob('*'):
+    for file_path in config.root.rglob("*"):
         if file_path.is_file():
             relative_path = _project_relative_path(file_path, config.root)
             if file_path.suffix not in config.extensions:
@@ -52,9 +53,8 @@ def _collect_files(config: ScanConfig) -> list[Path]:
 
 def _read_file_with_mmap(file_path: Path) -> str:
     """Read file content using mmap for large files (>64KB)."""
-    with open(file_path, 'rb') as f:
-        with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
-            return mm.read().decode('utf-8', errors='replace')
+    with open(file_path, "rb") as f, mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+        return mm.read().decode("utf-8", errors="replace")
 
 
 def _read_file_safe(file_path: Path) -> str | None:
@@ -63,7 +63,7 @@ def _read_file_safe(file_path: Path) -> str | None:
         file_size = file_path.stat().st_size
         if file_size > 64 * 1024:
             return _read_file_with_mmap(file_path)
-        return file_path.read_text('utf-8', errors='replace')
+        return file_path.read_text("utf-8", errors="replace")
     except (OSError, UnicodeDecodeError):
         return None
 
@@ -82,18 +82,18 @@ def _load_files_simple(files: list[Path]) -> tuple[dict[Path, str], int]:
 
 def _load_files_with_progress(files: list[Path]) -> tuple[dict[Path, str], int]:
     """Load files with rich progress bar."""
-    from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+    from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 
     sources: dict[Path, str] = {}
     total_size = 0
 
     with Progress(
         SpinnerColumn(),
-        TextColumn('[progress.description]{task.description}'),
+        TextColumn("[progress.description]{task.description}"),
         BarColumn(),
-        transient=True
+        transient=True,
     ) as progress:
-        task = progress.add_task(f'Loading {len(files)} files to RAM...', total=len(files))
+        task = progress.add_task(f"Loading {len(files)} files to RAM...", total=len(files))
         for file_path in files:
             content = _read_file_safe(file_path)
             if content is not None:
@@ -115,7 +115,7 @@ def _load_all_files(files: list[Path]) -> tuple[dict[Path, str], int]:
 def _print_load_result(sources: dict[Path, str], total_size: int, load_time: float) -> None:
     """Print load completion message."""
     size_mb = total_size // 1024 // 1024
-    print(f'✅ Loaded {len(sources)} files ({size_mb}MB) in {load_time:.2f}s')
+    print(f"✅ Loaded {len(sources)} files ({size_mb}MB) in {load_time:.2f}s")
 
 
 def _preload_files(files: list[Path], max_cache_mb: int = 256) -> dict[Path, str]:

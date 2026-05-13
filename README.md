@@ -728,3 +728,20 @@ Licensed under Apache-2.0.
 ## Author
 
 Tom Sapletta
+
+<!-- taskill:status:start -->
+
+## Status
+
+_Last updated by [taskill](https://github.com/oqlos/taskill) at 2026-04-25 13:46 UTC_
+
+| Metric | Value |
+|---|---|
+| HEAD | `7055183` |
+| Coverage | 42.9% |
+| Failing tests | — |
+| Commits in last cycle | 50 |
+
+> Added markdown output and a configuration management system, with numerous docs and code-analysis refactors and some test additions. Several refactors target the code analysis engine and TypeScript extractor components.
+
+<!-- taskill:status:end -->

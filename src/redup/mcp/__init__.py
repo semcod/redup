@@ -9,7 +9,13 @@ from .handlers import (
     handle_suggest_refactoring,
 )
 from .schemas import SCAN_PROPERTIES, TOOL_SCHEMA_REDUP
-from .server import handle_initialize, handle_request, handle_tools_call, handle_tools_list, run_server
+from .server import (
+    handle_initialize,
+    handle_request,
+    handle_tools_call,
+    handle_tools_list,
+    run_server,
+)
 from .utils import json_safe, parse_extensions, resolve_path
 
 __all__ = [

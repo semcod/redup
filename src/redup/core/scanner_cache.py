@@ -1,4 +1,5 @@
 """Scanner caching and path-filtering helpers."""
+
 import fnmatch
 import functools
 from pathlib import Path
@@ -38,7 +39,7 @@ class MemoryFileCache:
                     self.current_memory += content_size
             return content
         except (OSError, UnicodeDecodeError):
-            return b''
+            return b""
 
     def _evict_oldest(self, needed_size: int) -> None:
         """Evict oldest entries to make room."""
@@ -57,19 +58,21 @@ def _matches_pattern(name: str, str_path: str, path_parts: tuple[str, ...], patt
     return any(fnmatch.fnmatch(part, pattern) for part in path_parts)
 
 
-def _matches_any_exclude(name: str, str_path: str, path_parts: tuple[str, ...], patterns: tuple[str, ...]) -> bool:
+def _matches_any_exclude(
+    name: str, str_path: str, path_parts: tuple[str, ...], patterns: tuple[str, ...]
+) -> bool:
     """Check if path matches any exclusion pattern."""
     return any(
-        _matches_pattern(name, str_path, path_parts, p)
-        for p in patterns if not p.startswith('!')
+        _matches_pattern(name, str_path, path_parts, p) for p in patterns if not p.startswith("!")
     )
 
 
-def _matches_any_include(name: str, str_path: str, path_parts: tuple[str, ...], patterns: tuple[str, ...]) -> bool:
+def _matches_any_include(
+    name: str, str_path: str, path_parts: tuple[str, ...], patterns: tuple[str, ...]
+) -> bool:
     """Check if path matches any include (negation) pattern."""
     return any(
-        _matches_pattern(name, str_path, path_parts, p[1:])
-        for p in patterns if p.startswith('!')
+        _matches_pattern(name, str_path, path_parts, p[1:]) for p in patterns if p.startswith("!")
     )
 
 

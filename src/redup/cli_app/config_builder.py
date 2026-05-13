@@ -8,11 +8,7 @@ from redup.core.models import ScanConfig
 
 
 def build_config(
-    path: Path,
-    extensions: str,
-    min_lines: int,
-    min_similarity: float,
-    include_tests: bool
+    path: Path, extensions: str, min_lines: int, min_similarity: float, include_tests: bool
 ) -> ScanConfig:
     """Build basic scan configuration."""
     config = load_config()
@@ -32,15 +28,15 @@ def build_config_with_file_support(
     max_cache_mb: int = 512,
     functions_only: bool = False,
     fuzzy: bool = False,
-    fuzzy_threshold: float = 0.8
+    fuzzy_threshold: float = 0.8,
 ) -> ScanConfig:
     """Build scan configuration with advanced options."""
     config = load_config()
     scan_config = config_to_scan_config(config, path)
-    
+
     # Override with CLI parameters if provided
     if extensions is not None:
-        scan_config.extensions = [e.strip() for e in extensions.split(',')]
+        scan_config.extensions = [e.strip() for e in extensions.split(",")]
     if min_lines is not None:
         scan_config.min_block_lines = min_lines
     if min_similarity is not None:
@@ -49,9 +45,9 @@ def build_config_with_file_support(
         scan_config.include_tests = include_tests
     if functions_only:
         scan_config.functions_only = functions_only
-    
+
     # Add fuzzy support
     scan_config.fuzzy_enabled = fuzzy
     scan_config.fuzzy_threshold = fuzzy_threshold
-    
+
     return scan_config

@@ -9,11 +9,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from redup.core.hasher import hash_block_structural, HashedBlock, _hashed_block
+from redup.core.hasher import hash_block_structural
 from redup.core.lsh_matcher import LSHIndex
 from redup.core.models import ScanConfig
 from redup.core.scanner import scan_project
-from redup.core.scanner_models import CodeBlock, ScannedFile
+from redup.core.scanner_models import CodeBlock
 
 
 @dataclass
@@ -50,14 +50,14 @@ class CrossProjectComparison:
     def shared_loc_potential(self) -> int:
         """Lines that could be saved by extracting shared code."""
         return sum(
-            max(m.lines_a[1] - m.lines_a[0], m.lines_b[1] - m.lines_b[0])
-            for m in self.matches
+            max(m.lines_a[1] - m.lines_a[0], m.lines_b[1] - m.lines_b[0]) for m in self.matches
         )
 
 
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def compare_projects(
     project_a: Path,
@@ -97,13 +97,15 @@ def compare_projects(
     matches.extend(_find_hash_matches(blocks_a, blocks_b, proj_a_str, proj_b_str))
 
     # Deduplicate seen pairs so LSH doesn't re-report them
-    seen_pairs = {
-        (m.file_a, m.lines_a, m.file_b, m.lines_b) for m in matches
-    }
+    seen_pairs = {(m.file_a, m.lines_a, m.file_b, m.lines_b) for m in matches}
 
     # Tier 2: LSH near-duplicates
     lsh_matches = _find_lsh_matches(
-        blocks_a, blocks_b, similarity_threshold, proj_a_str, proj_b_str,
+        blocks_a,
+        blocks_b,
+        similarity_threshold,
+        proj_a_str,
+        proj_b_str,
     )
     for m in lsh_matches:
         key = (m.file_a, m.lines_a, m.file_b, m.lines_b)
@@ -114,7 +116,11 @@ def compare_projects(
     # Tier 3: semantic (optional, slow)
     if use_semantic:
         sem_matches = _find_semantic_matches(
-            blocks_a, blocks_b, similarity_threshold, proj_a_str, proj_b_str,
+            blocks_a,
+            blocks_b,
+            similarity_threshold,
+            proj_a_str,
+            proj_b_str,
         )
         for m in sem_matches:
             key = (m.file_a, m.lines_a, m.file_b, m.lines_b)
@@ -134,6 +140,7 @@ def compare_projects(
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
+
 
 def _scan_project_blocks(
     root: Path,
@@ -177,18 +184,20 @@ def _find_hash_matches(
     for block_b in blocks_b:
         h = hash_block_structural(block_b.text)
         for block_a in index.get(h, []):
-            matches.append(CrossProjectMatch(
-                project_a=proj_a,
-                project_b=proj_b,
-                file_a=block_a.file,
-                file_b=block_b.file,
-                function_a=block_a.function_name or "",
-                function_b=block_b.function_name or "",
-                similarity=1.0,
-                similarity_type="structural",
-                lines_a=(block_a.line_start, block_a.line_end),
-                lines_b=(block_b.line_start, block_b.line_end),
-            ))
+            matches.append(
+                CrossProjectMatch(
+                    project_a=proj_a,
+                    project_b=proj_b,
+                    file_a=block_a.file,
+                    file_b=block_b.file,
+                    function_a=block_a.function_name or "",
+                    function_b=block_b.function_name or "",
+                    similarity=1.0,
+                    similarity_type="structural",
+                    lines_a=(block_a.line_start, block_a.line_end),
+                    lines_b=(block_b.line_start, block_b.line_end),
+                )
+            )
     return matches
 
 
@@ -213,34 +222,31 @@ def _find_lsh_matches(
     for block_b in blocks_b:
         near = lsh.find_near_duplicates(block_b)
         for block_a, sim in near:
-            matches.append(CrossProjectMatch(
-                project_a=proj_a,
-                project_b=proj_b,
-                file_a=block_a.file,
-                file_b=block_b.file,
-                function_a=block_a.function_name or "",
-                function_b=block_b.function_name or "",
-                similarity=sim,
-                similarity_type="lsh",
-                lines_a=(block_a.line_start, block_a.line_end),
-                lines_b=(block_b.line_start, block_b.line_end),
-            ))
+            matches.append(
+                CrossProjectMatch(
+                    project_a=proj_a,
+                    project_b=proj_b,
+                    file_a=block_a.file,
+                    file_b=block_b.file,
+                    function_a=block_a.function_name or "",
+                    function_b=block_b.function_name or "",
+                    similarity=sim,
+                    similarity_type="lsh",
+                    lines_a=(block_a.line_start, block_a.line_end),
+                    lines_b=(block_b.line_start, block_b.line_end),
+                )
+            )
     return matches
 
 
-def _is_cross_project_match(
-    match, a_files: set[str], b_files: set[str]
-) -> bool:
+def _is_cross_project_match(match, a_files: set[str], b_files: set[str]) -> bool:
     """Check if a semantic match spans both projects."""
-    return (
-        (match.block_a.file in a_files and match.block_b.file in b_files) or
-        (match.block_a.file in b_files and match.block_b.file in a_files)
+    return (match.block_a.file in a_files and match.block_b.file in b_files) or (
+        match.block_a.file in b_files and match.block_b.file in a_files
     )
 
 
-def _normalize_match_order(
-    match, a_files: set[str]
-) -> tuple[CodeBlock, CodeBlock]:
+def _normalize_match_order(match, a_files: set[str]) -> tuple[CodeBlock, CodeBlock]:
     """Normalize block order so project_a block is always first."""
     if match.block_a.file in a_files:
         return match.block_a, match.block_b

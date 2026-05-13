@@ -1,4 +1,5 @@
 """Scanner data models and strategy configuration."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -7,6 +8,7 @@ from dataclasses import dataclass, field
 @dataclass
 class CodeBlock:
     """A contiguous block of source code lines."""
+
     file: str
     line_start: int
     line_end: int
@@ -22,6 +24,7 @@ class CodeBlock:
 @dataclass
 class ScannedFile:
     """A file that has been read and split into blocks."""
+
     path: str
     lines: list[str] = field(default_factory=list)
     blocks: list[CodeBlock] = field(default_factory=list)
@@ -34,6 +37,7 @@ class ScannedFile:
 @dataclass
 class ScanStrategy:
     """Configuration for HOW to scan — not WHAT to scan."""
+
     parallel: bool = False
     max_workers: int = 4
     memory_cache: bool = False

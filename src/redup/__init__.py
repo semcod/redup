@@ -7,6 +7,7 @@ __version__ = "0.4.22"
 # Click compatibility shim for older typer versions
 # This must run before any typer imports
 import click
+
 if not hasattr(click.Choice, "__class_getitem__") or not callable(click.Choice.__class_getitem__):
     click.Choice.__class_getitem__ = classmethod(lambda cls, item: cls)
 

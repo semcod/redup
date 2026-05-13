@@ -1,6 +1,8 @@
 """Path and file selection helpers for the scanner."""
+
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from redup.core.models import ScanConfig
@@ -19,25 +21,36 @@ def _is_test_file(path: Path) -> bool:
     """Check if file is a test file."""
     name = path.name.lower()
     dir_parts = [part.lower() for part in path.parts]
-    if any(('pytest-' in part for part in dir_parts)):
+    if any("pytest-" in part for part in dir_parts):
         return False
-    test_patterns = ['test_', '_test.', 'tests.', 'spec_', '_spec.']
-    if any((pattern in name for pattern in test_patterns)):
+    test_patterns = ["test_", "_test.", "tests.", "spec_", "_spec."]
+    if any(pattern in name for pattern in test_patterns):
         return True
-    if any(('test' in part and 'pytest-' not in part for part in dir_parts)):
+    if any("test" in part and "pytest-" not in part for part in dir_parts):
         return True
     return False
 
 
 def _collect_files(config: ScanConfig) -> list[Path]:
-    """Collect all files to scan based on configuration."""
+    """Collect all files to scan based on configuration.
+
+    Uses os.walk with topdown pruning to skip hidden directories early,
+    avoiding descent into .rebuild_ev/, .regres/, etc.
+    """
     files = []
-    for file_path in config.root.rglob('*'):
-        if file_path.is_file():
-            relative_path = _project_relative_path(file_path, config.root)
-            if file_path.suffix not in config.extensions:
+    ext_set = set(config.extensions)
+    exclude_patterns = tuple(config.exclude_patterns)
+    root_str = str(config.root)
+
+    for dirpath, dirnames, filenames in os.walk(root_str, topdown=True):
+        dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+
+        for filename in filenames:
+            file_path = Path(os.path.join(dirpath, filename))
+            if file_path.suffix not in ext_set:
                 continue
-            if _should_exclude(relative_path, tuple(config.exclude_patterns)):
+            relative_path = _project_relative_path(file_path, config.root)
+            if _should_exclude(relative_path, exclude_patterns):
                 continue
             if not config.include_tests and _is_test_file(relative_path):
                 continue

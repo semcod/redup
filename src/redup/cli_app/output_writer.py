@@ -3,14 +3,14 @@
 from pathlib import Path
 from typing import Any
 
-from redup.config import config, get_default_filename
+from redup.config import get_default_filename
 from redup.core.models import DuplicationMap
+from redup.reporters.code2llm_reporter import export_code2llm, to_code2llm_context
+from redup.reporters.enhanced_reporter import EnhancedReporter
 from redup.reporters.json_reporter import to_json
 from redup.reporters.markdown_reporter import to_markdown
 from redup.reporters.toon_reporter import to_toon
 from redup.reporters.yaml_reporter import to_yaml
-from redup.reporters.code2llm_reporter import export_code2llm, to_code2llm_context, to_code2llm_toon
-from redup.reporters.enhanced_reporter import EnhancedReporter
 
 
 def write_output(content: str, output: Path | None, suffix: str) -> None:
@@ -29,7 +29,7 @@ def write_output(content: str, output: Path | None, suffix: str) -> None:
 def write_results(dup_map: DuplicationMap, format: str, output: Any, path: Path) -> None:
     """Write analysis results in specified format."""
     import typer
-    
+
     if format == "json":
         content = to_json(dup_map)
         write_output(content, output, "json")
@@ -61,7 +61,7 @@ def write_results(dup_map: DuplicationMap, format: str, output: Any, path: Path)
             "toon": to_toon(dup_map),
             "markdown": to_markdown(dup_map),
         }
-        
+
         # Determine and create output directory
         if output:
             # Create output directory if it doesn't exist
@@ -69,7 +69,7 @@ def write_results(dup_map: DuplicationMap, format: str, output: Any, path: Path)
             base_dir = output
         else:
             base_dir = path
-        
+
         for fmt, content in formats.items():
             target = base_dir / get_default_filename(fmt)
             target.write_text(content, encoding="utf-8")

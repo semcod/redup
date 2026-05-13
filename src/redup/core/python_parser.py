@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from redup.core.scanner import CodeBlock
 
@@ -11,6 +10,7 @@ from redup.core.scanner import CodeBlock
 @dataclass
 class ParsedFunction:
     """A parsed Python function with metadata."""
+
     name: str
     start_line: int
     end_line: int
@@ -36,7 +36,7 @@ def _parse_with_libcst(source: str, filepath: str) -> list[ParsedFunction]:
 
     class FunctionCollector(cst.CSTVisitor):
         """Collect function definitions with line numbers."""
-        
+
         def __init__(self):
             self._class_stack: list[str] = []
 
@@ -49,33 +49,35 @@ def _parse_with_libcst(source: str, filepath: str) -> list[ParsedFunction]:
 
         def visit_FunctionDef(self, node: cst.FunctionDef) -> bool:
             # Get line numbers from position
-            start_line = node.position.start.line if hasattr(node, 'position') else 0
-            
+            start_line = node.position.start.line if hasattr(node, "position") else 0
+
             # Extract function text (approximate)
             func_text = cst.Module([node]).code
-            
+
             # Count arguments
             arg_count = len(node.params.params)
-            
+
             # Check for return statements (simplified)
-            has_return = 'return' in func_text
-            
+            has_return = "return" in func_text
+
             # Extract decorators
             decorators = []
             for decorator in node.decorators:
-                if hasattr(decorator, 'decorator') and hasattr(decorator.decorator, 'value'):
+                if hasattr(decorator, "decorator") and hasattr(decorator.decorator, "value"):
                     decorators.append(decorator.decorator.value)
-            
-            functions.append(ParsedFunction(
-                name=node.name.value,
-                start_line=start_line,
-                end_line=start_line + func_text.count('\n'),
-                text=func_text,
-                class_name=self._class_stack[-1] if self._class_stack else None,
-                arg_count=arg_count,
-                has_return=has_return,
-                decorators=decorators if decorators else None,
-            ))
+
+            functions.append(
+                ParsedFunction(
+                    name=node.name.value,
+                    start_line=start_line,
+                    end_line=start_line + func_text.count("\n"),
+                    text=func_text,
+                    class_name=self._class_stack[-1] if self._class_stack else None,
+                    arg_count=arg_count,
+                    has_return=has_return,
+                    decorators=decorators if decorators else None,
+                )
+            )
             return False  # Don't visit nested functions
 
         def visit_AsyncFunctionDef(self, node: cst.AsyncFunctionDef) -> bool:
@@ -120,7 +122,7 @@ def _extract_function_info(
     """Extract metadata from a function node and create a ParsedFunction."""
     start = node.lineno
     end = node.end_lineno or start
-    text = "\n".join(lines[start - 1:end])
+    text = "\n".join(lines[start - 1 : end])
     class_node = parent_map.get(id(node))
 
     arg_count = len(node.args.args)

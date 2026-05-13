@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+
+- feat(docs): add markdown output
+- feat(goal): add markdown output
+- chore(docs): add markdown output and hooks
+- feat(config): add configuration management system
+- feat(tests): add configuration management system tests
+- refactor(config): code analysis engine improvements
+- refactor(docs): multiple code analysis engine and docs refactors
+- feat(None): code improvements
+
 ## [0.4.22] - 2026-04-16
 
 ### Docs

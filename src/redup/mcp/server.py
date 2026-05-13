@@ -67,9 +67,7 @@ def handle_tools_call(request_id: Any, params: dict[str, Any]) -> dict[str, Any]
         return {
             "jsonrpc": "2.0",
             "id": request_id,
-            "result": {
-                "content": [{"type": "text", "text": result}]
-            },
+            "result": {"content": [{"type": "text", "text": result}]},
         }
     except Exception as exc:
         return {

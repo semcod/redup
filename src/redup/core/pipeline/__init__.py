@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import time
 import signal
+import time
 from typing import TYPE_CHECKING
 
 from redup.core.models import DuplicationMap, ScanConfig, ScanStats
@@ -14,20 +14,25 @@ if TYPE_CHECKING:
     from redup.core.cache import HashCache
 
 # Import from submodules
-from redup.core.pipeline.phases import ensure_config, scan_phase, scan_phase_parallel, process_blocks
 from redup.core.pipeline.duplicate_finder import (
-    find_duplicates_phase_optimized,
     find_duplicates_phase_lazy,
+    find_duplicates_phase_optimized,
     find_exact_groups,
-    find_structural_groups,
     find_near_duplicate_groups,
     find_semantic_groups,
+    find_structural_groups,
 )
 from redup.core.pipeline.groups import (
     blocks_to_group,
+    calculate_similarity,
     deduplicate_groups,
     match_results_to_blocks,
-    calculate_similarity,
+)
+from redup.core.pipeline.phases import (
+    ensure_config,
+    process_blocks,
+    scan_phase,
+    scan_phase_parallel,
 )
 
 # Backward compatibility aliases
@@ -116,6 +121,7 @@ def analyze_optimized(
     cache = None
     if config.enable_cache:
         from redup.core.cache import HashCache
+
         cache = HashCache(config.cache_dir)
 
     start_time = time.time()
@@ -136,18 +142,21 @@ def analyze_optimized(
                 parallel=True,
                 max_workers=config.parallel_workers,
                 memory_cache=use_memory_cache,
-                max_cache_mb=max_cache_mb if use_memory_cache else 256
+                max_cache_mb=max_cache_mb if use_memory_cache else 256,
             )
             scanned_files, stats = scan_project(config, strategy, function_level_only=True)
-        elif config.parallel_workers is None and (getattr(config, '_parallel_enabled', False) or config.parallel_workers is None):
+        elif config.parallel_workers is None and (
+            getattr(config, "_parallel_enabled", False) or config.parallel_workers is None
+        ):
             # Auto-detect CPU count when parallel_workers is None (default behavior)
             import multiprocessing as mp
+
             auto_workers = mp.cpu_count()
             strategy = ScanStrategy(
                 parallel=True,
                 max_workers=auto_workers,
                 memory_cache=use_memory_cache,
-                max_cache_mb=max_cache_mb if use_memory_cache else 256
+                max_cache_mb=max_cache_mb if use_memory_cache else 256,
             )
             scanned_files, stats = scan_project(config, strategy, function_level_only=True)
         elif use_memory_cache:

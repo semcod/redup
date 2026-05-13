@@ -16,7 +16,7 @@ def _render_header(dup_map: DuplicationMap) -> list[str]:
     return [
         f"# redup/duplication | {dup_map.total_groups} groups "
         f"| {dup_map.stats.files_scanned}f {dup_map.stats.total_lines}L | {now}",
-        ""
+        "",
     ]
 
 
@@ -30,7 +30,7 @@ def _render_summary(dup_map: DuplicationMap) -> list[str]:
         f"  dup_fragments: {dup_map.total_fragments}",
         f"  saved_lines:   {dup_map.total_saved_lines}",
         f"  scan_ms:       {dup_map.stats.scan_time_ms:.0f}",
-        ""
+        "",
     ]
 
 
@@ -65,9 +65,7 @@ def _render_refactor(suggestions: list) -> list[str]:
         lines.append(f"REFACTOR[{len(suggestions)}] (ranked by priority):")
         for s in suggestions:
             risk_icon = {"low": "○", "medium": "◐", "high": "●"}.get(s.risk_level.value, "?")
-            lines.append(
-                f"  [{s.priority}] {risk_icon} {s.action.value:<18} → {s.new_module}"
-            )
+            lines.append(f"  [{s.priority}] {risk_icon} {s.action.value:<18} → {s.new_module}")
             lines.append(f"      WHY: {s.rationale}")
             files_str = ", ".join(s.original_files[:5])
             if len(s.original_files) > 5:
@@ -118,7 +116,9 @@ def _render_dependency_risk(dup_map: DuplicationMap) -> list[str]:
         files = sorted({frag.file for frag in group.fragments})
         packages = {f.split(os.sep)[0] for f in files if os.sep in f}
         if len(packages) >= 2:
-            name = group.normalized_name or group.fragments[0].function_name or f"block_{group.id[:8]}"
+            name = (
+                group.normalized_name or group.fragments[0].function_name or f"block_{group.id[:8]}"
+            )
             risky.append((name, len(packages), files))
 
     if not risky:
@@ -142,7 +142,8 @@ def _render_quick_wins(dup_map: DuplicationMap) -> list[str]:
         return []
 
     wins = [
-        s for s in dup_map.suggestions
+        s
+        for s in dup_map.suggestions
         if s.risk_level.value == "low" and _saved_for_suggestion(s, dup_map) >= 6
     ]
     wins.sort(key=lambda s: _saved_for_suggestion(s, dup_map), reverse=True)
@@ -156,10 +157,7 @@ def _render_quick_wins(dup_map: DuplicationMap) -> list[str]:
         files_str = ", ".join(Path(f).name for f in s.original_files[:3])
         if len(s.original_files) > 3:
             files_str += f" +{len(s.original_files) - 3}"
-        lines.append(
-            f"  [{s.priority}] {s.action.value:<18} saved={saved}L  "
-            f"→ {s.new_module}"
-        )
+        lines.append(f"  [{s.priority}] {s.action.value:<18} saved={saved}L  → {s.new_module}")
         lines.append(f"      FILES: {files_str}")
     lines.append("")
     return lines
@@ -167,7 +165,7 @@ def _render_quick_wins(dup_map: DuplicationMap) -> list[str]:
 
 def _calculate_group_effort(group: DuplicateGroup) -> tuple[str, str, float]:
     """Calculate effort estimate for a single group.
-    
+
     Returns: (name, difficulty, minutes)
     """
     name = group.normalized_name or group.fragments[0].function_name or f"block_{group.id[:8]}"
@@ -191,14 +189,14 @@ def _format_estimate_lines(
     """Format effort estimate lines."""
     hours = total_minutes / 60
     lines: list[str] = [f"EFFORT_ESTIMATE (total ≈ {hours:.1f}h):"]
-    
+
     for name, diff, saved, mins in estimates[:10]:
         lines.append(f"  {diff:<6} {name:<35} saved={saved}L  ~{mins:.0f}min")
-    
+
     if len(estimates) > 10:
         remaining = sum(m for _, _, _, m in estimates[10:])
         lines.append(f"  ... +{len(estimates) - 10} more (~{remaining:.0f}min)")
-    
+
     lines.append("")
     return lines
 

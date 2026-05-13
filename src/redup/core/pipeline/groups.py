@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from redup.core.hasher import HashedBlock
-from redup.core.models import DuplicateFragment, DuplicateGroup, DuplicateType
 from redup.core.matcher import MatchResult
+from redup.core.models import DuplicateFragment, DuplicateGroup, DuplicateType
 
 
 def blocks_to_group(
@@ -65,10 +65,7 @@ def deduplicate_groups(groups: list[DuplicateGroup]) -> list[DuplicateGroup]:
             continue
 
         # Check if this group's fragments are already covered
-        locations = {
-            (f.file, f.line_start, f.line_end)
-            for f in group.fragments
-        }
+        locations = {(f.file, f.line_start, f.line_end) for f in group.fragments}
         new_locations = locations - seen_locations
 
         if len(new_locations) >= 2:

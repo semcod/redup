@@ -157,16 +157,16 @@ def get_default_filename(suffix: str | None = None) -> str:
     """
     if suffix is None:
         return config.DEFAULT_OUTPUT_FILENAME
-    
+
     # Get the base name without any extensions (e.g., "duplication.toon.yaml" -> "duplication")
     # Split on all dots and take the first part as base
     full_name = config.DEFAULT_OUTPUT_FILENAME
     base = full_name.split(".")[0]
-    
+
     # For "toon" format, use the full default filename (duplication.toonyaml)
     if suffix == "toon":
         return config.DEFAULT_OUTPUT_FILENAME
-    
+
     # For other formats, use simple extension (duplication.json, duplication.yaml, etc.)
     return f"{base}.{suffix}"
 

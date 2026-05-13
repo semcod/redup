@@ -1,0 +1,9 @@
+project: /home/tom/github/semcod/redup
+generated_from: code2llm call graph analysis
+stats:
+  total_nodes: 0
+  total_edges: 0
+  modules_count: 0
+nodes: {}
+edges: []
+modules: {}

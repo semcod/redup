@@ -1,5 +1,3 @@
-from redup.core.config import config_to_scan_config, load_config
-
 SCAN_PROPERTIES = {
     "path": {
         "type": "string",

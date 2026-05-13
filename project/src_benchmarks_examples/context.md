@@ -4,12 +4,12 @@
 
 - **Project**: /home/tom/github/semcod/redup
 - **Primary Language**: python
-- **Languages**: python: 88, shell: 2
+- **Languages**: python: 87, shell: 1
 - **Analysis Mode**: static
 - **Total Functions**: 411
 - **Total Classes**: 54
-- **Modules**: 90
-- **Entry Points**: 0
+- **Modules**: 88
+- **Entry Points**: 204
 
 ## Architecture by Module
 
@@ -111,9 +111,193 @@
 
 Main execution flows into the system:
 
+### src.redup.integrations.planfile_integration.DuplicateTaskExporter._render_todo_md
+> Render tasks in TODO.md format.
+- **Calls**: lines.append, lines.append, lines.append, lines.append, lines.append, lines.append, lines.append, lines.append
+
+### src.redup.cli_app.tasks_command.tasks
+> Export duplication findings as tasks to TODO.md.
+
+Creates a TODO.md file with refactoring tasks based on found duplications.
+Optionally syncs with Git
+- **Calls**: app.callback, typer.Argument, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option
+
+### benchmarks.bench_libraries.benchmark
+> Run benchmark with current library configuration.
+- **Calls**: tempfile.TemporaryDirectory, Path, benchmarks.bench_libraries.generate_test_project, ScanConfig, time.perf_counter, src.redup.core.pipeline.analyze, print, print
+
+### benchmark.benchmark_sequential_vs_parallel
+> Compare sequential vs parallel scanning performance.
+- **Calls**: print, print, ScanConfig, print, time.time, src.redup.core.pipeline.analyze, print, print
+
+### examples.01_basic_usage.main
+- **Calls**: ScanConfig, src.redup.core.pipeline.analyze, print, print, print, print, print, print
+
+### src.redup.integrations.planfile_integration.DuplicateTaskExporter._build_description
+> Build task description with refactoring details.
+- **Calls**: lines.append, lines.append, lines.append, lines.append, lines.append, lines.append, lines.append, lines.append
+
+### src.redup.cli_app.main.scan
+> Scan a project for code duplicates.
+- **Calls**: app.command, typer.Argument, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option
+
+### src.redup.core.semantic.SemanticDetector.find_semantic_duplicates
+> Find semantically similar code blocks using embeddings.
+
+Pipeline:
+1. Encode all blocks to vectors (batched, GPU if available)
+2. Compute cosine simil
+- **Calls**: self._ensure_model, self._model.encode, util.cos_sim, src.redup.config.RedupConfig.set, range, matches.sort, len, len
+
+### benchmark.benchmark_feature_performance
+> Test performance of different features.
+- **Calls**: print, print, print, time.time, src.redup.core.pipeline.analyze_parallel, print, print, print
+
+### src.redup.reporters.enhanced_reporter.EnhancedReporter._get_duplication_metrics
+> Get duplication analysis metrics.
+- **Calls**: sum, sum, Counter, len, dict, self._bucket_similarities, max, len
+
+### src.redup.core.ts_extractor._extract_functions_javascript
+> Extract functions from JavaScript/TypeScript using tree-sitter.
+- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, name_node.text.decode
+
+### src.redup.mcp.server.run_server
+> Run the MCP server (entry point).
+- **Calls**: print, None.join, print, sorted, line.strip, TOOL_SCHEMA_REDUP.keys, json.loads, src.redup.mcp.server.handle_request
+
+### src.redup.mcp.handlers.handle_check_project
+> Check project against quality gates.
+- **Calls**: src.redup.mcp.utils.resolve_path, src.redup.mcp.handlers._run_analysis, int, int, src.redup.mcp.handlers._check_thresholds, json.dumps, params.get, FileNotFoundError
+
+### benchmarks.bench_libraries.benchmark_hash_performance
+> Benchmark hash performance specifically.
+- **Calls**: print, time.perf_counter, range, time.perf_counter, time.perf_counter, range, print, None.hexdigest
+
+### src.redup.core.ts_extractor._extract_functions_c_sharp
+> Extract functions from C# using tree-sitter.
+- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, parent.child_by_field_name
+
+### src.redup.core.fuzzy_similarity.CSSComponentExtractor._normalize_css_value
+> Normalize CSS property values for fuzzy comparison.
+- **Calls**: None.lower, re.search, re.search, re.sub, re.sub, size_match.groups, float, value.strip
+
+### src.redup.cli_app.main.compare
+> Compare two projects and recommend refactoring strategy (merge / extract / keep separate).
+- **Calls**: app.command, typer.Argument, typer.Argument, typer.Option, typer.Option, typer.Option, typer.Option, typer.Option
+
+### benchmarks.bench_libraries.benchmark_fuzzy_performance
+> Benchmark fuzzy matching performance.
+- **Calls**: print, time.perf_counter, range, None.ratio, time.perf_counter, time.perf_counter, range, print
+
+### src.redup.core.fuzzy_similarity.HTMLComponentExtractor._normalize_class_name
+> Normalize class names to patterns.
+- **Calls**: class_str.split, None.join, cls.startswith, normalized.append, cls.startswith, normalized.append, cls.startswith, normalized.append
+
+### src.redup.core.pipeline.duplicate_finder.find_structural_groups
+> Find structural duplicate groups.
+- **Calls**: src.redup.config.RedupConfig.set, src.redup.core.hasher.find_structural_duplicates, enumerate, exact_hashes.add, structural_groups.items, len, src.redup.core.matcher.refine_structural_matches, src.redup.core.pipeline.groups.match_results_to_blocks
+
+### src.redup.mcp.handlers.handle_analyze_project
+> Analyze a project and return formatted results.
+- **Calls**: src.redup.mcp.utils.resolve_path, src.redup.mcp.handlers._run_analysis, None.lower, src.redup.mcp.handlers._format_analysis_result, params.get, FileNotFoundError, path.exists, path.is_dir
+
+### src.redup.config.RedupConfig._load_from_env
+> Load configuration from environment variables.
+- **Calls**: dir, attr_name.startswith, cls._env_name, os.getenv, getattr, isinstance, isinstance, value.lower
+
+### src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_metadata
+> Extract language-specific metadata.
+- **Calls**: re.findall, re.findall, re.findall, re.findall, re.findall, None.join, None.join, None.join
+
+### src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_metadata_similarity
+> Compute similarity between metadata dictionaries.
+- **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, len, len, meta1.keys, meta2.keys, value_similarities.append, value_similarities.append
+
+### src.redup.core.hasher._normalize_ast_text
+> Deeper normalization: replace variable names and literals with placeholders.
+- **Calls**: _normalize_cache.get, ast.parse, src.redup.core.hasher._ast_to_normalized_string, len, _normalize_cache.pop, src.redup.core.hasher._normalize_text, re.sub, re.sub
+
+### src.redup.core.ts_extractor._extract_functions_ruby
+> Extract functions from Ruby using tree-sitter.
+- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, node.child_by_field_name, blocks.append, name_node.text.decode
+
+### src.redup.core.ts_extractor._extract_functions_php
+> Extract functions from PHP using tree-sitter.
+- **Calls**: node.child_by_field_name, blocks.append, traverse, name_node.text.decode, CodeBlock, blocks.append, parent.child_by_field_name, CodeBlock
+
+### src.redup.core.fuzzy_similarity.HTMLComponentExtractor._extract_attributes
+> Extract key attributes for comparison.
+- **Calls**: re.findall, re.search, re.findall, None.join, None.lower, None.join, sorted, sorted
+
+### src.redup.core.fuzzy_similarity.CSSComponentExtractor._detect_css_component_type
+> Detect component type from CSS selector and properties.
+- **Calls**: re.search, None.strip, any, any, selector_match.group, any, selector.lower, any
+
+### src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_attribute_similarity
+> Compute similarity between attribute dictionaries.
+- **Calls**: src.redup.config.RedupConfig.set, src.redup.config.RedupConfig.set, attrs1.keys, attrs2.keys, len, len, value_similarities.append, value_similarities.append
+
 ## Process Flows
 
 Key execution flows identified:
+
+### Flow 1: _render_todo_md
+```
+_render_todo_md [src.redup.integrations.planfile_integration.DuplicateTaskExporter]
+```
+
+### Flow 2: tasks
+```
+tasks [src.redup.cli_app.tasks_command]
+```
+
+### Flow 3: benchmark
+```
+benchmark [benchmarks.bench_libraries]
+  └─> generate_test_project
+```
+
+### Flow 4: benchmark_sequential_vs_parallel
+```
+benchmark_sequential_vs_parallel [benchmark]
+```
+
+### Flow 5: main
+```
+main [examples.01_basic_usage]
+  └─ →> analyze
+      └─ →> ensure_config
+      └─ →> scan_phase
+          └─ →> scan_project
+```
+
+### Flow 6: _build_description
+```
+_build_description [src.redup.integrations.planfile_integration.DuplicateTaskExporter]
+```
+
+### Flow 7: scan
+```
+scan [src.redup.cli_app.main]
+```
+
+### Flow 8: find_semantic_duplicates
+```
+find_semantic_duplicates [src.redup.core.semantic.SemanticDetector]
+  └─ →> set
+```
+
+### Flow 9: benchmark_feature_performance
+```
+benchmark_feature_performance [benchmark]
+  └─ →> analyze_parallel
+      └─ →> ensure_config
+```
+
+### Flow 10: _get_duplication_metrics
+```
+_get_duplication_metrics [src.redup.reporters.enhanced_reporter.EnhancedReporter]
+```
 
 ## Key Classes
 
@@ -219,10 +403,10 @@ Allows collecting lazy groups with limits
 - **Methods**: 3
 - **Key Methods**: src.redup.core.lazy_grouper.DuplicateGroupCollector.__init__, src.redup.core.lazy_grouper.DuplicateGroupCollector.collect, src.redup.core.lazy_grouper.DuplicateGroupCollector.collect_sorted
 
-### src.redup.core.lsh_matcher._SimpleMinHash
-> Simple MinHash implementation for fallback without datasketch.
+### src.redup.core.comparator.CrossProjectComparison
+> Full comparison result between two projects.
 - **Methods**: 2
-- **Key Methods**: src.redup.core.lsh_matcher._SimpleMinHash.__init__, src.redup.core.lsh_matcher._SimpleMinHash.jaccard
+- **Key Methods**: src.redup.core.comparator.CrossProjectComparison.total_matches, src.redup.core.comparator.CrossProjectComparison.shared_loc_potential
 
 ## Data Transformation Functions
 
@@ -323,6 +507,28 @@ Key functions that process and transform data:
 > Format top groups by impact for response.
 - **Output to**: round, dup_map.sorted_by_impact, min
 
+## Behavioral Patterns
+
+### recursion__json_safe
+- **Type**: recursion
+- **Confidence**: 0.90
+- **Functions**: src.redup.utils._json_safe
+
+### recursion_traverse_tree
+- **Type**: recursion
+- **Confidence**: 0.90
+- **Functions**: src.redup.core.ts_extractor.extractors.base.traverse_tree
+
+### recursion_json_safe
+- **Type**: recursion
+- **Confidence**: 0.90
+- **Functions**: src.redup.mcp.utils.json_safe
+
+### state_machine_EnhancedReporter
+- **Type**: state_machine
+- **Confidence**: 0.70
+- **Functions**: src.redup.reporters.enhanced_reporter.EnhancedReporter.__init__, src.redup.reporters.enhanced_reporter.EnhancedReporter.generate_metrics_report, src.redup.reporters.enhanced_reporter.EnhancedReporter._get_scan_metrics, src.redup.reporters.enhanced_reporter.EnhancedReporter._get_duplication_metrics, src.redup.reporters.enhanced_reporter.EnhancedReporter._get_language_metrics
+
 ## Public API Surface
 
 Functions exposed as public API (no underscore prefix):
@@ -374,6 +580,36 @@ How components interact:
 
 ```mermaid
 graph TD
+    _render_todo_md --> append
+    tasks --> callback
+    tasks --> Argument
+    tasks --> Option
+    benchmark --> TemporaryDirectory
+    benchmark --> Path
+    benchmark --> generate_test_projec
+    benchmark --> ScanConfig
+    benchmark --> perf_counter
+    benchmark_sequential --> print
+    benchmark_sequential --> ScanConfig
+    benchmark_sequential --> time
+    main --> ScanConfig
+    main --> analyze
+    main --> print
+    _build_description --> append
+    scan --> command
+    scan --> Argument
+    scan --> Option
+    find_semantic_duplic --> _ensure_model
+    find_semantic_duplic --> encode
+    find_semantic_duplic --> cos_sim
+    find_semantic_duplic --> set
+    find_semantic_duplic --> range
+    benchmark_feature_pe --> print
+    benchmark_feature_pe --> time
+    benchmark_feature_pe --> analyze_parallel
+    _get_duplication_met --> sum
+    _get_duplication_met --> Counter
+    _get_duplication_met --> len
 ```
 
 ## Reverse Engineering Guidelines

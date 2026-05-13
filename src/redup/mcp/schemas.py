@@ -2,29 +2,84 @@ from typing import Any
 
 SCAN_PROPERTIES = {
     "path": {"type": "string", "description": "Path to the project directory"},
-    "format": {"type": "string", "enum": ["json", "yaml", "toon", "markdown", "enhanced", "code2llm", "all"], "default": "json", "description": "Output format"},
-    "mode": {"type": "string", "enum": ["standard", "optimized", "parallel"], "default": "standard", "description": "Analysis mode"},
+    "format": {
+        "type": "string",
+        "enum": ["json", "yaml", "toon", "markdown", "enhanced", "code2llm", "all"],
+        "default": "json",
+        "description": "Output format",
+    },
+    "mode": {
+        "type": "string",
+        "enum": ["standard", "optimized", "parallel"],
+        "default": "standard",
+        "description": "Analysis mode",
+    },
     "extensions": {"type": "string", "description": "Comma-separated file extensions"},
     "min_lines": {"type": "integer", "default": 3, "description": "Minimum block size in lines"},
-    "min_similarity": {"type": "number", "default": 0.85, "description": "Minimum similarity score"},
+    "min_similarity": {
+        "type": "number",
+        "default": 0.85,
+        "description": "Minimum similarity score",
+    },
     "include_tests": {"type": "boolean", "default": False, "description": "Include test files"},
-    "functions_only": {"type": "boolean", "default": True, "description": "Only analyze function-level blocks"},
-    "parallel": {"type": "boolean", "default": False, "description": "Use parallel scanning for large projects"},
-    "memory_cache": {"type": "boolean", "default": True, "description": "Use memory cache for faster scanning"},
-    "incremental": {"type": "boolean", "default": False, "description": "Use incremental scanning with caching"},
+    "functions_only": {
+        "type": "boolean",
+        "default": True,
+        "description": "Only analyze function-level blocks",
+    },
+    "parallel": {
+        "type": "boolean",
+        "default": False,
+        "description": "Use parallel scanning for large projects",
+    },
+    "memory_cache": {
+        "type": "boolean",
+        "default": True,
+        "description": "Use memory cache for faster scanning",
+    },
+    "incremental": {
+        "type": "boolean",
+        "default": False,
+        "description": "Use incremental scanning with caching",
+    },
     "max_workers": {"type": "integer", "description": "Maximum number of parallel workers"},
-    "max_cache_mb": {"type": "integer", "default": 512, "description": "Maximum memory cache size in MB"},
-    "fuzzy": {"type": "boolean", "default": False, "description": "Enable fuzzy similarity detection"},
-    "fuzzy_threshold": {"type": "number", "default": 0.8, "description": "Fuzzy similarity threshold"},
-    "include_snippets": {"type": "boolean", "default": False, "description": "Include code snippets in JSON output"},
+    "max_cache_mb": {
+        "type": "integer",
+        "default": 512,
+        "description": "Maximum memory cache size in MB",
+    },
+    "fuzzy": {
+        "type": "boolean",
+        "default": False,
+        "description": "Enable fuzzy similarity detection",
+    },
+    "fuzzy_threshold": {
+        "type": "number",
+        "default": 0.8,
+        "description": "Fuzzy similarity threshold",
+    },
+    "include_snippets": {
+        "type": "boolean",
+        "default": False,
+        "description": "Include code snippets in JSON output",
+    },
 }
+
 
 def _make_check_properties() -> dict[str, Any]:
     """Build check_project properties with threshold options."""
     return {
         **SCAN_PROPERTIES,
-        "max_groups": {"type": "integer", "default": 10, "description": "Maximum allowed duplicate groups"},
-        "max_saved_lines": {"type": "integer", "default": 100, "description": "Maximum allowed recoverable lines"},
+        "max_groups": {
+            "type": "integer",
+            "default": 10,
+            "description": "Maximum allowed duplicate groups",
+        },
+        "max_saved_lines": {
+            "type": "integer",
+            "default": 100,
+            "description": "Maximum allowed recoverable lines",
+        },
         "max_lines": {"type": "integer", "description": "Compatibility alias for max_saved_lines"},
     }
 
@@ -48,17 +103,29 @@ TOOL_SCHEMA_REDUP = {
     "compare_scans": {
         "name": "compare_scans",
         "description": "Compare two saved reDUP scan outputs",
-        "inputSchema": {"type": "object", "properties": COMPARE_PROPERTIES, "required": ["before", "after"]},
+        "inputSchema": {
+            "type": "object",
+            "properties": COMPARE_PROPERTIES,
+            "required": ["before", "after"],
+        },
     },
     "compare_projects": {
         "name": "compare_projects",
         "description": "Compare two saved reDUP scan outputs",
-        "inputSchema": {"type": "object", "properties": COMPARE_PROPERTIES, "required": ["before", "after"]},
+        "inputSchema": {
+            "type": "object",
+            "properties": COMPARE_PROPERTIES,
+            "required": ["before", "after"],
+        },
     },
     "check_project": {
         "name": "check_project",
         "description": "Analyze a project and evaluate duplication quality gates",
-        "inputSchema": {"type": "object", "properties": _make_check_properties(), "required": ["path"]},
+        "inputSchema": {
+            "type": "object",
+            "properties": _make_check_properties(),
+            "required": ["path"],
+        },
     },
     "suggest_refactoring": {
         "name": "suggest_refactoring",

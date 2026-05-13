@@ -3,27 +3,23 @@
 from __future__ import annotations
 
 import warnings
-from collections.abc import Callable
-from typing import Literal
 from pathlib import Path
+from typing import Literal
 
 import typer
 
 # Suppress SyntaxWarning from external libraries
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
-import redup  # noqa: E402
-from redup.config import config as global_config, reload_config  # noqa: E402
-from redup.core.config import create_sample_redup_toml, load_config  # noqa: E402
-from redup.core.models import DuplicationMap, ScanConfig  # noqa: E402
 
 # Import refactored modules
-from redup.cli_app.config_builder import build_config, build_config_with_file_support  # noqa: E402
-from redup.cli_app.output_writer import write_output, write_results  # noqa: E402
 from redup.cli_app.scan_commands import (  # noqa: E402
-    scan_command, diff_command, check_command, config_command, info_command
+    check_command,
+    config_command,
+    diff_command,
+    info_command,
+    scan_command,
 )
-from redup.cli_app.scan_helpers import print_scan_header, print_scan_summary  # noqa: E402
 
 app = typer.Typer(
     name="redup",
@@ -45,17 +41,20 @@ def scan(
     path: Path = typer.Argument(DEFAULT_PATH, help="Project root directory to scan."),
     format: str = typer.Option(
         "toon",
-        "--format", "-f",
+        "--format",
+        "-f",
         help="Output format (json, yaml, toon, markdown, code2llm, all, enhanced).",
     ),
     output: Path | None = typer.Option(
         DEFAULT_OUTPUT,
-        "--output", "-o",
+        "--output",
+        "-o",
         help="Output directory or file path. Defaults to stdout.",
     ),
     extensions: str | None = typer.Option(
         None,
-        "--ext", "-e",
+        "--ext",
+        "-e",
         help="Comma-separated file extensions to scan. Overrides config.",
     ),
     min_lines: int | None = typer.Option(
@@ -116,9 +115,21 @@ def scan(
 ) -> None:
     """Scan a project for code duplicates."""
     return scan_command(
-        path, format, output, extensions, min_lines, min_similarity,
-        include_tests, not no_functions_only, not no_parallel, max_workers,
-        incremental, not no_memory_cache, max_cache_mb, fuzzy, fuzzy_threshold
+        path,
+        format,
+        output,
+        extensions,
+        min_lines,
+        min_similarity,
+        include_tests,
+        not no_functions_only,
+        not no_parallel,
+        max_workers,
+        incremental,
+        not no_memory_cache,
+        max_cache_mb,
+        fuzzy,
+        fuzzy_threshold,
     )
 
 
@@ -126,21 +137,43 @@ def scan(
 def compare(
     project_a: Path = typer.Argument(..., help="Root directory of the first project."),
     project_b: Path = typer.Argument(..., help="Root directory of the second project."),
-    threshold: float = typer.Option(0.75, "--threshold", "-t", help="Minimum similarity threshold."),
-    semantic: bool = typer.Option(False, "--semantic", help="Enable semantic similarity (slow, requires redup[semantic])."),
-    extensions: str | None = typer.Option(None, "--ext", "-e", help="Comma-separated file extensions to scan."),
+    threshold: float = typer.Option(
+        0.75, "--threshold", "-t", help="Minimum similarity threshold."
+    ),
+    semantic: bool = typer.Option(
+        False, "--semantic", help="Enable semantic similarity (slow, requires redup[semantic])."
+    ),
+    extensions: str | None = typer.Option(
+        None, "--ext", "-e", help="Comma-separated file extensions to scan."
+    ),
     min_lines: int = typer.Option(3, "--min-lines", help="Minimum block size (lines)."),
-    no_community: bool = typer.Option(False, "--no-community", help="Skip community detection (no networkx needed)."),
+    no_community: bool = typer.Option(
+        False, "--no-community", help="Skip community detection (no networkx needed)."
+    ),
     output: Path | None = typer.Option(None, "--output", "-o", help="Write JSON report to file."),
-    refactor_plan: bool = typer.Option(False, "--refactor-plan", help="Generate LLM-powered refactoring TODO list."),
-    llm_model: str | None = typer.Option(None, "--llm-model", help="LLM model for refactoring plan (default: from LLM_MODEL env)."),
+    refactor_plan: bool = typer.Option(
+        False, "--refactor-plan", help="Generate LLM-powered refactoring TODO list."
+    ),
+    llm_model: str | None = typer.Option(
+        None, "--llm-model", help="LLM model for refactoring plan (default: from LLM_MODEL env)."
+    ),
     env_file: Path | None = typer.Option(None, "--env", help="Path to .env file with API keys."),
 ) -> None:
     """Compare two projects and recommend refactoring strategy (merge / extract / keep separate)."""
     from redup.cli_app.compare_command import compare_command
+
     return compare_command(
-        project_a, project_b, threshold, semantic, extensions,
-        min_lines, no_community, output, refactor_plan, llm_model, env_file,
+        project_a,
+        project_b,
+        threshold,
+        semantic,
+        extensions,
+        min_lines,
+        no_community,
+        output,
+        refactor_plan,
+        llm_model,
+        env_file,
     )
 
 
@@ -168,7 +201,8 @@ def check(
     ),
     extensions: str | None = typer.Option(
         None,
-        "--ext", "-e",
+        "--ext",
+        "-e",
         help="Comma-separated file extensions to scan. Overrides config.",
     ),
     min_lines: int | None = typer.Option(
@@ -188,7 +222,9 @@ def check(
     ),
 ) -> None:
     """Check project for duplicates and exit with non-zero code if thresholds exceeded."""
-    return check_command(path, max_groups, max_saved_lines, extensions, min_lines, min_similarity, include_tests)
+    return check_command(
+        path, max_groups, max_saved_lines, extensions, min_lines, min_similarity, include_tests
+    )
 
 
 @app.command()
@@ -216,7 +252,9 @@ def info() -> None:
 
 # Import and add tasks command
 try:
-    from redup.cli_app.tasks_command import tasks as tasks_command, app as tasks_app
+    from redup.cli_app.tasks_command import app as tasks_app
+    from redup.cli_app.tasks_command import tasks as tasks_command
+
     app.add_typer(tasks_app, name="tasks", help="Export duplications as tasks to TODO.md")
 except ImportError:
     # tasks command requires optional planfile dependency

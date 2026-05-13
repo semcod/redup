@@ -6,13 +6,12 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import typer
 from rich.console import Console
 from rich.table import Table
 
 if TYPE_CHECKING:
-    from redup.core.comparator import CrossProjectComparison
     from redup.core.community import CodeCommunity
+    from redup.core.comparator import CrossProjectComparison
 
 console = Console()
 
@@ -36,8 +35,7 @@ def compare_command(
     ext_list = _parse_extensions(extensions)
 
     console.print(
-        f"[bold]Comparing[/bold] {project_a.name} ↔ {project_b.name}  "
-        f"(threshold={threshold})"
+        f"[bold]Comparing[/bold] {project_a.name} ↔ {project_b.name}  (threshold={threshold})"
     )
 
     comparison = compare_projects(
@@ -67,7 +65,7 @@ def _parse_extensions(extensions: str | None) -> list[str] | None:
     return [e.strip() for e in extensions.split(",")]
 
 
-def _print_summary_table(comparison: "CrossProjectComparison") -> None:
+def _print_summary_table(comparison: CrossProjectComparison) -> None:
     """Print summary statistics table."""
     table = Table(title="Cross-Project Comparison")
     table.add_column("Metric")
@@ -82,7 +80,7 @@ def _print_summary_table(comparison: "CrossProjectComparison") -> None:
 
 
 def _detect_communities(
-    comparison: "CrossProjectComparison",
+    comparison: CrossProjectComparison,
     threshold: float,
     no_community: bool,
 ) -> list:
@@ -92,6 +90,7 @@ def _detect_communities(
 
     try:
         from redup.core.community import detect_communities
+
         return detect_communities(comparison, min_similarity=threshold)
     except ImportError:
         console.print(
@@ -102,7 +101,7 @@ def _detect_communities(
 
 
 def _print_recommendation(
-    comparison: "CrossProjectComparison",
+    comparison: CrossProjectComparison,
     communities: list,
 ) -> None:
     """Print decision recommendation and communities table."""
@@ -111,6 +110,7 @@ def _print_recommendation(
         return
 
     from redup.core.decision import recommend
+
     rec = recommend(comparison, communities)
 
     console.print()
@@ -141,7 +141,7 @@ def _print_communities_table(communities: list) -> None:
     console.print(table)
 
 
-def _print_match_details(comparison: "CrossProjectComparison") -> None:
+def _print_match_details(comparison: CrossProjectComparison) -> None:
     """Print match details table."""
     if not comparison.matches:
         return
@@ -173,7 +173,7 @@ def _generate_llm_plan(
     refactor_plan: bool,
     env_file: Path | None,
     llm_model: str | None,
-    comparison: "CrossProjectComparison",
+    comparison: CrossProjectComparison,
 ) -> object | None:
     """Generate LLM refactoring plan if requested."""
     if not refactor_plan or comparison.total_matches == 0:
@@ -181,14 +181,16 @@ def _generate_llm_plan(
 
     try:
         from redup.core.refactor_advisor import (
-            generate_refactor_plan,
-            format_plan_markdown,
             format_plan_json,
+            format_plan_markdown,
+            generate_refactor_plan,
         )
 
         console.print("\n[bold]Generating LLM refactoring plan...[/bold]")
         plan = generate_refactor_plan(
-            report, env_path=env_file, model=llm_model,
+            report,
+            env_path=env_file,
+            model=llm_model,
         )
 
         console.print(
@@ -231,7 +233,7 @@ def _make_relative_path(path: str, proj_a: str, proj_b: str) -> str:
     """Strip project root prefix to get relative path."""
     for prefix in (proj_a + "/", proj_b + "/"):
         if path.startswith(prefix):
-            return path[len(prefix):]
+            return path[len(prefix) :]
     return path
 
 
@@ -261,7 +263,7 @@ def _deduplicate_matches(
 
 
 def _compact_community(
-    c: "CodeCommunity",
+    c: CodeCommunity,
     proj_a: str,
     proj_b: str,
 ) -> dict:
@@ -272,11 +274,13 @@ def _compact_community(
         parts = node_key.split("::")
         func_name = parts[-1] if len(parts) >= 3 else parts[-1]
         file_path = parts[-2] if len(parts) >= 3 else ""
-        funcs.append({
-            "project": "A" if proj == proj_a else "B",
-            "file": _make_relative_path(file_path, proj_a, proj_b),
-            "function": func_name,
-        })
+        funcs.append(
+            {
+                "project": "A" if proj == proj_a else "B",
+                "file": _make_relative_path(file_path, proj_a, proj_b),
+                "function": func_name,
+            }
+        )
 
     return {
         "name": c.extraction_candidate_name,
@@ -287,7 +291,7 @@ def _compact_community(
 
 
 def _filter_significant_communities(
-    communities: list["CodeCommunity"],
+    communities: list[CodeCommunity],
     proj_a: str,
     proj_b: str,
 ) -> list[dict]:
@@ -298,7 +302,7 @@ def _filter_significant_communities(
 
 
 def _build_recommendation_dict(
-    comparison: "CrossProjectComparison",
+    comparison: CrossProjectComparison,
     communities: list,
 ) -> dict | None:
     """Build recommendation dict or None if no communities."""
@@ -306,6 +310,7 @@ def _build_recommendation_dict(
         return None
 
     from redup.core.decision import recommend
+
     rec = recommend(comparison, communities)
     return {
         "decision": rec.decision.value,
@@ -317,7 +322,7 @@ def _build_recommendation_dict(
 
 
 def _build_json_report(
-    comparison: "CrossProjectComparison",
+    comparison: CrossProjectComparison,
     communities: list,
 ) -> dict:
     """Build a compact, human-readable JSON report.

@@ -1,9 +1,10 @@
-# code2llm | 88f 11177L | python:87,shell:2 | 2026-04-19
-# CC̄=3.6 | critical:0/411 | dups:0 | cycles:0
+# code2llm | 88f 11177L | python:86,shell:1 | 2026-04-19
+# CC̄=3.6 | critical:0/411 | dups:0 | cycles:3
 
 HEALTH[0]: ok
 
-REFACTOR[0]: none needed
+REFACTOR[1]:
+  1. break 3 circular dependencies
 
 PIPELINES[190]:
   [1] Src [main]: main → analyze → ensure_config
@@ -120,7 +121,7 @@ COUPLING:
    src.redup          ──          ←4          ←1  hub
    benchmark           4          ──            
   benchmarks           1                      ──
-  CYCLES: none
+  CYCLES: 3
   HUB: src.redup/ (fan-in=5)
 
 EXTERNAL:

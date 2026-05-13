@@ -57,10 +57,7 @@ def _assess_risk(group: DuplicateGroup) -> RiskLevel:
 def _choose_action(group: DuplicateGroup) -> RefactorAction:
     """Choose the best refactoring action for a group."""
     has_class = any(f.class_name for f in group.fragments)
-    all_same_class = (
-        has_class
-        and len({f.class_name for f in group.fragments if f.class_name}) == 1
-    )
+    all_same_class = has_class and len({f.class_name for f in group.fragments if f.class_name}) == 1
 
     if all_same_class:
         return RefactorAction.EXTRACT_CLASS

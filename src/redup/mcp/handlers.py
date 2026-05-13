@@ -12,7 +12,7 @@ from redup.core.config import config_to_scan_config, load_config
 from redup.core.differ import compare_scans, format_diff_result
 from redup.core.models import ScanConfig
 from redup.core.pipeline import analyze, analyze_optimized, analyze_parallel
-from redup.mcp.utils import json_safe, resolve_path, parse_extensions
+from redup.mcp.utils import json_safe, parse_extensions, resolve_path
 from redup.reporters.code2llm_reporter import to_code2llm_context, to_code2llm_toon
 from redup.reporters.enhanced_reporter import EnhancedReporter
 from redup.reporters.json_reporter import to_json
@@ -160,8 +160,7 @@ def handle_analyze_project(params: dict[str, Any]) -> str:
     fmt = str(params.get("format", "json")).lower()
 
     return _format_analysis_result(
-        scan_config, dup_map, fmt,
-        include_snippets=bool(params.get("include_snippets", False))
+        scan_config, dup_map, fmt, include_snippets=bool(params.get("include_snippets", False))
     )
 
 
@@ -237,17 +236,21 @@ def _check_thresholds(dup_map: Any, params: dict[str, Any]) -> list[dict]:
 
     violations = []
     if dup_map.total_groups > max_groups:
-        violations.append({
-            "field": "max_groups",
-            "limit": max_groups,
-            "actual": dup_map.total_groups,
-        })
+        violations.append(
+            {
+                "field": "max_groups",
+                "limit": max_groups,
+                "actual": dup_map.total_groups,
+            }
+        )
     if dup_map.total_saved_lines > max_saved_lines:
-        violations.append({
-            "field": "max_saved_lines",
-            "limit": max_saved_lines,
-            "actual": dup_map.total_saved_lines,
-        })
+        violations.append(
+            {
+                "field": "max_saved_lines",
+                "limit": max_saved_lines,
+                "actual": dup_map.total_saved_lines,
+            }
+        )
 
     return violations
 
@@ -263,7 +266,7 @@ def _format_top_groups(dup_map: Any, max_groups: int) -> list[dict]:
             "saved_lines_potential": group.saved_lines_potential,
             "similarity_score": round(group.similarity_score, 3),
         }
-        for group in dup_map.sorted_by_impact()[:min(max_groups, 10)]
+        for group in dup_map.sorted_by_impact()[: min(max_groups, 10)]
     ]
 
 

@@ -18,13 +18,13 @@ def _group_to_dict(group: Any, include_snippets: bool = False) -> dict:
             "function_name": f.function_name,
             "class_name": f.class_name,
         }
-        
+
         # Include code snippet if requested
-        if include_snippets and hasattr(f, 'text') and f.text:
+        if include_snippets and hasattr(f, "text") and f.text:
             fragment_data["snippet"] = f.text
-        
+
         fragments.append(fragment_data)
-    
+
     return {
         "id": group.id,
         "type": group.duplicate_type.value,

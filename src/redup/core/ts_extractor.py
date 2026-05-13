@@ -12,9 +12,14 @@ except ImportError:
 
 from redup.core.scanner import CodeBlock
 from redup.core.utils.function_extractor import (
-    GO_EXTRACTOR, RUST_EXTRACTOR, JAVA_EXTRACTOR, 
-    SCALA_EXTRACTOR, KOTLIN_EXTRACTOR, SWIFT_EXTRACTOR, OBJC_EXTRACTOR,
-    LUA_EXTRACTOR
+    GO_EXTRACTOR,
+    JAVA_EXTRACTOR,
+    KOTLIN_EXTRACTOR,
+    LUA_EXTRACTOR,
+    OBJC_EXTRACTOR,
+    RUST_EXTRACTOR,
+    SCALA_EXTRACTOR,
+    SWIFT_EXTRACTOR,
 )
 from redup.core.utils.language_dispatcher import language_dispatcher
 
@@ -30,13 +35,13 @@ def _initialize_language_dispatcher() -> None:
     language_dispatcher.register_extractor("swift", _extract_functions_swift)
     language_dispatcher.register_extractor("objc", _extract_functions_objc)
     language_dispatcher.register_extractor("lua", _extract_functions_lua)
-    
+
     # Register groups of languages
     language_dispatcher.register_group("web_languages", ["javascript", "typescript"])
     language_dispatcher.register_group("c_cpp", ["c", "cpp"])
     language_dispatcher.register_extractor("web_languages", _extract_functions_javascript)
     language_dispatcher.register_extractor("c_cpp", _extract_functions_c_cpp)
-    
+
     # Register other languages
     language_dispatcher.register_extractor("c_sharp", _extract_functions_c_sharp)
     language_dispatcher.register_extractor("ruby", _extract_functions_ruby)
@@ -46,17 +51,17 @@ def _initialize_language_dispatcher() -> None:
     language_dispatcher.register_extractor("xml", _extract_blocks_html_xml)
     language_dispatcher.register_extractor("css", _extract_blocks_css)
     language_dispatcher.register_extractor("sql", _extract_blocks_sql)
-    
+
     # Register web framework languages
     language_dispatcher.register_extractor("svelte", _extract_blocks_html_xml)
     language_dispatcher.register_extractor("vue", _extract_blocks_html_xml)
-    
+
     # Register data formats (use HTML/XML extractor for structure)
     language_dispatcher.register_extractor("json", _extract_blocks_html_xml)
     language_dispatcher.register_extractor("yaml", _extract_blocks_html_xml)
     language_dispatcher.register_extractor("toml", _extract_blocks_html_xml)
     language_dispatcher.register_extractor("markdown", _extract_blocks_html_xml)
-    
+
     # Register DSL languages
     language_dispatcher.register_extractor("graphql", _extract_blocks_sql)
     language_dispatcher.register_extractor("dockerfile", _extract_blocks_sql)
@@ -179,7 +184,7 @@ _LANGUAGE_MAPPING = {
 # Language registry for tree-sitter parsers
 class _LanguageRegistry:
     """Registry for tree-sitter language parsers."""
-    
+
     def __init__(self):
         self._languages = {
             "javascript": ("tree_sitter_javascript", "language"),
@@ -216,17 +221,17 @@ class _LanguageRegistry:
             "svelte": ("tree_sitter_svelte", "language"),
             "vue": ("tree_sitter_vue", "language"),
         }
-    
+
     def get_language(self, language_name: str) -> Any:
         """Get tree-sitter language parser."""
         if tree_sitter is None:
             return None
-        
+
         if language_name not in self._languages:
             return None
-        
+
         module_name, function_name = self._languages[language_name]
-        
+
         try:
             module = __import__(module_name)
             language_func = getattr(module, function_name)
@@ -246,71 +251,79 @@ def _get_tree_sitter_language(language_name: str) -> Any:
     return _language_registry.get_language(language_name)
 
 
-def _extract_functions_javascript(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+def _extract_functions_javascript(
+    node: Any, source_lines: list[str], file_path: str
+) -> list[CodeBlock]:
     """Extract functions from JavaScript/TypeScript using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:  # Prevent infinite recursion
             return
-            
+
         node_type = node.type
-        
+
         # Function declarations
         if node_type in ("function_declaration", "function_definition"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             # Extract function name
             name_node = node.child_by_field_name("name")
             function_name = name_node.text.decode() if name_node else "anonymous"
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=None,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=None,
+                )
+            )
+
         # Method definitions in classes
         elif node_type == "method_definition":
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             # Extract method name
             name_node = node.child_by_field_name("name")
             method_name = name_node.text.decode() if name_node else "anonymous"
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=method_name,
-                class_name=None,  # Could be extracted from parent class node
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=method_name,
+                    class_name=None,  # Could be extracted from parent class node
+                )
+            )
+
         # Arrow functions (if they span multiple lines)
         elif node_type == "arrow_function":
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             if end_line - start_line >= 3:  # Only include multi-line arrow functions
-                blocks.append(CodeBlock(
-                    file=file_path,
-                    line_start=start_line,
-                    line_end=end_line,
-                    text="\n".join(source_lines[start_line-1:end_line]),
-                    function_name="arrow_function",
-                    class_name=None,
-                ))
-        
+                blocks.append(
+                    CodeBlock(
+                        file=file_path,
+                        line_start=start_line,
+                        line_end=end_line,
+                        text="\n".join(source_lines[start_line - 1 : end_line]),
+                        function_name="arrow_function",
+                        class_name=None,
+                    )
+                )
+
         # Recursively traverse children
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
@@ -333,58 +346,57 @@ def extract_functions_treesitter(source: str, file_path: str) -> list[CodeBlock]
     """Extract functions using tree-sitter for multi-language support."""
     if tree_sitter is None:
         return []
-    
+
     # Initialize dispatcher on first use
     if not language_dispatcher._extractors:
         _initialize_language_dispatcher()
-    
+
     # Determine language from file extension
     file_ext = Path(file_path).suffix.lower()
     language_name = _LANGUAGE_MAPPING.get(file_ext)
-    
+
     if not language_name:
         return []
-    
+
     # Skip Python - use existing AST extractor
     if language_name == "python":
         return []
-    
+
     # Get language parser
     language = _get_tree_sitter_language(language_name)
     if language is None:
         return []
-    
+
     # Parse the source code
     parser = tree_sitter.Parser(language)
-    
+
     try:
         tree = parser.parse(bytes(source, "utf8"))
     except Exception:
         return []
-    
+
     source_lines = source.splitlines()
-    
+
     # Use dispatcher to extract functions
     return language_dispatcher.extract_functions(
         language_name, tree.root_node, source_lines, file_path
     )
 
 
-
 def _extract_functions_c_cpp(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract functions from C/C++ using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         if node_type in ("function_definition", "function_declarator"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             name_node = node.child_by_field_name("declarator")
             if name_node:
                 # Try to get the actual function name from the declarator
@@ -392,39 +404,43 @@ def _extract_functions_c_cpp(node: Any, source_lines: list[str], file_path: str)
                     name_node = name_node.child_by_field_name("declarator") or (
                         name_node.children[0] if name_node.children else None
                     )
-            
-            function_name = name_node.text.decode() if name_node and hasattr(name_node, 'text') else "anonymous"
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=None,
-            ))
-        
+
+            function_name = (
+                name_node.text.decode() if name_node and hasattr(name_node, "text") else "anonymous"
+            )
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=None,
+                )
+            )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
 def _extract_blocks_html_xml(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract meaningful blocks from HTML/XML using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         # Extract elements (tags) as blocks
         if node_type in ("element", "self_closing_tag", "start_tag", "tag"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             # Only include multi-line elements or elements with content
             if end_line - start_line >= 1:
                 # Try to get tag name
@@ -433,97 +449,109 @@ def _extract_blocks_html_xml(node: Any, source_lines: list[str], file_path: str)
                     if child.type == "tag_name":
                         tag_name = child.text.decode() if child.text else node_type
                         break
-                
-                blocks.append(CodeBlock(
-                    file=file_path,
-                    line_start=start_line,
-                    line_end=end_line,
-                    text="\n".join(source_lines[start_line-1:end_line]),
-                    function_name=f"<{tag_name}>",
-                    class_name=None,
-                ))
-        
+
+                blocks.append(
+                    CodeBlock(
+                        file=file_path,
+                        line_start=start_line,
+                        line_end=end_line,
+                        text="\n".join(source_lines[start_line - 1 : end_line]),
+                        function_name=f"<{tag_name}>",
+                        class_name=None,
+                    )
+                )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
 def _extract_blocks_css(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract CSS rules and declarations as blocks using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         # Extract CSS rules (selector + declaration block)
         if node_type in ("rule_set", "at_rule"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             # Only include multi-line rules
             if end_line - start_line >= 1:
                 # Try to get selector name
                 selector_name = node_type
                 for child in node.children:
-                    if child.type in ("selector", "tag_name", "class_name", "identifier"):
+                    if (
+                        child.type in ("selector", "tag_name", "class_name", "identifier")
+                        or child.type == "at_keyword"
+                    ):
                         selector_name = child.text.decode() if child.text else node_type
                         break
-                    elif child.type == "at_keyword":
-                        selector_name = child.text.decode() if child.text else node_type
-                        break
-                
-                blocks.append(CodeBlock(
-                    file=file_path,
-                    line_start=start_line,
-                    line_end=end_line,
-                    text="\n".join(source_lines[start_line-1:end_line]),
-                    function_name=selector_name[:50],  # Limit length
-                    class_name=None,
-                ))
-        
+
+                blocks.append(
+                    CodeBlock(
+                        file=file_path,
+                        line_start=start_line,
+                        line_end=end_line,
+                        text="\n".join(source_lines[start_line - 1 : end_line]),
+                        function_name=selector_name[:50],  # Limit length
+                        class_name=None,
+                    )
+                )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
 def _extract_blocks_sql(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract SQL statements and clauses as blocks using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         # Extract SQL statements
         if node_type in (
-            "select_statement", "insert_statement", "update_statement", 
-            "delete_statement", "create_statement", "alter_statement",
-            "drop_statement", "function_definition", "procedure_definition"
+            "select_statement",
+            "insert_statement",
+            "update_statement",
+            "delete_statement",
+            "create_statement",
+            "alter_statement",
+            "drop_statement",
+            "function_definition",
+            "procedure_definition",
         ):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             # Only include statements with content
             if end_line - start_line >= 1:
-                blocks.append(CodeBlock(
-                    file=file_path,
-                    line_start=start_line,
-                    line_end=end_line,
-                    text="\n".join(source_lines[start_line-1:end_line]),
-                    function_name=node_type.replace("_", " "),
-                    class_name=None,
-                ))
-        
+                blocks.append(
+                    CodeBlock(
+                        file=file_path,
+                        line_start=start_line,
+                        line_end=end_line,
+                        text="\n".join(source_lines[start_line - 1 : end_line]),
+                        function_name=node_type.replace("_", " "),
+                        class_name=None,
+                    )
+                )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
@@ -532,24 +560,26 @@ def _extract_functions_lua(node: Any, source_lines: list[str], file_path: str) -
     return LUA_EXTRACTOR.extract_functions(node, source_lines, file_path)
 
 
-def _extract_functions_c_sharp(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+def _extract_functions_c_sharp(
+    node: Any, source_lines: list[str], file_path: str
+) -> list[CodeBlock]:
     """Extract functions from C# using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         # Method declarations, constructors, destructors
         if node_type in ("method_declaration", "constructor_declaration", "destructor_declaration"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             name_node = node.child_by_field_name("name")
             function_name = name_node.text.decode() if name_node else "anonymous"
-            
+
             # Extract class name for methods
             class_name = None
             if node_type == "method_declaration":
@@ -559,36 +589,40 @@ def _extract_functions_c_sharp(node: Any, source_lines: list[str], file_path: st
                 if parent:
                     class_name_node = parent.child_by_field_name("name")
                     class_name = class_name_node.text.decode() if class_name_node else None
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=class_name,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=class_name,
+                )
+            )
+
         # Property getters and setters
         elif node_type == "property_declaration":
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             name_node = node.child_by_field_name("name")
             function_name = (name_node.text.decode() if name_node else "anonymous") + "_property"
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=None,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=None,
+                )
+            )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
@@ -597,7 +631,9 @@ def _extract_functions_scala(node: Any, source_lines: list[str], file_path: str)
     return SCALA_EXTRACTOR.extract_functions(node, source_lines, file_path)
 
 
-def _extract_functions_kotlin(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
+def _extract_functions_kotlin(
+    node: Any, source_lines: list[str], file_path: str
+) -> list[CodeBlock]:
     """Extract functions from Kotlin using tree-sitter."""
     return KOTLIN_EXTRACTOR.extract_functions(node, source_lines, file_path)
 
@@ -615,78 +651,82 @@ def _extract_functions_objc(node: Any, source_lines: list[str], file_path: str) 
 def _extract_functions_ruby(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract functions from Ruby using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         # Method definitions, singleton methods, class methods
         if node_type in ("method", "singleton_method", "class_method"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             name_node = node.child_by_field_name("name")
             function_name = name_node.text.decode() if name_node else "anonymous"
-            
+
             # Add prefix for different method types
             if node_type == "singleton_method":
                 function_name = "singleton_" + function_name
             elif node_type == "class_method":
                 function_name = "class_" + function_name
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=None,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=None,
+                )
+            )
+
         # Class and module definitions (for completeness)
         elif node_type in ("class", "module"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             name_node = node.child_by_field_name("name")
             function_name = name_node.text.decode() if name_node else "anonymous"
             function_name = f"{node_type}_{function_name}"
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=None,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=None,
+                )
+            )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
 def _extract_functions_php(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract functions from PHP using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         # Function definitions, method declarations
         if node_type in ("function_definition", "method_declaration"):
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             name_node = node.child_by_field_name("name")
             function_name = name_node.text.decode() if name_node else "anonymous"
-            
+
             # Extract class name for methods
             class_name = None
             if node_type == "method_declaration":
@@ -696,65 +736,71 @@ def _extract_functions_php(node: Any, source_lines: list[str], file_path: str) -
                 if parent:
                     class_name_node = parent.child_by_field_name("name")
                     class_name = class_name_node.text.decode() if class_name_node else None
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=class_name,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=class_name,
+                )
+            )
+
         # Anonymous functions/closures
         elif node_type == "closure_expression":
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name="anonymous_closure",
-                class_name=None,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name="anonymous_closure",
+                    class_name=None,
+                )
+            )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
 def _extract_functions_bash(node: Any, source_lines: list[str], file_path: str) -> list[CodeBlock]:
     """Extract functions from Bash using tree-sitter."""
     blocks = []
-    
+
     def traverse(node: Any, depth: int = 0) -> None:
         if depth > 50:
             return
-        
+
         node_type = node.type
-        
+
         if node_type == "function_definition":
             start_line = node.start_point[0] + 1
             end_line = node.end_point[0] + 1
-            
+
             name_node = node.child_by_field_name("name")
             function_name = name_node.text.decode() if name_node else "anonymous"
-            
-            blocks.append(CodeBlock(
-                file=file_path,
-                line_start=start_line,
-                line_end=end_line,
-                text="\n".join(source_lines[start_line-1:end_line]),
-                function_name=function_name,
-                class_name=None,
-            ))
-        
+
+            blocks.append(
+                CodeBlock(
+                    file=file_path,
+                    line_start=start_line,
+                    line_end=end_line,
+                    text="\n".join(source_lines[start_line - 1 : end_line]),
+                    function_name=function_name,
+                    class_name=None,
+                )
+            )
+
         for child in node.children:
             traverse(child, depth + 1)
-    
+
     return blocks
 
 
@@ -762,12 +808,12 @@ def get_supported_languages() -> list[str]:
     """Get list of supported languages for tree-sitter extraction."""
     if tree_sitter is None:
         return []
-    
+
     supported = []
     for ext, lang in _LANGUAGE_MAPPING.items():
         if _get_tree_sitter_language(lang) is not None:
             supported.append(ext)
-    
+
     return supported
 
 
@@ -775,8 +821,8 @@ def is_language_supported(file_path: str) -> bool:
     """Check if a file extension is supported by tree-sitter extraction."""
     file_ext = Path(file_path).suffix.lower()
     language_name = _LANGUAGE_MAPPING.get(file_ext)
-    
+
     if not language_name or language_name == "python":
         return False
-    
+
     return _get_tree_sitter_language(language_name) is not None

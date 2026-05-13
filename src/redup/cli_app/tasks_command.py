@@ -3,6 +3,7 @@
 Provides integration with planfile for task management and synchronization
 with GitHub, GitLab, and Jira.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -26,32 +27,38 @@ def tasks(
     ),
     output: Path = typer.Option(
         Path("TODO.md"),
-        "--output", "-o",
+        "--output",
+        "-o",
         help="Output TODO.md file path",
     ),
     backend: str | None = typer.Option(
         None,
-        "--backend", "-b",
+        "--backend",
+        "-b",
         help="Sync backend: github, gitlab, jira",
     ),
     min_lines: int = typer.Option(
         3,
-        "--min-lines", "-l",
+        "--min-lines",
+        "-l",
         help="Minimum lines for duplication detection",
     ),
     ext: list[str] | None = typer.Option(
         None,
-        "--ext", "-e",
+        "--ext",
+        "-e",
         help="File extensions to include (default: .py)",
     ),
     milestone: str | None = typer.Option(
         None,
-        "--milestone", "-m",
+        "--milestone",
+        "-m",
         help="Milestone for synced tasks",
     ),
     dry_run: bool = typer.Option(
         False,
-        "--dry-run", "-n",
+        "--dry-run",
+        "-n",
         help="Preview without writing files",
     ),
 ) -> None:
@@ -71,7 +78,9 @@ def tasks(
     # Validate backend
     valid_backends = {"github", "gitlab", "jira", None}
     if backend not in valid_backends:
-        console.print(f"[red]Error: Invalid backend '{backend}'. Use: github, gitlab, or jira[/red]")
+        console.print(
+            f"[red]Error: Invalid backend '{backend}'. Use: github, gitlab, or jira[/red]"
+        )
         raise typer.Exit(1)
 
     # Check if planfile is installed for sync
@@ -154,9 +163,7 @@ def _preview_tasks(tasks: list) -> None:
     table.add_column("Savings", style="green", justify="right")
 
     for i, task in enumerate(tasks[:20], 1):
-        difficulty_emoji = {"easy": "🟢", "medium": "🟡", "hard": "🔴"}.get(
-            task.difficulty, "⚪"
-        )
+        difficulty_emoji = {"easy": "🟢", "medium": "🟡", "hard": "🔴"}.get(task.difficulty, "⚪")
 
         priority_style = {
             "critical": "red",
