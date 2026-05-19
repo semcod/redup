@@ -26,9 +26,7 @@ def _is_test_file(path: Path) -> bool:
     test_patterns = ["test_", "_test.", "tests.", "spec_", "_spec."]
     if any(pattern in name for pattern in test_patterns):
         return True
-    if any("test" in part and "pytest-" not in part for part in dir_parts):
-        return True
-    return False
+    return any("test" in part and "pytest-" not in part for part in dir_parts)
 
 
 def _collect_files(config: ScanConfig) -> list[Path]:

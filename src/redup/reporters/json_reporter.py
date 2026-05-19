@@ -52,9 +52,13 @@ def _suggestion_to_dict(s: Any) -> dict:
     }
 
 
-def to_json(dup_map: DuplicationMap, indent: int = 2, include_snippets: bool = False) -> str:
-    """Serialize a DuplicationMap to JSON string."""
-    data = {
+def duplication_map_to_dict(
+    dup_map: DuplicationMap,
+    *,
+    include_snippets: bool = False,
+) -> dict[str, Any]:
+    """Convert a DuplicationMap to a serializable dictionary."""
+    return {
         "project_path": dup_map.project_path,
         "stats": {
             "files_scanned": dup_map.stats.files_scanned,
@@ -70,4 +74,9 @@ def to_json(dup_map: DuplicationMap, indent: int = 2, include_snippets: bool = F
         "groups": [_group_to_dict(g, include_snippets) for g in dup_map.sorted_by_impact()],
         "refactor_suggestions": [_suggestion_to_dict(s) for s in dup_map.suggestions],
     }
+
+
+def to_json(dup_map: DuplicationMap, indent: int = 2, include_snippets: bool = False) -> str:
+    """Serialize a DuplicationMap to JSON string."""
+    data = duplication_map_to_dict(dup_map, include_snippets=include_snippets)
     return json.dumps(data, indent=indent, ensure_ascii=False)

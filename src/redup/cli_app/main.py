@@ -253,7 +253,6 @@ def info() -> None:
 # Import and add tasks command
 try:
     from redup.cli_app.tasks_command import app as tasks_app
-    from redup.cli_app.tasks_command import tasks as tasks_command
 
     app.add_typer(tasks_app, name="tasks", help="Export duplications as tasks to TODO.md")
 except ImportError:

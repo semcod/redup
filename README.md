@@ -5,16 +5,16 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.24-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.25-green.svg)](https://pypi.org/project/redup/)
 
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.24-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$7.50-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-22.4h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.25-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$33.57-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-23.4h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
 
-- 🤖 **LLM usage:** $7.5000 (68 commits)
-- 👤 **Human dev:** ~$2243 (22.4h @ $100/h, 30min dedup)
+- 🤖 **LLM usage:** $33.5738 (69 commits)
+- 👤 **Human dev:** ~$2343 (23.4h @ $100/h, 30min dedup)
 
 Generated on 2026-05-19 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/qwen/qwen3-coder-next)
 

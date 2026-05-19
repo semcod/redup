@@ -8,8 +8,8 @@ REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$REPO_ROOT"
 
 MIN_LINES="${JSCPD_MIN_LINES:-10}"
-MAX_GROUPS="${JSCPD_MAX_GROUPS:-30}"
-MAX_LINES="${JSCPD_MAX_LINES:-600}"
+MAX_GROUPS="${JSCPD_MAX_GROUPS:-15}"
+MAX_LINES="${JSCPD_MAX_LINES:-200}"
 REPORT_DIR="${JSCPD_REPORT_DIR:-.jscpd}"
 
 if [ "$#" -gt 0 ]; then

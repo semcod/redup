@@ -12,6 +12,25 @@
 - refactor(docs): multiple code analysis engine and docs refactors
 - feat(None): code improvements
 
+## [0.4.25] - 2026-05-19
+
+### Docs
+- Update README.md
+- Update project/context.md
+
+### Other
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.toon.yaml
+- Update project/calls.yaml
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/evolution.toon.yaml
+- Update project/flow.mmd
+- Update project/flow.png
+- Update project/map.toon.yaml
+- ... and 3 more files
+
 ## [0.4.24] - 2026-05-19
 
 ### Docs

@@ -19,9 +19,6 @@ def extract_functions_c_cpp(node: Any, source_lines: list[str], file_path: str) 
         node_type = node.type
 
         if node_type in ("function_definition", "function_declarator"):
-            start_line = node.start_point[0] + 1
-            end_line = node.end_point[0] + 1
-
             name_node = node.child_by_field_name("declarator")
             if name_node:
                 # Try to get the actual function name from the declarator
