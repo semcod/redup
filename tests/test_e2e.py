@@ -296,6 +296,87 @@ class TestCLIOptions:
         assert result_no_tests.exit_code == 0
         assert result_with_tests.exit_code == 0
 
+    def test_incremental_flag_enables_cache(self, tmp_path: Path):
+        from redup.cli_app.config_builder import build_config_with_file_support
+
+        # Test that the incremental flag sets enable_cache in the config
+        config = build_config_with_file_support(
+            tmp_path,
+            extensions=None,
+            min_lines=None,
+            min_similarity=None,
+            include_tests=False,
+            parallel=False,
+            max_workers=None,
+            incremental=True,
+            memory_cache=True,
+            max_cache_mb=512,
+            functions_only=True,
+            fuzzy=False,
+            fuzzy_threshold=0.8,
+            target_files=None,
+        )
+
+        assert config.enable_cache is True
+
+    def test_changed_only_scans_modified_files(self, tmp_path: Path):
+        git_check = subprocess.run(["git", "--version"], capture_output=True, text=True)
+        if git_check.returncode != 0:
+            pytest.skip("git is required for --changed-only test")
+
+        (tmp_path / "a.py").write_text("def alpha():\n    x = 1\n    y = 2\n    return x + y\n")
+        (tmp_path / "b.py").write_text("def beta():\n    x = 3\n    y = 4\n    return x + y\n")
+
+        subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "config", "user.email", "test@example.com"],
+            cwd=tmp_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Test User"],
+            cwd=tmp_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(["git", "add", "."], cwd=tmp_path, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "initial"],
+            cwd=tmp_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        (tmp_path / "a.py").write_text("def alpha():\n    x = 10\n    y = 20\n    return x + y\n")
+
+        result = runner.invoke(
+            app,
+            [
+                "scan",
+                str(tmp_path),
+                "-f",
+                "json",
+                "--changed-only",
+                "--base-ref",
+                "HEAD",
+                "--no-include-untracked",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert "Changed-only mode: 1 file(s)" in result.output
+
+        lines = result.output.strip().split("\n")
+        json_start = next(i for i, line in enumerate(lines) if line.strip().startswith("{"))
+        json_text = "\n".join(lines[json_start:])
+        data = json.loads(json_text)
+
+        assert data["stats"]["files_scanned"] == 1
+
 
 # ---------------------------------------------------------------------------
 # E2E: python -m redup

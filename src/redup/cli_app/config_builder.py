@@ -29,6 +29,7 @@ def build_config_with_file_support(
     functions_only: bool = False,
     fuzzy: bool = False,
     fuzzy_threshold: float = 0.8,
+    target_files: list[str] | None = None,
 ) -> ScanConfig:
     """Build scan configuration with advanced options."""
     config = load_config()
@@ -45,6 +46,20 @@ def build_config_with_file_support(
         scan_config.include_tests = include_tests
     if functions_only:
         scan_config.functions_only = functions_only
+
+    # Performance and caching
+    scan_config._parallel_enabled = parallel
+    if max_workers is not None:
+        scan_config.parallel_workers = max_workers
+    elif parallel:
+        scan_config.parallel_workers = None
+    scan_config.enable_cache = incremental
+    scan_config._memory_cache = memory_cache
+    scan_config._max_cache_mb = max_cache_mb
+
+    # Optional targeted scan (e.g. changed-only mode)
+    if target_files is not None:
+        scan_config.target_files = target_files
 
     # Add fuzzy support
     scan_config.fuzzy_enabled = fuzzy

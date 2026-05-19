@@ -1,14 +1,9 @@
 flowchart TD
-%% generated in 0.03s
+%% generated in 0.02s
     benchmark["benchmark<br/>2 funcs"]
     benchmarks__bench_libraries["benchmarks.bench_libraries<br/>4 funcs"]
     examples__01_basic_usage["examples.01_basic_usage<br/>1 funcs"]
-    scripts__jscpd_check["scripts.jscpd-check<br/>1 funcs"]
-    src__redup["src.redup<br/>377 funcs"]
-    benchmark ==>|23| scripts__jscpd_check
-    examples__01_basic_usage ==>|15| scripts__jscpd_check
-    benchmarks__bench_libraries ==>|15| scripts__jscpd_check
-    src__redup ==>|13| scripts__jscpd_check
+    src__redup["src.redup<br/>392 funcs"]
     benchmark ==>|4| src__redup
     examples__01_basic_usage -->|3| src__redup
     benchmarks__bench_libraries -->|1| src__redup

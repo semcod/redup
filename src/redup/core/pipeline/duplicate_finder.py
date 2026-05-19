@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING
 
 from redup.core.cache import HashCache, build_hash_index_with_cache
 from redup.core.hasher import (
@@ -17,8 +16,26 @@ from redup.core.matcher import refine_structural_matches
 from redup.core.models import DuplicateFragment, DuplicateGroup, DuplicateType, ScanConfig
 from redup.core.scanner_types import CodeBlock
 
-if TYPE_CHECKING:
-    pass
+
+def _finalize_duplicate_groups(
+    groups: list[DuplicateGroup],
+    all_blocks: list[CodeBlock],
+    config: ScanConfig,
+    start_time: float,
+    cache: HashCache | None = None,
+) -> list[DuplicateGroup]:
+    """Attach near duplicates, sort by impact, and report timing."""
+    groups.extend(find_near_duplicate_groups(all_blocks, config))
+    groups.sort(key=lambda g: g.impact_score, reverse=True)
+
+    processing_time = (time.time() - start_time) * 1000
+    message = f"Duplicate finding completed in {processing_time:.1f}ms"
+    if cache is not None:
+        cache_stats = cache.get_stats()
+        message += f" (cache: {cache_stats.get('cached_files', 0)} files)"
+    print(message)
+
+    return groups
 
 
 def find_exact_groups(index: HashIndex) -> list[DuplicateGroup]:
@@ -211,17 +228,7 @@ def find_duplicates_phase_optimized(
     # Find duplicates using lazy evaluation for better performance
     groups = list(find_all_duplicates_lazy(index, min_lines=config.min_block_lines))
 
-    # Add near-duplicates if LSH is enabled
-    near_duplicate_groups = find_near_duplicate_groups(all_blocks, config)
-    groups.extend(near_duplicate_groups)
-
-    # Sort by impact
-    groups.sort(key=lambda g: g.impact_score, reverse=True)
-
-    processing_time = (time.time() - start_time) * 1000
-    print(f"Duplicate finding completed in {processing_time:.1f}ms")
-
-    return groups
+    return _finalize_duplicate_groups(groups, all_blocks, config, start_time)
 
 
 def find_duplicates_phase_lazy(
@@ -234,8 +241,12 @@ def find_duplicates_phase_lazy(
 
     # Build hash index with optional caching
     if cache is not None:
+        # Use cache-aware hash indexing
         index, block_hash_cache = build_hash_index_with_cache(
-            all_blocks, min_lines=config.min_block_lines, cache=cache
+            all_blocks,
+            min_lines=config.min_block_lines,
+            cache=cache,
+            project_root=config.root,
         )
 
         # Store cache data for incremental scans
@@ -252,20 +263,4 @@ def find_duplicates_phase_lazy(
     # Use lazy grouping with early exit
     groups = list(find_all_duplicates_lazy(index, min_lines=config.min_block_lines))
 
-    # Add near-duplicates if LSH is enabled
-    near_duplicate_groups = find_near_duplicate_groups(all_blocks, config)
-    groups.extend(near_duplicate_groups)
-
-    # Sort by impact
-    groups.sort(key=lambda g: g.impact_score, reverse=True)
-
-    processing_time = (time.time() - start_time) * 1000
-    if cache is not None:
-        cache_stats = cache.get_stats()
-        print(
-            f"Duplicate finding completed in {processing_time:.1f}ms (cache: {cache_stats.get('cached_files', 0)} files)"
-        )
-    else:
-        print(f"Duplicate finding completed in {processing_time:.1f}ms")
-
-    return groups
+    return _finalize_duplicate_groups(groups, all_blocks, config, start_time, cache)

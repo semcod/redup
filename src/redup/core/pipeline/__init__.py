@@ -4,14 +4,9 @@ from __future__ import annotations
 
 import signal
 import time
-from typing import TYPE_CHECKING
+from contextlib import suppress
 
-from redup.core.models import DuplicationMap, ScanConfig, ScanStats
-from redup.core.planner import generate_suggestions
-from redup.core.scanner import ScanStrategy, scan_project
-
-if TYPE_CHECKING:
-    from redup.core.cache import HashCache
+from redup.core.models import DuplicateGroup, DuplicationMap, ScanConfig, ScanStats
 
 # Import from submodules
 from redup.core.pipeline.duplicate_finder import (
@@ -34,6 +29,8 @@ from redup.core.pipeline.phases import (
     scan_phase,
     scan_phase_parallel,
 )
+from redup.core.planner import generate_suggestions
+from redup.core.scanner import ScanStrategy, scan_project
 
 # Backward compatibility aliases
 _ensure_config = ensure_config
@@ -50,6 +47,36 @@ _calculate_similarity = calculate_similarity
 _find_near_duplicate_groups = find_near_duplicate_groups
 _find_semantic_groups = find_semantic_groups
 _blocks_to_group = blocks_to_group
+
+
+def _build_duplication_map(
+    config: ScanConfig,
+    stats: ScanStats,
+    groups: list[DuplicateGroup],
+    start_time: float | None = None,
+) -> DuplicationMap:
+    """Deduplicate groups and attach planner suggestions."""
+    if start_time is not None:
+        stats.scan_time_ms = (time.time() - start_time) * 1000
+
+    dup_map = DuplicationMap(
+        project_path=config.root.as_posix(),
+        config=config,
+        stats=stats,
+        groups=deduplicate_groups(groups),
+    )
+    dup_map.suggestions = generate_suggestions(dup_map)
+    return dup_map
+
+
+def _empty_duplication_map(config: ScanConfig, start_time: float) -> DuplicationMap:
+    """Build an empty result for interrupted scans."""
+    return DuplicationMap(
+        project_path=config.root.as_posix() if config else ".",
+        config=config,
+        stats=ScanStats(scan_time_ms=(time.time() - start_time) * 1000),
+        groups=[],
+    )
 
 
 def analyze(
@@ -83,17 +110,7 @@ def analyze(
     groups = find_duplicates_phase_optimized(all_blocks, config)
 
     # Phase 4: Deduplicate and suggest
-    final_groups = deduplicate_groups(groups)
-
-    dup_map = DuplicationMap(
-        project_path=config.root.as_posix(),
-        config=config,
-        stats=stats,
-        groups=final_groups,
-    )
-    dup_map.suggestions = generate_suggestions(dup_map)
-
-    return dup_map
+    return _build_duplication_map(config, stats, groups)
 
 
 def analyze_optimized(
@@ -145,9 +162,7 @@ def analyze_optimized(
                 max_cache_mb=max_cache_mb if use_memory_cache else 256,
             )
             scanned_files, stats = scan_project(config, strategy, function_level_only=True)
-        elif config.parallel_workers is None and (
-            getattr(config, "_parallel_enabled", False) or config.parallel_workers is None
-        ):
+        elif config.parallel_workers is None and getattr(config, "_parallel_enabled", False):
             # Auto-detect CPU count when parallel_workers is None (default behavior)
             import multiprocessing as mp
 
@@ -172,36 +187,18 @@ def analyze_optimized(
         groups = find_duplicates_phase_lazy(all_blocks, config, cache)
 
         # Phase 4: Deduplicate and suggest
-        final_groups = deduplicate_groups(groups)
-
-        # Update scan time
-        stats.scan_time_ms = (time.time() - start_time) * 1000
-
-        dup_map = DuplicationMap(
-            project_path=config.root.as_posix(),
-            config=config,
-            stats=stats,
-            groups=final_groups,
-        )
-        dup_map.suggestions = generate_suggestions(dup_map)
+        dup_map = _build_duplication_map(config, stats, groups, start_time)
 
         # Store cache data if caching is enabled
         if cache is not None:
-            try:
+            with suppress(Exception):
                 cache.cleanup_old_entries()
-            except Exception:
-                pass  # Ignore cache cleanup errors
 
         return dup_map
     except KeyboardInterrupt:
         print("\n⚠️  Scan cancelled by user")
         # Return empty results
-        return DuplicationMap(
-            project_path=config.root.as_posix() if config else ".",
-            config=config,
-            stats=ScanStats(scan_time_ms=(time.time() - start_time) * 1000),
-            groups=[],
-        )
+        return _empty_duplication_map(config, start_time)
     finally:
         # Restore original signal handler
         signal.signal(signal.SIGINT, old_handler)
@@ -245,29 +242,11 @@ def analyze_parallel(
         groups = find_duplicates_phase_optimized(all_blocks, config)
 
         # Phase 4: Deduplicate and suggest
-        final_groups = deduplicate_groups(groups)
-
-        # Update scan time
-        stats.scan_time_ms = (time.time() - start_time) * 1000
-
-        dup_map = DuplicationMap(
-            project_path=config.root.as_posix(),
-            config=config,
-            stats=stats,
-            groups=final_groups,
-        )
-        dup_map.suggestions = generate_suggestions(dup_map)
-
-        return dup_map
+        return _build_duplication_map(config, stats, groups, start_time)
     except KeyboardInterrupt:
         print("\n⚠️  Scan cancelled by user")
         # Return empty results
-        return DuplicationMap(
-            project_path=config.root.as_posix() if config else ".",
-            config=config,
-            stats=ScanStats(scan_time_ms=(time.time() - start_time) * 1000),
-            groups=[],
-        )
+        return _empty_duplication_map(config, start_time)
     finally:
         # Restore original signal handler
         signal.signal(signal.SIGINT, old_handler)

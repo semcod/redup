@@ -129,6 +129,7 @@ class ScanConfig:
 --parallel           # Enable parallel scanning
 --max-workers N      # Number of parallel workers
 --incremental        # Enable hash caching
+--changed-only       # Scan only files changed in git diff
 ```
 
 ## Pipeline Integration

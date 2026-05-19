@@ -187,7 +187,12 @@ class HashCache:
 
 
 def hash_block_with_cache(
-    text: str, file_path: Path, start: int, end: int, cache: HashCache | None = None
+    text: str,
+    file_path: Path,
+    start: int,
+    end: int,
+    cache: HashCache | None = None,
+    file_content: str | None = None,
 ) -> tuple[str, str]:
     """Get block hash with optional caching.
 
@@ -197,6 +202,7 @@ def hash_block_with_cache(
         start: Block start line
         end: Block end line
         cache: Optional hash cache
+        file_content: Full file content used for cache validation
 
     Returns:
         Tuple of (exact_hash, structural_hash)
@@ -204,10 +210,11 @@ def hash_block_with_cache(
     if cache is None:
         return hash_block(text), hash_block_structural(text)
 
-    # Try to get from cache first
-    cached = cache.get_cached_block_hashes(file_path, text)
-    if cached and (start, end) in cached:
-        return cached[(start, end)]
+    # Try to get from cache first (requires full-file content)
+    if file_content is not None:
+        cached = cache.get_cached_block_hashes(file_path, file_content)
+        if cached and (start, end) in cached:
+            return cached[(start, end)]
 
     # Compute hashes
     exact_hash = hash_block(text)
@@ -217,7 +224,10 @@ def hash_block_with_cache(
 
 
 def build_hash_index_with_cache(
-    blocks: list[CodeBlock], min_lines: int = 3, cache: HashCache | None = None
+    blocks: list[CodeBlock],
+    min_lines: int = 3,
+    cache: HashCache | None = None,
+    project_root: Path | None = None,
 ) -> tuple[Any, dict[Path, dict[tuple[int, int], tuple[str, str]]]]:
     """Build hash index with optional caching support.
 
@@ -228,17 +238,34 @@ def build_hash_index_with_cache(
 
     index = HashIndex()
     block_hash_cache: dict[Path, dict[tuple[int, int], tuple[str, str]]] = {}
+    file_contents: dict[Path, str | None] = {}
 
     for block in blocks:
         if block.line_count < min_lines:
             continue
 
         file_path = Path(block.file)
+        if not file_path.is_absolute() and project_root is not None:
+            file_path = (project_root / file_path).resolve()
         block_key = (block.line_start, block.line_end)
+
+        file_content = None
+        if cache is not None:
+            if file_path not in file_contents:
+                try:
+                    file_contents[file_path] = file_path.read_text(encoding="utf-8", errors="replace")
+                except OSError:
+                    file_contents[file_path] = None
+            file_content = file_contents[file_path]
 
         # Get hashes with cache
         exact_hash, structural_hash = hash_block_with_cache(
-            block.text, file_path, block.line_start, block.line_end, cache
+            block.text,
+            file_path,
+            block.line_start,
+            block.line_end,
+            cache,
+            file_content=file_content,
         )
 
         # Store in per-file cache for later storage

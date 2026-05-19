@@ -1,5 +1,28 @@
 # 📝 **CHANGELOG**
 
+## [0.1.10] - 2026-05-19
+
+### Fixed
+- Fix string-concat issues (ticket-7777b2e4)
+- Fix unused-imports issues (ticket-2ba8463b)
+- Fix magic-numbers issues (ticket-de85cee9)
+- Fix unused-imports issues (ticket-f8375e07)
+- Fix magic-numbers issues (ticket-fc604f4c)
+- Fix string-concat issues (ticket-11baa3a2)
+- Fix unused-imports issues (ticket-50b9e38e)
+- Fix llm-generated-code issues (ticket-b760d051)
+- Fix string-concat issues (ticket-9a9be6b2)
+- Fix unused-imports issues (ticket-dc5f6bd4)
+- Fix llm-generated-code issues (ticket-b467eebb)
+- Fix string-concat issues (ticket-e49d634a)
+- Fix unused-imports issues (ticket-0f863860)
+- Fix unused-imports issues (ticket-234051b0)
+- Fix llm-generated-code issues (ticket-4965051d)
+- Fix string-concat issues (ticket-448ae7e0)
+- Fix smart-return-type issues (ticket-63f4a17e)
+- Fix unused-imports issues (ticket-ad613850)
+- Fix llm-generated-code issues (ticket-2c17bceb)
+
 ## [Unreleased]
 
 
@@ -11,6 +34,40 @@
 - refactor(config): code analysis engine improvements
 - refactor(docs): multiple code analysis engine and docs refactors
 - feat(None): code improvements
+
+## [0.4.26] - 2026-05-19
+
+### Docs
+- Update CHANGELOG.md
+- Update PERFORMANCE.md
+- Update PERFORMANCE_OPTIMIZATIONS.md
+- Update README.md
+- Update SUMD.md
+- Update SUMR.md
+- Update TODO.md
+- Update project/README.md
+- Update project/context.md
+
+### Test
+- Update testql-scenarios/generated-cli-tests.testql.toon.yaml
+- Update testql-scenarios/generated-from-pytests.testql.toon.yaml
+- Update tests/test_e2e.py
+- Update tests/test_pipeline.py
+- Update tests/test_quality_commands.py
+- Update tests/test_scanner.py
+
+### Other
+- Update .idea/redup.iml
+- Update .redup/cache/hash_cache.db
+- Update Taskfile.yml
+- Update app.doql.less
+- Update planfile.yaml
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/calls.toon.yaml
+- Update project/calls.yaml
+- ... and 12 more files
 
 ## [0.4.25] - 2026-05-19
 

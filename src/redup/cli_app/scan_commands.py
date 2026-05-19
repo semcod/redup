@@ -1,6 +1,7 @@
 """Scan command implementations for reDUP CLI."""
 
 from pathlib import Path
+import subprocess
 from typing import Any
 
 import typer
@@ -8,7 +9,59 @@ import typer
 from redup.cli_app.config_builder import build_config, build_config_with_file_support
 from redup.cli_app.scan_helpers import apply_fuzzy_similarity, print_scan_header, print_scan_summary
 from redup.core.config import create_sample_redup_toml
-from redup.core.pipeline import analyze, analyze_optimized, analyze_parallel
+from redup.core.pipeline import analyze, analyze_optimized
+
+
+def _resolve_changed_files(
+    path: Path,
+    base_ref: str,
+    include_untracked: bool,
+) -> list[str]:
+    """Resolve changed files relative to git base reference."""
+    root = path.resolve()
+
+    try:
+        diff_proc = subprocess.run(
+            ["git", "-C", str(root), "diff", "--name-only", "--diff-filter=ACMRTUXB", base_ref, "--"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise typer.BadParameter("git is required for --changed-only mode") from exc
+
+    if diff_proc.returncode != 0:
+        error_output = diff_proc.stderr.strip() or diff_proc.stdout.strip()
+        raise typer.BadParameter(
+            f"failed to resolve changed files against {base_ref!r}: {error_output}"
+        )
+
+    changed: set[str] = {
+        line.strip() for line in diff_proc.stdout.splitlines() if line.strip()
+    }
+
+    if include_untracked:
+        untracked_proc = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "--others", "--exclude-standard"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if untracked_proc.returncode == 0:
+            changed.update(line.strip() for line in untracked_proc.stdout.splitlines() if line.strip())
+
+    result: list[str] = []
+    for rel in sorted(changed):
+        rel_path = Path(rel)
+        abs_path = (root / rel_path).resolve()
+        try:
+            abs_path.relative_to(root)
+        except ValueError:
+            continue
+        if abs_path.is_file():
+            result.append(rel_path.as_posix())
+
+    return result
 
 
 def scan_command(
@@ -60,12 +113,34 @@ def scan_command(
     max_cache_mb: int = typer.Option(
         512, "--max-cache-mb", help="Maximum memory cache size in MB."
     ),
+    changed_only: bool = typer.Option(
+        False,
+        "--changed-only",
+        help="Scan only files changed relative to git base ref.",
+    ),
+    base_ref: str = typer.Option(
+        "HEAD",
+        "--base-ref",
+        help="Git base ref used by --changed-only (e.g. HEAD, origin/main).",
+    ),
+    include_untracked: bool = typer.Option(
+        True,
+        "--include-untracked/--no-include-untracked",
+        help="Include untracked files in --changed-only mode.",
+    ),
     fuzzy: bool = typer.Option(False, "--fuzzy", help="Enable fuzzy similarity detection."),
     fuzzy_threshold: float = typer.Option(
         0.8, "--fuzzy-threshold", help="Fuzzy similarity threshold (0.0-1.0)."
     ),
 ) -> None:
     """Scan a project for code duplicates."""
+
+    target_files = None
+    if changed_only:
+        target_files = _resolve_changed_files(path, base_ref, include_untracked)
+        typer.echo(
+            f"🧩 Changed-only mode: {len(target_files)} file(s) selected from git diff vs {base_ref}"
+        )
 
     # Build configuration
     if any(
@@ -80,6 +155,7 @@ def scan_command(
             incremental,
             memory_cache,
             max_cache_mb,
+            changed_only,
             fuzzy,
         ]
     ):
@@ -97,18 +173,19 @@ def scan_command(
             functions_only,
             fuzzy,
             fuzzy_threshold,
+            target_files,
         )
     else:
         config = build_config(path, extensions, min_lines, min_similarity, include_tests)
+        if target_files is not None:
+            config.target_files = target_files
 
     # Print scan header
     print_scan_header(path, config.extensions, config.min_block_lines, config.min_similarity)
 
     # Run analysis
-    if parallel and max_workers and max_workers > 1:
-        dup_map = analyze_parallel(config, max_workers)
-    elif memory_cache:
-        dup_map = analyze_optimized(config, use_memory_cache=True, max_cache_mb=max_cache_mb)
+    if parallel or memory_cache or incremental:
+        dup_map = analyze_optimized(config, use_memory_cache=memory_cache, max_cache_mb=max_cache_mb)
     else:
         dup_map = analyze(config)
 

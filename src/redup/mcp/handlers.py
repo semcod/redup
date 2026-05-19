@@ -94,6 +94,18 @@ def _estimate_code2llm_counts(dup_map: Any) -> tuple[int, int]:
     return len(functions), len(classes)
 
 
+def _scan_config_payload(scan_config: ScanConfig) -> dict[str, Any]:
+    """Build the shared scan config response payload."""
+    return {
+        "root": scan_config.root.as_posix(),
+        "extensions": scan_config.extensions,
+        "min_block_lines": scan_config.min_block_lines,
+        "min_similarity": scan_config.min_similarity,
+        "include_tests": scan_config.include_tests,
+        "functions_only": scan_config.functions_only,
+    }
+
+
 def _format_analysis_result(
     scan_config: ScanConfig,
     dup_map: Any,
@@ -113,14 +125,7 @@ def _format_analysis_result(
         reporter = EnhancedReporter(dup_map)
         payload = {
             "project_path": dup_map.project_path,
-            "scan_config": {
-                "root": scan_config.root.as_posix(),
-                "extensions": scan_config.extensions,
-                "min_block_lines": scan_config.min_block_lines,
-                "min_similarity": scan_config.min_similarity,
-                "include_tests": scan_config.include_tests,
-                "functions_only": scan_config.functions_only,
-            },
+            "scan_config": _scan_config_payload(scan_config),
             "metrics": reporter.generate_metrics_report(),
             "visualizations": reporter.generate_visualization_data(),
         }
@@ -175,14 +180,7 @@ def handle_suggest_refactoring(params: dict[str, Any]) -> str:
 
     payload = {
         "project_path": dup_map.project_path,
-        "scan_config": {
-            "root": scan_config.root.as_posix(),
-            "extensions": scan_config.extensions,
-            "min_block_lines": scan_config.min_block_lines,
-            "min_similarity": scan_config.min_similarity,
-            "include_tests": scan_config.include_tests,
-            "functions_only": scan_config.functions_only,
-        },
+        "scan_config": _scan_config_payload(scan_config),
         "summary": {
             "total_groups": dup_map.total_groups,
             "total_fragments": dup_map.total_fragments,

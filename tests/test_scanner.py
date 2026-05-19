@@ -71,3 +71,19 @@ def test_scan_project_real_dir():
         paths = {Path(f.path).name for f in files}
         assert "a.py" in paths
         assert "b.py" in paths
+
+
+def test_scan_project_target_files_only():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+
+        (root / "a.py").write_text("def foo():\n    return 1\n")
+        (root / "b.py").write_text("def bar():\n    return 2\n")
+
+        config = ScanConfig(root=root, target_files=["b.py"])
+        files, stats = scan_project(config)
+
+        assert stats.files_scanned == 1
+        assert stats.files_skipped == 0
+        paths = {Path(f.path).name for f in files}
+        assert paths == {"b.py"}

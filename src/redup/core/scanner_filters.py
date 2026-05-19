@@ -38,6 +38,12 @@ def _collect_files(config: ScanConfig) -> list[Path]:
     files = []
     ext_set = set(config.extensions)
     exclude_patterns = tuple(config.exclude_patterns)
+    target_files = config.target_files
+    target_set = (
+        {Path(p).as_posix().lstrip("./") for p in target_files}
+        if target_files
+        else None
+    )
     root_str = str(config.root)
 
     for dirpath, dirnames, filenames in os.walk(root_str, topdown=True):
@@ -48,6 +54,9 @@ def _collect_files(config: ScanConfig) -> list[Path]:
             if file_path.suffix not in ext_set:
                 continue
             relative_path = _project_relative_path(file_path, config.root)
+            relative_posix = relative_path.as_posix().lstrip("./")
+            if target_set is not None and relative_posix not in target_set:
+                continue
             if _should_exclude(relative_path, exclude_patterns):
                 continue
             if not config.include_tests and _is_test_file(relative_path):

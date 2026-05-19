@@ -1,55 +1,57 @@
-# redup | 410 func | 70f | 13962L | python | 2026-04-19
+# redup | 399 func | 71f | 16775L | python | 2026-05-19
+# generated in 0.00s
 
 HEALTH:
-  CC̄=3.6  critical=19 (limit:10)  dup=4  cycles=0
+  CC̄=3.7  critical=22 (limit:10)  dup=1  cycles=3
 
 ALERTS[20]:
   !!  high_fan_out     detect_communities = 18 (limit:10)
-  !!  high_fan_out     analyze_optimized = 18 (limit:10)
+  !!  high_fan_out     _resolve_changed_files = 17 (limit:10)
   !!  high_fan_out     tasks = 16 (limit:10)
+  !!  high_fan_out     analyze_optimized = 16 (limit:10)
   !!  high_fan_out     _load_duplication_map = 15 (limit:10)
-  !!  high_fan_out     find_duplicates_phase_lazy = 15 (limit:10)
   !!  high_fan_out     write_results = 15 (limit:10)
+  !!  high_fan_out     _collect_files = 15 (limit:10)
+  !!  high_fan_out     scan_command = 15 (limit:10)
+  !   cc_exceeded      _collect_files = 15 (limit:15)
   !   high_fan_out     scan_project = 14 (limit:10)
-  !   high_fan_out     _format_analysis_result = 14 (limit:10)
-  !   high_fan_out     _parse_llm_response = 13 (limit:10)
-  !   high_fan_out     SemanticDetector.find_semantic_duplicates = 13 (limit:10)
 
-MODULES[88] (top by size):
-  M[src/redup/core/ts_extractor.py] 782L C:1 F:24 CC↑7 D:1 (python)
-  M[src/redup/core/universal_fuzzy.py] 449L C:3 F:16 CC↑11 D:0 (python)
-  M[src/redup/core/fuzzy_similarity.py] 416L C:4 F:20 CC↑10 D:0 (python)
-  M[src/redup/core/refactor_advisor.py] 359L C:2 F:13 CC↑9 D:1 (python)
-  M[src/redup/cli_app/compare_command.py] 350L C:0 F:16 CC↑6 D:1 (python)
-  M[src/redup/mcp/handlers.py] 343L C:0 F:12 CC↑12 D:0 (python)
-  M[src/redup/integrations/planfile_integration.py] 308L C:3 F:8 CC↑12 D:0 (python)
-  M[src/redup/core/comparator.py] 306L C:2 F:8 CC↑8 D:1 (python)
-  M[src/redup/core/pipeline/__init__.py] 304L C:0 F:3 CC↑14 D:6 (python)
-  M[src/redup/core/scanner/__init__.py] 303L C:0 F:14 CC↑10 D:3 (python)
-  M[src/redup/reporters/enhanced_reporter.py] 274L C:1 F:17 CC↑8 D:0 (python)
-  M[src/redup/reporters/toon_reporter.py] 270L C:0 F:13 CC↑13 D:3 (python)
-  M[src/redup/core/cache.py] 267L C:1 F:10 CC↑5 D:1 (python)
-  M[src/redup/core/pipeline/duplicate_finder.py] 262L C:0 F:6 CC↑11 D:1 (python)
-  M[src/redup/cli_app/main.py] 227L C:0 F:6 CC↑1 D:0 (python)
-  LANGS: python:87/shell:1
+MODULES[109] (top by size):
+  M[proxy_analysis/duplication.json] 1436L C:0 F:0 CC↑0 D:0 (json)
+  M[planfile.yaml] 1319L C:0 F:0 CC↑0 D:0 (yaml)
+  M[compare_report.json] 792L C:0 F:0 CC↑0 D:0 (json)
+  M[compare_report_test.json] 687L C:0 F:0 CC↑0 D:0 (json)
+  M[goal.yaml] 511L C:0 F:0 CC↑0 D:0 (yaml)
+  M[src/redup/core/universal_fuzzy.py] 471L C:3 F:16 CC↑11 D:0 (python)
+  M[src/redup/core/fuzzy_similarity.py] 430L C:4 F:20 CC↑10 D:0 (python)
+  M[src/redup/core/refactor_advisor.py] 363L C:2 F:13 CC↑9 D:1 (python)
+  M[src/redup/cli_app/compare_command.py] 355L C:0 F:16 CC↑6 D:1 (python)
+  M[src/redup/mcp/handlers.py] 344L C:0 F:13 CC↑12 D:0 (python)
+  M[src/redup/cli_app/scan_commands.py] 320L C:0 F:6 CC↑13 D:1 (python)
+  M[src/redup/core/comparator.py] 312L C:2 F:8 CC↑8 D:1 (python)
+  M[src/redup/integrations/planfile_integration.py] 311L C:3 F:8 CC↑12 D:0 (python)
+  M[src/redup/core/scanner/__init__.py] 309L C:0 F:14 CC↑10 D:3 (python)
+  M[src/redup/core/models.py] 295L C:9 F:1 CC↑1 D:0 (python)
+  LANGS: python:88/json:6/yaml:6/shell:5/toml:2/yml:1/txt:1
 
 HOTSPOTS[10]:
   ★ detect_communities fan=18  // Build similarity graph and detect communities via networkx.
 
 Args:
     compariso
-  ★ analyze_optimized fan=18  // Analysis pipeline, 18 stages
+  ★ _resolve_changed_files fan=17  // Resolve changed files relative to git base reference.
   ★ tasks fan=16  // Export duplication findings as tasks to TODO.md.
 
 Creates a TODO.md file with re
+  ★ analyze_optimized fan=16  // Analysis pipeline, 16 stages
   ★ _load_duplication_map fan=15  // Load a DuplicationMap from a JSON file.
-  ★ find_duplicates_phase_lazy fan=15  // Phase 3: Hash and find duplicates with caching and lazy evaluation.
 
-REFACTOR[4]:
-  [1] H/H Split god module src/redup/core/ts_extractor.py (782L, 1 classes)
-  [2] M/M Reduce detect_communities fan-out (currently 18)
-  [3] M/M Reduce analyze_optimized fan-out (currently 18)
-  [4] M/M Reduce tasks fan-out (currently 16)
+REFACTOR[12]:
+  [1] H/H Split god module compare_report.json (792L, 0 classes)
+  [2] H/H Split god module compare_report_test.json (687L, 0 classes)
+  [3] H/H Split god module goal.yaml (511L, 0 classes)
+  [4] H/H Split god module planfile.yaml (1319L, 0 classes)
+  [5] H/H Split god module proxy_analysis/duplication.json (1436L, 0 classes)
 
 EVOLUTION:
-  2026-04-19 CC̄=3.6 crit=19 13962L // Automated analysis
+  2026-05-19 CC̄=3.7 crit=22 16775L // Automated analysis

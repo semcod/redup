@@ -41,7 +41,7 @@ tasks:
   jscpd:
     desc: Run jscpd duplicate-code budget
     cmds:
-    - scripts/jscpd-check.sh
+    - PYTHONPATH=src python -m redup quality jscpd
   quality:
     desc: Run lint and duplicate-code gates
     cmds:

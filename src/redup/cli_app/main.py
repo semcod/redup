@@ -13,6 +13,7 @@ warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 
 # Import refactored modules
+from redup.cli_app.quality_commands import app as quality_app  # noqa: E402
 from redup.cli_app.scan_commands import (  # noqa: E402
     check_command,
     config_command,
@@ -26,6 +27,7 @@ app = typer.Typer(
     help="reDUP — Code duplication analyzer and refactoring planner for LLMs.",
     add_completion=False,
 )
+app.add_typer(quality_app, name="quality", help="Run local quality gates")
 
 
 OutputFormat = Literal["json", "yaml", "toon", "markdown", "all", "enhanced", "code2llm"]
@@ -102,6 +104,21 @@ def scan(
         "--max-cache-mb",
         help="Maximum memory cache size in MB.",
     ),
+    changed_only: bool = typer.Option(
+        False,
+        "--changed-only",
+        help="Scan only files changed relative to git base ref.",
+    ),
+    base_ref: str = typer.Option(
+        "HEAD",
+        "--base-ref",
+        help="Git base ref used by --changed-only (e.g. HEAD, origin/main).",
+    ),
+    include_untracked: bool = typer.Option(
+        True,
+        "--include-untracked/--no-include-untracked",
+        help="Include untracked files in --changed-only mode.",
+    ),
     fuzzy: bool = typer.Option(
         False,
         "--fuzzy",
@@ -128,6 +145,9 @@ def scan(
         incremental,
         not no_memory_cache,
         max_cache_mb,
+        changed_only,
+        base_ref,
+        include_untracked,
         fuzzy,
         fuzzy_threshold,
     )

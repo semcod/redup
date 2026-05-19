@@ -17,13 +17,16 @@ redup scan . --parallel --max-workers 4
 redup scan . --functions-only
 ```
 
-### 3. Incremental Scanning (10-100x szybsze na 2+ uruchomienie)
+### 3. Incremental Cache + Changed-Only Mode
 ```bash
 # Pierwsze skanowanie - pełne + zapis cache
 redup scan . --incremental
 
-# Kolejne skanowanie - tylko zmienione pliki
+# Kolejne skanowanie - pełne skanowanie z wykorzystaniem cache (szybciej)
 redup scan . --incremental
+
+# Tylko pliki zmienione względem gałęzi bazowej (git diff)
+redup scan . --changed-only --base-ref origin/main --incremental
 ```
 
 ### 4. Połączenie wszystkich optymalizacji

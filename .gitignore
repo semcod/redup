@@ -1,3 +1,4 @@
+.redup/cache/hash_cache.db
 .idea/
 .git/
 __pycache__/

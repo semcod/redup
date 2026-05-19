@@ -1,10 +1,11 @@
 """Tests for reDUP pipeline — integration tests."""
 
+import sqlite3
 import tempfile
 from pathlib import Path
 
 from redup.core.models import ScanConfig
-from redup.core.pipeline import analyze
+from redup.core.pipeline import analyze, analyze_optimized
 
 
 def _create_test_project(root: Path) -> None:
@@ -129,3 +130,30 @@ def test_analyze_no_duplicates():
         result = analyze(config=config, function_level_only=True)
 
         assert result.total_groups == 0
+
+
+def test_analyze_optimized_stores_incremental_cache():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        root = base / "project"
+        root.mkdir()
+        _create_test_project(root)
+
+        cache_dir = base / "cache"
+        config = ScanConfig(
+            root=root,
+            min_block_lines=3,
+            min_similarity=0.80,
+            enable_cache=True,
+            cache_dir=cache_dir,
+        )
+
+        analyze_optimized(config=config, function_level_only=True, use_memory_cache=False)
+
+        db_path = cache_dir / "hash_cache.db"
+        assert db_path.exists()
+
+        with sqlite3.connect(db_path) as conn:
+            file_count = conn.execute("SELECT COUNT(*) FROM file_hashes").fetchone()[0]
+
+        assert file_count >= 1
