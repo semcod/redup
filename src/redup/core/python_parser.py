@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 from dataclasses import dataclass
 
 from redup.core.scanner import CodeBlock
@@ -143,8 +144,6 @@ def _extract_function_info(
 
 def _parse_with_ast(source: str, filepath: str) -> list[ParsedFunction]:
     """Fallback — stdlib ast parsing."""
-    import ast
-
     try:
         tree = ast.parse(source)
     except SyntaxError:

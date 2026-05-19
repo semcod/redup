@@ -1,9 +1,408 @@
 # code2llm call graph | /home/tom/github/semcod/redup
-# nodes: 0 | edges: 0 | modules: 0
-# CC̄=0.0
+# generated in 0.24s
+# nodes: 262 | edges: 314 | modules: 64
+# CC̄=3.6
 
 HUBS[20]:
+  scripts.jscpd-check.print
+    CC=0  in:66  out:0  total:66
+  src.redup.reporters.markdown_reporter.to_markdown
+    CC=12  in:3  out:54  total:57
+  src.redup.reporters.code2llm_reporter.to_code2llm_context
+    CC=11  in:3  out:36  total:39
+  src.redup.cli_app.tasks_command.tasks
+    CC=14  in:0  out:35  total:35
+  src.redup.core.ts_extractor.dispatcher.initialize_language_dispatcher
+    CC=2  in:1  out:31  total:32
+  src.redup.core.ts_extractor._initialize_language_dispatcher
+    CC=1  in:1  out:31  total:32
+  src.redup.core.pipeline.analyze_optimized
+    CC=14  in:2  out:29  total:31
+  src.redup.core.scanner.scan_project
+    CC=5  in:11  out:20  total:31
+  src.redup.config.RedupConfig.set
+    CC=2  in:27  out:3  total:30
+  benchmarks.bench_libraries.benchmark
+    CC=10  in:0  out:27  total:27
+  benchmark.benchmark_sequential_vs_parallel
+    CC=3  in:0  out:26  total:26
+  src.redup.cli_app.output_writer.write_results
+    CC=12  in:1  out:25  total:26
+  src.redup.mcp.handlers._build_scan_config
+    CC=12  in:1  out:24  total:25
+  src.redup.cli_app.scan_commands.config_command
+    CC=5  in:1  out:23  total:24
+  src.redup.core.pipeline.analyze_parallel
+    CC=3  in:4  out:19  total:23
+  src.redup.core.config.config_to_scan_config
+    CC=4  in:5  out:18  total:23
+  examples.01_basic_usage.main
+    CC=5  in:0  out:23  total:23
+  src.redup.core.differ._load_duplication_map
+    CC=5  in:2  out:21  total:23
+  src.redup.core.refactor_advisor._parse_llm_response
+    CC=9  in:1  out:21  total:22
+  src.redup.core.refactor_advisor.format_plan_markdown
+    CC=8  in:1  out:20  total:21
 
 MODULES:
+  benchmark  [2 funcs]
+    benchmark_feature_performance  CC=3  out:15
+    benchmark_sequential_vs_parallel  CC=3  out:26
+  benchmarks.bench_libraries  [4 funcs]
+    benchmark  CC=10  out:27
+    benchmark_fuzzy_performance  CC=4  out:12
+    benchmark_hash_performance  CC=4  out:13
+    generate_test_project  CC=3  out:5
+  examples.01_basic_usage  [1 funcs]
+    main  CC=5  out:23
+  scripts.jscpd-check  [1 funcs]
+    print  CC=0  out:0
+  src.redup.analysis_logic  [2 funcs]
+    _build_scan_config  CC=3  out:6
+    _parse_extensions  CC=4  out:3
+  src.redup.cli_app.compare_command  [15 funcs]
+    _build_json_report  CC=1  out:6
+    _build_recommendation_dict  CC=2  out:2
+    _compact_community  CC=5  out:6
+    _deduplicate_matches  CC=6  out:6
+    _detect_communities  CC=4  out:2
+    _export_json  CC=2  out:3
+    _filter_significant_communities  CC=4  out:1
+    _generate_llm_plan  CC=5  out:8
+    _make_relative_path  CC=3  out:2
+    _parse_extensions  CC=3  out:2
+  src.redup.cli_app.config_builder  [2 funcs]
+    build_config  CC=1  out:2
+    build_config_with_file_support  CC=7  out:4
+  src.redup.cli_app.fuzzy_similarity  [8 funcs]
+    _analyze_blocks_with_detectors  CC=3  out:12
+    _analyze_html_css_blocks  CC=1  out:2
+    _analyze_other_language_blocks  CC=1  out:2
+    _apply_fuzzy_similarity  CC=3  out:9
+    _extract_all_blocks  CC=3  out:2
+    _report_fuzzy_results  CC=5  out:12
+    _separate_blocks_by_type  CC=5  out:2
+    _validate_fuzzy_input  CC=4  out:3
+  src.redup.cli_app.main  [4 funcs]
+    check  CC=1  out:10
+    config  CC=1  out:4
+    diff  CC=1  out:4
+    info  CC=1  out:2
+  src.redup.cli_app.output_writer  [2 funcs]
+    write_output  CC=3  out:5
+    write_results  CC=12  out:25
+  src.redup.cli_app.scan_commands  [4 funcs]
+    check_command  CC=4  out:19
+    config_command  CC=5  out:23
+    diff_command  CC=2  out:5
+    info_command  CC=3  out:9
+  src.redup.cli_app.scan_helpers  [2 funcs]
+    apply_fuzzy_similarity  CC=1  out:1
+    print_scan_header  CC=1  out:6
+  src.redup.cli_app.tasks_command  [1 funcs]
+    tasks  CC=14  out:35
+  src.redup.config  [2 funcs]
+    set  CC=2  out:3
+    get_default_filename  CC=3  out:1
+  src.redup.core.cache  [2 funcs]
+    build_hash_index_with_cache  CC=4  out:6
+    hash_block_with_cache  CC=4  out:5
+  src.redup.core.community  [1 funcs]
+    detect_communities  CC=11  out:20
+  src.redup.core.comparator  [8 funcs]
+    _create_cross_project_match  CC=3  out:1
+    _find_hash_matches  CC=6  out:7
+    _find_lsh_matches  CC=8  out:5
+    _find_semantic_matches  CC=8  out:7
+    _is_cross_project_match  CC=4  out:0
+    _normalize_match_order  CC=2  out:0
+    _scan_project_blocks  CC=5  out:3
+    compare_projects  CC=8  out:13
+  src.redup.core.config  [6 funcs]
+    _get_config_from_pyproject  CC=1  out:4
+    _get_config_from_redup_toml  CC=1  out:2
+    _load_toml_file  CC=4  out:3
+    config_to_scan_config  CC=4  out:18
+    create_sample_redup_toml  CC=1  out:0
+    load_config  CC=5  out:8
+  src.redup.core.decision  [1 funcs]
+    recommend  CC=6  out:6
+  src.redup.core.differ  [8 funcs]
+    _format_assessment  CC=3  out:0
+    _format_group_details  CC=3  out:2
+    _format_group_header  CC=1  out:0
+    _format_groups_section  CC=3  out:5
+    _group_by_id  CC=2  out:0
+    _load_duplication_map  CC=5  out:21
+    compare_scans  CC=1  out:10
+    format_diff_result  CC=1  out:9
+  src.redup.core.fuzzy_similarity  [2 funcs]
+    _compute_attribute_similarity  CC=9  out:11
+    _extract_attributes  CC=4  out:11
+  src.redup.core.hasher  [13 funcs]
+    _ast_to_normalized_string  CC=12  out:18
+    _blocks_from_different_locations  CC=2  out:1
+    _fast_hash  CC=2  out:4
+    _find_duplicates  CC=4  out:3
+    _hash_text  CC=1  out:3
+    _hashed_block  CC=1  out:3
+    _normalize_ast_text  CC=5  out:11
+    _normalize_text  CC=6  out:11
+    build_hash_index  CC=3  out:4
+    find_exact_duplicates  CC=1  out:1
+  src.redup.core.lazy_grouper  [4 funcs]
+    _create_duplicate_group  CC=4  out:2
+    find_all_duplicates_lazy  CC=3  out:2
+    find_exact_duplicates_lazy  CC=5  out:4
+    find_structural_duplicates_lazy  CC=5  out:4
+  src.redup.core.lsh_matcher  [9 funcs]
+    _find_near_duplicates_simple  CC=4  out:6
+    add  CC=4  out:8
+    find_all_near_duplicates  CC=8  out:7
+    find_near_duplicates  CC=10  out:9
+    _create_minhash  CC=3  out:5
+    _create_simple_minhash  CC=1  out:2
+    _text_to_minhash_features  CC=5  out:14
+    build_lsh_index  CC=3  out:2
+    find_near_duplicates  CC=2  out:2
+  src.redup.core.matcher  [5 funcs]
+    _compare_against_reference  CC=7  out:5
+    fuzzy_similarity  CC=2  out:4
+    match_candidates  CC=2  out:1
+    refine_structural_matches  CC=1  out:1
+    sequence_similarity  CC=3  out:4
+  src.redup.core.pipeline  [3 funcs]
+    analyze  CC=2  out:8
+    analyze_optimized  CC=14  out:29
+    analyze_parallel  CC=3  out:19
+  src.redup.core.pipeline.duplicate_finder  [5 funcs]
+    find_duplicates_phase_lazy  CC=6  out:17
+    find_duplicates_phase_optimized  CC=1  out:9
+    find_exact_groups  CC=6  out:6
+    find_near_duplicate_groups  CC=11  out:13
+    find_structural_groups  CC=9  out:12
+  src.redup.core.pipeline.groups  [3 funcs]
+    blocks_to_group  CC=5  out:7
+    deduplicate_groups  CC=6  out:5
+    match_results_to_blocks  CC=4  out:3
+  src.redup.core.pipeline.phases  [4 funcs]
+    ensure_config  CC=2  out:1
+    process_blocks  CC=6  out:3
+    scan_phase  CC=2  out:1
+    scan_phase_parallel  CC=2  out:2
+  src.redup.core.pipeline_utils  [2 funcs]
+    blocks_to_group  CC=5  out:7
+    deduplicate_groups  CC=6  out:5
+  src.redup.core.planner  [5 funcs]
+    _assess_risk  CC=7  out:3
+    _choose_action  CC=7  out:2
+    _common_prefix  CC=3  out:2
+    _suggest_module_name  CC=6  out:1
+    generate_suggestions  CC=6  out:9
+  src.redup.core.python_parser  [6 funcs]
+    _build_parent_map  CC=5  out:5
+    _extract_decorators  CC=5  out:5
+    _extract_function_info  CC=4  out:9
+    _parse_with_ast  CC=4  out:7
+    _parse_with_libcst  CC=4  out:15
+    parse_python_functions  CC=3  out:2
+  src.redup.core.refactor_advisor  [13 funcs]
+    _build_match_list  CC=2  out:3
+    _build_prompt  CC=2  out:15
+    _format_communities  CC=6  out:10
+    _format_matches_section  CC=2  out:3
+    _get_model  CC=2  out:1
+    _get_prompt_instructions  CC=1  out:0
+    _load_env  CC=5  out:5
+    _normalize_match  CC=7  out:11
+    _parse_llm_response  CC=9  out:21
+    _resolve_stats  CC=3  out:5
+  src.redup.core.scanner  [14 funcs]
+    _extract_blocks_for_file  CC=4  out:4
+    _extract_function_blocks_python  CC=10  out:13
+    _extract_sliding_blocks  CC=6  out:9
+    _get_source_for_file  CC=2  out:2
+    _init_file_loading  CC=3  out:2
+    _init_strategy  CC=5  out:2
+    _normalize_scan_config  CC=2  out:4
+    _process_single_file  CC=2  out:6
+    _read_source_text  CC=6  out:4
+    scan_project  CC=5  out:20
+  src.redup.core.scanner_cache  [4 funcs]
+    _matches_any_exclude  CC=3  out:3
+    _matches_any_include  CC=3  out:3
+    _matches_pattern  CC=4  out:4
+    _should_exclude  CC=3  out:4
+  src.redup.core.scanner_filters  [3 funcs]
+    _collect_files  CC=11  out:12
+    _is_test_file  CC=9  out:5
+    _project_relative_path  CC=2  out:1
+  src.redup.core.scanner_utils  [10 funcs]
+    _collect_files  CC=9  out:8
+    _is_test_file  CC=9  out:5
+    _load_all_files  CC=2  out:2
+    _load_files_simple  CC=3  out:2
+    _load_files_with_progress  CC=3  out:10
+    _preload_files  CC=4  out:9
+    _print_load_result  CC=1  out:2
+    _project_relative_path  CC=2  out:1
+    _read_file_safe  CC=3  out:3
+    _read_file_with_mmap  CC=1  out:5
+  src.redup.core.semantic  [1 funcs]
+    find_semantic_duplicates  CC=9  out:16
+  src.redup.core.ts_extractor  [5 funcs]
+    _get_tree_sitter_language  CC=1  out:1
+    _initialize_language_dispatcher  CC=1  out:31
+    extract_functions_treesitter  CC=7  out:10
+    get_supported_languages  CC=4  out:3
+    is_language_supported  CC=3  out:4
+  src.redup.core.ts_extractor.dispatcher  [1 funcs]
+    initialize_language_dispatcher  CC=2  out:31
+  src.redup.core.ts_extractor.extractors.base  [2 funcs]
+    create_code_block  CC=1  out:2
+    get_node_text  CC=3  out:2
+  src.redup.core.ts_extractor.extractors.c_family  [1 funcs]
+    extract_functions_c_cpp  CC=1  out:8
+  src.redup.core.ts_extractor.extractors.dotnet  [2 funcs]
+    _extract_class_name  CC=5  out:2
+    extract_functions_c_sharp  CC=1  out:11
+  src.redup.core.ts_extractor.extractors.markup  [1 funcs]
+    extract_blocks_html_xml  CC=1  out:5
+  src.redup.core.ts_extractor.extractors.php  [2 funcs]
+    _extract_class_name  CC=5  out:2
+    extract_functions_php  CC=1  out:9
+  src.redup.core.ts_extractor.extractors.query  [1 funcs]
+    extract_blocks_sql  CC=1  out:5
+  src.redup.core.ts_extractor.extractors.ruby  [1 funcs]
+    extract_functions_ruby  CC=1  out:10
+  src.redup.core.ts_extractor.extractors.shell  [1 funcs]
+    extract_functions_bash  CC=1  out:6
+  src.redup.core.ts_extractor.extractors.stylesheet  [1 funcs]
+    extract_blocks_css  CC=1  out:5
+  src.redup.core.ts_extractor.extractors.web  [4 funcs]
+    _extract_arrow_function  CC=2  out:1
+    _extract_function_declaration  CC=2  out:3
+    _extract_method_definition  CC=2  out:3
+    extract_functions_javascript  CC=1  out:8
+  src.redup.core.ts_extractor.main  [5 funcs]
+    _get_dispatcher  CC=2  out:1
+    _get_tree_sitter_language  CC=1  out:1
+    extract_functions_treesitter  CC=8  out:10
+    get_supported_languages  CC=4  out:3
+    is_language_supported  CC=5  out:4
+  src.redup.core.universal_fuzzy  [2 funcs]
+    _compute_metadata_similarity  CC=9  out:11
+    _compute_pattern_similarity  CC=6  out:4
+  src.redup.core.utils.diff_helpers  [6 funcs]
+    _ensure_matches  CC=2  out:4
+    _find_best_match  CC=5  out:3
+    _match_exact_ids  CC=4  out:7
+    _match_score  CC=6  out:8
+    _group_files  CC=2  out:0
+    _groups_match  CC=6  out:7
+  src.redup.core.utils.duplicate_finders  [1 funcs]
+    create_duplicate_finder  CC=3  out:2
+  src.redup.core.utils.hash_utils  [1 funcs]
+    create_hash_function  CC=3  out:1
+  src.redup.mcp.handlers  [11 funcs]
+    _build_scan_config  CC=12  out:24
+    _check_thresholds  CC=3  out:7
+    _estimate_code2llm_counts  CC=5  out:6
+    _format_analysis_result  CC=7  out:15
+    _get_optional_deps  CC=3  out:2
+    _run_analysis  CC=7  out:17
+    handle_analyze_project  CC=3  out:12
+    handle_check_project  CC=3  out:14
+    handle_compare_scans  CC=1  out:7
+    handle_project_info  CC=1  out:7
+  src.redup.mcp.server  [5 funcs]
+    handle_initialize  CC=1  out:0
+    handle_request  CC=5  out:6
+    handle_tools_call  CC=4  out:2
+    handle_tools_list  CC=2  out:1
+    run_server  CC=5  out:14
+  src.redup.mcp.utils  [3 funcs]
+    json_safe  CC=6  out:8
+    parse_extensions  CC=8  out:8
+    resolve_path  CC=3  out:8
+  src.redup.reporters.code2llm_reporter  [6 funcs]
+    _calculate_avg_cc  CC=1  out:0
+    _count_critical_functions  CC=1  out:0
+    _get_layers  CC=1  out:3
+    export_code2llm  CC=1  out:6
+    to_code2llm_context  CC=11  out:36
+    to_code2llm_toon  CC=5  out:17
+  src.redup.reporters.enhanced_reporter  [1 funcs]
+    _get_language_metrics  CC=7  out:9
+  src.redup.reporters.json_reporter  [3 funcs]
+    _group_to_dict  CC=5  out:4
+    _suggestion_to_dict  CC=1  out:0
+    to_json  CC=3  out:5
+  src.redup.reporters.markdown_reporter  [1 funcs]
+    to_markdown  CC=12  out:54
+  src.redup.reporters.toon_reporter  [12 funcs]
+    _calculate_group_effort  CC=10  out:2
+    _format_estimate_lines  CC=4  out:6
+    _render_dependency_risk  CC=13  out:14
+    _render_duplicates  CC=8  out:6
+    _render_effort_estimate  CC=5  out:4
+    _render_header  CC=1  out:2
+    _render_hotspots  CC=6  out:9
+    _render_quick_wins  CC=9  out:12
+    _render_refactor  CC=4  out:10
+    _render_summary  CC=1  out:0
+  src.redup.reporters.yaml_reporter  [1 funcs]
+    to_yaml  CC=4  out:6
 
 EDGES:
+  benchmarks.bench_libraries.benchmark → benchmarks.bench_libraries.generate_test_project
+  benchmarks.bench_libraries.benchmark → src.redup.core.pipeline.analyze
+  benchmarks.bench_libraries.benchmark → scripts.jscpd-check.print
+  benchmarks.bench_libraries.benchmark_hash_performance → scripts.jscpd-check.print
+  benchmarks.bench_libraries.benchmark_fuzzy_performance → scripts.jscpd-check.print
+  src.redup.core.scanner_cache._matches_any_exclude → src.redup.core.scanner_cache._matches_pattern
+  src.redup.core.scanner_cache._matches_any_include → src.redup.core.scanner_cache._matches_pattern
+  src.redup.core.scanner_cache._should_exclude → src.redup.core.scanner_cache._matches_any_exclude
+  src.redup.core.scanner_cache._should_exclude → src.redup.core.scanner_cache._matches_any_include
+  src.redup.core.config._get_config_from_pyproject → src.redup.core.config._load_toml_file
+  src.redup.core.config._get_config_from_redup_toml → src.redup.core.config._load_toml_file
+  src.redup.core.config.load_config → src.redup.core.config._get_config_from_redup_toml
+  src.redup.core.config.load_config → src.redup.core.config._get_config_from_pyproject
+  src.redup.core.lazy_grouper.find_exact_duplicates_lazy → src.redup.core.lazy_grouper._create_duplicate_group
+  src.redup.core.lazy_grouper.find_exact_duplicates_lazy → src.redup.core.hasher._blocks_from_different_locations
+  src.redup.core.lazy_grouper.find_structural_duplicates_lazy → src.redup.core.lazy_grouper._create_duplicate_group
+  src.redup.core.lazy_grouper.find_structural_duplicates_lazy → src.redup.core.hasher._blocks_from_different_locations
+  src.redup.core.lazy_grouper.find_all_duplicates_lazy → src.redup.core.lazy_grouper.find_exact_duplicates_lazy
+  src.redup.core.lazy_grouper.find_all_duplicates_lazy → src.redup.core.lazy_grouper.find_structural_duplicates_lazy
+  src.redup.core.planner._suggest_module_name → src.redup.core.planner._common_prefix
+  src.redup.core.planner.generate_suggestions → src.redup.core.planner._choose_action
+  src.redup.core.planner.generate_suggestions → src.redup.core.planner._suggest_module_name
+  src.redup.core.planner.generate_suggestions → src.redup.core.planner._assess_risk
+  benchmark.benchmark_sequential_vs_parallel → scripts.jscpd-check.print
+  benchmark.benchmark_sequential_vs_parallel → src.redup.core.pipeline.analyze
+  benchmark.benchmark_feature_performance → scripts.jscpd-check.print
+  benchmark.benchmark_feature_performance → src.redup.core.pipeline.analyze_parallel
+  src.redup.core.scanner_utils._collect_files → src.redup.core.scanner_utils._project_relative_path
+  src.redup.core.scanner_utils._collect_files → src.redup.core.scanner_cache._should_exclude
+  src.redup.core.scanner_utils._collect_files → src.redup.core.scanner_utils._is_test_file
+  src.redup.core.scanner_utils._read_file_safe → src.redup.core.scanner_utils._read_file_with_mmap
+  src.redup.core.scanner_utils._load_files_simple → src.redup.core.scanner_utils._read_file_safe
+  src.redup.core.scanner_utils._load_files_with_progress → src.redup.core.scanner_utils._read_file_safe
+  src.redup.core.scanner_utils._load_all_files → src.redup.core.scanner_utils._load_files_with_progress
+  src.redup.core.scanner_utils._load_all_files → src.redup.core.scanner_utils._load_files_simple
+  src.redup.core.scanner_utils._print_load_result → scripts.jscpd-check.print
+  src.redup.core.scanner_utils._preload_files → src.redup.core.scanner_utils._print_load_result
+  src.redup.core.scanner_utils._preload_files → src.redup.core.scanner_utils._load_all_files
+  src.redup.core.scanner_utils._preload_files → src.redup.core.scanner_utils._load_files_simple
+  examples.01_basic_usage.main → src.redup.core.pipeline.analyze
+  examples.01_basic_usage.main → scripts.jscpd-check.print
+  src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_pattern_similarity → src.redup.config.RedupConfig.set
+  src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_metadata_similarity → src.redup.config.RedupConfig.set
+  src.redup.core.lsh_matcher._create_minhash → src.redup.core.hasher._normalize_text
+  src.redup.core.lsh_matcher._text_to_minhash_features → src.redup.core.hasher._normalize_text
+  src.redup.core.lsh_matcher._create_simple_minhash → src.redup.core.lsh_matcher._text_to_minhash_features
+  src.redup.core.lsh_matcher.LSHIndex.add → src.redup.core.lsh_matcher._create_minhash
+  src.redup.core.lsh_matcher.LSHIndex.add → src.redup.core.lsh_matcher._create_simple_minhash
+  src.redup.core.lsh_matcher.LSHIndex.find_near_duplicates → src.redup.core.lsh_matcher._create_minhash
+  src.redup.core.lsh_matcher.LSHIndex._find_near_duplicates_simple → src.redup.core.lsh_matcher._create_simple_minhash

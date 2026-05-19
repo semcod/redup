@@ -21,6 +21,7 @@ htmlcov/
 # ALL dotfiles (except important ones)
 .*
 !.gitignore
+!.jscpd.json
 !.redup/
 
 # Environment variables

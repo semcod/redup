@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -16,7 +17,6 @@ if __package__ in {None, ""}:
 from redup.mcp import (
     SCAN_PROPERTIES,
     TOOL_HANDLERS,
-    TOOL_SCHEMA_REDUP,
     handle_analyze_project,
     handle_check_project,
     handle_compare_scans,
@@ -30,6 +30,9 @@ from redup.mcp import (
     parse_extensions,
     resolve_path,
     run_server,
+)
+from redup.mcp import (
+    TOOL_SCHEMA_REDUP as MCP_TOOL_SCHEMA_REDUP,
 )
 
 # Backward compatibility aliases
@@ -47,14 +50,10 @@ handle_request = handle_request
 handle_initialize = handle_initialize
 run_server = run_server
 
-# Backward compatibility: rebuild TOOL_SCHEMA_REDUP in legacy format
-from typing import Any
-
-
 def _build_legacy_tool_schema() -> dict[str, Any]:
     """Build legacy tool schema format for backward compatibility."""
     legacy = {}
-    for key, schema in TOOL_SCHEMA_REDUP.items():
+    for key, schema in MCP_TOOL_SCHEMA_REDUP.items():
         legacy[key] = {
             "name": schema["name"],
             "description": schema["description"],

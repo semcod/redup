@@ -1,0 +1,23 @@
+{
+  "reporters": ["json", "console"],
+  "format": ["python"],
+  "ignore": [
+    "**/.git/**",
+    "**/.venv/**",
+    "**/venv/**",
+    "**/__pycache__/**",
+    "**/.mypy_cache/**",
+    "**/.pytest_cache/**",
+    "**/.ruff_cache/**",
+    "**/.redup/**",
+    "**/.jscpd/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/*.egg-info/**",
+    "**/code2llm_output/**",
+    "**/project/**",
+    "**/logs/**",
+    "**/*.pyc",
+    "**/*.bak"
+  ]
+}

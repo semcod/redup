@@ -1,5 +1,37 @@
 flowchart TD
+%% generated in 0.03s
 
     %% Entry points (blue)
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
+    subgraph Core
+        src__redup__core__hash_cache__HashCache___load["_load"]
+        src__redup__core__hash_cache__HashCache__save["save"]
+        src__redup__core__hash_cache__HashCache__get_file_hash["get_file_hash"]
+        src__redup__core__hash_cache__HashCache__is_unchanged["is_unchanged"]
+        src__redup__core__hash_cache__HashCache__update["update"]
+        src__redup__core__hash_cache__HashCache__invalidate["invalidate"]
+        src__redup__core__hash_cache__HashCache__get_cached_results["get_cached_results"]
+        src__redup__core__hash_cache__HashCache__clear["clear"]
+        src__redup__core__hash_cache___config_to_hash["_config_to_hash"]
+        src__redup__core__scanner_cache__MemoryFileCache___estimate_size["_estimate_size"]
+        src__redup__core__scanner_cache__MemoryFileCache__get_file_content["get_file_content"]
+        src__redup__core__scanner_cache__MemoryFileCache___evict_oldest["_evict_oldest"]
+        src__redup__core__lazy_grouper__DuplicateGroupCollector__collect["collect"]
+        src__redup__core__lazy_grouper__DuplicateGroupCollector__collect_sorted["collect_sorted"]
+        benchmark__benchmark_sequential_vs_parallel["benchmark_sequential_vs_parall"]
+        ...["+204 more"]
+    end
+
+    subgraph Exporters
+        src__redup__cli_app__compare_command___export_json["_export_json"]
+        src__redup__integrations__planfile_integration__DuplicateTaskExporter__export["export"]
+        src__redup__integrations__planfile_integration__DuplicateTaskExporter___generate_tasks["_generate_tasks"]
+        src__redup__integrations__planfile_integration__DuplicateTaskExporter___create_task_from_group["_create_task_from_group"]
+        src__redup__integrations__planfile_integration__DuplicateTaskExporter___build_description["_build_description"]
+        src__redup__integrations__planfile_integration__DuplicateTaskExporter___render_todo_md["_render_todo_md"]
+        src__redup__integrations__planfile_integration__DuplicateTaskExporter___sync_to_backend["_sync_to_backend"]
+        src__redup__integrations__planfile_integration__export_to_planfile["export_to_planfile"]
+    end
+
+    class src__redup__core__hash_cache__HashCache___load,src__redup__core__hash_cache__HashCache__save,src__redup__core__hash_cache__HashCache__get_file_hash,src__redup__core__hash_cache__HashCache__is_unchanged,src__redup__core__hash_cache__HashCache__update,src__redup__core__hash_cache__HashCache__invalidate,src__redup__core__hash_cache__HashCache__get_cached_results,src__redup__core__hash_cache__HashCache__clear,src__redup__core__hash_cache___config_to_hash,src__redup__core__scanner_cache__MemoryFileCache___estimate_size entry

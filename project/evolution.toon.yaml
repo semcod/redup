@@ -1,18 +1,29 @@
-# code2llm/evolution | 406 func | 69f | 2026-04-19
+# code2llm/evolution | 408 func | 70f | 2026-05-19
+# generated in 0.00s
 
-NEXT[1] (ranked by impact):
-  [1] !! SPLIT           src/redup/core/ts_extractor.py
-      WHY: 782L, 1 classes, max CC=7
-      EFFORT: ~4h  IMPACT: 5474
+NEXT[3] (ranked by impact):
+  [1] !! SPLIT           planfile.yaml
+      WHY: 1670L, 0 classes, max CC=0
+      EFFORT: ~4h  IMPACT: 0
+
+  [2] !! SPLIT           docs/API.md
+      WHY: 1210L, 0 classes, max CC=0
+      EFFORT: ~4h  IMPACT: 0
+
+  [3] !! SPLIT           CHANGELOG.md
+      WHY: 1190L, 0 classes, max CC=0
+      EFFORT: ~4h  IMPACT: 0
 
 
-RISKS[1]:
-  ⚠ Splitting src/redup/core/ts_extractor.py may break 24 import paths
+RISKS[3]:
+  ⚠ Splitting planfile.yaml may break 0 import paths
+  ⚠ Splitting docs/API.md may break 0 import paths
+  ⚠ Splitting CHANGELOG.md may break 0 import paths
 
 METRICS-TARGET:
   CC̄:          3.6 → ≤2.5
   max-CC:      14 → ≤7
-  god-modules: 1 → 0
+  god-modules: 8 → 0
   high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 

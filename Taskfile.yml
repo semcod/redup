@@ -38,6 +38,15 @@ tasks:
     desc: Run ruff lint check
     cmds:
     - ruff check .
+  jscpd:
+    desc: Run jscpd duplicate-code budget
+    cmds:
+    - scripts/jscpd-check.sh
+  quality:
+    desc: Run lint and duplicate-code gates
+    cmds:
+    - taskfile run lint
+    - taskfile run jscpd
   fmt:
     desc: Auto-format with ruff
     cmds:

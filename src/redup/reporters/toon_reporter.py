@@ -7,7 +7,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from redup.core.models import DuplicationMap
+from redup.core.models import DuplicateGroup, DuplicationMap
 
 
 def _render_header(dup_map: DuplicationMap) -> list[str]:

@@ -1,107 +1,112 @@
-# code2llm | 88f 11177L | python:87,shell:2 | 2026-04-19
-# CC̄=3.6 | critical:0/411 | dups:0 | cycles:0
+# code2llm | 123f 23408L | python:88,md:17,yaml:5,json:5,shell:4,toml:2,yml:1,txt:1 | 2026-05-19
+# generated in 0.04s
+# CC̄=3.6 | critical:0/414 | dups:0 | cycles:3
 
 HEALTH[0]: ok
 
-REFACTOR[0]: none needed
+REFACTOR[1]:
+  1. break 3 circular dependencies
 
 PIPELINES[190]:
-  [1] Src [main]: main → analyze → ensure_config
+  [1] Src [__init__]: __init__
       PURITY: 100% pure
-  [2] Src [benchmark_sequential_vs_parallel]: benchmark_sequential_vs_parallel → analyze → ensure_config
+  [2] Src [_load]: _load
       PURITY: 100% pure
-  [3] Src [benchmark_feature_performance]: benchmark_feature_performance → analyze_parallel → ensure_config
+  [3] Src [save]: save
       PURITY: 100% pure
-  [4] Src [_load_from_env]: _load_from_env
+  [4] Src [get_file_hash]: get_file_hash
       PURITY: 100% pure
-  [5] Src [reload]: reload
+  [5] Src [is_unchanged]: is_unchanged
       PURITY: 100% pure
 
 LAYERS:
-  benchmarks/                     CC̄=5.2    ←in:0  →out:1
-  │ bench_libraries            160L  0C    4m  CC=10     ←0
+  benchmarks/                     CC̄=5.2    ←in:0  →out:16  !! split
+  │ bench_libraries            168L  0C    4m  CC=10     ←0
+  │
+  examples/                       CC̄=5.0    ←in:0  →out:18  !! split
+  │ 01_basic_usage              60L  0C    1m  CC=5      ←0
   │
   src/                            CC̄=3.6    ←in:0  →out:0
-  │ !! ts_extractor               782L  1C   24m  CC=7      ←1
-  │ universal_fuzzy            449L  3C   16m  CC=11     ←0
-  │ fuzzy_similarity           416L  4C   20m  CC=10     ←0
-  │ refactor_advisor           359L  2C   13m  CC=9      ←1
-  │ compare_command            350L  0C   16m  CC=6      ←1
-  │ handlers                   343L  0C   12m  CC=12     ←0
-  │ planfile_integration       308L  3C    8m  CC=12     ←0
-  │ comparator                 306L  2C    8m  CC=8      ←1
-  │ __init__                   304L  0C    3m  CC=14     ←6
-  │ __init__                   303L  0C   14m  CC=10     ←3
-  │ enhanced_reporter          274L  1C   17m  CC=8      ←0
-  │ toon_reporter              270L  0C   13m  CC=13     ←3
-  │ cache                      267L  1C   10m  CC=5      ←1
-  │ duplicate_finder           262L  0C    6m  CC=11     ←1
-  │ main                       227L  0C    6m  CC=1      ←0
-  │ lsh_matcher                225L  2C   12m  CC=10     ←1
-  │ models                     216L  9C    1m  CC=1      ←0
-  │ differ                     215L  1C    9m  CC=7      ←3
-  │ code2llm_reporter          209L  0C    6m  CC=11     ←2
+  │ !! ts_extractor               828L  1C   24m  CC=7      ←0
+  │ universal_fuzzy            471L  3C   16m  CC=11     ←0
+  │ fuzzy_similarity           430L  4C   20m  CC=10     ←0
+  │ refactor_advisor           363L  2C   13m  CC=9      ←1
+  │ compare_command            355L  0C   16m  CC=6      ←1
+  │ handlers                   346L  0C   12m  CC=12     ←0
+  │ __init__                   313L  0C    3m  CC=14     ←6
+  │ comparator                 312L  2C    8m  CC=8      ←1
+  │ planfile_integration       311L  3C    8m  CC=12     ←0
+  │ __init__                   309L  0C   14m  CC=10     ←3
+  │ models                     294L  9C    1m  CC=1      ←0
+  │ duplicate_finder           271L  0C    6m  CC=11     ←1
+  │ toon_reporter              268L  0C   13m  CC=13     ←3
+  │ main                       265L  0C    6m  CC=1      ←0
+  │ enhanced_reporter          260L  1C   17m  CC=8      ←0
+  │ cache                      259L  1C   10m  CC=5      ←1
+  │ scan_commands              243L  0C    5m  CC=7      ←1
+  │ lsh_matcher                232L  2C   12m  CC=10     ←1
+  │ differ                     217L  1C    9m  CC=7      ←2
+  │ code2llm_reporter          211L  0C    6m  CC=11     ←2
+  │ diff_helpers               211L  3C   13m  CC=6      ←0
   │ hasher                     202L  2C   13m  CC=12     ←8
-  │ diff_helpers               201L  3C   13m  CC=6      ←1
-  │ python_parser              185L  1C    7m  CC=5      ←0
-  │ config                     182L  1C    7m  CC=9      ←14
-  │ tasks_command              179L  0C    2m  CC=14     ←0
-  │ semantic                   174L  2C    5m  CC=9      ←0
-  │ config                     171L  0C    6m  CC=5      ←4
-  │ scan_commands              164L  0C    5m  CC=7      ←1
-  │ fuzzy_similarity           160L  0C    9m  CC=5      ←1
-  │ lazy_grouper               159L  1C    7m  CC=7      ←1
-  │ function_extractor         148L  1C    5m  CC=5      ←0
-  │ server                     140L  0C    5m  CC=5      ←0
+  │ tasks_command              186L  0C    2m  CC=14     ←0
+  │ python_parser              186L  1C    7m  CC=5      ←0
+  │ semantic                   182L  2C    5m  CC=9      ←0
+  │ config                     182L  1C    7m  CC=9      ←15
+  │ config                     172L  0C    6m  CC=5      ←5
+  │ fuzzy_similarity           171L  0C    9m  CC=5      ←1
+  │ lazy_grouper               160L  1C    7m  CC=7      ←1
+  │ function_extractor         149L  1C    5m  CC=5      ←0
+  │ schemas                    145L  0C    1m  CC=1      ←0
+  │ config                     143L  1C    2m  CC=4      ←0
+  │ server                     138L  0C    5m  CC=5      ←0
   │ scanner_utils              136L  0C   10m  CC=9      ←1
-  │ community                  121L  1C    2m  CC=11     ←1
-  │ main                       115L  0C    5m  CC=8      ←0
-  │ planner                    113L  0C    5m  CC=7      ←1
+  │ community                  122L  1C    2m  CC=11     ←1
+  │ main                       114L  0C    5m  CC=8      ←1
   │ matcher                    111L  1C    5m  CC=7      ←1
-  │ hash_cache                 104L  1C   10m  CC=3      ←0
-  │ groups                     102L  0C    4m  CC=6      ←1
-  │ decision                    96L  2C    1m  CC=6      ←1
-  │ markdown_reporter           90L  0C    1m  CC=12     ←2
-  │ scanner_cache               89L  1C    8m  CC=6      ←2
-  │ mcp_server                  83L  0C    1m  CC=2      ←0
+  │ planner                    110L  0C    5m  CC=7      ←1
+  │ hash_cache                 102L  1C   10m  CC=3      ←0
+  │ groups                      99L  0C    4m  CC=6      ←1
+  │ markdown_reporter           96L  0C    1m  CC=12     ←2
+  │ decision                    95L  2C    1m  CC=6      ←1
+  │ scanner_cache               92L  1C    8m  CC=6      ←2
+  │ mcp_server                  82L  0C    1m  CC=2      ←0
   │ dispatcher                  82L  0C    1m  CC=2      ←1
   │ output_writer               79L  0C    2m  CC=12     ←1
-  │ schemas                     78L  0C    1m  CC=1      ←0
-  │ config                      76L  1C    2m  CC=4      ←0
-  │ base                        75L  0C    3m  CC=5      ←9
+  │ base                        76L  0C    3m  CC=5      ←9
+  │ language_dispatcher         76L  1C    5m  CC=4      ←0
   │ json_reporter               73L  0C    3m  CC=5      ←4
-  │ language_dispatcher         72L  1C    5m  CC=4      ←0
-  │ web                         64L  0C    4m  CC=2      ←0
-  │ dotnet                      51L  0C    2m  CC=5      ←0
-  │ scanner_filters             50L  0C    3m  CC=9      ←0
-  │ php                         48L  0C    2m  CC=5      ←0
-  │ phases                      48L  0C    4m  CC=6      ←1
-  │ utils                       47L  0C    3m  CC=10     ←0
+  │ web                         70L  0C    4m  CC=2      ←0
+  │ scanner_filters             63L  0C    3m  CC=11     ←0
+  │ pipeline_utils              55L  0C    2m  CC=6      ←2
+  │ dotnet                      55L  0C    2m  CC=5      ←0
+  │ config_builder              53L  0C    2m  CC=7      ←1
+  │ stylesheet                  51L  0C    1m  CC=1      ←0
+  │ php                         50L  0C    2m  CC=5      ←0
   │ ruby                        46L  0C    1m  CC=1      ←0
-  │ stylesheet                  46L  0C    1m  CC=1      ←0
-  │ __init__                    43L  0C    0m  CC=0.0    ←0
-  │ c_family                    41L  0C    1m  CC=1      ←0
+  │ query                       46L  0C    1m  CC=1      ←0
+  │ phases                      46L  0C    4m  CC=6      ←1
+  │ utils                       46L  0C    3m  CC=10     ←0
+  │ scanner_types               45L  3C    0m  CC=0.0    ←0
+  │ c_family                    43L  0C    1m  CC=1      ←0
+  │ duplicate_finders           43L  0C    1m  CC=3      ←0
+  │ hash_utils                  42L  0C    1m  CC=3      ←0
+  │ __init__                    42L  0C    0m  CC=0.0    ←0
   │ markup                      41L  0C    1m  CC=1      ←0
-  │ scanner_types               41L  3C    0m  CC=0.0    ←0
-  │ query                       40L  0C    1m  CC=1      ←0
-  │ scanner_models              39L  3C    0m  CC=0.0    ←0
-  │ hash_utils                  37L  0C    1m  CC=3      ←0
-  │ duplicate_finders           36L  0C    1m  CC=3      ←0
-  │ __init__                    36L  0C    0m  CC=0.0    ←0
+  │ scan_helpers                40L  0C    3m  CC=1      ←1
   │ yaml_reporter               34L  0C    1m  CC=4      ←2
-  │ scan_helpers                34L  0C    3m  CC=1      ←1
+  │ __init__                    32L  0C    0m  CC=0.0    ←0
   │ shell                       31L  0C    1m  CC=1      ←0
-  │ __init__                    31L  0C    0m  CC=0.0    ←0
-  │ pipeline_utils              27L  0C    2m  CC=6      ←2
-  │ analysis_logic              26L  0C    2m  CC=4      ←0
+  │ utils                       28L  0C    3m  CC=8      ←1
+  │ analysis_logic              27L  0C    2m  CC=4      ←0
   │ __init__                    23L  0C    0m  CC=0.0    ←0
-  │ config_handler              22L  0C    0m  CC=0.0    ←0
-  │ utils                       20L  0C    3m  CC=8      ←1
+  │ config_handler              20L  0C    0m  CC=0.0    ←0
   │ grouper                     15L  0C    0m  CC=0.0    ←0
-  │ scanner_loader               7L  0C    0m  CC=0.0    ←0
+  │ scanner_models              11L  0C    0m  CC=0.0    ←0
+  │ scanner_loader               8L  0C    0m  CC=0.0    ←0
   │ __main__                     5L  0C    0m  CC=0.0    ←0
+  │ __init__                     5L  0C    0m  CC=0.0    ←0
   │ sitecustomize                4L  0C    0m  CC=0.0    ←0
-  │ __init__                     4L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
@@ -109,19 +114,70 @@ LAYERS:
   │ mcp_server_clean             0L  0C    0m  CC=0.0    ←0
   │
   ./                              CC̄=3.0    ←in:0  →out:0
-  │ benchmark                  111L  0C    2m  CC=3      ←0
-  │ project.sh                  20L  0C    0m  CC=0.0    ←0
+  │ !! planfile.yaml             1670L  0C    0m  CC=0.0    ←0
+  │ !! CHANGELOG.md              1190L  0C    0m  CC=0.0    ←0
+  │ !! compare_report.json        792L  0C    0m  CC=0.0    ←0
+  │ !! README.md                  747L  0C    0m  CC=0.0    ←0
+  │ !! compare_report_test.json   687L  0C    0m  CC=0.0    ←0
+  │ goal.yaml                  428L  0C    0m  CC=0.0    ←0
+  │ SPRINT_2_PLAN.md           280L  0C    0m  CC=0.0    ←0
+  │ complexity_reduction_plan.md   276L  0C    0m  CC=0.0    ←0
+  │ TODO.md                    242L  0C    0m  CC=0.0    ←0
+  │ TODO_github.md             235L  0C    0m  CC=0.0    ←0
+  │ TEST_OUTPUT.md             235L  0C    0m  CC=0.0    ←0
+  │ TODO_gitlab.md             235L  0C    0m  CC=0.0    ←0
+  │ PERFORMANCE_OPTIMIZATIONS.md   229L  0C    0m  CC=0.0    ←0
+  │ Taskfile.yml               195L  0C    0m  CC=0.0    ←0
+  │ pyproject.toml             162L  0C    0m  CC=0.0    ←0
+  │ CONTINUATION_PLAN.md       146L  0C    0m  CC=0.0    ←0
+  │ BUGFIX_SUMMARY.md          131L  0C    0m  CC=0.0    ←0
+  │ MEMORY_OPTIMIZATION.md     128L  0C    0m  CC=0.0    ←0
+  │ COMPLEXITY_REDUCTION_COMPLETE.md   122L  0C    0m  CC=0.0    ←0
+  │ benchmark                  117L  0C    2m  CC=3      ←0
+  │ PERFORMANCE.md              97L  0C    0m  CC=0.0    ←0
+  │ prefact.yaml                82L  0C    0m  CC=0.0    ←0
+  │ project.sh                  54L  0C    0m  CC=0.0    ←0
+  │ redup.toml                  29L  0C    0m  CC=0.0    ←0
+  │ .jscpd.json                 23L  0C    0m  CC=0.0    ←0
+  │ pyqual.yaml                 18L  0C    0m  CC=0.0    ←0
+  │ coverage.json                1L  0C    0m  CC=0.0    ←0
+  │
+  scripts/                        CC̄=0.0    ←in:66  →out:0
+  │ jscpd-check.sh              69L  0C    1m  CC=0.0    ←7
+  │ redup-run.sh                29L  0C    0m  CC=0.0    ←0
+  │ jscpd-run.sh                27L  0C    0m  CC=0.0    ←0
+  │
+  redup_self_analysis/            CC̄=0.0    ←in:0  →out:0
+  │ duplication.json            96L  0C    0m  CC=0.0    ←0
+  │
+  docs/                           CC̄=0.0    ←in:0  →out:0
+  │ !! API.md                    1210L  0C    0m  CC=0.0    ←0
+  │ PLANFILE_INTEGRATION_TESTING.md   409L  0C    0m  CC=0.0    ←0
+  │ README.md                  210L  0C    0m  CC=0.0    ←0
+  │
+  proxy_analysis/                 CC̄=0.0    ←in:0  →out:0
+  │ !! duplication.yaml          1058L  0C    0m  CC=0.0    ←0
+  │
+  toon/                           CC̄=0.0    ←in:0  →out:0
+  │ validation.txt              67L  0C    0m  CC=0.0    ←0
   │
   ── zero ──
      src/redup/mcp_server_clean.py             0L
 
 COUPLING:
-               src.redup   benchmark  benchmarks
-   src.redup          ──          ←4          ←1  hub
-   benchmark           4          ──            
-  benchmarks           1                      ──
-  CYCLES: none
-  HUB: src.redup/ (fan-in=5)
+                 scripts   benchmark   src.redup    examples  benchmarks
+     scripts          ──         ←23         ←13         ←15         ←15  hub
+   benchmark          23          ──           4                          !! fan-out
+   src.redup          13          ←4          ──          ←3          ←1  hub
+    examples          15                       3          ──              !! fan-out
+  benchmarks          15                       1                      ──  !! fan-out
+  CYCLES: 3
+  HUB: scripts/ (fan-in=66)
+  HUB: src.redup/ (fan-in=8)
+  SMELL: examples/ fan-out=18 → split needed
+  SMELL: benchmark/ fan-out=27 → split needed
+  SMELL: src.redup/ fan-out=13 → split needed
+  SMELL: benchmarks/ fan-out=16 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
