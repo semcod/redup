@@ -35,6 +35,14 @@
 - refactor(docs): multiple code analysis engine and docs refactors
 - feat(None): code improvements
 
+## [0.4.29] - 2026-05-19
+
+### Docs
+- Update README.md
+
+### Other
+- Update .redup/cache/hash_cache.db
+
 ## [0.4.28] - 2026-05-19
 
 ### Docs
