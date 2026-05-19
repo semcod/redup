@@ -3,6 +3,7 @@
 import tempfile
 from pathlib import Path
 
+from redup.core import scanner_filters
 from redup.core.models import ScanConfig
 from redup.core.scanner import (
     _extract_function_blocks_python,
@@ -87,3 +88,22 @@ def test_scan_project_target_files_only():
         assert stats.files_skipped == 0
         paths = {Path(f.path).name for f in files}
         assert paths == {"b.py"}
+
+
+def test_scan_project_target_files_does_not_walk_tree(monkeypatch):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+
+        (root / "a.py").write_text("def foo():\n    return 1\n")
+        (root / "b.py").write_text("def bar():\n    return 2\n")
+
+        def fail_walk(*args, **kwargs):
+            raise AssertionError("target-file scans should not walk the project tree")
+
+        monkeypatch.setattr(scanner_filters.os, "walk", fail_walk)
+
+        config = ScanConfig(root=root, target_files=["b.py"])
+        files, stats = scan_project(config)
+
+        assert stats.files_scanned == 1
+        assert {Path(f.path).name for f in files} == {"b.py"}

@@ -29,21 +29,58 @@ def _is_test_file(path: Path) -> bool:
     return any("test" in part and "pytest-" not in part for part in dir_parts)
 
 
+def _collect_target_files(config: ScanConfig) -> list[Path]:
+    """Collect an explicit target file list without walking the whole tree."""
+    if not config.target_files:
+        return []
+
+    files: list[Path] = []
+    seen: set[Path] = set()
+    ext_set = set(config.extensions)
+    exclude_patterns = tuple(config.exclude_patterns)
+
+    for target in config.target_files:
+        relative_path = Path(str(target)).as_posix().lstrip("./")
+        file_path = (config.root / relative_path).resolve()
+        try:
+            project_relative = _project_relative_path(file_path, config.root)
+        except ValueError:
+            continue
+
+        relative_posix = project_relative.as_posix().lstrip("./")
+        if relative_posix != relative_path:
+            continue
+        if file_path in seen or not file_path.is_file():
+            continue
+        if file_path.suffix not in ext_set:
+            continue
+        if _should_exclude(project_relative, exclude_patterns):
+            continue
+        if not config.include_tests and _is_test_file(project_relative):
+            continue
+        try:
+            if file_path.stat().st_size > config.max_file_size_kb * 1024:
+                continue
+        except OSError:
+            continue
+        seen.add(file_path)
+        files.append(file_path)
+
+    return files
+
+
 def _collect_files(config: ScanConfig) -> list[Path]:
     """Collect all files to scan based on configuration.
 
     Uses os.walk with topdown pruning to skip hidden directories early,
     avoiding descent into .rebuild_ev/, .regres/, etc.
     """
+    if config.target_files is not None:
+        return _collect_target_files(config)
+
     files = []
     ext_set = set(config.extensions)
     exclude_patterns = tuple(config.exclude_patterns)
-    target_files = config.target_files
-    target_set = (
-        {Path(p).as_posix().lstrip("./") for p in target_files}
-        if target_files
-        else None
-    )
     root_str = str(config.root)
 
     for dirpath, dirnames, filenames in os.walk(root_str, topdown=True):
@@ -55,8 +92,6 @@ def _collect_files(config: ScanConfig) -> list[Path]:
                 continue
             relative_path = _project_relative_path(file_path, config.root)
             relative_posix = relative_path.as_posix().lstrip("./")
-            if target_set is not None and relative_posix not in target_set:
-                continue
             if _should_exclude(relative_path, exclude_patterns):
                 continue
             if not config.include_tests and _is_test_file(relative_path):

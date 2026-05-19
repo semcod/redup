@@ -35,6 +35,27 @@
 - refactor(docs): multiple code analysis engine and docs refactors
 - feat(None): code improvements
 
+## [0.4.28] - 2026-05-19
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+
+### Test
+- Update tests/test_scanner.py
+
+### Other
+- Update .redup/cache/hash_cache.db
+- Update VERSION
+
+## [0.4.27] - 2026-05-19
+
+### Performance
+- Make `redup scan --changed-only` collect explicit changed files directly instead of walking the full project tree.
+
+### Test
+- Add regression coverage proving target-file scans do not call `os.walk`.
+
 ## [0.4.26] - 2026-05-19
 
 ### Docs
