@@ -63,6 +63,20 @@ SCAN_PROPERTIES = {
         "default": False,
         "description": "Include code snippets in JSON output",
     },
+    "intent": {
+        "type": "boolean",
+        "default": False,
+        "description": "Enable Intract intent duplicate detection",
+    },
+    "intent_threshold": {
+        "type": "number",
+        "default": 0.84,
+        "description": "Minimum similarity for intent duplicate groups",
+    },
+    "intent_manifest": {
+        "type": "string",
+        "description": "Path to intract.yaml / intent.yaml for intent analysis",
+    },
 }
 
 

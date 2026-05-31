@@ -7,7 +7,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from redup.core.models import DuplicateGroup, DuplicationMap
+from redup.core.models import DuplicateGroup, DuplicationMap, DuplicateType
 
 
 def _render_header(dup_map: DuplicationMap) -> list[str]:
@@ -49,6 +49,11 @@ def _render_duplicates(groups: list) -> list[str]:
                 f"L={group.total_lines} N={group.occurrences} "
                 f"saved={group.saved_lines_potential} sim={group.similarity_score:.2f}"
             )
+            if group.duplicate_type == DuplicateType.INTENT:
+                metadata = getattr(group, "metadata", {}) or {}
+                contracts = metadata.get("evidence", {}).get("contracts", [])
+                if contracts:
+                    lines.append(f"      intent={','.join(contracts)} engine={metadata.get('engine', 'intract')}")
             for frag in group.fragments:
                 fn_info = f"  ({frag.function_name})" if frag.function_name else ""
                 lines.append(f"      {frag.file}:{frag.line_start}-{frag.line_end}{fn_info}")

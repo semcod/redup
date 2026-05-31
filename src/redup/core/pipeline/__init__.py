@@ -13,6 +13,7 @@ from redup.core.pipeline.duplicate_finder import (
     find_duplicates_phase_lazy,
     find_duplicates_phase_optimized,
     find_exact_groups,
+    find_intent_groups,
     find_near_duplicate_groups,
     find_semantic_groups,
     find_structural_groups,
@@ -46,6 +47,7 @@ _match_results_to_blocks = match_results_to_blocks
 _calculate_similarity = calculate_similarity
 _find_near_duplicate_groups = find_near_duplicate_groups
 _find_semantic_groups = find_semantic_groups
+_find_intent_groups = find_intent_groups
 _blocks_to_group = blocks_to_group
 
 
@@ -269,6 +271,7 @@ __all__ = [
     "find_structural_groups",
     "find_near_duplicate_groups",
     "find_semantic_groups",
+    "find_intent_groups",
     # Groups
     "blocks_to_group",
     "deduplicate_groups",

@@ -26,6 +26,8 @@ def _finalize_duplicate_groups(
 ) -> list[DuplicateGroup]:
     """Attach near duplicates, sort by impact, and report timing."""
     groups.extend(find_near_duplicate_groups(all_blocks, config))
+    if getattr(config, "intent_enabled", False):
+        groups.extend(find_intent_groups(all_blocks, config))
     groups.sort(key=lambda g: g.impact_score, reverse=True)
 
     processing_time = (time.time() - start_time) * 1000
@@ -212,6 +214,23 @@ def find_semantic_groups(blocks: list[CodeBlock], threshold: float = 0.80) -> li
         )
 
     return groups
+
+
+def find_intent_groups(blocks: list[CodeBlock], config: ScanConfig) -> list[DuplicateGroup]:
+    """Find duplicate intent contracts via Intract."""
+    if not getattr(config, "intent_enabled", False):
+        return []
+
+    try:
+        from redup.integrations.intract.adapter import detect_intent_duplicates
+    except ImportError:
+        return []
+
+    try:
+        return detect_intent_duplicates(blocks, config)
+    except RuntimeError as exc:
+        print(f"⚠️  {exc}")
+        return []
 
 
 def find_duplicates_phase_optimized(

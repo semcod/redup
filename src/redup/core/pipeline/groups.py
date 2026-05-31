@@ -64,6 +64,10 @@ def deduplicate_groups(groups: list[DuplicateGroup]) -> list[DuplicateGroup]:
         if group.occurrences < 2:
             continue
 
+        if group.duplicate_type == DuplicateType.INTENT:
+            kept.append(group)
+            continue
+
         # Check if this group's fragments are already covered
         locations = {(f.file, f.line_start, f.line_end) for f in group.fragments}
         new_locations = locations - seen_locations

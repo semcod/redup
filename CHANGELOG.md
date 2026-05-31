@@ -35,6 +35,24 @@
 - refactor(docs): multiple code analysis engine and docs refactors
 - feat(None): code improvements
 
+## [0.4.30] - 2026-05-31
+
+### Docs
+- Update 1.md
+- Update 2.md
+- Update 3.md
+- Update 4.md
+- Update README.md
+- Update docs/PLANFILE_INTEGRATION_TESTING.md
+
+### Test
+- Update tests/test_models.py
+
+### Other
+- Update .idea/modules.xml
+- Update .redup/cache/hash_cache.db
+- Update uv.lock
+
 ## [0.4.29] - 2026-05-19
 
 ### Docs

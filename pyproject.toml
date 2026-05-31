@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redup"
-version = "0.4.29"
+version = "0.4.30"
 description = "Code duplication analyzer and refactoring planner for LLMs"
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 authors = [
     { name = "Tom Sapletta", email = "tom@sapletta.com" },
 ]
@@ -44,52 +44,38 @@ all = [
     "redup[ast]",
     "redup[lsh]",
     "redup[semantic]",
+    "redup[intent]",
     "redup[compare]",
     "redup[tasks]",
 ]
-tasks = ["planfile>=0.4.0"]
+tasks = ["planfile>=0.1.0"]
 compare = ["networkx>=3.0"]
 llm = ["litellm>=1.0"]
 fast = ["xxhash>=3.0", "libcst>=1.0", "pybloom-live>=4.0"]
 fuzzy = ["rapidfuzz>=3.0"]
 ast = [
     "tree-sitter>=0.21",
-    "tree-sitter-javascript>=0.20",
-    "tree-sitter-typescript>=0.20", 
-    "tree-sitter-go>=0.20",
-    "tree-sitter-rust>=0.20",
-    "tree-sitter-java>=0.20",
-    "tree-sitter-c>=0.20",
-    "tree-sitter-cpp>=0.20",
-    "tree-sitter-html>=0.20",
-    "tree-sitter-css>=0.20",
-    "tree-sitter-sql>=0.20",
-    "tree-sitter-json>=0.20",
-    "tree-sitter-yaml>=0.20",
-    "tree-sitter-toml>=0.20",
-    "tree-sitter-xml>=0.20",
-    "tree-sitter-markdown>=0.20",
-    "tree-sitter-bash>=0.20",
-    "tree-sitter-ruby>=0.20",
-    "tree-sitter-php>=0.20",
-    "tree-sitter-embedded-template>=0.20",
-    "tree-sitter-regex>=0.20",
-    "tree-sitter-scala>=0.20",
-    "tree-sitter-kotlin>=0.20",
-    "tree-sitter-swift>=0.20",
-    "tree-sitter-objc>=0.20",
-    "tree-sitter-c-sharp>=0.20",
-    "tree-sitter-lua>=0.20",
-    "tree-sitter-graphql>=0.20",
-    "tree-sitter-dockerfile>=0.20",
-    "tree-sitter-make>=0.20",
-    "tree-sitter-vim>=0.20",
-    "tree-sitter-nginx>=0.20",
-    "tree-sitter-svelte>=0.20",
-    "tree-sitter-vue>=0.20",
+    "tree-sitter-javascript>=0.21.0",
+    "tree-sitter-typescript>=0.21.0",
+    "tree-sitter-go>=0.21.0",
+    "tree-sitter-rust>=0.21.0",
+    "tree-sitter-java>=0.21.0",
+    "tree-sitter-c>=0.21.0",
+    "tree-sitter-cpp>=0.21.0",
+    "tree-sitter-c-sharp>=0.21.0",
+    "tree-sitter-html>=0.19.0",
+    "tree-sitter-css>=0.19.0",
+    "tree-sitter-sql>=0.3.0",
+    "tree-sitter-json>=0.21.0",
+    "tree-sitter-yaml>=0.7.0",
+    "tree-sitter-bash>=0.21.0",
+    "tree-sitter-ruby>=0.21.0",
+    "tree-sitter-php>=0.21.0",
+    "tree-sitter-dockerfile>=0.2.0",
 ]
 lsh = ["datasketch>=1.6"]
 semantic = ["sentence-transformers>=2.0"]
+intent = ["intract>=0.5.6"]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -112,6 +98,9 @@ Documentation = "https://github.com/semcod/redup#readme"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.uv.sources]
+intract = { path = "../intract", editable = true }
 
 [tool.ruff]
 target-version = "py310"

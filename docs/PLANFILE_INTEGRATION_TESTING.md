@@ -16,7 +16,7 @@ pip install -e ".[dev]"
 pip install -e ".[tasks]"
 
 # Or install planfile separately
-pip install planfile>=0.4.0
+pip install planfile>=0.1.0
 ```
 
 ## Quick Test - Local Export Only
@@ -64,7 +64,7 @@ Create `.env` file or export directly:
 
 ```bash
 # GitHub Configuration
-export GITHUB_TOKEN="ghp_your_personal_access_token"
+export GITHUB_TOKEN="${GITHUB_TOKEN:-your-github-personal-access-token}"
 export GITHUB_REPO="your-username/your-repo"
 export GITHUB_MILESTONE="Sprint 1"  # optional
 ```
@@ -106,7 +106,7 @@ Analyzing . for duplications...
 
 ```bash
 # GitLab Configuration
-export GITLAB_TOKEN="glpat-your-personal-access-token"
+export GITLAB_TOKEN="${GITLAB_TOKEN:-your-gitlab-personal-access-token}"
 export GITLAB_URL="https://gitlab.com/api/v4"  # or your self-hosted URL
 export GITLAB_PROJECT_ID="12345678"  # or "namespace/project-name"
 ```
@@ -307,7 +307,7 @@ Expected format:
 ### Issue: "planfile not installed"
 
 ```bash
-pip install planfile>=0.4.0
+pip install planfile>=0.1.0
 # Or:
 pip install -e ".[tasks]"
 ```

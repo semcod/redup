@@ -98,3 +98,9 @@ def test_scan_config_defaults():
     assert config.min_block_lines == 3
     assert config.min_similarity == 0.85
     assert not config.include_tests
+    assert not config.intent_enabled
+    assert config.intent_threshold == 0.84
+
+
+def test_duplicate_type_intent():
+    assert DuplicateType.INTENT.value == "intent"

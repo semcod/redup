@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from redup.core.models import DuplicationMap
+from redup.core.models import DuplicationMap, DuplicateType
 
 
 def to_markdown(dup_map: DuplicationMap) -> str:
@@ -50,6 +50,14 @@ def to_markdown(dup_map: DuplicationMap) -> str:
         lines.append("")
         lines.append(f"- **Type:** `{group.duplicate_type.value.upper()}`")
         lines.append(f"- **Similarity:** {group.similarity_score:.2f}")
+        if group.duplicate_type == DuplicateType.INTENT:
+            metadata = getattr(group, "metadata", {}) or {}
+            evidence = metadata.get("evidence", {})
+            contracts = evidence.get("contracts", [])
+            if contracts:
+                lines.append(f"- **Intent contracts:** {', '.join(contracts)}")
+            if metadata.get("engine"):
+                lines.append(f"- **Engine:** `{metadata['engine']}`")
         lines.append(f"- **Occurrences:** {group.occurrences}")
         lines.append(f"- **Total lines:** {group.total_lines}")
         lines.append(f"- **Recoverable lines:** {group.saved_lines_potential}")

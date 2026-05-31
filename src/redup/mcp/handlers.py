@@ -49,6 +49,15 @@ def _build_scan_config(path: Path, params: dict[str, Any]) -> ScanConfig:
         scan_config.fuzzy_enabled = bool(params["fuzzy"])
     if params.get("fuzzy_threshold") is not None:
         scan_config.fuzzy_threshold = float(params["fuzzy_threshold"])
+    if params.get("intent") is not None:
+        scan_config.intent_enabled = bool(params["intent"])
+    if params.get("intent_threshold") is not None:
+        scan_config.intent_threshold = float(params["intent_threshold"])
+    if params.get("intent_manifest") is not None:
+        manifest_path = Path(str(params["intent_manifest"]))
+        if not manifest_path.is_absolute():
+            manifest_path = path / manifest_path
+        scan_config.intent_manifest_path = manifest_path
 
     return scan_config
 
