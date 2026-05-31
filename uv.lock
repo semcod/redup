@@ -1128,30 +1128,16 @@ wheels = [
 [[package]]
 name = "intract"
 version = "0.5.7"
-source = { editable = "../intract" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
     { name = "rich" },
     { name = "typer" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "costs", marker = "extra == 'dev'", specifier = ">=0.1.20" },
-    { name = "goal", marker = "extra == 'dev'", specifier = ">=2.1.0" },
-    { name = "jsonschema", marker = "extra == 'schema'", specifier = ">=4.0" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8" },
-    { name = "pfix", marker = "extra == 'dev'", specifier = ">=0.1.60" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "rich", specifier = ">=13.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.4" },
-    { name = "tree-sitter", marker = "extra == 'treesitter'", specifier = ">=0.22" },
-    { name = "tree-sitter-languages", marker = "extra == 'treesitter'", specifier = ">=1.10.2" },
-    { name = "typer", specifier = ">=0.12.0" },
-    { name = "watchdog", marker = "extra == 'watch'", specifier = ">=4.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/a5/03/0dbfb6b69ba7c768ffc36a8c16545295d6e269ace9c58c22a7dab1b2dcbc/intract-0.5.7.tar.gz", hash = "sha256:6ef741b4fc069570d60f626ff083e27d8f50863478b902eb25c17a243f877571", size = 2181901, upload-time = "2026-05-31T10:37:06.61Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cd/ab/f8ff9add268b5f1ef46e631c2d572394fd8859d2bc590d955f4049bfbdd1/intract-0.5.7-py3-none-any.whl", hash = "sha256:dd73082e97985a6043244f6f15c61970631f62b1c00ef6c3e3ad9d0aea98596d", size = 77221, upload-time = "2026-05-31T10:37:02.795Z" },
 ]
-provides-extras = ["dev", "watch", "schema", "treesitter"]
 
 [[package]]
 name = "ipython"
@@ -3071,7 +3057,7 @@ requires-dist = [
     { name = "datasketch", marker = "extra == 'lsh'", specifier = ">=1.6" },
     { name = "goal", specifier = ">=2.1.0" },
     { name = "goal", marker = "extra == 'dev'", specifier = ">=2.1.0" },
-    { name = "intract", marker = "extra == 'intent'", editable = "../intract" },
+    { name = "intract", marker = "extra == 'intent'", specifier = ">=0.5.7" },
     { name = "libcst", marker = "extra == 'fast'", specifier = ">=1.0" },
     { name = "litellm", marker = "extra == 'llm'", specifier = ">=1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.8" },
