@@ -1,20 +1,16 @@
-# code2llm/evolution | 394 func | 69f | 2026-05-19
-# generated in 0.00s
+# code2llm/evolution | 395 func | 69f | 2026-05-29
+# generated in 0.02s
 
-NEXT[4] (ranked by impact):
-  [1] !  SPLIT-FUNC      _collect_files  CC=15  fan=15
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 225
-
-  [2] !! SPLIT           proxy_analysis/duplication.json
+NEXT[3] (ranked by impact):
+  [1] !! SPLIT           proxy_analysis/duplication.json
       WHY: 1436L, 0 classes, max CC=0
       EFFORT: ~4h  IMPACT: 0
 
-  [3] !! SPLIT           planfile.yaml
+  [2] !! SPLIT           planfile.yaml
       WHY: 1319L, 0 classes, max CC=0
       EFFORT: ~4h  IMPACT: 0
 
-  [4] !! SPLIT           compare_report.json
+  [3] !! SPLIT           compare_report.json
       WHY: 792L, 0 classes, max CC=0
       EFFORT: ~4h  IMPACT: 0
 
@@ -25,10 +21,10 @@ RISKS[3]:
   ⚠ Splitting compare_report.json may break 0 import paths
 
 METRICS-TARGET:
-  CC̄:          3.7 → ≤2.6
-  max-CC:      15 → ≤7
-  god-modules: 4 → 0
-  high-CC(≥15): 1 → ≤0
+  CC̄:          3.8 → ≤2.7
+  max-CC:      14 → ≤7
+  god-modules: 5 → 0
+  high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -56,4 +52,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.7 → now CC̄=3.7
+  prev CC̄=3.7 → now CC̄=3.8

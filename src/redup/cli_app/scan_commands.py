@@ -132,6 +132,31 @@ def scan_command(
     fuzzy_threshold: float = typer.Option(
         0.8, "--fuzzy-threshold", help="Fuzzy similarity threshold (0.0-1.0)."
     ),
+    intent: bool = typer.Option(
+        False,
+        "--intent",
+        help="Enable Intract intent duplicate detection (requires reDUP[intent]).",
+    ),
+    intent_threshold: float = typer.Option(
+        0.84,
+        "--intent-threshold",
+        help="Intent contract similarity threshold (0.0-1.0).",
+    ),
+    intent_manifest: str | None = typer.Option(
+        None,
+        "--intent-manifest",
+        help="Optional intent.yaml / intract.yaml manifest path.",
+    ),
+    intent_fail_on: str | None = typer.Option(
+        None,
+        "--intent-fail-on",
+        help="Comma-separated Intract policy fail tokens for --intent scans.",
+    ),
+    intent_warn_on: str | None = typer.Option(
+        None,
+        "--intent-warn-on",
+        help="Comma-separated Intract policy warn tokens for --intent scans.",
+    ),
 ) -> None:
     """Scan a project for code duplicates."""
 
@@ -157,6 +182,7 @@ def scan_command(
             max_cache_mb,
             changed_only,
             fuzzy,
+            intent,
         ]
     ):
         config = build_config_with_file_support(
@@ -173,6 +199,11 @@ def scan_command(
             functions_only,
             fuzzy,
             fuzzy_threshold,
+            intent,
+            intent_threshold,
+            intent_manifest,
+            intent_fail_on,
+            intent_warn_on,
             target_files,
         )
     else:
@@ -200,6 +231,26 @@ def scan_command(
     from redup.cli_app.output_writer import write_results
 
     write_results(dup_map, format, output, path)
+
+    if intent:
+        from redup.cli_app.intract_commands import apply_scan_intent_policy
+
+        try:
+            policy = apply_scan_intent_policy(path, config, dup_map)
+        except ImportError:
+            typer.echo("WARN: Intract policy check skipped (install redup[intent])", err=True)
+            return
+
+        if policy.warnings:
+            typer.echo("\nIntract warnings:")
+            for item in policy.warnings:
+                typer.echo(f"  - {item}")
+
+        if policy.should_fail:
+            typer.echo("\nIntract policy failed:", err=True)
+            for item in policy.reasons:
+                typer.echo(f"  - {item}", err=True)
+            raise typer.Exit(1)
 
 
 def diff_command(before: Path, after: Path) -> None:
@@ -249,9 +300,11 @@ def check_command(
 
     # Show top duplicate groups
     if dup_map.groups:
-        typer.echo(f"\n🎯 Top {min(max_groups, len(dup_map.groups))} duplicate groups:")
-        for i, group in enumerate(dup_map.sorted_by_impact()[:max_groups]):
-            if group.saved_lines_potential <= max_saved_lines:
+        _max_groups = max_groups if max_groups is not None else 10
+        _max_saved = max_saved_lines if max_saved_lines is not None else 100
+        typer.echo(f"\n🎯 Top {min(_max_groups, len(dup_map.groups))} duplicate groups:")
+        for i, group in enumerate(dup_map.sorted_by_impact()[:_max_groups]):
+            if group.saved_lines_potential <= _max_saved:
                 break
             typer.echo(
                 f"  {i + 1}. {group.id}: {group.occurrences} occurrences, {group.saved_lines_potential} lines recoverable"

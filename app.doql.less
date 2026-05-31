@@ -2,7 +2,7 @@
 
 app {
   name: redup;
-  version: 0.4.25;
+  version: 0.4.29;
 }
 
 dependencies {
@@ -34,7 +34,7 @@ workflow[name="lint"] {
 
 workflow[name="jscpd"] {
   trigger: manual;
-  step-1: run cmd=scripts/jscpd-check.sh;
+  step-1: run cmd=PYTHONPATH=src python -m redup quality jscpd;
 }
 
 workflow[name="quality"] {

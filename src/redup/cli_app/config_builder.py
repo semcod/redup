@@ -29,6 +29,11 @@ def build_config_with_file_support(
     functions_only: bool = False,
     fuzzy: bool = False,
     fuzzy_threshold: float = 0.8,
+    intent: bool = False,
+    intent_threshold: float = 0.84,
+    intent_manifest: str | None = None,
+    intent_fail_on: str | None = None,
+    intent_warn_on: str | None = None,
     target_files: list[str] | None = None,
 ) -> ScanConfig:
     """Build scan configuration with advanced options."""
@@ -64,5 +69,14 @@ def build_config_with_file_support(
     # Add fuzzy support
     scan_config.fuzzy_enabled = fuzzy
     scan_config.fuzzy_threshold = fuzzy_threshold
+
+    scan_config.intent_enabled = intent
+    scan_config.intent_threshold = intent_threshold
+    if intent_manifest:
+        scan_config.intent_manifest_path = Path(intent_manifest)
+    if intent_fail_on:
+        scan_config.intent_fail_on = intent_fail_on
+    if intent_warn_on:
+        scan_config.intent_warn_on = intent_warn_on
 
     return scan_config

@@ -21,6 +21,7 @@ from redup.cli_app.scan_commands import (  # noqa: E402
     info_command,
     scan_command,
 )
+from redup.cli_app.intract_commands import intract_command  # noqa: E402
 
 app = typer.Typer(
     name="redup",
@@ -129,6 +130,31 @@ def scan(
         "--fuzzy-threshold",
         help="Fuzzy similarity threshold (0.0-1.0).",
     ),
+    intent: bool = typer.Option(
+        False,
+        "--intent",
+        help="Enable Intract intent duplicate detection (requires reDUP[intent]).",
+    ),
+    intent_threshold: float = typer.Option(
+        0.84,
+        "--intent-threshold",
+        help="Intent contract similarity threshold (0.0-1.0).",
+    ),
+    intent_manifest: str | None = typer.Option(
+        None,
+        "--intent-manifest",
+        help="Optional intent.yaml / intract.yaml manifest path.",
+    ),
+    intent_fail_on: str | None = typer.Option(
+        None,
+        "--intent-fail-on",
+        help="Comma-separated Intract policy fail tokens for --intent scans.",
+    ),
+    intent_warn_on: str | None = typer.Option(
+        None,
+        "--intent-warn-on",
+        help="Comma-separated Intract policy warn tokens for --intent scans.",
+    ),
 ) -> None:
     """Scan a project for code duplicates."""
     return scan_command(
@@ -150,6 +176,38 @@ def scan(
         include_untracked,
         fuzzy,
         fuzzy_threshold,
+        intent,
+        intent_threshold,
+        intent_manifest,
+        intent_fail_on,
+        intent_warn_on,
+    )
+
+
+@app.command()
+def intract(
+    path: Path = typer.Argument(DEFAULT_PATH, help="Project root to validate."),
+    manifest: Path | None = typer.Option(None, "--manifest", help="Path to intract.yaml / intent.yaml."),
+    intent: bool = typer.Option(True, "--intent/--no-intent", help="Include intent duplicate groups."),
+    intent_threshold: float = typer.Option(0.84, "--intent-threshold"),
+    fail_on: str | None = typer.Option(
+        "violation,missing_required_p1,invalid_manifest,intent_duplicate",
+        "--fail-on",
+    ),
+    warn_on: str | None = typer.Option("partial,unknown", "--warn-on"),
+    format: str = typer.Option("text", "--format", "-f", help="text|json"),
+    exit_on_fail: bool = typer.Option(True, "--exit/--no-exit"),
+) -> None:
+    """Validate Intract contracts and intent duplicate policy."""
+    return intract_command(
+        path,
+        manifest,
+        intent,
+        intent_threshold,
+        fail_on,
+        warn_on,
+        format,
+        exit_on_fail,
     )
 
 

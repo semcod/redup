@@ -1,0 +1,2850 @@
+source: code2llm
+# generated in 0.35s
+schema: code2llm.planfile_tickets.v1
+project_root: /home/tom/github/semcod/redup
+tickets:
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: analyze_optimized'
+  description: 'code2llm reports `God Function: analyze_optimized` in `src/redup/core/pipeline/__init__.py:116`.
+
+
+    Function ''analyze_optimized'' is oversized: CC=11, fan-out=16, mutations=28.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/pipeline/__init__.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/pipeline/__init__.py:116:God
+    Function: analyze_optimized'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: to_code2llm_context'
+  description: 'code2llm reports `God Function: to_code2llm_context` in `src/redup/reporters/code2llm_reporter.py:95`.
+
+
+    Function ''to_code2llm_context'' is oversized: CC=11, fan-out=4, mutations=34.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/code2llm_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/code2llm_reporter.py:95:God
+    Function: to_code2llm_context'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: to_markdown'
+  description: 'code2llm reports `God Function: to_markdown` in `src/redup/reporters/markdown_reporter.py:10`.
+
+
+    Function ''to_markdown'' is oversized: CC=12, fan-out=9, mutations=53.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/markdown_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/markdown_reporter.py:10:God
+    Function: to_markdown'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: all_blocks'
+  description: 'code2llm reports `Shotgun Surgery: all_blocks` in `src/redup/cli_app/fuzzy_similarity.py:49`.
+
+
+    Mutation of variable ''all_blocks'' spans 7 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/cli_app/fuzzy_similarity.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/cli_app/fuzzy_similarity.py:49:Shotgun
+    Surgery: all_blocks'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: block'
+  description: 'code2llm reports `Shotgun Surgery: block` in `src/redup/cli_app/fuzzy_similarity.py:49`.
+
+
+    Mutation of variable ''block'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/cli_app/fuzzy_similarity.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/cli_app/fuzzy_similarity.py:49:Shotgun
+    Surgery: block'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: config'
+  description: 'code2llm reports `Shotgun Surgery: config` in `src/redup/core/scanner/__init__.py:203`.
+
+
+    Mutation of variable ''config'' spans 19 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner/__init__.py:203:Shotgun
+    Surgery: config'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: content'
+  description: 'code2llm reports `Shotgun Surgery: content` in `src/redup/core/scanner_utils.py:46`.
+
+
+    Mutation of variable ''content'' spans 9 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner_utils.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner_utils.py:46:Shotgun
+    Surgery: content'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: data'
+  description: 'code2llm reports `Shotgun Surgery: data` in `src/redup/reporters/yaml_reporter.py:8`.
+
+
+    Mutation of variable ''data'' spans 6 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/reporters/yaml_reporter.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/reporters/yaml_reporter.py:8:Shotgun
+    Surgery: data'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: dup_map'
+  description: 'code2llm reports `Shotgun Surgery: dup_map` in `src/redup/cli_app/scan_commands.py:218`.
+
+
+    Mutation of variable ''dup_map'' spans 7 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/cli_app/scan_commands.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/cli_app/scan_commands.py:218:Shotgun
+    Surgery: dup_map'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: end'
+  description: 'code2llm reports `Shotgun Surgery: end` in `src/redup/core/refactor_advisor.py:263`.
+
+
+    Mutation of variable ''end'' spans 5 functions. Changing this logic requires work
+    in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/refactor_advisor.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/refactor_advisor.py:263:Shotgun
+    Surgery: end'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: end_line'
+  description: 'code2llm reports `Shotgun Surgery: end_line` in `src/redup/core/ts_extractor/extractors/web.py:29`.
+
+
+    Mutation of variable ''end_line'' spans 7 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/ts_extractor/extractors/web.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/ts_extractor/extractors/web.py:29:Shotgun
+    Surgery: end_line'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: extensions'
+  description: 'code2llm reports `Shotgun Surgery: extensions` in `src/redup/mcp/handlers.py:24`.
+
+
+    Mutation of variable ''extensions'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/mcp/handlers.py:24:Shotgun
+    Surgery: extensions'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: file_path'
+  description: 'code2llm reports `Shotgun Surgery: file_path` in `src/redup/core/scanner_utils.py:46`.
+
+
+    Mutation of variable ''file_path'' spans 7 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner_utils.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner_utils.py:46:Shotgun
+    Surgery: file_path'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: files'
+  description: 'code2llm reports `Shotgun Surgery: files` in `src/redup/core/scanner/__init__.py:203`.
+
+
+    Mutation of variable ''files'' spans 9 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner/__init__.py:203:Shotgun
+    Surgery: files'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: fragments'
+  description: 'code2llm reports `Shotgun Surgery: fragments` in `src/redup/reporters/json_reporter.py:11`.
+
+
+    Mutation of variable ''fragments'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/reporters/json_reporter.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/reporters/json_reporter.py:11:Shotgun
+    Surgery: fragments'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: group'
+  description: 'code2llm reports `Shotgun Surgery: group` in `src/redup/core/differ.py:30`.
+
+
+    Mutation of variable ''group'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/differ.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/differ.py:30:Shotgun
+    Surgery: group'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: groups'
+  description: 'code2llm reports `Shotgun Surgery: groups` in `src/redup/core/pipeline/duplicate_finder.py:63`.
+
+
+    Mutation of variable ''groups'' spans 12 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/pipeline/duplicate_finder.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/pipeline/duplicate_finder.py:63:Shotgun
+    Surgery: groups'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: index'
+  description: 'code2llm reports `Shotgun Surgery: index` in `src/redup/core/cache.py:226`.
+
+
+    Mutation of variable ''index'' spans 7 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/cache.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/cache.py:226:Shotgun
+    Surgery: index'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: key'
+  description: 'code2llm reports `Shotgun Surgery: key` in `src/redup/mcp_server.py:53`.
+
+
+    Mutation of variable ''key'' spans 6 functions. Changing this logic requires work
+    in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/mcp_server.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/mcp_server.py:53:Shotgun Surgery:
+    key'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: lines'
+  description: 'code2llm reports `Shotgun Surgery: lines` in `src/redup/reporters/code2llm_reporter.py:95`.
+
+
+    Mutation of variable ''lines'' spans 23 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/reporters/code2llm_reporter.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/reporters/code2llm_reporter.py:95:Shotgun
+    Surgery: lines'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: name'
+  description: 'code2llm reports `Shotgun Surgery: name` in `src/redup/core/scanner_cache.py:80`.
+
+
+    Mutation of variable ''name'' spans 13 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner_cache.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner_cache.py:80:Shotgun
+    Surgery: name'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: normalized'
+  description: 'code2llm reports `Shotgun Surgery: normalized` in `src/redup/core/hasher.py:108`.
+
+
+    Mutation of variable ''normalized'' spans 6 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/hasher.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/hasher.py:108:Shotgun
+    Surgery: normalized'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: overlap'
+  description: 'code2llm reports `Shotgun Surgery: overlap` in `src/redup/core/decision.py:35`.
+
+
+    Mutation of variable ''overlap'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/decision.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/decision.py:35:Shotgun
+    Surgery: overlap'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: path'
+  description: 'code2llm reports `Shotgun Surgery: path` in `src/redup/mcp/utils.py:16`.
+
+
+    Mutation of variable ''path'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/mcp/utils.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/mcp/utils.py:16:Shotgun Surgery:
+    path'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: payload'
+  description: 'code2llm reports `Shotgun Surgery: payload` in `src/redup/mcp/handlers.py:109`.
+
+
+    Mutation of variable ''payload'' spans 6 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/mcp/handlers.py:109:Shotgun
+    Surgery: payload'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: result'
+  description: 'code2llm reports `Shotgun Surgery: result` in `benchmarks/bench_libraries.py:38`.
+
+
+    Mutation of variable ''result'' spans 19 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - benchmarks/bench_libraries.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:benchmarks/bench_libraries.py:38:Shotgun
+    Surgery: result'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: scan_config'
+  description: 'code2llm reports `Shotgun Surgery: scan_config` in `src/redup/mcp/handlers.py:24`.
+
+
+    Mutation of variable ''scan_config'' spans 7 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/mcp/handlers.py:24:Shotgun
+    Surgery: scan_config'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: scanned_files'
+  description: 'code2llm reports `Shotgun Surgery: scanned_files` in `src/redup/core/scanner/__init__.py:203`.
+
+
+    Mutation of variable ''scanned_files'' spans 5 functions. Changing this logic
+    requires work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner/__init__.py:203:Shotgun
+    Surgery: scanned_files'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: start'
+  description: 'code2llm reports `Shotgun Surgery: start` in `src/redup/core/refactor_advisor.py:263`.
+
+
+    Mutation of variable ''start'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/refactor_advisor.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/refactor_advisor.py:263:Shotgun
+    Surgery: start'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: start_line'
+  description: 'code2llm reports `Shotgun Surgery: start_line` in `src/redup/core/ts_extractor/extractors/web.py:29`.
+
+
+    Mutation of variable ''start_line'' spans 8 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/ts_extractor/extractors/web.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/ts_extractor/extractors/web.py:29:Shotgun
+    Surgery: start_line'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: start_time'
+  description: 'code2llm reports `Shotgun Surgery: start_time` in `src/redup/core/scanner/__init__.py:203`.
+
+
+    Mutation of variable ''start_time'' spans 8 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner/__init__.py:203:Shotgun
+    Surgery: start_time'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: strategy'
+  description: 'code2llm reports `Shotgun Surgery: strategy` in `src/redup/core/scanner/__init__.py:203`.
+
+
+    Mutation of variable ''strategy'' spans 8 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/scanner/__init__.py:203:Shotgun
+    Surgery: strategy'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: tree'
+  description: 'code2llm reports `Shotgun Surgery: tree` in `src/redup/core/ts_extractor/main.py:35`.
+
+
+    Mutation of variable ''tree'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - src/redup/core/ts_extractor/main.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:src/redup/core/ts_extractor/main.py:35:Shotgun
+    Surgery: tree'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: blocks, threshold, min_lines'
+  description: 'code2llm reports `Data Clump: blocks, threshold, min_lines` in `src/redup/core/lsh_matcher.py:211`.
+
+
+    Arguments (blocks, threshold, min_lines) are used together in multiple functions:
+    src.redup.core.lsh_matcher.build_lsh_index, src.redup.core.lsh_matcher.find_near_duplicates.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/lsh_matcher.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/lsh_matcher.py:211:Data Clump:
+    blocks, threshold, min_lines'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: blocks, threshold, min_lines'
+  description: 'code2llm reports `Data Clump: blocks, threshold, min_lines` in `src/redup/core/lsh_matcher.py:224`.
+
+
+    Arguments (blocks, threshold, min_lines) are used together in multiple functions:
+    src.redup.core.lsh_matcher.build_lsh_index, src.redup.core.lsh_matcher.find_near_duplicates.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/lsh_matcher.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/lsh_matcher.py:224:Data Clump:
+    blocks, threshold, min_lines'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: code, language, self'
+  description: 'code2llm reports `Data Clump: code, language, self` in `src/redup/core/universal_fuzzy.py:193`.
+
+
+    Arguments (code, language, self) are used together in multiple functions: src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_code,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._remove_comments, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_identifiers,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_metadata, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._compute_complexity.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:193:Data
+    Clump: code, language, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: code, language, self'
+  description: 'code2llm reports `Data Clump: code, language, self` in `src/redup/core/universal_fuzzy.py:212`.
+
+
+    Arguments (code, language, self) are used together in multiple functions: src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_code,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._remove_comments, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_identifiers,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_metadata, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._compute_complexity.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:212:Data
+    Clump: code, language, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: code, language, self'
+  description: 'code2llm reports `Data Clump: code, language, self` in `src/redup/core/universal_fuzzy.py:241`.
+
+
+    Arguments (code, language, self) are used together in multiple functions: src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_code,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._remove_comments, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_identifiers,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_metadata, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._compute_complexity.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:241:Data
+    Clump: code, language, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: code, language, self'
+  description: 'code2llm reports `Data Clump: code, language, self` in `src/redup/core/universal_fuzzy.py:282`.
+
+
+    Arguments (code, language, self) are used together in multiple functions: src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_code,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._remove_comments, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_identifiers,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_metadata, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._compute_complexity.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:282:Data
+    Clump: code, language, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: code, language, self'
+  description: 'code2llm reports `Data Clump: code, language, self` in `src/redup/core/universal_fuzzy.py:339`.
+
+
+    Arguments (code, language, self) are used together in multiple functions: src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_code,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._remove_comments, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._normalize_identifiers,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_metadata, src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._compute_complexity.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:339:Data
+    Clump: code, language, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: code, language_family, self'
+  description: 'code2llm reports `Data Clump: code, language_family, self` in `src/redup/core/universal_fuzzy.py:260`.
+
+
+    Arguments (code, language_family, self) are used together in multiple functions:
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._detect_component_type,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_semantic_patterns.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:260:Data
+    Clump: code, language_family, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: code, language_family, self'
+  description: 'code2llm reports `Data Clump: code, language_family, self` in `src/redup/core/universal_fuzzy.py:270`.
+
+
+    Arguments (code, language_family, self) are used together in multiple functions:
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._detect_component_type,
+    src.redup.core.universal_fuzzy.UniversalFuzzyExtractor._extract_semantic_patterns.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:270:Data
+    Clump: code, language_family, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: content, file_path, self'
+  description: 'code2llm reports `Data Clump: content, file_path, self` in `src/redup/core/cache.py:60`.
+
+
+    Arguments (content, file_path, self) are used together in multiple functions:
+    src.redup.core.cache.HashCache._get_file_hash, src.redup.core.cache.HashCache.is_file_unchanged,
+    src.redup.core.cache.HashCache.get_cached_block_hashes.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/cache.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/cache.py:60:Data Clump: content,
+    file_path, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: content, file_path, self'
+  description: 'code2llm reports `Data Clump: content, file_path, self` in `src/redup/core/cache.py:64`.
+
+
+    Arguments (content, file_path, self) are used together in multiple functions:
+    src.redup.core.cache.HashCache._get_file_hash, src.redup.core.cache.HashCache.is_file_unchanged,
+    src.redup.core.cache.HashCache.get_cached_block_hashes.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/cache.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/cache.py:64:Data Clump: content,
+    file_path, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: content, file_path, self'
+  description: 'code2llm reports `Data Clump: content, file_path, self` in `src/redup/core/cache.py:83`.
+
+
+    Arguments (content, file_path, self) are used together in multiple functions:
+    src.redup.core.cache.HashCache._get_file_hash, src.redup.core.cache.HashCache.is_file_unchanged,
+    src.redup.core.cache.HashCache.get_cached_block_hashes.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/cache.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/cache.py:83:Data Clump: content,
+    file_path, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/ruby.py:11`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/ruby.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/ruby.py:11:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/dotnet.py:22`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/dotnet.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/dotnet.py:22:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/query.py:11`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/query.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/query.py:11:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/web.py:11`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/web.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/web.py:11:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/web.py:20`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/web.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/web.py:20:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/web.py:29`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/web.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/web.py:29:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/web.py:41`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/web.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/web.py:41:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/shell.py:11`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/shell.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/shell.py:11:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/markup.py:11`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/markup.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/markup.py:11:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/stylesheet.py:11`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/stylesheet.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/stylesheet.py:11:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/c_family.py:11`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/c_family.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/c_family.py:11:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node` in `src/redup/core/ts_extractor/extractors/php.py:22`.
+
+
+    Arguments (file_path, source_lines, node) are used together in multiple functions:
+    src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby, src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp,
+    src.redup.core.ts_extractor.extractors.query.extract_blocks_sql, src.redup.core.ts_extractor.extractors.web._extract_function_declaration,
+    src.redup.core.ts_extractor.extractors.web._extract_method_definition, src.redup.core.ts_extractor.extractors.web._extract_arrow_function,
+    src.redup.core.ts_extractor.extractors.web.extract_functions_javascript, src.redup.core.ts_extractor.extractors.shell.extract_functions_bash,
+    src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml, src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css,
+    src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp, src.redup.core.ts_extractor.extractors.php.extract_functions_php.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/ts_extractor/extractors/php.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/ts_extractor/extractors/php.py:22:Data
+    Clump: file_path, source_lines, node'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node, self'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node, self`
+    in `src/redup/core/utils/function_extractor.py:30`.
+
+
+    Arguments (file_path, source_lines, node, self) are used together in multiple
+    functions: src.redup.core.utils.function_extractor.FunctionExtractor.extract_functions,
+    src.redup.core.utils.function_extractor.FunctionExtractor._create_function_block.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/utils/function_extractor.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/utils/function_extractor.py:30:Data
+    Clump: file_path, source_lines, node, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: file_path, source_lines, node, self'
+  description: 'code2llm reports `Data Clump: file_path, source_lines, node, self`
+    in `src/redup/core/utils/function_extractor.py:65`.
+
+
+    Arguments (file_path, source_lines, node, self) are used together in multiple
+    functions: src.redup.core.utils.function_extractor.FunctionExtractor.extract_functions,
+    src.redup.core.utils.function_extractor.FunctionExtractor._create_function_block.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/utils/function_extractor.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/utils/function_extractor.py:65:Data
+    Clump: file_path, source_lines, node, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: include_tests, max_groups, extensions, min_lines,
+    min_similarity, path, max_saved_lines'
+  description: 'code2llm reports `Data Clump: include_tests, max_groups, extensions,
+    min_lines, min_similarity, path, max_saved_lines` in `src/redup/cli_app/scan_commands.py:218`.
+
+
+    Arguments (include_tests, max_groups, extensions, min_lines, min_similarity, path,
+    max_saved_lines) are used together in multiple functions: src.redup.cli_app.scan_commands.check_command,
+    src.redup.cli_app.main.check.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/cli_app/scan_commands.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/cli_app/scan_commands.py:218:Data
+    Clump: include_tests, max_groups, extensions, min_lines, min_similarity, path,
+    max_saved_lines'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: include_tests, max_groups, extensions, min_lines,
+    min_similarity, path, max_saved_lines'
+  description: 'code2llm reports `Data Clump: include_tests, max_groups, extensions,
+    min_lines, min_similarity, path, max_saved_lines` in `src/redup/cli_app/main.py:210`.
+
+
+    Arguments (include_tests, max_groups, extensions, min_lines, min_similarity, path,
+    max_saved_lines) are used together in multiple functions: src.redup.cli_app.scan_commands.check_command,
+    src.redup.cli_app.main.check.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/cli_app/main.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/cli_app/main.py:210:Data Clump:
+    include_tests, max_groups, extensions, min_lines, min_similarity, path, max_saved_lines'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: llm_model, project_a, refactor_plan, threshold,
+    extensions, min_lines, env_file, semantic, output, no_community, project_b'
+  description: 'code2llm reports `Data Clump: llm_model, project_a, refactor_plan,
+    threshold, extensions, min_lines, env_file, semantic, output, no_community, project_b`
+    in `src/redup/cli_app/compare_command.py:19`.
+
+
+    Arguments (llm_model, project_a, refactor_plan, threshold, extensions, min_lines,
+    env_file, semantic, output, no_community, project_b) are used together in multiple
+    functions: src.redup.cli_app.compare_command.compare_command, src.redup.cli_app.main.compare.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/cli_app/compare_command.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/cli_app/compare_command.py:19:Data
+    Clump: llm_model, project_a, refactor_plan, threshold, extensions, min_lines,
+    env_file, semantic, output, no_community, project_b'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: llm_model, project_a, refactor_plan, threshold,
+    extensions, min_lines, env_file, semantic, output, no_community, project_b'
+  description: 'code2llm reports `Data Clump: llm_model, project_a, refactor_plan,
+    threshold, extensions, min_lines, env_file, semantic, output, no_community, project_b`
+    in `src/redup/cli_app/main.py:157`.
+
+
+    Arguments (llm_model, project_a, refactor_plan, threshold, extensions, min_lines,
+    env_file, semantic, output, no_community, project_b) are used together in multiple
+    functions: src.redup.cli_app.compare_command.compare_command, src.redup.cli_app.main.compare.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/cli_app/main.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/cli_app/main.py:157:Data Clump:
+    llm_model, project_a, refactor_plan, threshold, extensions, min_lines, env_file,
+    semantic, output, no_community, project_b'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: matched_after, matched_before, matches,
+    self'
+  description: 'code2llm reports `Data Clump: matched_after, matched_before, matches,
+    self` in `src/redup/core/utils/diff_helpers.py:52`.
+
+
+    Arguments (matched_after, matched_before, matches, self) are used together in
+    multiple functions: src.redup.core.utils.diff_helpers.GroupMatcher._match_exact_ids,
+    src.redup.core.utils.diff_helpers.GroupMatcher._match_similar_groups.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/utils/diff_helpers.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/utils/diff_helpers.py:52:Data
+    Clump: matched_after, matched_before, matches, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: matched_after, matched_before, matches,
+    self'
+  description: 'code2llm reports `Data Clump: matched_after, matched_before, matches,
+    self` in `src/redup/core/utils/diff_helpers.py:111`.
+
+
+    Arguments (matched_after, matched_before, matches, self) are used together in
+    multiple functions: src.redup.core.utils.diff_helpers.GroupMatcher._match_exact_ids,
+    src.redup.core.utils.diff_helpers.GroupMatcher._match_similar_groups.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/utils/diff_helpers.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/utils/diff_helpers.py:111:Data
+    Clump: matched_after, matched_before, matches, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: max_groups, min_lines, max_lines, report_dir,
+    paths, silent'
+  description: 'code2llm reports `Data Clump: max_groups, min_lines, max_lines, report_dir,
+    paths, silent` in `src/redup/cli_app/quality_commands.py:95`.
+
+
+    Arguments (max_groups, min_lines, max_lines, report_dir, paths, silent) are used
+    together in multiple functions: src.redup.cli_app.quality_commands.run_jscpd_budget,
+    src.redup.cli_app.quality_commands.jscpd.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/cli_app/quality_commands.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/cli_app/quality_commands.py:95:Data
+    Clump: max_groups, min_lines, max_lines, report_dir, paths, silent'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: max_groups, min_lines, max_lines, report_dir,
+    paths, silent'
+  description: 'code2llm reports `Data Clump: max_groups, min_lines, max_lines, report_dir,
+    paths, silent` in `src/redup/cli_app/quality_commands.py:157`.
+
+
+    Arguments (max_groups, min_lines, max_lines, report_dir, paths, silent) are used
+    together in multiple functions: src.redup.cli_app.quality_commands.run_jscpd_budget,
+    src.redup.cli_app.quality_commands.jscpd.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/cli_app/quality_commands.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/cli_app/quality_commands.py:157:Data
+    Clump: max_groups, min_lines, max_lines, report_dir, paths, silent'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: max_workers, function_level_only, config'
+  description: 'code2llm reports `Data Clump: max_workers, function_level_only, config`
+    in `src/redup/core/scanner/__init__.py:265`.
+
+
+    Arguments (max_workers, function_level_only, config) are used together in multiple
+    functions: src.redup.core.scanner.scan_project_parallel, src.redup.core.pipeline.analyze_parallel.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/scanner/__init__.py:265:Data
+    Clump: max_workers, function_level_only, config'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: max_workers, function_level_only, config'
+  description: 'code2llm reports `Data Clump: max_workers, function_level_only, config`
+    in `src/redup/core/pipeline/__init__.py:207`.
+
+
+    Arguments (max_workers, function_level_only, config) are used together in multiple
+    functions: src.redup.core.scanner.scan_project_parallel, src.redup.core.pipeline.analyze_parallel.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/pipeline/__init__.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/pipeline/__init__.py:207:Data
+    Clump: max_workers, function_level_only, config'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: proj_a, threshold, proj_b, blocks_b, blocks_a'
+  description: 'code2llm reports `Data Clump: proj_a, threshold, proj_b, blocks_b,
+    blocks_a` in `src/redup/core/comparator.py:204`.
+
+
+    Arguments (proj_a, threshold, proj_b, blocks_b, blocks_a) are used together in
+    multiple functions: src.redup.core.comparator._find_lsh_matches, src.redup.core.comparator._find_semantic_matches.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/comparator.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/comparator.py:204:Data Clump:
+    proj_a, threshold, proj_b, blocks_b, blocks_a'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: proj_a, threshold, proj_b, blocks_b, blocks_a'
+  description: 'code2llm reports `Data Clump: proj_a, threshold, proj_b, blocks_b,
+    blocks_a` in `src/redup/core/comparator.py:278`.
+
+
+    Arguments (proj_a, threshold, proj_b, blocks_b, blocks_a) are used together in
+    multiple functions: src.redup.core.comparator._find_lsh_matches, src.redup.core.comparator._find_semantic_matches.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/comparator.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/comparator.py:278:Data Clump:
+    proj_a, threshold, proj_b, blocks_b, blocks_a'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: sig1, sig2, self'
+  description: 'code2llm reports `Data Clump: sig1, sig2, self` in `src/redup/core/universal_fuzzy.py:396`.
+
+
+    Arguments (sig1, sig2, self) are used together in multiple functions: src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_universal_similarity,
+    src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_similarity.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/universal_fuzzy.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/universal_fuzzy.py:396:Data
+    Clump: sig1, sig2, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: sig1, sig2, self'
+  description: 'code2llm reports `Data Clump: sig1, sig2, self` in `src/redup/core/fuzzy_similarity.py:364`.
+
+
+    Arguments (sig1, sig2, self) are used together in multiple functions: src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_universal_similarity,
+    src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_similarity.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/fuzzy_similarity.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/fuzzy_similarity.py:364:Data
+    Clump: sig1, sig2, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: str_path, patterns, name, path_parts'
+  description: 'code2llm reports `Data Clump: str_path, patterns, name, path_parts`
+    in `src/redup/core/scanner_cache.py:61`.
+
+
+    Arguments (str_path, patterns, name, path_parts) are used together in multiple
+    functions: src.redup.core.scanner_cache._matches_any_exclude, src.redup.core.scanner_cache._matches_any_include.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/scanner_cache.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/scanner_cache.py:61:Data Clump:
+    str_path, patterns, name, path_parts'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: str_path, patterns, name, path_parts'
+  description: 'code2llm reports `Data Clump: str_path, patterns, name, path_parts`
+    in `src/redup/core/scanner_cache.py:70`.
+
+
+    Arguments (str_path, patterns, name, path_parts) are used together in multiple
+    functions: src.redup.core.scanner_cache._matches_any_exclude, src.redup.core.scanner_cache._matches_any_include.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - src/redup/core/scanner_cache.py
+  dedupe_key: 'code2llm:smell:data_clump:src/redup/core/scanner_cache.py:70:Data Clump:
+    str_path, patterns, name, path_parts'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _apply_fuzzy_similarity'
+  description: 'code2llm reports `God Function: _apply_fuzzy_similarity` in `src/redup/cli_app/fuzzy_similarity.py:10`.
+
+
+    Function ''_apply_fuzzy_similarity'' is oversized: CC=3, fan-out=7, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/fuzzy_similarity.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/fuzzy_similarity.py:10:God
+    Function: _apply_fuzzy_similarity'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _ast_to_normalized_string'
+  description: 'code2llm reports `God Function: _ast_to_normalized_string` in `src/redup/core/hasher.py:54`.
+
+
+    Function ''_ast_to_normalized_string'' is oversized: CC=12, fan-out=6, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/hasher.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/hasher.py:54:God Function:
+    _ast_to_normalized_string'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _build_prompt'
+  description: 'code2llm reports `God Function: _build_prompt` in `src/redup/core/refactor_advisor.py:129`.
+
+
+    Function ''_build_prompt'' is oversized: CC=2, fan-out=9, mutations=12.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/refactor_advisor.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/refactor_advisor.py:129:God
+    Function: _build_prompt'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _build_scan_config'
+  description: 'code2llm reports `God Function: _build_scan_config` in `src/redup/mcp/handlers.py:24`.
+
+
+    Function ''_build_scan_config'' is oversized: CC=12, fan-out=7, mutations=13.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/mcp/handlers.py:24:God Function:
+    _build_scan_config'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _calculate_group_effort'
+  description: 'code2llm reports `God Function: _calculate_group_effort` in `src/redup/reporters/toon_reporter.py:166`.
+
+
+    Function ''_calculate_group_effort'' is oversized: CC=10, fan-out=2, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:166:God
+    Function: _calculate_group_effort'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _collect_files'
+  description: 'code2llm reports `God Function: _collect_files` in `src/redup/core/scanner_filters.py:72`.
+
+
+    Function ''_collect_files'' is oversized: CC=12, fan-out=15, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/scanner_filters.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/scanner_filters.py:72:God
+    Function: _collect_files'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _collect_target_files'
+  description: 'code2llm reports `God Function: _collect_target_files` in `src/redup/core/scanner_filters.py:32`.
+
+
+    Function ''_collect_target_files'' is oversized: CC=13, fan-out=15, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/scanner_filters.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/scanner_filters.py:32:God
+    Function: _collect_target_files'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _extract_function_blocks_python'
+  description: 'code2llm reports `God Function: _extract_function_blocks_python` in
+    `src/redup/core/scanner/__init__.py:28`.
+
+
+    Function ''_extract_function_blocks_python'' is oversized: CC=10, fan-out=9, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/scanner/__init__.py:28:God
+    Function: _extract_function_blocks_python'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _extract_function_info'
+  description: 'code2llm reports `God Function: _extract_function_info` in `src/redup/core/python_parser.py:118`.
+
+
+    Function ''_extract_function_info'' is oversized: CC=4, fan-out=9, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/python_parser.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/python_parser.py:118:God
+    Function: _extract_function_info'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _find_semantic_matches'
+  description: 'code2llm reports `God Function: _find_semantic_matches` in `src/redup/core/comparator.py:278`.
+
+
+    Function ''_find_semantic_matches'' is oversized: CC=8, fan-out=7, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/comparator.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/comparator.py:278:God Function:
+    _find_semantic_matches'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _format_analysis_result'
+  description: 'code2llm reports `God Function: _format_analysis_result` in `src/redup/mcp/handlers.py:109`.
+
+
+    Function ''_format_analysis_result'' is oversized: CC=7, fan-out=14, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/mcp/handlers.py:109:God Function:
+    _format_analysis_result'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _load_duplication_map'
+  description: 'code2llm reports `God Function: _load_duplication_map` in `src/redup/core/differ.py:30`.
+
+
+    Function ''_load_duplication_map'' is oversized: CC=5, fan-out=15, mutations=11.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/differ.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/differ.py:30:God Function:
+    _load_duplication_map'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _load_files_with_progress'
+  description: 'code2llm reports `God Function: _load_files_with_progress` in `src/redup/core/scanner_utils.py:46`.
+
+
+    Function ''_load_files_with_progress'' is oversized: CC=3, fan-out=8, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/scanner_utils.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/scanner_utils.py:46:God
+    Function: _load_files_with_progress'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _normalize_ast_text'
+  description: 'code2llm reports `God Function: _normalize_ast_text` in `src/redup/core/hasher.py:85`.
+
+
+    Function ''_normalize_ast_text'' is oversized: CC=5, fan-out=9, mutations=11.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/hasher.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/hasher.py:85:God Function:
+    _normalize_ast_text'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _normalize_text'
+  description: 'code2llm reports `God Function: _normalize_text` in `src/redup/core/hasher.py:33`.
+
+
+    Function ''_normalize_text'' is oversized: CC=6, fan-out=11, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/hasher.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/hasher.py:33:God Function:
+    _normalize_text'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _parse_llm_response'
+  description: 'code2llm reports `God Function: _parse_llm_response` in `src/redup/core/refactor_advisor.py:263`.
+
+
+    Function ''_parse_llm_response'' is oversized: CC=9, fan-out=13, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/refactor_advisor.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/refactor_advisor.py:263:God
+    Function: _parse_llm_response'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _parse_with_libcst'
+  description: 'code2llm reports `God Function: _parse_with_libcst` in `src/redup/core/python_parser.py:25`.
+
+
+    Function ''_parse_with_libcst'' is oversized: CC=4, fan-out=13, mutations=1.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/python_parser.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/python_parser.py:25:God
+    Function: _parse_with_libcst'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _preload_files'
+  description: 'code2llm reports `God Function: _preload_files` in `src/redup/core/scanner_utils.py:84`.
+
+
+    Function ''_preload_files'' is oversized: CC=4, fan-out=8, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/scanner_utils.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/scanner_utils.py:84:God
+    Function: _preload_files'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _preview_tasks'
+  description: 'code2llm reports `God Function: _preview_tasks` in `src/redup/cli_app/tasks_command.py:152`.
+
+
+    Function ''_preview_tasks'' is oversized: CC=4, fan-out=8, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/tasks_command.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/tasks_command.py:152:God
+    Function: _preview_tasks'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _print_communities_table'
+  description: 'code2llm reports `God Function: _print_communities_table` in `src/redup/cli_app/compare_command.py:125`.
+
+
+    Function ''_print_communities_table'' is oversized: CC=2, fan-out=6, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/compare_command.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/compare_command.py:125:God
+    Function: _print_communities_table'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _print_match_details'
+  description: 'code2llm reports `God Function: _print_match_details` in `src/redup/cli_app/compare_command.py:144`.
+
+
+    Function ''_print_match_details'' is oversized: CC=5, fan-out=6, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/compare_command.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/compare_command.py:144:God
+    Function: _print_match_details'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _print_summary_table'
+  description: 'code2llm reports `God Function: _print_summary_table` in `src/redup/cli_app/compare_command.py:68`.
+
+
+    Function ''_print_summary_table'' is oversized: CC=1, fan-out=7, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/compare_command.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/compare_command.py:68:God
+    Function: _print_summary_table'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _render_dependency_risk'
+  description: 'code2llm reports `God Function: _render_dependency_risk` in `src/redup/reporters/toon_reporter.py:109`.
+
+
+    Function ''_render_dependency_risk'' is oversized: CC=13, fan-out=6, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:109:God
+    Function: _render_dependency_risk'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _render_duplicates'
+  description: 'code2llm reports `God Function: _render_duplicates` in `src/redup/reporters/toon_reporter.py:37`.
+
+
+    Function ''_render_duplicates'' is oversized: CC=8, fan-out=3, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:37:God
+    Function: _render_duplicates'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _render_effort_estimate'
+  description: 'code2llm reports `God Function: _render_effort_estimate` in `src/redup/reporters/toon_reporter.py:204`.
+
+
+    Function ''_render_effort_estimate'' is oversized: CC=5, fan-out=4, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:204:God
+    Function: _render_effort_estimate'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _render_hotspots'
+  description: 'code2llm reports `God Function: _render_hotspots` in `src/redup/reporters/toon_reporter.py:79`.
+
+
+    Function ''_render_hotspots'' is oversized: CC=6, fan-out=8, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:79:God
+    Function: _render_hotspots'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _render_quick_wins'
+  description: 'code2llm reports `God Function: _render_quick_wins` in `src/redup/reporters/toon_reporter.py:139`.
+
+
+    Function ''_render_quick_wins'' is oversized: CC=9, fan-out=6, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:139:God
+    Function: _render_quick_wins'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _render_refactor'
+  description: 'code2llm reports `God Function: _render_refactor` in `src/redup/reporters/toon_reporter.py:60`.
+
+
+    Function ''_render_refactor'' is oversized: CC=4, fan-out=4, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:60:God
+    Function: _render_refactor'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _render_todo_md'
+  description: 'code2llm reports `God Function: _render_todo_md` in `src/redup/integrations/planfile_integration.py:181`.
+
+
+    Function ''_render_todo_md'' is oversized: CC=11, fan-out=13, mutations=0.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/integrations/planfile_integration.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/integrations/planfile_integration.py:181:God
+    Function: _render_todo_md'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _report_similarity_by_groups'
+  description: 'code2llm reports `God Function: _report_similarity_by_groups` in `src/redup/cli_app/fuzzy_similarity.py:147`.
+
+
+    Function ''_report_similarity_by_groups'' is oversized: CC=5, fan-out=4, mutations=11.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/fuzzy_similarity.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/fuzzy_similarity.py:147:God
+    Function: _report_similarity_by_groups'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _resolve_changed_files'
+  description: 'code2llm reports `God Function: _resolve_changed_files` in `src/redup/cli_app/scan_commands.py:15`.
+
+
+    Function ''_resolve_changed_files'' is oversized: CC=13, fan-out=17, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/scan_commands.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/scan_commands.py:15:God
+    Function: _resolve_changed_files'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _run_analysis'
+  description: 'code2llm reports `God Function: _run_analysis` in `src/redup/mcp/handlers.py:56`.
+
+
+    Function ''_run_analysis'' is oversized: CC=7, fan-out=9, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/mcp/handlers.py:56:God Function:
+    _run_analysis'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: _text_to_minhash_features'
+  description: 'code2llm reports `God Function: _text_to_minhash_features` in `src/redup/core/lsh_matcher.py:35`.
+
+
+    Function ''_text_to_minhash_features'' is oversized: CC=5, fan-out=8, mutations=11.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/lsh_matcher.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/lsh_matcher.py:35:God Function:
+    _text_to_minhash_features'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: analyze'
+  description: 'code2llm reports `God Function: analyze` in `src/redup/core/pipeline/__init__.py:82`.
+
+
+    Function ''analyze'' is oversized: CC=2, fan-out=5, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/pipeline/__init__.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/pipeline/__init__.py:82:God
+    Function: analyze'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: analyze_parallel'
+  description: 'code2llm reports `God Function: analyze_parallel` in `src/redup/core/pipeline/__init__.py:207`.
+
+
+    Function ''analyze_parallel'' is oversized: CC=2, fan-out=10, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/pipeline/__init__.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/pipeline/__init__.py:207:God
+    Function: analyze_parallel'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: benchmark'
+  description: 'code2llm reports `God Function: benchmark` in `benchmarks/bench_libraries.py:38`.
+
+
+    Function ''benchmark'' is oversized: CC=10, fan-out=10, mutations=16.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - benchmarks/bench_libraries.py
+  dedupe_key: 'code2llm:smell:god_function:benchmarks/bench_libraries.py:38:God Function:
+    benchmark'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: benchmark_fuzzy_performance'
+  description: 'code2llm reports `God Function: benchmark_fuzzy_performance` in `benchmarks/bench_libraries.py:121`.
+
+
+    Function ''benchmark_fuzzy_performance'' is oversized: CC=4, fan-out=6, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - benchmarks/bench_libraries.py
+  dedupe_key: 'code2llm:smell:god_function:benchmarks/bench_libraries.py:121:God Function:
+    benchmark_fuzzy_performance'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: benchmark_sequential_vs_parallel'
+  description: 'code2llm reports `God Function: benchmark_sequential_vs_parallel`
+    in `benchmark.py:14`.
+
+
+    Function ''benchmark_sequential_vs_parallel'' is oversized: CC=3, fan-out=7, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - benchmark.py
+  dedupe_key: 'code2llm:smell:god_function:benchmark.py:14:God Function: benchmark_sequential_vs_parallel'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: build_config_with_file_support'
+  description: 'code2llm reports `God Function: build_config_with_file_support` in
+    `src/redup/cli_app/config_builder.py:18`.
+
+
+    Function ''build_config_with_file_support'' is oversized: CC=10, fan-out=4, mutations=16.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/config_builder.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/config_builder.py:18:God
+    Function: build_config_with_file_support'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: build_hash_index_with_cache'
+  description: 'code2llm reports `God Function: build_hash_index_with_cache` in `src/redup/core/cache.py:226`.
+
+
+    Function ''build_hash_index_with_cache'' is oversized: CC=9, fan-out=8, mutations=22.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/cache.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/cache.py:226:God Function:
+    build_hash_index_with_cache'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: check_command'
+  description: 'code2llm reports `God Function: check_command` in `src/redup/cli_app/scan_commands.py:218`.
+
+
+    Function ''check_command'' is oversized: CC=6, fan-out=12, mutations=4.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/scan_commands.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/scan_commands.py:218:God
+    Function: check_command'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: compare_projects'
+  description: 'code2llm reports `God Function: compare_projects` in `src/redup/core/comparator.py:62`.
+
+
+    Function ''compare_projects'' is oversized: CC=8, fan-out=9, mutations=21.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/comparator.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/comparator.py:62:God Function:
+    compare_projects'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: compare_scans'
+  description: 'code2llm reports `God Function: compare_scans` in `src/redup/core/differ.py:123`.
+
+
+    Function ''compare_scans'' is oversized: CC=1, fan-out=8, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/differ.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/differ.py:123:God Function:
+    compare_scans'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: config_command'
+  description: 'code2llm reports `God Function: config_command` in `src/redup/cli_app/scan_commands.py:265`.
+
+
+    Function ''config_command'' is oversized: CC=5, fan-out=11, mutations=4.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/scan_commands.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/scan_commands.py:265:God
+    Function: config_command'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: detect_communities'
+  description: 'code2llm reports `God Function: detect_communities` in `src/redup/core/community.py:25`.
+
+
+    Function ''detect_communities'' is oversized: CC=11, fan-out=18, mutations=16.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/community.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/community.py:25:God Function:
+    detect_communities'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: extract_functions_treesitter'
+  description: 'code2llm reports `God Function: extract_functions_treesitter` in `src/redup/core/ts_extractor/main.py:35`.
+
+
+    Function ''extract_functions_treesitter'' is oversized: CC=8, fan-out=10, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/ts_extractor/main.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/ts_extractor/main.py:35:God
+    Function: extract_functions_treesitter'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: find_duplicates_phase_lazy'
+  description: 'code2llm reports `God Function: find_duplicates_phase_lazy` in `src/redup/core/pipeline/duplicate_finder.py:234`.
+
+
+    Function ''find_duplicates_phase_lazy'' is oversized: CC=5, fan-out=10, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/pipeline/duplicate_finder.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/pipeline/duplicate_finder.py:234:God
+    Function: find_duplicates_phase_lazy'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: find_near_duplicate_groups'
+  description: 'code2llm reports `God Function: find_near_duplicate_groups` in `src/redup/core/pipeline/duplicate_finder.py:102`.
+
+
+    Function ''find_near_duplicate_groups'' is oversized: CC=11, fan-out=9, mutations=12.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/pipeline/duplicate_finder.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/pipeline/duplicate_finder.py:102:God
+    Function: find_near_duplicate_groups'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: find_near_duplicates'
+  description: 'code2llm reports `God Function: find_near_duplicates` in `src/redup/core/lsh_matcher.py:224`.
+
+
+    Function ''find_near_duplicates'' is oversized: CC=2, fan-out=2, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/lsh_matcher.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/lsh_matcher.py:224:God Function:
+    find_near_duplicates'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: find_semantic_duplicates'
+  description: 'code2llm reports `God Function: find_semantic_duplicates` in `src/redup/core/semantic.py:45`.
+
+
+    Function ''find_semantic_duplicates'' is oversized: CC=9, fan-out=13, mutations=0.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/semantic.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/semantic.py:45:God Function:
+    find_semantic_duplicates'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: find_structural_groups'
+  description: 'code2llm reports `God Function: find_structural_groups` in `src/redup/core/pipeline/duplicate_finder.py:63`.
+
+
+    Function ''find_structural_groups'' is oversized: CC=9, fan-out=11, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/pipeline/duplicate_finder.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/pipeline/duplicate_finder.py:63:God
+    Function: find_structural_groups'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: format_plan_markdown'
+  description: 'code2llm reports `God Function: format_plan_markdown` in `src/redup/core/refactor_advisor.py:306`.
+
+
+    Function ''format_plan_markdown'' is oversized: CC=8, fan-out=4, mutations=17.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/refactor_advisor.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/refactor_advisor.py:306:God
+    Function: format_plan_markdown'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: generate_refactor_plan'
+  description: 'code2llm reports `God Function: generate_refactor_plan` in `src/redup/core/refactor_advisor.py:196`.
+
+
+    Function ''generate_refactor_plan'' is oversized: CC=6, fan-out=9, mutations=12.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/refactor_advisor.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/refactor_advisor.py:196:God
+    Function: generate_refactor_plan'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: generate_suggestions'
+  description: 'code2llm reports `God Function: generate_suggestions` in `src/redup/core/planner.py:71`.
+
+
+    Function ''generate_suggestions'' is oversized: CC=6, fan-out=9, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/planner.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/planner.py:71:God Function:
+    generate_suggestions'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: handle_check_project'
+  description: 'code2llm reports `God Function: handle_check_project` in `src/redup/mcp/handlers.py:271`.
+
+
+    Function ''handle_check_project'' is oversized: CC=3, fan-out=10, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/mcp/handlers.py:271:God Function:
+    handle_check_project'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: handle_suggest_refactoring'
+  description: 'code2llm reports `God Function: handle_suggest_refactoring` in `src/redup/mcp/handlers.py:172`.
+
+
+    Function ''handle_suggest_refactoring'' is oversized: CC=4, fan-out=11, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/mcp/handlers.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/mcp/handlers.py:172:God Function:
+    handle_suggest_refactoring'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: load_config'
+  description: 'code2llm reports `God Function: load_config` in `src/redup/core/config.py:49`.
+
+
+    Function ''load_config'' is oversized: CC=5, fan-out=7, mutations=9.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/config.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/config.py:49:God Function:
+    load_config'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: recommend'
+  description: 'code2llm reports `God Function: recommend` in `src/redup/core/decision.py:35`.
+
+
+    Function ''recommend'' is oversized: CC=6, fan-out=5, mutations=17.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/decision.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/decision.py:35:God Function:
+    recommend'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: run_jscpd_budget'
+  description: 'code2llm reports `God Function: run_jscpd_budget` in `src/redup/cli_app/quality_commands.py:95`.
+
+
+    Function ''run_jscpd_budget'' is oversized: CC=5, fan-out=12, mutations=6.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/quality_commands.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/quality_commands.py:95:God
+    Function: run_jscpd_budget'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: scan_command'
+  description: 'code2llm reports `God Function: scan_command` in `src/redup/cli_app/scan_commands.py:67`.
+
+
+    Function ''scan_command'' is oversized: CC=8, fan-out=15, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/scan_commands.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/scan_commands.py:67:God
+    Function: scan_command'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: scan_project'
+  description: 'code2llm reports `God Function: scan_project` in `src/redup/core/scanner/__init__.py:203`.
+
+
+    Function ''scan_project'' is oversized: CC=5, fan-out=14, mutations=19.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/core/scanner/__init__.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/core/scanner/__init__.py:203:God
+    Function: scan_project'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: tasks'
+  description: 'code2llm reports `God Function: tasks` in `src/redup/cli_app/tasks_command.py:22`.
+
+
+    Function ''tasks'' is oversized: CC=14, fan-out=16, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/tasks_command.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/tasks_command.py:22:God
+    Function: tasks'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: to_code2llm_toon'
+  description: 'code2llm reports `God Function: to_code2llm_toon` in `src/redup/reporters/code2llm_reporter.py:48`.
+
+
+    Function ''to_code2llm_toon'' is oversized: CC=5, fan-out=8, mutations=15.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/code2llm_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/code2llm_reporter.py:48:God
+    Function: to_code2llm_toon'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: to_toon'
+  description: 'code2llm reports `God Function: to_toon` in `src/redup/reporters/toon_reporter.py:249`.
+
+
+    Function ''to_toon'' is oversized: CC=3, fan-out=11, mutations=2.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/reporters/toon_reporter.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/reporters/toon_reporter.py:249:God
+    Function: to_toon'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: write_results'
+  description: 'code2llm reports `God Function: write_results` in `src/redup/cli_app/output_writer.py:29`.
+
+
+    Function ''write_results'' is oversized: CC=12, fan-out=15, mutations=11.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - src/redup/cli_app/output_writer.py
+  dedupe_key: 'code2llm:smell:god_function:src/redup/cli_app/output_writer.py:29:God
+    Function: write_results'
+applied: []
+skipped: []

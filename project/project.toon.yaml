@@ -1,22 +1,22 @@
-# redup | 399 func | 71f | 16775L | python | 2026-05-19
+# redup | 400 func | 71f | 16839L | python | 2026-05-29
 # generated in 0.00s
 
 HEALTH:
-  CC̄=3.7  critical=22 (limit:10)  dup=1  cycles=3
+  CC̄=3.8  critical=23 (limit:10)  dup=1  cycles=3
 
 ALERTS[20]:
   !!  high_fan_out     detect_communities = 18 (limit:10)
   !!  high_fan_out     _resolve_changed_files = 17 (limit:10)
   !!  high_fan_out     tasks = 16 (limit:10)
   !!  high_fan_out     analyze_optimized = 16 (limit:10)
-  !!  high_fan_out     _load_duplication_map = 15 (limit:10)
-  !!  high_fan_out     write_results = 15 (limit:10)
+  !!  high_fan_out     _collect_target_files = 15 (limit:10)
   !!  high_fan_out     _collect_files = 15 (limit:10)
+  !!  high_fan_out     write_results = 15 (limit:10)
   !!  high_fan_out     scan_command = 15 (limit:10)
-  !   cc_exceeded      _collect_files = 15 (limit:15)
+  !!  high_fan_out     _load_duplication_map = 15 (limit:10)
   !   high_fan_out     scan_project = 14 (limit:10)
 
-MODULES[109] (top by size):
+MODULES[110] (top by size):
   M[proxy_analysis/duplication.json] 1436L C:0 F:0 CC↑0 D:0 (json)
   M[planfile.yaml] 1319L C:0 F:0 CC↑0 D:0 (yaml)
   M[compare_report.json] 792L C:0 F:0 CC↑0 D:0 (json)
@@ -27,12 +27,12 @@ MODULES[109] (top by size):
   M[src/redup/core/refactor_advisor.py] 363L C:2 F:13 CC↑9 D:1 (python)
   M[src/redup/cli_app/compare_command.py] 355L C:0 F:16 CC↑6 D:1 (python)
   M[src/redup/mcp/handlers.py] 344L C:0 F:13 CC↑12 D:0 (python)
-  M[src/redup/cli_app/scan_commands.py] 320L C:0 F:6 CC↑13 D:1 (python)
+  M[src/redup/cli_app/scan_commands.py] 322L C:0 F:6 CC↑13 D:1 (python)
   M[src/redup/core/comparator.py] 312L C:2 F:8 CC↑8 D:1 (python)
   M[src/redup/integrations/planfile_integration.py] 311L C:3 F:8 CC↑12 D:0 (python)
   M[src/redup/core/scanner/__init__.py] 309L C:0 F:14 CC↑10 D:3 (python)
   M[src/redup/core/models.py] 295L C:9 F:1 CC↑1 D:0 (python)
-  LANGS: python:88/json:6/yaml:6/shell:5/toml:2/yml:1/txt:1
+  LANGS: python:89/json:6/yaml:6/shell:5/toml:2/yml:1/txt:1
 
 HOTSPOTS[10]:
   ★ detect_communities fan=18  // Build similarity graph and detect communities via networkx.
@@ -44,9 +44,9 @@ Args:
 
 Creates a TODO.md file with re
   ★ analyze_optimized fan=16  // Analysis pipeline, 16 stages
-  ★ _load_duplication_map fan=15  // Load a DuplicationMap from a JSON file.
+  ★ _collect_target_files fan=15  // Collect an explicit target file list without walking the whole tree.
 
-REFACTOR[12]:
+REFACTOR[11]:
   [1] H/H Split god module compare_report.json (792L, 0 classes)
   [2] H/H Split god module compare_report_test.json (687L, 0 classes)
   [3] H/H Split god module goal.yaml (511L, 0 classes)
@@ -54,4 +54,4 @@ REFACTOR[12]:
   [5] H/H Split god module proxy_analysis/duplication.json (1436L, 0 classes)
 
 EVOLUTION:
-  2026-05-19 CC̄=3.7 crit=22 16775L // Automated analysis
+  2026-05-29 CC̄=3.8 crit=23 16839L // Automated analysis

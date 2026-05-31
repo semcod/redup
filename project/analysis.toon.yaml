@@ -1,24 +1,112 @@
-# code2llm | 109f 16692L | python:88,yaml:6,json:6,shell:5,toml:2,txt:1,yml:1 | 2026-05-19
-# generated in 0.04s
-# CC̄=3.7 | critical:1/399 | dups:0 | cycles:3
+# code2llm | 110f 16839L | python:89,json:6,yaml:6,shell:5,toml:2,yml:1,txt:1 | 2026-05-29
+# generated in 0.08s
+# CC̅=3.8 | critical:0/400 | dups:0 | cycles:3
 
-HEALTH[1]:
-  🟡 CC    _collect_files CC=15 (limit:15)
+HEALTH[0]: ok
 
-REFACTOR[2]:
-  1. split 1 high-CC methods  (CC>15)
-  2. break 3 circular dependencies
+REFACTOR[1]:
+  1. break 3 circular dependencies
 
 PIPELINES[168]:
   [1] Src [benchmark_sequential_vs_parallel]: benchmark_sequential_vs_parallel → analyze → ensure_config
       PURITY: 100% pure
   [2] Src [benchmark_feature_performance]: benchmark_feature_performance → analyze_parallel → ensure_config
       PURITY: 100% pure
-  [3] Src [main]: main → analyze → ensure_config
+  [3] Src [__init__]: __init__
       PURITY: 100% pure
-  [4] Src [benchmark]: benchmark → generate_test_project
+  [4] Src [_load]: _load
       PURITY: 100% pure
-  [5] Src [benchmark_hash_performance]: benchmark_hash_performance
+  [5] Src [save]: save
+      PURITY: 100% pure
+  [6] Src [get_file_hash]: get_file_hash
+      PURITY: 100% pure
+  [7] Src [is_unchanged]: is_unchanged
+      PURITY: 100% pure
+  [8] Src [update]: update
+      PURITY: 100% pure
+  [9] Src [invalidate]: invalidate
+      PURITY: 100% pure
+  [10] Src [get_cached_results]: get_cached_results
+      PURITY: 100% pure
+  [11] Src [clear]: clear
+      PURITY: 100% pure
+  [12] Src [_config_to_hash]: _config_to_hash
+      PURITY: 100% pure
+  [13] Src [__init__]: __init__
+      PURITY: 100% pure
+  [14] Src [extract_universal_signature]: extract_universal_signature
+      PURITY: 100% pure
+  [15] Src [_detect_language]: _detect_language
+      PURITY: 100% pure
+  [16] Src [_normalize_code]: _normalize_code
+      PURITY: 100% pure
+  [17] Src [_remove_comments]: _remove_comments
+      PURITY: 100% pure
+  [18] Src [_normalize_identifiers]: _normalize_identifiers
+      PURITY: 100% pure
+  [19] Src [_detect_component_type]: _detect_component_type
+      PURITY: 100% pure
+  [20] Src [_extract_semantic_patterns]: _extract_semantic_patterns
+      PURITY: 100% pure
+  [21] Src [_extract_metadata]: _extract_metadata → set
+      PURITY: 100% pure
+  [22] Src [_compute_complexity]: _compute_complexity
+      PURITY: 100% pure
+  [23] Src [_compute_structure_hash]: _compute_structure_hash
+      PURITY: 100% pure
+  [24] Src [__init__]: __init__
+      PURITY: 100% pure
+  [25] Src [find_similar_components]: find_similar_components
+      PURITY: 100% pure
+  [26] Src [_compute_universal_similarity]: _compute_universal_similarity
+      PURITY: 100% pure
+  [27] Src [_compute_pattern_similarity]: _compute_pattern_similarity → set
+      PURITY: 100% pure
+  [28] Src [_compute_metadata_similarity]: _compute_metadata_similarity → set
+      PURITY: 100% pure
+  [29] Src [_estimate_size]: _estimate_size
+      PURITY: 100% pure
+  [30] Src [get_file_content]: get_file_content
+      PURITY: 100% pure
+  [31] Src [_evict_oldest]: _evict_oldest
+      PURITY: 100% pure
+  [32] Src [collect]: collect
+      PURITY: 100% pure
+  [33] Src [collect_sorted]: collect_sorted
+      PURITY: 100% pure
+  [34] Src [_resolve_path]: _resolve_path
+      PURITY: 100% pure
+  [35] Src [_parse_extensions]: _parse_extensions
+      PURITY: 100% pure
+  [36] Src [main]: main → analyze → ensure_config
+      PURITY: 100% pure
+  [37] Src [_normalize_ast_text]: _normalize_ast_text → _ast_to_normalized_string
+      PURITY: 100% pure
+  [38] Src [__init__]: __init__
+      PURITY: 100% pure
+  [39] Src [jaccard]: jaccard
+      PURITY: 100% pure
+  [40] Src [__init__]: __init__
+      PURITY: 100% pure
+  [41] Src [add]: add → _create_minhash → _normalize_text
+      PURITY: 100% pure
+  [42] Src [_find_near_duplicates_simple]: _find_near_duplicates_simple → _create_simple_minhash → _text_to_minhash_features → _normalize_text
+      PURITY: 100% pure
+  [43] Src [find_all_near_duplicates]: find_all_near_duplicates → set
+      PURITY: 100% pure
+  [44] Src [find_near_duplicates]: find_near_duplicates → build_lsh_index
+      PURITY: 100% pure
+  [45] Src [_load_from_env]: _load_from_env
+      PURITY: 100% pure
+  [46] Src [reload]: reload
+      PURITY: 100% pure
+  [47] Src [get]: get
+      PURITY: 100% pure
+  [48] Src [reload_config]: reload_config
+      PURITY: 100% pure
+  [49] Src [__init__]: __init__
+      PURITY: 100% pure
+  [50] Src [_init_tables]: _init_tables
       PURITY: 100% pure
 
 LAYERS:
@@ -28,31 +116,31 @@ LAYERS:
   examples/                       CC̄=5.0    ←in:0  →out:3
   │ 01_basic_usage              60L  0C    1m  CC=5      ←0
   │
-  src/                            CC̄=3.7    ←in:0  →out:0
+  src/                            CC̄=3.8    ←in:0  →out:0
   │ universal_fuzzy            471L  3C   16m  CC=11     ←0
   │ fuzzy_similarity           430L  4C   20m  CC=10     ←0
   │ refactor_advisor           363L  2C   13m  CC=9      ←1
   │ compare_command            355L  0C   16m  CC=6      ←1
   │ handlers                   344L  0C   13m  CC=12     ←0
-  │ scan_commands              320L  0C    6m  CC=13     ←1
+  │ scan_commands              322L  0C    6m  CC=13     ←1
   │ comparator                 312L  2C    8m  CC=8      ←1
   │ planfile_integration       311L  3C    8m  CC=12     ←0
   │ __init__                   309L  0C   14m  CC=10     ←3
   │ models                     295L  9C    1m  CC=1      ←0
   │ __init__                   292L  0C    5m  CC=11     ←6
-  │ cache                      281L  1C   10m  CC=7      ←1
+  │ cache                      286L  1C   10m  CC=9      ←1
+  │ main                       284L  0C    6m  CC=1      ←0
   │ toon_reporter              268L  0C   13m  CC=13     ←3
-  │ main                       266L  0C    6m  CC=1      ←0
-  │ duplicate_finder           262L  0C    7m  CC=11     ←1
+  │ duplicate_finder           266L  0C    7m  CC=11     ←1
   │ enhanced_reporter          260L  1C   17m  CC=8      ←0
   │ lsh_matcher                232L  2C   12m  CC=10     ←1
-  │ differ                     217L  1C    9m  CC=7      ←3
-  │ diff_helpers               211L  3C   13m  CC=6      ←0
+  │ differ                     217L  1C    9m  CC=7      ←2
   │ code2llm_reporter          211L  0C    6m  CC=11     ←2
+  │ diff_helpers               211L  3C   13m  CC=6      ←0
   │ hasher                     202L  2C   13m  CC=12     ←8
   │ quality_commands           201L  1C    9m  CC=8      ←0
-  │ python_parser              186L  1C    7m  CC=5      ←0
   │ tasks_command              186L  0C    2m  CC=14     ←0
+  │ python_parser              186L  1C    7m  CC=5      ←0
   │ config                     182L  1C    7m  CC=9      ←14
   │ semantic                   182L  2C    5m  CC=9      ←0
   │ config                     172L  0C    6m  CC=5      ←5
@@ -66,20 +154,20 @@ LAYERS:
   │ main                       114L  0C    5m  CC=8      ←1
   │ matcher                    111L  1C    5m  CC=7      ←1
   │ planner                    110L  0C    5m  CC=7      ←1
+  │ scanner_filters            105L  0C    4m  CC=13     ←1
   │ hash_cache                 102L  1C   10m  CC=3      ←0
   │ scanner_utils               99L  0C    7m  CC=4      ←1
   │ groups                      99L  0C    4m  CC=6      ←2
   │ markdown_reporter           96L  0C    1m  CC=12     ←2
   │ decision                    95L  2C    1m  CC=6      ←1
   │ scanner_cache               92L  1C    8m  CC=6      ←1
-  │ mcp_server                  82L  0C    1m  CC=2      ←0
   │ dispatcher                  82L  0C    1m  CC=2      ←1
+  │ mcp_server                  82L  0C    1m  CC=2      ←0
   │ json_reporter               82L  0C    4m  CC=5      ←4
   │ output_writer               79L  0C    2m  CC=12     ←1
   │ base                        76L  0C    3m  CC=5      ←9
   │ language_dispatcher         76L  1C    5m  CC=4      ←0
   │ web                         70L  0C    4m  CC=2      ←0
-  │ !! scanner_filters             70L  0C    3m  CC=15     ←1
   │ config_builder              68L  0C    2m  CC=10     ←1
   │ dotnet                      55L  0C    2m  CC=5      ←0
   │ stylesheet                  51L  0C    1m  CC=1      ←0
@@ -114,12 +202,13 @@ LAYERS:
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │ mcp_server_clean             0L  0C    0m  CC=0.0    ←0
   │
   ./                              CC̄=3.0    ←in:0  →out:0
   │ !! planfile.yaml             1319L  0C    0m  CC=0.0    ←0
   │ !! compare_report.json        792L  0C    0m  CC=0.0    ←0
   │ !! compare_report_test.json   687L  0C    0m  CC=0.0    ←0
-  │ goal.yaml                  428L  0C    0m  CC=0.0    ←0
+  │ !! goal.yaml                  511L  0C    0m  CC=0.0    ←0
   │ Taskfile.yml               195L  0C    0m  CC=0.0    ←0
   │ pyproject.toml             162L  0C    0m  CC=0.0    ←0
   │ benchmark                  117L  0C    2m  CC=3      ←0
@@ -149,6 +238,8 @@ LAYERS:
   toon/                           CC̄=0.0    ←in:0  →out:0
   │ validation.txt              67L  0C    0m  CC=0.0    ←0
   │
+  ── zero ──
+     src/redup/mcp_server_clean.py             0L
 
 COUPLING:
                src.redup   benchmark    examples  benchmarks

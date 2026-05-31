@@ -2,142 +2,37 @@ project: /home/tom/github/semcod/redup
 generated_from: code2llm call graph analysis
 stats:
   total_nodes: 260
-  total_edges: 303
+  total_edges: 307
   modules_count: 62
 nodes:
-  src.redup.core.differ._group_by_id:
-    name: _group_by_id
-    module: src.redup.core.differ
-    line: 92
-    cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 2
-  src.redup.core.python_parser._parse_with_libcst:
-    name: _parse_with_libcst
-    module: src.redup.core.python_parser
-    line: 25
-    cyclomatic_complexity: 4
-    calls_out: 15
-    calls_in: 1
-  src.redup.core.scanner._extract_sliding_blocks:
-    name: _extract_sliding_blocks
-    module: src.redup.core.scanner
-    line: 66
-    cyclomatic_complexity: 6
-    calls_out: 9
-    calls_in: 1
-  src.redup.cli_app.quality_commands._read_jscpd_stats:
-    name: _read_jscpd_stats
-    module: src.redup.cli_app.quality_commands
-    line: 76
-    cyclomatic_complexity: 1
-    calls_out: 11
-    calls_in: 1
-  src.redup.mcp.utils.json_safe:
-    name: json_safe
-    module: src.redup.mcp.utils
-    line: 6
-    cyclomatic_complexity: 6
-    calls_out: 8
-    calls_in: 5
-  src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby:
-    name: extract_functions_ruby
-    module: src.redup.core.ts_extractor.extractors.ruby
-    line: 11
+  src.redup.cli_app.compare_command.compare_command:
+    name: compare_command
+    module: src.redup.cli_app.compare_command
+    line: 19
     cyclomatic_complexity: 1
     calls_out: 10
-    calls_in: 0
-  src.redup.core.lsh_matcher.build_lsh_index:
-    name: build_lsh_index
-    module: src.redup.core.lsh_matcher
-    line: 211
+    calls_in: 1
+  src.redup.core.planner._common_prefix:
+    name: _common_prefix
+    module: src.redup.core.planner
+    line: 16
     cyclomatic_complexity: 3
     calls_out: 2
     calls_in: 1
-  src.redup.mcp.handlers._check_thresholds:
-    name: _check_thresholds
-    module: src.redup.mcp.handlers
-    line: 230
-    cyclomatic_complexity: 3
-    calls_out: 7
-    calls_in: 1
-  src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_attribute_similarity:
-    name: _compute_attribute_similarity
-    module: src.redup.core.fuzzy_similarity
-    line: 393
-    cyclomatic_complexity: 9
-    calls_out: 11
-    calls_in: 0
-  src.redup.core.utils.duplicate_finders.create_duplicate_finder:
-    name: create_duplicate_finder
-    module: src.redup.core.utils.duplicate_finders
-    line: 10
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 0
-  src.redup.cli_app.compare_command._print_communities_table:
-    name: _print_communities_table
-    module: src.redup.cli_app.compare_command
-    line: 125
-    cyclomatic_complexity: 2
-    calls_out: 12
-    calls_in: 1
-  src.redup.reporters.json_reporter.duplication_map_to_dict:
-    name: duplication_map_to_dict
-    module: src.redup.reporters.json_reporter
-    line: 55
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 2
-  src.redup.cli_app.compare_command._deduplicate_matches:
-    name: _deduplicate_matches
-    module: src.redup.cli_app.compare_command
-    line: 240
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 1
-  src.redup.core.differ.format_diff_result:
-    name: format_diff_result
-    module: src.redup.core.differ
-    line: 196
-    cyclomatic_complexity: 1
-    calls_out: 9
-    calls_in: 2
-  src.redup.reporters.toon_reporter._calculate_group_effort:
-    name: _calculate_group_effort
-    module: src.redup.reporters.toon_reporter
-    line: 166
+  benchmarks.bench_libraries.benchmark:
+    name: benchmark
+    module: benchmarks.bench_libraries
+    line: 38
     cyclomatic_complexity: 10
-    calls_out: 2
-    calls_in: 1
-  src.redup.reporters.code2llm_reporter.export_code2llm:
-    name: export_code2llm
-    module: src.redup.reporters.code2llm_reporter
-    line: 173
-    cyclomatic_complexity: 1
-    calls_out: 6
-    calls_in: 1
-  src.redup.core.scanner._normalize_scan_config:
-    name: _normalize_scan_config
-    module: src.redup.core.scanner
-    line: 20
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 1
-  src.redup.core.comparator._find_lsh_matches:
-    name: _find_lsh_matches
-    module: src.redup.core.comparator
-    line: 204
-    cyclomatic_complexity: 8
-    calls_out: 5
-    calls_in: 1
-  src.redup.cli_app.quality_commands._jscpd_command:
-    name: _jscpd_command
-    module: src.redup.cli_app.quality_commands
-    line: 54
+    calls_out: 27
+    calls_in: 0
+  src.redup.core.config.config_to_scan_config:
+    name: config_to_scan_config
+    module: src.redup.core.config
+    line: 101
     cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 2
+    calls_out: 18
+    calls_in: 5
   src.redup.core.ts_extractor.extractors.php.extract_functions_php:
     name: extract_functions_php
     module: src.redup.core.ts_extractor.extractors.php
@@ -145,501 +40,11 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 9
     calls_in: 0
-  src.redup.core.pipeline.duplicate_finder.find_exact_groups:
-    name: find_exact_groups
-    module: src.redup.core.pipeline.duplicate_finder
-    line: 41
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 0
-  src.redup.reporters.toon_reporter._saved_for_suggestion:
-    name: _saved_for_suggestion
-    module: src.redup.reporters.toon_reporter
-    line: 228
-    cyclomatic_complexity: 3
-    calls_out: 0
-    calls_in: 3
-  src.redup.core.lsh_matcher.find_near_duplicates:
-    name: find_near_duplicates
-    module: src.redup.core.lsh_matcher
-    line: 224
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 0
-  src.redup.core.hasher._ast_to_normalized_string:
-    name: _ast_to_normalized_string
-    module: src.redup.core.hasher
-    line: 54
-    cyclomatic_complexity: 12
-    calls_out: 18
-    calls_in: 1
-  src.redup.core.decision.recommend:
-    name: recommend
-    module: src.redup.core.decision
-    line: 35
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 2
-  src.redup.cli_app.output_writer.write_results:
-    name: write_results
-    module: src.redup.cli_app.output_writer
-    line: 29
-    cyclomatic_complexity: 12
-    calls_out: 25
-    calls_in: 1
-  src.redup.reporters.toon_reporter._render_refactor:
-    name: _render_refactor
-    module: src.redup.reporters.toon_reporter
-    line: 60
-    cyclomatic_complexity: 4
-    calls_out: 10
-    calls_in: 1
-  src.redup.core.scanner_filters._collect_files:
-    name: _collect_files
-    module: src.redup.core.scanner_filters
-    line: 32
-    cyclomatic_complexity: 15
-    calls_out: 17
-    calls_in: 1
-  src.redup.core.utils.diff_helpers.GroupMatcher._ensure_matches:
-    name: _ensure_matches
-    module: src.redup.core.utils.diff_helpers
-    line: 132
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 0
-  src.redup.core.scanner.scan_project_parallel:
-    name: scan_project_parallel
-    module: src.redup.core.scanner
-    line: 265
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  src.redup.core.lazy_grouper._create_duplicate_group:
-    name: _create_duplicate_group
-    module: src.redup.core.lazy_grouper
-    line: 60
-    cyclomatic_complexity: 4
-    calls_out: 2
-    calls_in: 2
-  src.redup.core.scanner_utils._preload_files:
-    name: _preload_files
-    module: src.redup.core.scanner_utils
-    line: 84
-    cyclomatic_complexity: 4
-    calls_out: 9
-    calls_in: 1
-  src.redup.cli_app.output_writer.write_output:
-    name: write_output
-    module: src.redup.cli_app.output_writer
-    line: 16
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 6
-  src.redup.core.refactor_advisor._get_prompt_instructions:
-    name: _get_prompt_instructions
-    module: src.redup.core.refactor_advisor
-    line: 161
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
-  src.redup.mcp.server.run_server:
-    name: run_server
-    module: src.redup.mcp.server
-    line: 106
-    cyclomatic_complexity: 5
-    calls_out: 14
-    calls_in: 0
-  src.redup.core.refactor_advisor._normalize_match:
-    name: _normalize_match
-    module: src.redup.core.refactor_advisor
-    line: 72
-    cyclomatic_complexity: 7
-    calls_out: 11
-    calls_in: 1
-  src.redup.reporters.toon_reporter._render_duplicates:
-    name: _render_duplicates
-    module: src.redup.reporters.toon_reporter
-    line: 37
-    cyclomatic_complexity: 8
-    calls_out: 6
-    calls_in: 1
-  src.redup.core.scanner._get_source_for_file:
-    name: _get_source_for_file
-    module: src.redup.core.scanner
-    line: 111
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  src.redup.cli_app.fuzzy_similarity._extract_all_blocks:
-    name: _extract_all_blocks
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 49
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  src.redup.mcp.handlers._run_analysis:
-    name: _run_analysis
-    module: src.redup.mcp.handlers
-    line: 56
-    cyclomatic_complexity: 7
-    calls_out: 17
-    calls_in: 3
-  src.redup.core.hasher._normalize_ast_text:
-    name: _normalize_ast_text
-    module: src.redup.core.hasher
-    line: 85
-    cyclomatic_complexity: 5
-    calls_out: 11
-    calls_in: 0
-  src.redup.reporters.code2llm_reporter._get_layers:
-    name: _get_layers
-    module: src.redup.reporters.code2llm_reporter
-    line: 26
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 0
-  src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_metadata_similarity:
-    name: _compute_metadata_similarity
-    module: src.redup.core.universal_fuzzy
-    line: 441
-    cyclomatic_complexity: 9
-    calls_out: 11
-    calls_in: 0
-  src.redup.mcp.server.handle_tools_call:
-    name: handle_tools_call
-    module: src.redup.mcp.server
-    line: 50
-    cyclomatic_complexity: 4
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.ts_extractor.main.is_language_supported:
-    name: is_language_supported
-    module: src.redup.core.ts_extractor.main
-    line: 96
-    cyclomatic_complexity: 5
-    calls_out: 4
-    calls_in: 0
-  src.redup.core.planner._assess_risk:
-    name: _assess_risk
+  src.redup.core.planner._choose_action:
+    name: _choose_action
     module: src.redup.core.planner
-    line: 40
+    line: 57
     cyclomatic_complexity: 7
-    calls_out: 3
-    calls_in: 1
-  src.redup.core.scanner_cache._matches_pattern:
-    name: _matches_pattern
-    module: src.redup.core.scanner_cache
-    line: 54
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 2
-  src.redup.core.matcher.match_candidates:
-    name: match_candidates
-    module: src.redup.core.matcher
-    line: 77
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 0
-  src.redup.cli_app.fuzzy_similarity._validate_fuzzy_input:
-    name: _validate_fuzzy_input
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 31
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 1
-  src.redup.analysis_logic._parse_extensions:
-    name: _parse_extensions
-    module: src.redup.analysis_logic
-    line: 8
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 1
-  src.redup.core.scanner_utils._load_all_files:
-    name: _load_all_files
-    module: src.redup.core.scanner_utils
-    line: 70
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  src.redup.reporters.toon_reporter._render_quick_wins:
-    name: _render_quick_wins
-    module: src.redup.reporters.toon_reporter
-    line: 139
-    cyclomatic_complexity: 9
-    calls_out: 12
-    calls_in: 1
-  src.redup.cli_app.compare_command._filter_significant_communities:
-    name: _filter_significant_communities
-    module: src.redup.cli_app.compare_command
-    line: 293
-    cyclomatic_complexity: 4
-    calls_out: 1
-    calls_in: 1
-  src.redup.core.python_parser._extract_function_info:
-    name: _extract_function_info
-    module: src.redup.core.python_parser
-    line: 118
-    cyclomatic_complexity: 4
-    calls_out: 9
-    calls_in: 1
-  src.redup.cli_app.fuzzy_similarity._separate_blocks_by_type:
-    name: _separate_blocks_by_type
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 69
-    cyclomatic_complexity: 5
-    calls_out: 2
-    calls_in: 1
-  src.redup.mcp.handlers.handle_suggest_refactoring:
-    name: handle_suggest_refactoring
-    module: src.redup.mcp.handlers
-    line: 172
-    cyclomatic_complexity: 4
-    calls_out: 11
-    calls_in: 0
-  src.redup.cli_app.compare_command._print_match_details:
-    name: _print_match_details
-    module: src.redup.cli_app.compare_command
-    line: 144
-    cyclomatic_complexity: 5
-    calls_out: 13
-    calls_in: 1
-  src.redup.core.scanner_cache._matches_any_exclude:
-    name: _matches_any_exclude
-    module: src.redup.core.scanner_cache
-    line: 61
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_pattern_similarity:
-    name: _compute_pattern_similarity
-    module: src.redup.core.universal_fuzzy
-    line: 427
-    cyclomatic_complexity: 6
-    calls_out: 4
-    calls_in: 0
-  src.redup.core.scanner._extract_function_blocks_python:
-    name: _extract_function_blocks_python
-    module: src.redup.core.scanner
-    line: 28
-    cyclomatic_complexity: 10
-    calls_out: 13
-    calls_in: 1
-  src.redup.cli_app.main.config:
-    name: config
-    module: src.redup.cli_app.main
-    line: 233
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 0
-  src.redup.core.hasher.find_exact_duplicates:
-    name: find_exact_duplicates
-    module: src.redup.core.hasher
-    line: 179
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  src.redup.reporters.code2llm_reporter._calculate_avg_cc:
-    name: _calculate_avg_cc
-    module: src.redup.reporters.code2llm_reporter
-    line: 16
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 2
-  src.redup.core.lsh_matcher.LSHIndex._find_near_duplicates_simple:
-    name: _find_near_duplicates_simple
-    module: src.redup.core.lsh_matcher
-    line: 166
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 0
-  src.redup.mcp.utils.parse_extensions:
-    name: parse_extensions
-    module: src.redup.mcp.utils
-    line: 23
-    cyclomatic_complexity: 8
-    calls_out: 8
-    calls_in: 1
-  src.redup.cli_app.scan_helpers.print_scan_header:
-    name: print_scan_header
-    module: src.redup.cli_app.scan_helpers
-    line: 10
-    cyclomatic_complexity: 1
-    calls_out: 6
-    calls_in: 2
-  src.redup.cli_app.quality_commands.jscpd:
-    name: jscpd
-    module: src.redup.cli_app.quality_commands
-    line: 157
-    cyclomatic_complexity: 8
-    calls_out: 16
-    calls_in: 0
-  src.redup.cli_app.fuzzy_similarity._analyze_other_language_blocks:
-    name: _analyze_other_language_blocks
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 115
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.lsh_matcher.LSHIndex.find_all_near_duplicates:
-    name: find_all_near_duplicates
-    module: src.redup.core.lsh_matcher
-    line: 179
-    cyclomatic_complexity: 8
-    calls_out: 7
-    calls_in: 0
-  src.redup.cli_app.compare_command._build_json_report:
-    name: _build_json_report
-    module: src.redup.cli_app.compare_command
-    line: 324
-    cyclomatic_complexity: 1
-    calls_out: 6
-    calls_in: 1
-  src.redup.cli_app.main.info:
-    name: info
-    module: src.redup.cli_app.main
-    line: 250
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  src.redup.core.ts_extractor.main.extract_functions_treesitter:
-    name: extract_functions_treesitter
-    module: src.redup.core.ts_extractor.main
-    line: 35
-    cyclomatic_complexity: 8
-    calls_out: 10
-    calls_in: 1
-  src.redup.cli_app.scan_helpers.apply_fuzzy_similarity:
-    name: apply_fuzzy_similarity
-    module: src.redup.cli_app.scan_helpers
-    line: 36
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  src.redup.cli_app.tasks_command.tasks:
-    name: tasks
-    module: src.redup.cli_app.tasks_command
-    line: 22
-    cyclomatic_complexity: 14
-    calls_out: 35
-    calls_in: 0
-  src.redup.core.config._get_config_from_redup_toml:
-    name: _get_config_from_redup_toml
-    module: src.redup.core.config
-    line: 43
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.refactor_advisor.format_plan_json:
-    name: format_plan_json
-    module: src.redup.core.refactor_advisor
-    line: 343
-    cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 1
-  src.redup.core.lsh_matcher.LSHIndex.find_near_duplicates:
-    name: find_near_duplicates
-    module: src.redup.core.lsh_matcher
-    line: 132
-    cyclomatic_complexity: 10
-    calls_out: 9
-    calls_in: 1
-  src.redup.core.comparator._find_hash_matches:
-    name: _find_hash_matches
-    module: src.redup.core.comparator
-    line: 170
-    cyclomatic_complexity: 6
-    calls_out: 7
-    calls_in: 1
-  src.redup.cli_app.scan_commands.info_command:
-    name: info_command
-    module: src.redup.cli_app.scan_commands
-    line: 296
-    cyclomatic_complexity: 3
-    calls_out: 9
-    calls_in: 1
-  src.redup.cli_app.compare_command._parse_extensions:
-    name: _parse_extensions
-    module: src.redup.cli_app.compare_command
-    line: 61
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.ts_extractor.extractors.php._extract_class_name:
-    name: _extract_class_name
-    module: src.redup.core.ts_extractor.extractors.php
-    line: 11
-    cyclomatic_complexity: 5
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.scanner_utils._load_files_simple:
-    name: _load_files_simple
-    module: src.redup.core.scanner_utils
-    line: 34
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 2
-  src.redup.cli_app.scan_commands.check_command:
-    name: check_command
-    module: src.redup.cli_app.scan_commands
-    line: 218
-    cyclomatic_complexity: 4
-    calls_out: 19
-    calls_in: 1
-  src.redup.core.scanner._extract_blocks_for_file:
-    name: _extract_blocks_for_file
-    module: src.redup.core.scanner
-    line: 122
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 1
-  src.redup.core.scanner_cache._should_exclude:
-    name: _should_exclude
-    module: src.redup.core.scanner_cache
-    line: 80
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  src.redup.analysis_logic._build_scan_config:
-    name: _build_scan_config
-    module: src.redup.analysis_logic
-    line: 15
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 0
-  src.redup.core.scanner._init_strategy:
-    name: _init_strategy
-    module: src.redup.core.scanner
-    line: 176
-    cyclomatic_complexity: 5
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.utils.diff_helpers.GroupMatcher._match_score:
-    name: _match_score
-    module: src.redup.core.utils.diff_helpers
-    line: 146
-    cyclomatic_complexity: 6
-    calls_out: 8
-    calls_in: 0
-  src.redup.reporters.toon_reporter._render_header:
-    name: _render_header
-    module: src.redup.reporters.toon_reporter
-    line: 13
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.ts_extractor.extractors.web._extract_method_definition:
-    name: _extract_method_definition
-    module: src.redup.core.ts_extractor.extractors.web
-    line: 20
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  src.redup.cli_app.compare_command._build_recommendation_dict:
-    name: _build_recommendation_dict
-    module: src.redup.cli_app.compare_command
-    line: 304
-    cyclomatic_complexity: 2
     calls_out: 2
     calls_in: 1
   src.redup.cli_app.config_builder.build_config_with_file_support:
@@ -649,152 +54,110 @@ nodes:
     cyclomatic_complexity: 10
     calls_out: 4
     calls_in: 2
-  src.redup.cli_app.quality_commands.run_jscpd_budget:
-    name: run_jscpd_budget
-    module: src.redup.cli_app.quality_commands
-    line: 95
+  src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy:
+    name: find_duplicates_phase_lazy
+    module: src.redup.core.pipeline.duplicate_finder
+    line: 234
     cyclomatic_complexity: 5
-    calls_out: 16
+    calls_out: 10
     calls_in: 1
-  src.redup.reporters.markdown_reporter.to_markdown:
-    name: to_markdown
-    module: src.redup.reporters.markdown_reporter
-    line: 10
-    cyclomatic_complexity: 12
-    calls_out: 54
-    calls_in: 3
-  src.redup.core.scanner._read_source_text:
-    name: _read_source_text
-    module: src.redup.core.scanner
-    line: 93
-    cyclomatic_complexity: 6
-    calls_out: 4
-    calls_in: 1
-  src.redup.mcp.handlers.handle_project_info:
-    name: handle_project_info
+  src.redup.cli_app.tasks_command.tasks:
+    name: tasks
+    module: src.redup.cli_app.tasks_command
+    line: 22
+    cyclomatic_complexity: 14
+    calls_out: 35
+    calls_in: 0
+  src.redup.mcp.handlers._scan_config_payload:
+    name: _scan_config_payload
     module: src.redup.mcp.handlers
-    line: 320
+    line: 97
     cyclomatic_complexity: 1
-    calls_out: 7
+    calls_out: 1
+    calls_in: 2
+  src.redup.core.lazy_grouper.find_all_duplicates_lazy:
+    name: find_all_duplicates_lazy
+    module: src.redup.core.lazy_grouper
+    line: 90
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 2
+  src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_metadata_similarity:
+    name: _compute_metadata_similarity
+    module: src.redup.core.universal_fuzzy
+    line: 441
+    cyclomatic_complexity: 9
+    calls_out: 11
     calls_in: 0
-  src.redup.core.utils.diff_helpers._groups_match:
-    name: _groups_match
-    module: src.redup.core.utils.diff_helpers
+  src.redup.core.pipeline.phases.scan_phase:
+    name: scan_phase
+    module: src.redup.core.pipeline.phases
     line: 15
-    cyclomatic_complexity: 6
-    calls_out: 7
-    calls_in: 0
-  src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors:
-    name: _analyze_blocks_with_detectors
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 82
-    cyclomatic_complexity: 3
-    calls_out: 12
-    calls_in: 1
-  src.redup.core.scanner_filters._project_relative_path:
-    name: _project_relative_path
-    module: src.redup.core.scanner_filters
-    line: 12
     cyclomatic_complexity: 2
     calls_out: 1
-    calls_in: 2
-  src.redup.core.lsh_matcher._text_to_minhash_features:
-    name: _text_to_minhash_features
-    module: src.redup.core.lsh_matcher
-    line: 35
-    cyclomatic_complexity: 5
-    calls_out: 14
     calls_in: 1
-  src.redup.core.hasher._hashed_block:
-    name: _hashed_block
-    module: src.redup.core.hasher
-    line: 141
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  src.redup.core.hasher._blocks_from_different_locations:
-    name: _blocks_from_different_locations
-    module: src.redup.core.hasher
-    line: 149
+  src.redup.mcp.server.handle_tools_list:
+    name: handle_tools_list
+    module: src.redup.mcp.server
+    line: 32
     cyclomatic_complexity: 2
     calls_out: 1
-    calls_in: 3
-  benchmarks.bench_libraries.generate_test_project:
-    name: generate_test_project
-    module: benchmarks.bench_libraries
-    line: 20
-    cyclomatic_complexity: 3
-    calls_out: 5
     calls_in: 1
-  src.redup.core.scanner_utils._print_load_result:
-    name: _print_load_result
-    module: src.redup.core.scanner_utils
-    line: 78
+  src.redup.cli_app.main.info:
+    name: info
+    module: src.redup.cli_app.main
+    line: 268
     cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  src.redup.config.get_default_filename:
-    name: get_default_filename
-    module: src.redup.config
-    line: 148
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 2
-  src.redup.core.hasher._find_duplicates:
-    name: _find_duplicates
-    module: src.redup.core.hasher
-    line: 155
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 3
-  src.redup.core.scanner_cache._matches_any_include:
-    name: _matches_any_include
-    module: src.redup.core.scanner_cache
-    line: 70
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  src.redup.core.hasher.find_structural_duplicates:
-    name: find_structural_duplicates
-    module: src.redup.core.hasher
-    line: 184
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  src.redup.cli_app.quality_commands._budget_violations:
-    name: _budget_violations
-    module: src.redup.cli_app.quality_commands
-    line: 86
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  src.redup.reporters.code2llm_reporter.to_code2llm_context:
-    name: to_code2llm_context
-    module: src.redup.reporters.code2llm_reporter
-    line: 95
-    cyclomatic_complexity: 11
-    calls_out: 36
-    calls_in: 3
-  src.redup.core.python_parser.parse_python_functions:
-    name: parse_python_functions
-    module: src.redup.core.python_parser
-    line: 163
-    cyclomatic_complexity: 3
     calls_out: 2
     calls_in: 0
-  src.redup.core.differ._format_group_header:
-    name: _format_group_header
+  src.redup.core.differ._load_duplication_map:
+    name: _load_duplication_map
     module: src.redup.core.differ
-    line: 155
+    line: 30
+    cyclomatic_complexity: 5
+    calls_out: 21
+    calls_in: 2
+  src.redup.core.scanner._init_file_loading:
+    name: _init_file_loading
+    module: src.redup.core.scanner
+    line: 191
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.cache.build_hash_index_with_cache:
+    name: build_hash_index_with_cache
+    module: src.redup.core.cache
+    line: 226
+    cyclomatic_complexity: 9
+    calls_out: 9
+    calls_in: 1
+  src.redup.reporters.code2llm_reporter._calculate_avg_cc:
+    name: _calculate_avg_cc
+    module: src.redup.reporters.code2llm_reporter
+    line: 16
     cyclomatic_complexity: 1
     calls_out: 0
-    calls_in: 1
-  src.redup.core.matcher._compare_against_reference:
-    name: _compare_against_reference
-    module: src.redup.core.matcher
-    line: 44
-    cyclomatic_complexity: 7
-    calls_out: 5
+    calls_in: 2
+  src.redup.mcp.handlers.handle_analyze_project:
+    name: handle_analyze_project
+    module: src.redup.mcp.handlers
+    line: 158
+    cyclomatic_complexity: 3
+    calls_out: 12
+    calls_in: 0
+  src.redup.core.ts_extractor.extractors.base.create_code_block:
+    name: create_code_block
+    module: src.redup.core.ts_extractor.extractors.base
+    line: 58
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 14
+  src.redup.core.pipeline.analyze_optimized:
+    name: analyze_optimized
+    module: src.redup.core.pipeline
+    line: 116
+    cyclomatic_complexity: 11
+    calls_out: 23
     calls_in: 2
   src.redup.mcp.handlers.handle_check_project:
     name: handle_check_project
@@ -803,501 +166,46 @@ nodes:
     cyclomatic_complexity: 3
     calls_out: 14
     calls_in: 0
-  benchmark.benchmark_feature_performance:
-    name: benchmark_feature_performance
-    module: benchmark
-    line: 66
-    cyclomatic_complexity: 3
-    calls_out: 15
-    calls_in: 0
-  src.redup.core.scanner._process_single_file:
-    name: _process_single_file
-    module: src.redup.core.scanner
-    line: 150
-    cyclomatic_complexity: 2
-    calls_out: 6
-    calls_in: 1
-  src.redup.cli_app.compare_command._make_relative_path:
-    name: _make_relative_path
-    module: src.redup.cli_app.compare_command
-    line: 232
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 3
-  src.redup.core.hasher.hash_block:
-    name: hash_block
-    module: src.redup.core.hasher
-    line: 114
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 3
-  src.redup.core.ts_extractor.extractors.web.extract_functions_javascript:
-    name: extract_functions_javascript
-    module: src.redup.core.ts_extractor.extractors.web
-    line: 41
-    cyclomatic_complexity: 1
-    calls_out: 8
-    calls_in: 0
-  src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css:
-    name: extract_blocks_css
-    module: src.redup.core.ts_extractor.extractors.stylesheet
-    line: 11
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  src.redup.core.python_parser._build_parent_map:
-    name: _build_parent_map
-    module: src.redup.core.python_parser
-    line: 96
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  src.redup.core.pipeline._build_duplication_map:
-    name: _build_duplication_map
-    module: src.redup.core.pipeline
-    line: 52
-    cyclomatic_complexity: 2
-    calls_out: 5
-    calls_in: 3
-  src.redup.core.hasher._normalize_text:
-    name: _normalize_text
-    module: src.redup.core.hasher
-    line: 33
-    cyclomatic_complexity: 6
-    calls_out: 11
-    calls_in: 7
-  src.redup.core.pipeline.duplicate_finder.find_structural_groups:
-    name: find_structural_groups
-    module: src.redup.core.pipeline.duplicate_finder
-    line: 63
-    cyclomatic_complexity: 9
-    calls_out: 12
-    calls_in: 0
-  src.redup.core.config._load_toml_file:
-    name: _load_toml_file
-    module: src.redup.core.config
-    line: 21
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 2
-  src.redup.core.ts_extractor.main._get_tree_sitter_language:
-    name: _get_tree_sitter_language
-    module: src.redup.core.ts_extractor.main
-    line: 17
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 3
-  src.redup.core.comparator._create_cross_project_match:
-    name: _create_cross_project_match
-    module: src.redup.core.comparator
-    line: 256
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 1
-  src.redup.cli_app.quality_commands._repo_root:
-    name: _repo_root
-    module: src.redup.cli_app.quality_commands
-    line: 42
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 2
-  src.redup.core.config._get_config_from_pyproject:
-    name: _get_config_from_pyproject
-    module: src.redup.core.config
-    line: 36
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  src.redup.core.ts_extractor.main.get_supported_languages:
-    name: get_supported_languages
-    module: src.redup.core.ts_extractor.main
-    line: 83
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 0
-  src.redup.core.differ._groups_match:
-    name: _groups_match
-    module: src.redup.core.differ
-    line: 100
-    cyclomatic_complexity: 7
-    calls_out: 5
-    calls_in: 2
-  src.redup.core.utils.diff_helpers.GroupMatcher._find_best_match:
-    name: _find_best_match
-    module: src.redup.core.utils.diff_helpers
-    line: 88
-    cyclomatic_complexity: 5
-    calls_out: 3
-    calls_in: 0
-  src.redup.mcp.server.handle_request:
-    name: handle_request
-    module: src.redup.mcp.server
-    line: 83
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  src.redup.core.hasher.hash_block_structural:
-    name: hash_block_structural
-    module: src.redup.core.hasher
-    line: 119
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 5
-  src.redup.core.python_parser._parse_with_ast:
-    name: _parse_with_ast
-    module: src.redup.core.python_parser
-    line: 145
-    cyclomatic_complexity: 4
-    calls_out: 7
-    calls_in: 1
-  src.redup.reporters.enhanced_reporter.EnhancedReporter._get_language_metrics:
-    name: _get_language_metrics
-    module: src.redup.reporters.enhanced_reporter
-    line: 71
-    cyclomatic_complexity: 7
-    calls_out: 9
-    calls_in: 0
-  src.redup.core.refactor_advisor.format_plan_markdown:
-    name: format_plan_markdown
-    module: src.redup.core.refactor_advisor
-    line: 306
-    cyclomatic_complexity: 8
-    calls_out: 20
-    calls_in: 1
-  src.redup.mcp.handlers._get_optional_deps:
-    name: _get_optional_deps
-    module: src.redup.mcp.handlers
-    line: 303
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.comparator._normalize_match_order:
-    name: _normalize_match_order
-    module: src.redup.core.comparator
-    line: 249
-    cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 1
-  src.redup.core.ts_extractor.dispatcher.initialize_language_dispatcher:
-    name: initialize_language_dispatcher
-    module: src.redup.core.ts_extractor.dispatcher
-    line: 31
-    cyclomatic_complexity: 2
-    calls_out: 31
-    calls_in: 1
-  src.redup.core.differ._format_groups_section:
-    name: _format_groups_section
-    module: src.redup.core.differ
-    line: 169
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 3
-  src.redup.reporters.yaml_reporter.to_yaml:
-    name: to_yaml
-    module: src.redup.reporters.yaml_reporter
-    line: 8
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 3
-  src.redup.core.lazy_grouper.find_structural_duplicates_lazy:
-    name: find_structural_duplicates_lazy
-    module: src.redup.core.lazy_grouper
-    line: 39
-    cyclomatic_complexity: 5
-    calls_out: 4
-    calls_in: 1
-  src.redup.core.lazy_grouper.find_all_duplicates_lazy:
-    name: find_all_duplicates_lazy
-    module: src.redup.core.lazy_grouper
-    line: 90
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 2
-  src.redup.core.cache.hash_block_with_cache:
-    name: hash_block_with_cache
-    module: src.redup.core.cache
-    line: 189
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  src.redup.core.ts_extractor.main._get_dispatcher:
-    name: _get_dispatcher
-    module: src.redup.core.ts_extractor.main
-    line: 22
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  src.redup.core.matcher.refine_structural_matches:
-    name: refine_structural_matches
-    module: src.redup.core.matcher
-    line: 90
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  src.redup.core.pipeline.duplicate_finder.find_near_duplicate_groups:
-    name: find_near_duplicate_groups
-    module: src.redup.core.pipeline.duplicate_finder
-    line: 102
-    cyclomatic_complexity: 11
-    calls_out: 13
-    calls_in: 1
-  src.redup.core.comparator._scan_project_blocks:
-    name: _scan_project_blocks
-    module: src.redup.core.comparator
-    line: 145
-    cyclomatic_complexity: 5
-    calls_out: 3
-    calls_in: 2
-  src.redup.core.lsh_matcher._create_minhash:
-    name: _create_minhash
-    module: src.redup.core.lsh_matcher
-    line: 18
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 2
-  src.redup.config.RedupConfig.set:
-    name: set
-    module: src.redup.config
-    line: 133
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 25
-  src.redup.core.ts_extractor.extractors.web._extract_function_declaration:
-    name: _extract_function_declaration
-    module: src.redup.core.ts_extractor.extractors.web
-    line: 11
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  src.redup.cli_app.compare_command._detect_communities:
-    name: _detect_communities
-    module: src.redup.cli_app.compare_command
-    line: 82
-    cyclomatic_complexity: 4
-    calls_out: 2
-    calls_in: 1
-  src.redup.mcp.utils.resolve_path:
-    name: resolve_path
-    module: src.redup.mcp.utils
-    line: 16
-    cyclomatic_complexity: 3
-    calls_out: 8
-    calls_in: 5
-  src.redup.core.refactor_advisor._load_env:
-    name: _load_env
-    module: src.redup.core.refactor_advisor
-    line: 42
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  src.redup.core.scanner.scan_project_ultra_fast:
-    name: scan_project_ultra_fast
-    module: src.redup.core.scanner
-    line: 248
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  src.redup.core.pipeline.analyze_optimized:
-    name: analyze_optimized
-    module: src.redup.core.pipeline
-    line: 116
-    cyclomatic_complexity: 11
-    calls_out: 23
-    calls_in: 2
-  src.redup.core.lsh_matcher.LSHIndex.add:
-    name: add
-    module: src.redup.core.lsh_matcher
-    line: 117
-    cyclomatic_complexity: 4
-    calls_out: 8
-    calls_in: 0
-  src.redup.core.planner.generate_suggestions:
-    name: generate_suggestions
-    module: src.redup.core.planner
-    line: 71
-    cyclomatic_complexity: 6
-    calls_out: 9
-    calls_in: 1
-  src.redup.reporters.code2llm_reporter.to_code2llm_toon:
-    name: to_code2llm_toon
-    module: src.redup.reporters.code2llm_reporter
-    line: 48
-    cyclomatic_complexity: 5
-    calls_out: 17
-    calls_in: 2
-  src.redup.reporters.toon_reporter._format_estimate_lines:
-    name: _format_estimate_lines
-    module: src.redup.reporters.toon_reporter
-    line: 185
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 1
-  src.redup.cli_app.scan_commands.diff_command:
-    name: diff_command
-    module: src.redup.cli_app.scan_commands
-    line: 205
-    cyclomatic_complexity: 2
-    calls_out: 5
-    calls_in: 1
-  src.redup.reporters.toon_reporter._render_dependency_risk:
-    name: _render_dependency_risk
-    module: src.redup.reporters.toon_reporter
-    line: 109
-    cyclomatic_complexity: 13
-    calls_out: 14
-    calls_in: 1
-  src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp:
-    name: extract_functions_c_sharp
-    module: src.redup.core.ts_extractor.extractors.dotnet
-    line: 22
-    cyclomatic_complexity: 1
-    calls_out: 11
-    calls_in: 0
-  benchmark.benchmark_sequential_vs_parallel:
-    name: benchmark_sequential_vs_parallel
-    module: benchmark
-    line: 14
-    cyclomatic_complexity: 3
-    calls_out: 26
-    calls_in: 0
-  src.redup.core.planner._choose_action:
-    name: _choose_action
-    module: src.redup.core.planner
-    line: 57
-    cyclomatic_complexity: 7
-    calls_out: 2
-    calls_in: 1
-  src.redup.reporters.json_reporter._suggestion_to_dict:
-    name: _suggestion_to_dict
-    module: src.redup.reporters.json_reporter
-    line: 42
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
-  src.redup.core.pipeline.groups.match_results_to_blocks:
-    name: match_results_to_blocks
-    module: src.redup.core.pipeline.groups
-    line: 78
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 1
-  src.redup.core.scanner_utils._read_file_safe:
-    name: _read_file_safe
-    module: src.redup.core.scanner_utils
-    line: 23
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 2
-  src.redup.core.scanner_utils._load_files_with_progress:
-    name: _load_files_with_progress
-    module: src.redup.core.scanner_utils
-    line: 46
-    cyclomatic_complexity: 3
-    calls_out: 10
-    calls_in: 1
-  src.redup.core.community.detect_communities:
-    name: detect_communities
-    module: src.redup.core.community
-    line: 25
-    cyclomatic_complexity: 11
-    calls_out: 20
-    calls_in: 1
-  src.redup.cli_app.scan_commands.config_command:
-    name: config_command
-    module: src.redup.cli_app.scan_commands
-    line: 263
-    cyclomatic_complexity: 5
-    calls_out: 23
-    calls_in: 1
-  src.redup.core.ts_extractor.extractors.web._extract_arrow_function:
-    name: _extract_arrow_function
-    module: src.redup.core.ts_extractor.extractors.web
-    line: 29
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized:
-    name: find_duplicates_phase_optimized
-    module: src.redup.core.pipeline.duplicate_finder
-    line: 217
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 2
-  src.redup.core.comparator._is_cross_project_match:
-    name: _is_cross_project_match
-    module: src.redup.core.comparator
-    line: 242
-    cyclomatic_complexity: 4
-    calls_out: 0
-    calls_in: 1
-  src.redup.cli_app.config_builder.build_config:
-    name: build_config
-    module: src.redup.cli_app.config_builder
+  examples.01_basic_usage.main:
+    name: main
+    module: examples.01_basic_usage
     line: 10
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.pipeline.analyze_parallel:
-    name: analyze_parallel
-    module: src.redup.core.pipeline
-    line: 207
-    cyclomatic_complexity: 2
-    calls_out: 12
-    calls_in: 3
-  src.redup.core.differ.compare_scans:
-    name: compare_scans
-    module: src.redup.core.differ
-    line: 123
-    cyclomatic_complexity: 1
-    calls_out: 10
-    calls_in: 2
-  src.redup.core.lsh_matcher._create_simple_minhash:
-    name: _create_simple_minhash
-    module: src.redup.core.lsh_matcher
-    line: 68
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 2
-  src.redup.reporters.toon_reporter._render_hotspots:
-    name: _render_hotspots
-    module: src.redup.reporters.toon_reporter
-    line: 79
-    cyclomatic_complexity: 6
-    calls_out: 9
-    calls_in: 1
-  src.redup.core.fuzzy_similarity.HTMLComponentExtractor._extract_attributes:
-    name: _extract_attributes
-    module: src.redup.core.fuzzy_similarity
-    line: 151
-    cyclomatic_complexity: 4
-    calls_out: 11
+    cyclomatic_complexity: 5
+    calls_out: 23
     calls_in: 0
-  src.redup.core.refactor_advisor._format_communities:
-    name: _format_communities
-    module: src.redup.core.refactor_advisor
-    line: 102
-    cyclomatic_complexity: 6
-    calls_out: 10
+  src.redup.core.python_parser._extract_decorators:
+    name: _extract_decorators
+    module: src.redup.core.python_parser
+    line: 107
+    cyclomatic_complexity: 5
+    calls_out: 5
     calls_in: 1
-  src.redup.cli_app.quality_commands.jscpd_run:
-    name: jscpd_run
-    module: src.redup.cli_app.quality_commands
-    line: 145
-    cyclomatic_complexity: 2
+  src.redup.core.pipeline.groups.deduplicate_groups:
+    name: deduplicate_groups
+    module: src.redup.core.pipeline.groups
+    line: 53
+    cyclomatic_complexity: 6
+    calls_out: 5
+    calls_in: 1
+  src.redup.mcp.utils.json_safe:
+    name: json_safe
+    module: src.redup.mcp.utils
+    line: 6
+    cyclomatic_complexity: 6
     calls_out: 8
-    calls_in: 0
-  src.redup.core.config.config_to_scan_config:
-    name: config_to_scan_config
-    module: src.redup.core.config
-    line: 101
-    cyclomatic_complexity: 4
-    calls_out: 18
     calls_in: 5
-  src.redup.core.ts_extractor.extractors.shell.extract_functions_bash:
-    name: extract_functions_bash
-    module: src.redup.core.ts_extractor.extractors.shell
-    line: 11
-    cyclomatic_complexity: 1
+  src.redup.core.refactor_advisor._normalize_match:
+    name: _normalize_match
+    module: src.redup.core.refactor_advisor
+    line: 72
+    cyclomatic_complexity: 7
+    calls_out: 11
+    calls_in: 1
+  src.redup.core.lsh_matcher.LSHIndex._find_near_duplicates_simple:
+    name: _find_near_duplicates_simple
+    module: src.redup.core.lsh_matcher
+    line: 166
+    cyclomatic_complexity: 4
     calls_out: 6
     calls_in: 0
   src.redup.core.planner._suggest_module_name:
@@ -1307,97 +215,69 @@ nodes:
     cyclomatic_complexity: 6
     calls_out: 1
     calls_in: 1
-  src.redup.core.pipeline.groups.blocks_to_group:
-    name: blocks_to_group
-    module: src.redup.core.pipeline.groups
-    line: 10
-    cyclomatic_complexity: 5
-    calls_out: 7
-    calls_in: 2
-  src.redup.core.config.load_config:
-    name: load_config
-    module: src.redup.core.config
-    line: 49
-    cyclomatic_complexity: 5
-    calls_out: 8
-    calls_in: 6
-  src.redup.core.scanner.scan_project:
-    name: scan_project
+  src.redup.core.scanner._extract_sliding_blocks:
+    name: _extract_sliding_blocks
     module: src.redup.core.scanner
-    line: 203
-    cyclomatic_complexity: 5
-    calls_out: 20
-    calls_in: 11
-  benchmarks.bench_libraries.benchmark:
-    name: benchmark
-    module: benchmarks.bench_libraries
-    line: 38
-    cyclomatic_complexity: 10
-    calls_out: 27
-    calls_in: 0
-  src.redup.core.pipeline.phases.scan_phase:
-    name: scan_phase
-    module: src.redup.core.pipeline.phases
-    line: 15
-    cyclomatic_complexity: 2
-    calls_out: 1
+    line: 66
+    cyclomatic_complexity: 6
+    calls_out: 9
     calls_in: 1
-  src.redup.mcp.server.handle_initialize:
-    name: handle_initialize
-    module: src.redup.mcp.server
-    line: 14
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
-  src.redup.core.python_parser._extract_decorators:
-    name: _extract_decorators
-    module: src.redup.core.python_parser
-    line: 107
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  src.redup.core.scanner.scan_project_parallel_memory_optimized:
-    name: scan_project_parallel_memory_optimized
-    module: src.redup.core.scanner
-    line: 275
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  src.redup.cli_app.fuzzy_similarity._report_fuzzy_results:
-    name: _report_fuzzy_results
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 123
-    cyclomatic_complexity: 5
-    calls_out: 12
-    calls_in: 1
-  src.redup.core.lazy_grouper.find_exact_duplicates_lazy:
-    name: find_exact_duplicates_lazy
-    module: src.redup.core.lazy_grouper
-    line: 11
-    cyclomatic_complexity: 5
-    calls_out: 4
-    calls_in: 1
-  src.redup.reporters.toon_reporter.to_toon:
-    name: to_toon
+  src.redup.core.hasher._find_duplicates:
+    name: _find_duplicates
+    module: src.redup.core.hasher
+    line: 155
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 3
+  src.redup.reporters.toon_reporter._render_dependency_risk:
+    name: _render_dependency_risk
     module: src.redup.reporters.toon_reporter
-    line: 249
-    cyclomatic_complexity: 3
+    line: 109
+    cyclomatic_complexity: 13
+    calls_out: 14
+    calls_in: 1
+  src.redup.cli_app.compare_command._print_recommendation:
+    name: _print_recommendation
+    module: src.redup.cli_app.compare_command
+    line: 103
+    cyclomatic_complexity: 4
+    calls_out: 7
+    calls_in: 1
+  src.redup.cli_app.quality_commands.jscpd_run:
+    name: jscpd_run
+    module: src.redup.cli_app.quality_commands
+    line: 145
+    cyclomatic_complexity: 2
+    calls_out: 8
+    calls_in: 0
+  src.redup.cli_app.scan_commands.config_command:
+    name: config_command
+    module: src.redup.cli_app.scan_commands
+    line: 265
+    cyclomatic_complexity: 5
+    calls_out: 23
+    calls_in: 1
+  src.redup.core.fuzzy_similarity.HTMLComponentExtractor._extract_attributes:
+    name: _extract_attributes
+    module: src.redup.core.fuzzy_similarity
+    line: 151
+    cyclomatic_complexity: 4
     calls_out: 11
-    calls_in: 4
-  src.redup.core.matcher.sequence_similarity:
-    name: sequence_similarity
-    module: src.redup.core.matcher
-    line: 23
+    calls_in: 0
+  src.redup.analysis_logic._build_scan_config:
+    name: _build_scan_config
+    module: src.redup.analysis_logic
+    line: 15
     cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  src.redup.reporters.code2llm_reporter._count_critical_functions:
-    name: _count_critical_functions
-    module: src.redup.reporters.code2llm_reporter
-    line: 21
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
+    calls_out: 6
+    calls_in: 0
+  benchmark.benchmark_sequential_vs_parallel:
+    name: benchmark_sequential_vs_parallel
+    module: benchmark
+    line: 14
+    cyclomatic_complexity: 3
+    calls_out: 26
+    calls_in: 0
   src.redup.core.ts_extractor.extractors.dotnet._extract_class_name:
     name: _extract_class_name
     module: src.redup.core.ts_extractor.extractors.dotnet
@@ -1405,20 +285,27 @@ nodes:
     cyclomatic_complexity: 5
     calls_out: 2
     calls_in: 1
-  src.redup.core.hasher.build_hash_index:
-    name: build_hash_index
-    module: src.redup.core.hasher
-    line: 164
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 2
-  src.redup.core.ts_extractor.extractors.base.get_node_text:
-    name: get_node_text
-    module: src.redup.core.ts_extractor.extractors.base
-    line: 51
+  src.redup.core.community.detect_communities:
+    name: detect_communities
+    module: src.redup.core.community
+    line: 25
+    cyclomatic_complexity: 11
+    calls_out: 20
+    calls_in: 1
+  src.redup.core.ts_extractor.dispatcher.initialize_language_dispatcher:
+    name: initialize_language_dispatcher
+    module: src.redup.core.ts_extractor.dispatcher
+    line: 31
+    cyclomatic_complexity: 2
+    calls_out: 31
+    calls_in: 1
+  src.redup.cli_app.quality_commands._budget_violations:
+    name: _budget_violations
+    module: src.redup.cli_app.quality_commands
+    line: 86
     cyclomatic_complexity: 3
     calls_out: 2
-    calls_in: 10
+    calls_in: 1
   src.redup.core.utils.diff_helpers._group_files:
     name: _group_files
     module: src.redup.core.utils.diff_helpers
@@ -1433,20 +320,118 @@ nodes:
     cyclomatic_complexity: 6
     calls_out: 3
     calls_in: 3
-  src.redup.cli_app.compare_command._export_json:
-    name: _export_json
-    module: src.redup.cli_app.compare_command
-    line: 215
+  src.redup.core.refactor_advisor._format_matches_section:
+    name: _format_matches_section
+    module: src.redup.core.refactor_advisor
+    line: 117
     cyclomatic_complexity: 2
     calls_out: 3
     calls_in: 1
-  src.redup.core.pipeline.phases.ensure_config:
-    name: ensure_config
-    module: src.redup.core.pipeline.phases
+  src.redup.core.hasher._ast_to_normalized_string:
+    name: _ast_to_normalized_string
+    module: src.redup.core.hasher
+    line: 54
+    cyclomatic_complexity: 12
+    calls_out: 18
+    calls_in: 1
+  src.redup.core.scanner_filters._collect_files:
+    name: _collect_files
+    module: src.redup.core.scanner_filters
+    line: 72
+    cyclomatic_complexity: 12
+    calls_out: 15
+    calls_in: 1
+  src.redup.cli_app.fuzzy_similarity._analyze_html_css_blocks:
+    name: _analyze_html_css_blocks
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 107
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.differ._format_assessment:
+    name: _format_assessment
+    module: src.redup.core.differ
+    line: 186
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 1
+  src.redup.core.python_parser._build_parent_map:
+    name: _build_parent_map
+    module: src.redup.core.python_parser
+    line: 96
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  src.redup.reporters.code2llm_reporter._count_critical_functions:
+    name: _count_critical_functions
+    module: src.redup.reporters.code2llm_reporter
+    line: 21
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  src.redup.cli_app.config_builder.build_config:
+    name: build_config
+    module: src.redup.cli_app.config_builder
     line: 10
-    cyclomatic_complexity: 2
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.shell.extract_functions_bash:
+    name: extract_functions_bash
+    module: src.redup.core.ts_extractor.extractors.shell
+    line: 11
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 0
+  src.redup.core.matcher.refine_structural_matches:
+    name: refine_structural_matches
+    module: src.redup.core.matcher
+    line: 90
+    cyclomatic_complexity: 1
     calls_out: 1
-    calls_in: 3
+    calls_in: 1
+  src.redup.core.refactor_advisor.format_plan_json:
+    name: format_plan_json
+    module: src.redup.core.refactor_advisor
+    line: 343
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 1
+  src.redup.core.config._load_toml_file:
+    name: _load_toml_file
+    module: src.redup.core.config
+    line: 21
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 2
+  src.redup.core.matcher.fuzzy_similarity:
+    name: fuzzy_similarity
+    module: src.redup.core.matcher
+    line: 32
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  src.redup.mcp.handlers._estimate_code2llm_counts:
+    name: _estimate_code2llm_counts
+    module: src.redup.mcp.handlers
+    line: 84
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  src.redup.mcp.handlers.handle_project_info:
+    name: handle_project_info
+    module: src.redup.mcp.handlers
+    line: 320
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 0
+  src.redup.core.planner._assess_risk:
+    name: _assess_risk
+    module: src.redup.core.planner
+    line: 40
+    cyclomatic_complexity: 7
+    calls_out: 3
+    calls_in: 1
   src.redup.core.utils.diff_helpers.GroupMatcher._match_exact_ids:
     name: _match_exact_ids
     module: src.redup.core.utils.diff_helpers
@@ -1454,19 +439,152 @@ nodes:
     cyclomatic_complexity: 4
     calls_out: 7
     calls_in: 0
-  src.redup.core.ts_extractor.extractors.query.extract_blocks_sql:
-    name: extract_blocks_sql
-    module: src.redup.core.ts_extractor.extractors.query
+  src.redup.core.scanner_cache._matches_any_include:
+    name: _matches_any_include
+    module: src.redup.core.scanner_cache
+    line: 70
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  src.redup.core.scanner_cache._matches_pattern:
+    name: _matches_pattern
+    module: src.redup.core.scanner_cache
+    line: 54
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 2
+  src.redup.core.config.load_config:
+    name: load_config
+    module: src.redup.core.config
+    line: 49
+    cyclomatic_complexity: 5
+    calls_out: 8
+    calls_in: 6
+  src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups:
+    name: _finalize_duplicate_groups
+    module: src.redup.core.pipeline.duplicate_finder
+    line: 20
+    cyclomatic_complexity: 2
+    calls_out: 7
+    calls_in: 2
+  src.redup.core.refactor_advisor.format_plan_markdown:
+    name: format_plan_markdown
+    module: src.redup.core.refactor_advisor
+    line: 306
+    cyclomatic_complexity: 8
+    calls_out: 20
+    calls_in: 1
+  src.redup.cli_app.compare_command._generate_llm_plan:
+    name: _generate_llm_plan
+    module: src.redup.cli_app.compare_command
+    line: 171
+    cyclomatic_complexity: 5
+    calls_out: 8
+    calls_in: 1
+  src.redup.core.refactor_advisor._get_model:
+    name: _get_model
+    module: src.redup.core.refactor_advisor
+    line: 57
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.web._extract_method_definition:
+    name: _extract_method_definition
+    module: src.redup.core.ts_extractor.extractors.web
+    line: 20
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.web._extract_arrow_function:
+    name: _extract_arrow_function
+    module: src.redup.core.ts_extractor.extractors.web
+    line: 29
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  src.redup.reporters.toon_reporter._render_hotspots:
+    name: _render_hotspots
+    module: src.redup.reporters.toon_reporter
+    line: 79
+    cyclomatic_complexity: 6
+    calls_out: 9
+    calls_in: 1
+  src.redup.core.scanner_utils._preload_files:
+    name: _preload_files
+    module: src.redup.core.scanner_utils
+    line: 84
+    cyclomatic_complexity: 4
+    calls_out: 9
+    calls_in: 1
+  src.redup.core.lsh_matcher._text_to_minhash_features:
+    name: _text_to_minhash_features
+    module: src.redup.core.lsh_matcher
+    line: 35
+    cyclomatic_complexity: 5
+    calls_out: 14
+    calls_in: 1
+  src.redup.core.differ._group_by_id:
+    name: _group_by_id
+    module: src.redup.core.differ
+    line: 92
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 2
+  src.redup.core.scanner_utils._read_file_with_mmap:
+    name: _read_file_with_mmap
+    module: src.redup.core.scanner_utils
+    line: 17
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 1
+  src.redup.core.refactor_advisor._format_communities:
+    name: _format_communities
+    module: src.redup.core.refactor_advisor
+    line: 102
+    cyclomatic_complexity: 6
+    calls_out: 10
+    calls_in: 1
+  src.redup.core.hasher._fast_hash:
+    name: _fast_hash
+    module: src.redup.core.hasher
+    line: 20
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 1
+  benchmarks.bench_libraries.generate_test_project:
+    name: generate_test_project
+    module: benchmarks.bench_libraries
+    line: 20
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 1
+  src.redup.core.utils.diff_helpers.GroupMatcher._ensure_matches:
+    name: _ensure_matches
+    module: src.redup.core.utils.diff_helpers
+    line: 132
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  src.redup.cli_app.main.config:
+    name: config
+    module: src.redup.cli_app.main
+    line: 251
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 0
+  src.redup.mcp.server.handle_initialize:
+    name: handle_initialize
+    module: src.redup.mcp.server
+    line: 14
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css:
+    name: extract_blocks_css
+    module: src.redup.core.ts_extractor.extractors.stylesheet
     line: 11
     cyclomatic_complexity: 1
     calls_out: 5
-    calls_in: 0
-  examples.01_basic_usage.main:
-    name: main
-    module: examples.01_basic_usage
-    line: 10
-    cyclomatic_complexity: 5
-    calls_out: 23
     calls_in: 0
   src.redup.core.scanner.scan_project_memory_optimized:
     name: scan_project_memory_optimized
@@ -1475,138 +593,26 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 2
     calls_in: 0
-  src.redup.core.pipeline.phases.scan_phase_parallel:
-    name: scan_phase_parallel
-    module: src.redup.core.pipeline.phases
-    line: 24
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  src.redup.cli_app.compare_command.compare_command:
-    name: compare_command
-    module: src.redup.cli_app.compare_command
-    line: 19
-    cyclomatic_complexity: 1
-    calls_out: 10
-    calls_in: 1
-  src.redup.cli_app.main.check:
-    name: check
-    module: src.redup.cli_app.main
-    line: 192
-    cyclomatic_complexity: 1
-    calls_out: 10
-    calls_in: 0
-  src.redup.core.utils.hash_utils.create_hash_function:
-    name: create_hash_function
-    module: src.redup.core.utils.hash_utils
-    line: 10
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 0
-  src.redup.core.differ._format_group_details:
-    name: _format_group_details
-    module: src.redup.core.differ
-    line: 160
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  src.redup.reporters.json_reporter.to_json:
-    name: to_json
-    module: src.redup.reporters.json_reporter
-    line: 79
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 4
-  src.redup.core.hasher._fast_hash:
-    name: _fast_hash
-    module: src.redup.core.hasher
-    line: 20
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 1
-  src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy:
-    name: find_duplicates_phase_lazy
-    module: src.redup.core.pipeline.duplicate_finder
-    line: 234
-    cyclomatic_complexity: 5
-    calls_out: 10
-    calls_in: 1
-  src.redup.mcp.handlers._format_analysis_result:
-    name: _format_analysis_result
-    module: src.redup.mcp.handlers
-    line: 109
-    cyclomatic_complexity: 7
-    calls_out: 15
-    calls_in: 1
-  src.redup.cli_app.compare_command._print_recommendation:
-    name: _print_recommendation
-    module: src.redup.cli_app.compare_command
-    line: 103
-    cyclomatic_complexity: 4
-    calls_out: 7
-    calls_in: 1
-  src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity:
-    name: _apply_fuzzy_similarity
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 10
+  src.redup.cli_app.scan_commands.info_command:
+    name: info_command
+    module: src.redup.cli_app.scan_commands
+    line: 298
     cyclomatic_complexity: 3
     calls_out: 9
     calls_in: 1
-  src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp:
-    name: extract_functions_c_cpp
-    module: src.redup.core.ts_extractor.extractors.c_family
+  src.redup.core.utils.diff_helpers.GroupMatcher._find_best_match:
+    name: _find_best_match
+    module: src.redup.core.utils.diff_helpers
+    line: 88
+    cyclomatic_complexity: 5
+    calls_out: 3
+    calls_in: 0
+  src.redup.core.lazy_grouper.find_exact_duplicates_lazy:
+    name: find_exact_duplicates_lazy
+    module: src.redup.core.lazy_grouper
     line: 11
-    cyclomatic_complexity: 1
-    calls_out: 8
-    calls_in: 0
-  src.redup.cli_app.fuzzy_similarity._analyze_html_css_blocks:
-    name: _analyze_html_css_blocks
-    module: src.redup.cli_app.fuzzy_similarity
-    line: 107
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.scanner._init_file_loading:
-    name: _init_file_loading
-    module: src.redup.core.scanner
-    line: 191
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  src.redup.cli_app.main.diff:
-    name: diff
-    module: src.redup.cli_app.main
-    line: 183
-    cyclomatic_complexity: 1
+    cyclomatic_complexity: 5
     calls_out: 4
-    calls_in: 0
-  src.redup.core.refactor_advisor._get_model:
-    name: _get_model
-    module: src.redup.core.refactor_advisor
-    line: 57
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  src.redup.mcp.handlers.handle_compare_scans:
-    name: handle_compare_scans
-    module: src.redup.mcp.handlers
-    line: 210
-    cyclomatic_complexity: 1
-    calls_out: 7
-    calls_in: 0
-  src.redup.core.pipeline.groups.deduplicate_groups:
-    name: deduplicate_groups
-    module: src.redup.core.pipeline.groups
-    line: 53
-    cyclomatic_complexity: 6
-    calls_out: 5
-    calls_in: 1
-  src.redup.core.comparator.compare_projects:
-    name: compare_projects
-    module: src.redup.core.comparator
-    line: 62
-    cyclomatic_complexity: 8
-    calls_out: 13
     calls_in: 1
   src.redup.core.refactor_advisor._build_match_list:
     name: _build_match_list
@@ -1615,96 +621,124 @@ nodes:
     cyclomatic_complexity: 2
     calls_out: 3
     calls_in: 1
-  src.redup.core.ts_extractor.extractors.base.create_code_block:
-    name: create_code_block
-    module: src.redup.core.ts_extractor.extractors.base
-    line: 58
+  src.redup.core.lsh_matcher.find_near_duplicates:
+    name: find_near_duplicates
+    module: src.redup.core.lsh_matcher
+    line: 224
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 0
+  src.redup.core.scanner.scan_project_parallel:
+    name: scan_project_parallel
+    module: src.redup.core.scanner
+    line: 265
     cyclomatic_complexity: 1
     calls_out: 2
-    calls_in: 14
-  src.redup.mcp.handlers._estimate_code2llm_counts:
-    name: _estimate_code2llm_counts
-    module: src.redup.mcp.handlers
-    line: 84
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  src.redup.core.planner._common_prefix:
-    name: _common_prefix
-    module: src.redup.core.planner
-    line: 16
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  src.redup.core.comparator._find_semantic_matches:
-    name: _find_semantic_matches
-    module: src.redup.core.comparator
-    line: 278
-    cyclomatic_complexity: 8
-    calls_out: 7
-    calls_in: 1
-  src.redup.core.hasher._hash_text:
-    name: _hash_text
-    module: src.redup.core.hasher
-    line: 108
+    calls_in: 0
+  src.redup.reporters.code2llm_reporter._get_layers:
+    name: _get_layers
+    module: src.redup.reporters.code2llm_reporter
+    line: 26
     cyclomatic_complexity: 1
     calls_out: 3
-    calls_in: 3
-  src.redup.cli_app.compare_command._print_summary_table:
-    name: _print_summary_table
-    module: src.redup.cli_app.compare_command
-    line: 68
-    cyclomatic_complexity: 1
-    calls_out: 20
+    calls_in: 0
+  src.redup.reporters.toon_reporter._render_duplicates:
+    name: _render_duplicates
+    module: src.redup.reporters.toon_reporter
+    line: 37
+    cyclomatic_complexity: 8
+    calls_out: 6
     calls_in: 1
-  src.redup.mcp.handlers._build_scan_config:
-    name: _build_scan_config
-    module: src.redup.mcp.handlers
-    line: 24
-    cyclomatic_complexity: 12
-    calls_out: 24
+  src.redup.core.scanner_filters._collect_target_files:
+    name: _collect_target_files
+    module: src.redup.core.scanner_filters
+    line: 32
+    cyclomatic_complexity: 13
+    calls_out: 17
     calls_in: 1
-  src.redup.core.differ._load_duplication_map:
-    name: _load_duplication_map
-    module: src.redup.core.differ
-    line: 30
-    cyclomatic_complexity: 5
-    calls_out: 21
-    calls_in: 2
-  src.redup.cli_app.compare_command._generate_llm_plan:
-    name: _generate_llm_plan
-    module: src.redup.cli_app.compare_command
-    line: 171
-    cyclomatic_complexity: 5
-    calls_out: 8
+  src.redup.core.pipeline.duplicate_finder.find_near_duplicate_groups:
+    name: find_near_duplicate_groups
+    module: src.redup.core.pipeline.duplicate_finder
+    line: 102
+    cyclomatic_complexity: 11
+    calls_out: 13
     calls_in: 1
-  src.redup.core.config.create_sample_redup_toml:
-    name: create_sample_redup_toml
-    module: src.redup.core.config
-    line: 126
+  src.redup.core.refactor_advisor._get_prompt_instructions:
+    name: _get_prompt_instructions
+    module: src.redup.core.refactor_advisor
+    line: 161
     cyclomatic_complexity: 1
     calls_out: 0
     calls_in: 1
-  src.redup.core.matcher.fuzzy_similarity:
-    name: fuzzy_similarity
-    module: src.redup.core.matcher
-    line: 32
+  src.redup.cli_app.quality_commands._repo_root:
+    name: _repo_root
+    module: src.redup.cli_app.quality_commands
+    line: 42
     cyclomatic_complexity: 2
     calls_out: 4
-    calls_in: 0
-  src.redup.reporters.toon_reporter._render_effort_estimate:
-    name: _render_effort_estimate
+    calls_in: 2
+  src.redup.reporters.toon_reporter._render_refactor:
+    name: _render_refactor
     module: src.redup.reporters.toon_reporter
-    line: 204
-    cyclomatic_complexity: 5
+    line: 60
+    cyclomatic_complexity: 4
+    calls_out: 10
+    calls_in: 1
+  src.redup.core.lsh_matcher.LSHIndex.find_all_near_duplicates:
+    name: find_all_near_duplicates
+    module: src.redup.core.lsh_matcher
+    line: 179
+    cyclomatic_complexity: 8
+    calls_out: 7
+    calls_in: 0
+  src.redup.analysis_logic._parse_extensions:
+    name: _parse_extensions
+    module: src.redup.analysis_logic
+    line: 8
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.base.get_node_text:
+    name: get_node_text
+    module: src.redup.core.ts_extractor.extractors.base
+    line: 51
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 10
+  src.redup.cli_app.compare_command._build_json_report:
+    name: _build_json_report
+    module: src.redup.cli_app.compare_command
+    line: 324
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 1
+  src.redup.cli_app.scan_commands.check_command:
+    name: check_command
+    module: src.redup.cli_app.scan_commands
+    line: 218
+    cyclomatic_complexity: 6
+    calls_out: 19
+    calls_in: 1
+  src.redup.core.scanner._read_source_text:
+    name: _read_source_text
+    module: src.redup.core.scanner
+    line: 93
+    cyclomatic_complexity: 6
     calls_out: 4
     calls_in: 1
-  src.redup.core.refactor_advisor._parse_llm_response:
-    name: _parse_llm_response
-    module: src.redup.core.refactor_advisor
-    line: 263
-    cyclomatic_complexity: 9
-    calls_out: 21
+  src.redup.core.lsh_matcher.build_lsh_index:
+    name: build_lsh_index
+    module: src.redup.core.lsh_matcher
+    line: 211
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.differ._format_group_details:
+    name: _format_group_details
+    module: src.redup.core.differ
+    line: 160
+    cyclomatic_complexity: 3
+    calls_out: 2
     calls_in: 1
   src.redup.core.refactor_advisor.generate_refactor_plan:
     name: generate_refactor_plan
@@ -1713,33 +747,215 @@ nodes:
     cyclomatic_complexity: 6
     calls_out: 10
     calls_in: 1
-  src.redup.mcp.handlers.handle_analyze_project:
-    name: handle_analyze_project
-    module: src.redup.mcp.handlers
-    line: 158
-    cyclomatic_complexity: 3
-    calls_out: 12
-    calls_in: 0
-  src.redup.core.cache.build_hash_index_with_cache:
-    name: build_hash_index_with_cache
-    module: src.redup.core.cache
-    line: 226
-    cyclomatic_complexity: 7
+  src.redup.core.utils.diff_helpers._groups_match:
+    name: _groups_match
+    module: src.redup.core.utils.diff_helpers
+    line: 15
+    cyclomatic_complexity: 6
     calls_out: 7
+    calls_in: 2
+  src.redup.core.differ._format_groups_section:
+    name: _format_groups_section
+    module: src.redup.core.differ
+    line: 169
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 3
+  src.redup.core.comparator._is_cross_project_match:
+    name: _is_cross_project_match
+    module: src.redup.core.comparator
+    line: 242
+    cyclomatic_complexity: 4
+    calls_out: 0
     calls_in: 1
-  src.redup.reporters.json_reporter._group_to_dict:
-    name: _group_to_dict
-    module: src.redup.reporters.json_reporter
-    line: 11
+  src.redup.core.comparator._create_cross_project_match:
+    name: _create_cross_project_match
+    module: src.redup.core.comparator
+    line: 256
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 1
+  src.redup.core.cache.hash_block_with_cache:
+    name: hash_block_with_cache
+    module: src.redup.core.cache
+    line: 189
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  src.redup.reporters.toon_reporter._render_quick_wins:
+    name: _render_quick_wins
+    module: src.redup.reporters.toon_reporter
+    line: 139
+    cyclomatic_complexity: 9
+    calls_out: 12
+    calls_in: 1
+  src.redup.mcp.handlers._format_analysis_result:
+    name: _format_analysis_result
+    module: src.redup.mcp.handlers
+    line: 109
+    cyclomatic_complexity: 7
+    calls_out: 15
+    calls_in: 1
+  src.redup.cli_app.fuzzy_similarity._extract_all_blocks:
+    name: _extract_all_blocks
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 49
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  src.redup.mcp.handlers._get_optional_deps:
+    name: _get_optional_deps
+    module: src.redup.mcp.handlers
+    line: 303
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.comparator.compare_projects:
+    name: compare_projects
+    module: src.redup.core.comparator
+    line: 62
+    cyclomatic_complexity: 8
+    calls_out: 13
+    calls_in: 1
+  src.redup.reporters.toon_reporter._render_header:
+    name: _render_header
+    module: src.redup.reporters.toon_reporter
+    line: 13
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.scanner_utils._print_load_result:
+    name: _print_load_result
+    module: src.redup.core.scanner_utils
+    line: 78
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.utils.hash_utils.create_hash_function:
+    name: create_hash_function
+    module: src.redup.core.utils.hash_utils
+    line: 10
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 0
+  src.redup.core.pipeline.groups.blocks_to_group:
+    name: blocks_to_group
+    module: src.redup.core.pipeline.groups
+    line: 10
+    cyclomatic_complexity: 5
+    calls_out: 7
+    calls_in: 2
+  src.redup.cli_app.compare_command._filter_significant_communities:
+    name: _filter_significant_communities
+    module: src.redup.cli_app.compare_command
+    line: 293
+    cyclomatic_complexity: 4
+    calls_out: 1
+    calls_in: 1
+  src.redup.mcp.handlers.handle_suggest_refactoring:
+    name: handle_suggest_refactoring
+    module: src.redup.mcp.handlers
+    line: 172
+    cyclomatic_complexity: 4
+    calls_out: 11
+    calls_in: 0
+  src.redup.core.pipeline.phases.scan_phase_parallel:
+    name: scan_phase_parallel
+    module: src.redup.core.pipeline.phases
+    line: 24
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.lsh_matcher.LSHIndex.find_near_duplicates:
+    name: find_near_duplicates
+    module: src.redup.core.lsh_matcher
+    line: 132
+    cyclomatic_complexity: 10
+    calls_out: 9
+    calls_in: 1
+  src.redup.core.hasher.build_hash_index:
+    name: build_hash_index
+    module: src.redup.core.hasher
+    line: 164
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 2
+  src.redup.core.universal_fuzzy.UniversalFuzzyDetector._compute_pattern_similarity:
+    name: _compute_pattern_similarity
+    module: src.redup.core.universal_fuzzy
+    line: 427
+    cyclomatic_complexity: 6
+    calls_out: 4
+    calls_in: 0
+  src.redup.core.ts_extractor.main.is_language_supported:
+    name: is_language_supported
+    module: src.redup.core.ts_extractor.main
+    line: 96
+    cyclomatic_complexity: 5
+    calls_out: 4
+    calls_in: 0
+  src.redup.core.lazy_grouper.find_structural_duplicates_lazy:
+    name: find_structural_duplicates_lazy
+    module: src.redup.core.lazy_grouper
+    line: 39
     cyclomatic_complexity: 5
     calls_out: 4
     calls_in: 1
-  src.redup.mcp.server.handle_tools_list:
-    name: handle_tools_list
-    module: src.redup.mcp.server
-    line: 32
+  src.redup.core.scanner._get_source_for_file:
+    name: _get_source_for_file
+    module: src.redup.core.scanner
+    line: 111
     cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  src.redup.cli_app.quality_commands._read_jscpd_stats:
+    name: _read_jscpd_stats
+    module: src.redup.cli_app.quality_commands
+    line: 76
+    cyclomatic_complexity: 1
+    calls_out: 11
+    calls_in: 1
+  src.redup.core.config._get_config_from_pyproject:
+    name: _get_config_from_pyproject
+    module: src.redup.core.config
+    line: 36
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  src.redup.core.hasher.find_exact_duplicates:
+    name: find_exact_duplicates
+    module: src.redup.core.hasher
+    line: 179
+    cyclomatic_complexity: 1
     calls_out: 1
+    calls_in: 1
+  src.redup.reporters.enhanced_reporter.EnhancedReporter._get_language_metrics:
+    name: _get_language_metrics
+    module: src.redup.reporters.enhanced_reporter
+    line: 71
+    cyclomatic_complexity: 7
+    calls_out: 9
+    calls_in: 0
+  src.redup.core.utils.diff_helpers.GroupMatcher._match_score:
+    name: _match_score
+    module: src.redup.core.utils.diff_helpers
+    line: 146
+    cyclomatic_complexity: 6
+    calls_out: 8
+    calls_in: 0
+  src.redup.cli_app.quality_commands._jscpd_command:
+    name: _jscpd_command
+    module: src.redup.cli_app.quality_commands
+    line: 54
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 2
+  src.redup.core.scanner._extract_function_blocks_python:
+    name: _extract_function_blocks_python
+    module: src.redup.core.scanner
+    line: 28
+    cyclomatic_complexity: 10
+    calls_out: 13
     calls_in: 1
   src.redup.cli_app.compare_command._compact_community:
     name: _compact_community
@@ -1748,26 +964,124 @@ nodes:
     cyclomatic_complexity: 5
     calls_out: 6
     calls_in: 1
-  src.redup.mcp.handlers._scan_config_payload:
-    name: _scan_config_payload
-    module: src.redup.mcp.handlers
-    line: 97
+  src.redup.reporters.code2llm_reporter.export_code2llm:
+    name: export_code2llm
+    module: src.redup.reporters.code2llm_reporter
+    line: 173
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 1
+  src.redup.core.lsh_matcher._create_minhash:
+    name: _create_minhash
+    module: src.redup.core.lsh_matcher
+    line: 18
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 2
+  src.redup.core.scanner_filters._project_relative_path:
+    name: _project_relative_path
+    module: src.redup.core.scanner_filters
+    line: 12
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 3
+  src.redup.core.utils.duplicate_finders.create_duplicate_finder:
+    name: create_duplicate_finder
+    module: src.redup.core.utils.duplicate_finders
+    line: 10
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 0
+  src.redup.core.scanner_utils._load_files_with_progress:
+    name: _load_files_with_progress
+    module: src.redup.core.scanner_utils
+    line: 46
+    cyclomatic_complexity: 3
+    calls_out: 10
+    calls_in: 1
+  src.redup.cli_app.compare_command._print_match_details:
+    name: _print_match_details
+    module: src.redup.cli_app.compare_command
+    line: 144
+    cyclomatic_complexity: 5
+    calls_out: 13
+    calls_in: 1
+  src.redup.core.hasher._blocks_from_different_locations:
+    name: _blocks_from_different_locations
+    module: src.redup.core.hasher
+    line: 149
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 3
+  src.redup.core.refactor_advisor._parse_llm_response:
+    name: _parse_llm_response
+    module: src.redup.core.refactor_advisor
+    line: 263
+    cyclomatic_complexity: 9
+    calls_out: 21
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.php._extract_class_name:
+    name: _extract_class_name
+    module: src.redup.core.ts_extractor.extractors.php
+    line: 11
+    cyclomatic_complexity: 5
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.scanner_utils._load_all_files:
+    name: _load_all_files
+    module: src.redup.core.scanner_utils
+    line: 70
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.comparator._scan_project_blocks:
+    name: _scan_project_blocks
+    module: src.redup.core.comparator
+    line: 145
+    cyclomatic_complexity: 5
+    calls_out: 3
+    calls_in: 2
+  src.redup.core.differ.format_diff_result:
+    name: format_diff_result
+    module: src.redup.core.differ
+    line: 196
+    cyclomatic_complexity: 1
+    calls_out: 9
+    calls_in: 2
+  src.redup.mcp.server.run_server:
+    name: run_server
+    module: src.redup.mcp.server
+    line: 106
+    cyclomatic_complexity: 5
+    calls_out: 14
+    calls_in: 0
+  src.redup.cli_app.compare_command._print_summary_table:
+    name: _print_summary_table
+    module: src.redup.cli_app.compare_command
+    line: 68
+    cyclomatic_complexity: 1
+    calls_out: 20
+    calls_in: 1
+  src.redup.core.hasher.find_structural_duplicates:
+    name: find_structural_duplicates
+    module: src.redup.core.hasher
+    line: 184
     cyclomatic_complexity: 1
     calls_out: 1
-    calls_in: 2
-  src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups:
-    name: _finalize_duplicate_groups
-    module: src.redup.core.pipeline.duplicate_finder
-    line: 20
-    cyclomatic_complexity: 2
-    calls_out: 7
-    calls_in: 2
-  src.redup.core.refactor_advisor._format_matches_section:
-    name: _format_matches_section
-    module: src.redup.core.refactor_advisor
-    line: 117
-    cyclomatic_complexity: 2
-    calls_out: 3
+    calls_in: 1
+  src.redup.core.hasher.hash_block_structural:
+    name: hash_block_structural
+    module: src.redup.core.hasher
+    line: 119
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 5
+  src.redup.cli_app.compare_command._parse_extensions:
+    name: _parse_extensions
+    module: src.redup.cli_app.compare_command
+    line: 61
+    cyclomatic_complexity: 3
+    calls_out: 2
     calls_in: 1
   src.redup.core.semantic.SemanticDetector.find_semantic_duplicates:
     name: find_semantic_duplicates
@@ -1776,18 +1090,718 @@ nodes:
     cyclomatic_complexity: 9
     calls_out: 16
     calls_in: 0
-  src.redup.core.differ._format_assessment:
-    name: _format_assessment
+  src.redup.reporters.json_reporter.duplication_map_to_dict:
+    name: duplication_map_to_dict
+    module: src.redup.reporters.json_reporter
+    line: 55
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 2
+  src.redup.core.lsh_matcher._create_simple_minhash:
+    name: _create_simple_minhash
+    module: src.redup.core.lsh_matcher
+    line: 68
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 2
+  src.redup.core.scanner.scan_project_parallel_memory_optimized:
+    name: scan_project_parallel_memory_optimized
+    module: src.redup.core.scanner
+    line: 275
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_attribute_similarity:
+    name: _compute_attribute_similarity
+    module: src.redup.core.fuzzy_similarity
+    line: 393
+    cyclomatic_complexity: 9
+    calls_out: 11
+    calls_in: 0
+  src.redup.cli_app.compare_command._detect_communities:
+    name: _detect_communities
+    module: src.redup.cli_app.compare_command
+    line: 82
+    cyclomatic_complexity: 4
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.scanner_utils._load_files_simple:
+    name: _load_files_simple
+    module: src.redup.core.scanner_utils
+    line: 34
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 2
+  src.redup.mcp.handlers.handle_compare_scans:
+    name: handle_compare_scans
+    module: src.redup.mcp.handlers
+    line: 210
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 0
+  src.redup.core.config._get_config_from_redup_toml:
+    name: _get_config_from_redup_toml
+    module: src.redup.core.config
+    line: 43
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.web.extract_functions_javascript:
+    name: extract_functions_javascript
+    module: src.redup.core.ts_extractor.extractors.web
+    line: 41
+    cyclomatic_complexity: 1
+    calls_out: 8
+    calls_in: 0
+  src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized:
+    name: find_duplicates_phase_optimized
+    module: src.redup.core.pipeline.duplicate_finder
+    line: 217
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 2
+  src.redup.mcp.server.handle_tools_call:
+    name: handle_tools_call
+    module: src.redup.mcp.server
+    line: 50
+    cyclomatic_complexity: 4
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.ts_extractor.main._get_tree_sitter_language:
+    name: _get_tree_sitter_language
+    module: src.redup.core.ts_extractor.main
+    line: 17
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 3
+  src.redup.reporters.toon_reporter._format_estimate_lines:
+    name: _format_estimate_lines
+    module: src.redup.reporters.toon_reporter
+    line: 185
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 1
+  src.redup.cli_app.compare_command._build_recommendation_dict:
+    name: _build_recommendation_dict
+    module: src.redup.cli_app.compare_command
+    line: 304
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.python_parser._extract_function_info:
+    name: _extract_function_info
+    module: src.redup.core.python_parser
+    line: 118
+    cyclomatic_complexity: 4
+    calls_out: 9
+    calls_in: 1
+  src.redup.core.pipeline.groups.match_results_to_blocks:
+    name: match_results_to_blocks
+    module: src.redup.core.pipeline.groups
+    line: 78
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  src.redup.cli_app.output_writer.write_results:
+    name: write_results
+    module: src.redup.cli_app.output_writer
+    line: 29
+    cyclomatic_complexity: 12
+    calls_out: 25
+    calls_in: 1
+  src.redup.cli_app.quality_commands.jscpd:
+    name: jscpd
+    module: src.redup.cli_app.quality_commands
+    line: 157
+    cyclomatic_complexity: 8
+    calls_out: 16
+    calls_in: 0
+  src.redup.core.scanner_cache._matches_any_exclude:
+    name: _matches_any_exclude
+    module: src.redup.core.scanner_cache
+    line: 61
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  src.redup.reporters.toon_reporter.to_toon:
+    name: to_toon
+    module: src.redup.reporters.toon_reporter
+    line: 249
+    cyclomatic_complexity: 3
+    calls_out: 11
+    calls_in: 4
+  src.redup.core.config.create_sample_redup_toml:
+    name: create_sample_redup_toml
+    module: src.redup.core.config
+    line: 126
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  src.redup.core.hasher.hash_block:
+    name: hash_block
+    module: src.redup.core.hasher
+    line: 114
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 3
+  src.redup.cli_app.compare_command._deduplicate_matches:
+    name: _deduplicate_matches
+    module: src.redup.cli_app.compare_command
+    line: 240
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 1
+  src.redup.core.ts_extractor.main.extract_functions_treesitter:
+    name: extract_functions_treesitter
+    module: src.redup.core.ts_extractor.main
+    line: 35
+    cyclomatic_complexity: 8
+    calls_out: 10
+    calls_in: 1
+  src.redup.core.differ.compare_scans:
+    name: compare_scans
     module: src.redup.core.differ
-    line: 186
+    line: 123
+    cyclomatic_complexity: 1
+    calls_out: 10
+    calls_in: 2
+  src.redup.core.scanner_cache._should_exclude:
+    name: _should_exclude
+    module: src.redup.core.scanner_cache
+    line: 80
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 2
+  src.redup.core.python_parser.parse_python_functions:
+    name: parse_python_functions
+    module: src.redup.core.python_parser
+    line: 163
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 0
+  src.redup.core.pipeline.phases.ensure_config:
+    name: ensure_config
+    module: src.redup.core.pipeline.phases
+    line: 10
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 3
+  src.redup.reporters.toon_reporter._saved_for_suggestion:
+    name: _saved_for_suggestion
+    module: src.redup.reporters.toon_reporter
+    line: 228
     cyclomatic_complexity: 3
     calls_out: 0
+    calls_in: 3
+  src.redup.config.get_default_filename:
+    name: get_default_filename
+    module: src.redup.config
+    line: 148
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 2
+  src.redup.core.comparator._find_semantic_matches:
+    name: _find_semantic_matches
+    module: src.redup.core.comparator
+    line: 278
+    cyclomatic_complexity: 8
+    calls_out: 7
+    calls_in: 1
+  src.redup.cli_app.quality_commands.run_jscpd_budget:
+    name: run_jscpd_budget
+    module: src.redup.cli_app.quality_commands
+    line: 95
+    cyclomatic_complexity: 5
+    calls_out: 16
+    calls_in: 1
+  src.redup.core.scanner.scan_project_ultra_fast:
+    name: scan_project_ultra_fast
+    module: src.redup.core.scanner
+    line: 248
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  src.redup.cli_app.fuzzy_similarity._validate_fuzzy_input:
+    name: _validate_fuzzy_input
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 31
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  src.redup.cli_app.compare_command._export_json:
+    name: _export_json
+    module: src.redup.cli_app.compare_command
+    line: 215
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  src.redup.reporters.toon_reporter._render_summary:
+    name: _render_summary
+    module: src.redup.reporters.toon_reporter
+    line: 23
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  src.redup.reporters.json_reporter._suggestion_to_dict:
+    name: _suggestion_to_dict
+    module: src.redup.reporters.json_reporter
+    line: 42
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  src.redup.core.matcher.match_candidates:
+    name: match_candidates
+    module: src.redup.core.matcher
+    line: 77
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 0
+  src.redup.reporters.markdown_reporter.to_markdown:
+    name: to_markdown
+    module: src.redup.reporters.markdown_reporter
+    line: 10
+    cyclomatic_complexity: 12
+    calls_out: 54
+    calls_in: 3
+  src.redup.core.matcher._compare_against_reference:
+    name: _compare_against_reference
+    module: src.redup.core.matcher
+    line: 44
+    cyclomatic_complexity: 7
+    calls_out: 5
+    calls_in: 2
+  src.redup.mcp.handlers._check_thresholds:
+    name: _check_thresholds
+    module: src.redup.mcp.handlers
+    line: 230
+    cyclomatic_complexity: 3
+    calls_out: 7
+    calls_in: 1
+  src.redup.reporters.code2llm_reporter.to_code2llm_context:
+    name: to_code2llm_context
+    module: src.redup.reporters.code2llm_reporter
+    line: 95
+    cyclomatic_complexity: 11
+    calls_out: 36
+    calls_in: 3
+  src.redup.core.scanner.scan_project:
+    name: scan_project
+    module: src.redup.core.scanner
+    line: 203
+    cyclomatic_complexity: 5
+    calls_out: 20
+    calls_in: 11
+  src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp:
+    name: extract_functions_c_sharp
+    module: src.redup.core.ts_extractor.extractors.dotnet
+    line: 22
+    cyclomatic_complexity: 1
+    calls_out: 11
+    calls_in: 0
+  src.redup.cli_app.scan_helpers.print_scan_header:
+    name: print_scan_header
+    module: src.redup.cli_app.scan_helpers
+    line: 10
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 2
+  src.redup.core.differ._format_group_header:
+    name: _format_group_header
+    module: src.redup.core.differ
+    line: 155
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  src.redup.core.pipeline.duplicate_finder.find_exact_groups:
+    name: find_exact_groups
+    module: src.redup.core.pipeline.duplicate_finder
+    line: 41
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 0
+  src.redup.cli_app.compare_command._print_communities_table:
+    name: _print_communities_table
+    module: src.redup.cli_app.compare_command
+    line: 125
+    cyclomatic_complexity: 2
+    calls_out: 12
+    calls_in: 1
+  src.redup.core.ts_extractor.main._get_dispatcher:
+    name: _get_dispatcher
+    module: src.redup.core.ts_extractor.main
+    line: 22
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  src.redup.core.decision.recommend:
+    name: recommend
+    module: src.redup.core.decision
+    line: 35
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 2
+  src.redup.cli_app.compare_command._make_relative_path:
+    name: _make_relative_path
+    module: src.redup.cli_app.compare_command
+    line: 232
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 3
+  src.redup.core.refactor_advisor._build_prompt:
+    name: _build_prompt
+    module: src.redup.core.refactor_advisor
+    line: 129
+    cyclomatic_complexity: 2
+    calls_out: 15
+    calls_in: 1
+  src.redup.core.comparator._normalize_match_order:
+    name: _normalize_match_order
+    module: src.redup.core.comparator
+    line: 249
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 1
+  benchmark.benchmark_feature_performance:
+    name: benchmark_feature_performance
+    module: benchmark
+    line: 66
+    cyclomatic_complexity: 3
+    calls_out: 15
+    calls_in: 0
+  src.redup.cli_app.scan_commands.diff_command:
+    name: diff_command
+    module: src.redup.cli_app.scan_commands
+    line: 205
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 1
+  src.redup.core.lsh_matcher.LSHIndex.add:
+    name: add
+    module: src.redup.core.lsh_matcher
+    line: 117
+    cyclomatic_complexity: 4
+    calls_out: 8
+    calls_in: 0
+  src.redup.cli_app.fuzzy_similarity._report_fuzzy_results:
+    name: _report_fuzzy_results
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 123
+    cyclomatic_complexity: 5
+    calls_out: 12
+    calls_in: 1
+  src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity:
+    name: _apply_fuzzy_similarity
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 10
+    cyclomatic_complexity: 3
+    calls_out: 9
+    calls_in: 1
+  src.redup.cli_app.main.check:
+    name: check
+    module: src.redup.cli_app.main
+    line: 210
+    cyclomatic_complexity: 1
+    calls_out: 10
+    calls_in: 0
+  src.redup.core.lazy_grouper._create_duplicate_group:
+    name: _create_duplicate_group
+    module: src.redup.core.lazy_grouper
+    line: 60
+    cyclomatic_complexity: 4
+    calls_out: 2
+    calls_in: 2
+  src.redup.mcp.handlers._run_analysis:
+    name: _run_analysis
+    module: src.redup.mcp.handlers
+    line: 56
+    cyclomatic_complexity: 7
+    calls_out: 17
+    calls_in: 3
+  src.redup.reporters.json_reporter._group_to_dict:
+    name: _group_to_dict
+    module: src.redup.reporters.json_reporter
+    line: 11
+    cyclomatic_complexity: 5
+    calls_out: 4
+    calls_in: 1
+  src.redup.mcp.handlers._build_scan_config:
+    name: _build_scan_config
+    module: src.redup.mcp.handlers
+    line: 24
+    cyclomatic_complexity: 12
+    calls_out: 24
+    calls_in: 1
+  src.redup.core.scanner._init_strategy:
+    name: _init_strategy
+    module: src.redup.core.scanner
+    line: 176
+    cyclomatic_complexity: 5
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.planner.generate_suggestions:
+    name: generate_suggestions
+    module: src.redup.core.planner
+    line: 71
+    cyclomatic_complexity: 6
+    calls_out: 9
+    calls_in: 1
+  src.redup.core.python_parser._parse_with_libcst:
+    name: _parse_with_libcst
+    module: src.redup.core.python_parser
+    line: 25
+    cyclomatic_complexity: 4
+    calls_out: 15
+    calls_in: 1
+  src.redup.core.scanner._process_single_file:
+    name: _process_single_file
+    module: src.redup.core.scanner
+    line: 150
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 1
+  src.redup.core.scanner_utils._read_file_safe:
+    name: _read_file_safe
+    module: src.redup.core.scanner_utils
+    line: 23
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 2
+  src.redup.core.pipeline._build_duplication_map:
+    name: _build_duplication_map
+    module: src.redup.core.pipeline
+    line: 52
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 3
+  src.redup.core.ts_extractor.extractors.query.extract_blocks_sql:
+    name: extract_blocks_sql
+    module: src.redup.core.ts_extractor.extractors.query
+    line: 11
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  src.redup.reporters.code2llm_reporter.to_code2llm_toon:
+    name: to_code2llm_toon
+    module: src.redup.reporters.code2llm_reporter
+    line: 48
+    cyclomatic_complexity: 5
+    calls_out: 17
+    calls_in: 2
+  src.redup.core.ts_extractor.extractors.web._extract_function_declaration:
+    name: _extract_function_declaration
+    module: src.redup.core.ts_extractor.extractors.web
+    line: 11
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  src.redup.cli_app.output_writer.write_output:
+    name: write_output
+    module: src.redup.cli_app.output_writer
+    line: 16
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 6
+  src.redup.reporters.toon_reporter._calculate_group_effort:
+    name: _calculate_group_effort
+    module: src.redup.reporters.toon_reporter
+    line: 166
+    cyclomatic_complexity: 10
+    calls_out: 2
+    calls_in: 1
+  src.redup.mcp.server.handle_request:
+    name: handle_request
+    module: src.redup.mcp.server
+    line: 83
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  src.redup.core.scanner._extract_blocks_for_file:
+    name: _extract_blocks_for_file
+    module: src.redup.core.scanner
+    line: 122
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 1
+  src.redup.core.hasher._hash_text:
+    name: _hash_text
+    module: src.redup.core.hasher
+    line: 108
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 3
+  src.redup.reporters.json_reporter.to_json:
+    name: to_json
+    module: src.redup.reporters.json_reporter
+    line: 79
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 4
+  src.redup.cli_app.fuzzy_similarity._separate_blocks_by_type:
+    name: _separate_blocks_by_type
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 69
+    cyclomatic_complexity: 5
+    calls_out: 2
+    calls_in: 1
+  src.redup.mcp.utils.parse_extensions:
+    name: parse_extensions
+    module: src.redup.mcp.utils
+    line: 23
+    cyclomatic_complexity: 8
+    calls_out: 8
+    calls_in: 1
+  src.redup.cli_app.fuzzy_similarity._analyze_other_language_blocks:
+    name: _analyze_other_language_blocks
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 115
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  src.redup.core.ts_extractor.main.get_supported_languages:
+    name: get_supported_languages
+    module: src.redup.core.ts_extractor.main
+    line: 83
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 0
+  src.redup.core.hasher._normalize_text:
+    name: _normalize_text
+    module: src.redup.core.hasher
+    line: 33
+    cyclomatic_complexity: 6
+    calls_out: 11
+    calls_in: 7
+  src.redup.core.refactor_advisor._load_env:
+    name: _load_env
+    module: src.redup.core.refactor_advisor
+    line: 42
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  src.redup.config.RedupConfig.set:
+    name: set
+    module: src.redup.config
+    line: 133
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 27
+  src.redup.core.hasher._normalize_ast_text:
+    name: _normalize_ast_text
+    module: src.redup.core.hasher
+    line: 85
+    cyclomatic_complexity: 5
+    calls_out: 11
+    calls_in: 0
+  src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors:
+    name: _analyze_blocks_with_detectors
+    module: src.redup.cli_app.fuzzy_similarity
+    line: 82
+    cyclomatic_complexity: 3
+    calls_out: 12
+    calls_in: 1
+  src.redup.core.matcher.sequence_similarity:
+    name: sequence_similarity
+    module: src.redup.core.matcher
+    line: 23
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 1
+  src.redup.reporters.yaml_reporter.to_yaml:
+    name: to_yaml
+    module: src.redup.reporters.yaml_reporter
+    line: 8
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 3
+  src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml:
+    name: extract_blocks_html_xml
+    module: src.redup.core.ts_extractor.extractors.markup
+    line: 11
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  src.redup.core.scanner._normalize_scan_config:
+    name: _normalize_scan_config
+    module: src.redup.core.scanner
+    line: 20
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 1
+  src.redup.core.pipeline.duplicate_finder.find_structural_groups:
+    name: find_structural_groups
+    module: src.redup.core.pipeline.duplicate_finder
+    line: 63
+    cyclomatic_complexity: 9
+    calls_out: 12
+    calls_in: 0
+  src.redup.cli_app.scan_helpers.apply_fuzzy_similarity:
+    name: apply_fuzzy_similarity
+    module: src.redup.cli_app.scan_helpers
+    line: 36
+    cyclomatic_complexity: 1
+    calls_out: 1
     calls_in: 1
   src.redup.core.refactor_advisor._resolve_stats:
     name: _resolve_stats
     module: src.redup.core.refactor_advisor
     line: 64
     cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 1
+  src.redup.reporters.toon_reporter._render_effort_estimate:
+    name: _render_effort_estimate
+    module: src.redup.reporters.toon_reporter
+    line: 204
+    cyclomatic_complexity: 5
+    calls_out: 4
+    calls_in: 1
+  src.redup.core.python_parser._parse_with_ast:
+    name: _parse_with_ast
+    module: src.redup.core.python_parser
+    line: 145
+    cyclomatic_complexity: 4
+    calls_out: 7
+    calls_in: 1
+  src.redup.mcp.utils.resolve_path:
+    name: resolve_path
+    module: src.redup.mcp.utils
+    line: 16
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 5
+  src.redup.cli_app.main.diff:
+    name: diff
+    module: src.redup.cli_app.main
+    line: 201
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 0
+  src.redup.core.comparator._find_hash_matches:
+    name: _find_hash_matches
+    module: src.redup.core.comparator
+    line: 170
+    cyclomatic_complexity: 6
+    calls_out: 7
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby:
+    name: extract_functions_ruby
+    module: src.redup.core.ts_extractor.extractors.ruby
+    line: 11
+    cyclomatic_complexity: 1
+    calls_out: 10
+    calls_in: 0
+  src.redup.core.pipeline.analyze_parallel:
+    name: analyze_parallel
+    module: src.redup.core.pipeline
+    line: 207
+    cyclomatic_complexity: 2
+    calls_out: 12
+    calls_in: 3
+  src.redup.core.comparator._find_lsh_matches:
+    name: _find_lsh_matches
+    module: src.redup.core.comparator
+    line: 204
+    cyclomatic_complexity: 8
     calls_out: 5
     calls_in: 1
   src.redup.core.pipeline.analyze:
@@ -1797,70 +1811,26 @@ nodes:
     cyclomatic_complexity: 2
     calls_out: 5
     calls_in: 7
-  src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml:
-    name: extract_blocks_html_xml
-    module: src.redup.core.ts_extractor.extractors.markup
+  src.redup.core.hasher._hashed_block:
+    name: _hashed_block
+    module: src.redup.core.hasher
+    line: 141
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp:
+    name: extract_functions_c_cpp
+    module: src.redup.core.ts_extractor.extractors.c_family
     line: 11
     cyclomatic_complexity: 1
-    calls_out: 5
+    calls_out: 8
     calls_in: 0
-  src.redup.reporters.toon_reporter._render_summary:
-    name: _render_summary
-    module: src.redup.reporters.toon_reporter
-    line: 23
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
-  src.redup.core.refactor_advisor._build_prompt:
-    name: _build_prompt
-    module: src.redup.core.refactor_advisor
-    line: 129
-    cyclomatic_complexity: 2
-    calls_out: 15
-    calls_in: 1
-  src.redup.core.scanner_utils._read_file_with_mmap:
-    name: _read_file_with_mmap
-    module: src.redup.core.scanner_utils
-    line: 17
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 1
 edges:
 - caller: benchmark.benchmark_sequential_vs_parallel
   callee: src.redup.core.pipeline.analyze
   call_type: resolved
 - caller: benchmark.benchmark_feature_performance
   callee: src.redup.core.pipeline.analyze_parallel
-  call_type: resolved
-- caller: examples.01_basic_usage.main
-  callee: src.redup.core.pipeline.analyze
-  call_type: resolved
-- caller: benchmarks.bench_libraries.benchmark
-  callee: benchmarks.bench_libraries.generate_test_project
-  call_type: resolved
-- caller: benchmarks.bench_libraries.benchmark
-  callee: src.redup.core.pipeline.analyze
-  call_type: resolved
-- caller: src.redup.analysis_logic._build_scan_config
-  callee: src.redup.core.config.config_to_scan_config
-  call_type: resolved
-- caller: src.redup.analysis_logic._build_scan_config
-  callee: src.redup.analysis_logic._parse_extensions
-  call_type: resolved
-- caller: src.redup.analysis_logic._build_scan_config
-  callee: src.redup.core.config.load_config
-  call_type: resolved
-- caller: src.redup.core.config._get_config_from_pyproject
-  callee: src.redup.core.config._load_toml_file
-  call_type: resolved
-- caller: src.redup.core.config._get_config_from_redup_toml
-  callee: src.redup.core.config._load_toml_file
-  call_type: resolved
-- caller: src.redup.core.config.load_config
-  callee: src.redup.core.config._get_config_from_redup_toml
-  call_type: resolved
-- caller: src.redup.core.config.load_config
-  callee: src.redup.core.config._get_config_from_pyproject
   call_type: resolved
 - caller: src.redup.core.refactor_advisor._build_match_list
   callee: src.redup.core.refactor_advisor._normalize_match
@@ -1910,21 +1880,6 @@ edges:
 - caller: src.redup.core.scanner_cache._should_exclude
   callee: src.redup.core.scanner_cache._matches_any_include
   call_type: resolved
-- caller: src.redup.core.matcher.sequence_similarity
-  callee: src.redup.core.hasher._normalize_text
-  call_type: resolved
-- caller: src.redup.core.matcher.fuzzy_similarity
-  callee: src.redup.core.hasher._normalize_text
-  call_type: resolved
-- caller: src.redup.core.matcher.fuzzy_similarity
-  callee: src.redup.core.matcher.sequence_similarity
-  call_type: resolved
-- caller: src.redup.core.matcher.match_candidates
-  callee: src.redup.core.matcher._compare_against_reference
-  call_type: resolved
-- caller: src.redup.core.matcher.refine_structural_matches
-  callee: src.redup.core.matcher._compare_against_reference
-  call_type: resolved
 - caller: src.redup.core.lazy_grouper.find_exact_duplicates_lazy
   callee: src.redup.core.lazy_grouper._create_duplicate_group
   call_type: resolved
@@ -1942,6 +1897,57 @@ edges:
   call_type: resolved
 - caller: src.redup.core.lazy_grouper.find_all_duplicates_lazy
   callee: src.redup.core.lazy_grouper.find_structural_duplicates_lazy
+  call_type: resolved
+- caller: src.redup.core.config._get_config_from_pyproject
+  callee: src.redup.core.config._load_toml_file
+  call_type: resolved
+- caller: src.redup.core.config._get_config_from_redup_toml
+  callee: src.redup.core.config._load_toml_file
+  call_type: resolved
+- caller: src.redup.core.config.load_config
+  callee: src.redup.core.config._get_config_from_redup_toml
+  call_type: resolved
+- caller: src.redup.core.config.load_config
+  callee: src.redup.core.config._get_config_from_pyproject
+  call_type: resolved
+- caller: src.redup.core.planner._suggest_module_name
+  callee: src.redup.core.planner._common_prefix
+  call_type: resolved
+- caller: src.redup.core.planner.generate_suggestions
+  callee: src.redup.core.planner._choose_action
+  call_type: resolved
+- caller: src.redup.core.planner.generate_suggestions
+  callee: src.redup.core.planner._suggest_module_name
+  call_type: resolved
+- caller: src.redup.core.planner.generate_suggestions
+  callee: src.redup.core.planner._assess_risk
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._read_file_safe
+  callee: src.redup.core.scanner_utils._read_file_with_mmap
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._load_files_simple
+  callee: src.redup.core.scanner_utils._read_file_safe
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._load_files_with_progress
+  callee: src.redup.core.scanner_utils._read_file_safe
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._load_all_files
+  callee: src.redup.core.scanner_utils._load_files_with_progress
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._load_all_files
+  callee: src.redup.core.scanner_utils._load_files_simple
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._preload_files
+  callee: src.redup.core.scanner_utils._print_load_result
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._preload_files
+  callee: src.redup.core.scanner_utils._load_all_files
+  call_type: resolved
+- caller: src.redup.core.scanner_utils._preload_files
+  callee: src.redup.core.scanner_utils._load_files_simple
+  call_type: resolved
+- caller: examples.01_basic_usage.main
+  callee: src.redup.core.pipeline.analyze
   call_type: resolved
 - caller: src.redup.core.hasher._normalize_ast_text
   callee: src.redup.core.hasher._ast_to_normalized_string
@@ -1975,60 +1981,6 @@ edges:
   call_type: resolved
 - caller: src.redup.core.hasher.find_structural_duplicates
   callee: src.redup.core.hasher._find_duplicates
-  call_type: resolved
-- caller: src.redup.core.planner._suggest_module_name
-  callee: src.redup.core.planner._common_prefix
-  call_type: resolved
-- caller: src.redup.core.planner.generate_suggestions
-  callee: src.redup.core.planner._choose_action
-  call_type: resolved
-- caller: src.redup.core.planner.generate_suggestions
-  callee: src.redup.core.planner._suggest_module_name
-  call_type: resolved
-- caller: src.redup.core.planner.generate_suggestions
-  callee: src.redup.core.planner._assess_risk
-  call_type: resolved
-- caller: src.redup.core.semantic.SemanticDetector.find_semantic_duplicates
-  callee: src.redup.config.RedupConfig.set
-  call_type: resolved
-- caller: src.redup.core.python_parser._extract_function_info
-  callee: src.redup.core.python_parser._extract_decorators
-  call_type: resolved
-- caller: src.redup.core.python_parser._parse_with_ast
-  callee: src.redup.core.python_parser._build_parent_map
-  call_type: resolved
-- caller: src.redup.core.python_parser._parse_with_ast
-  callee: src.redup.core.python_parser._extract_function_info
-  call_type: resolved
-- caller: src.redup.core.python_parser.parse_python_functions
-  callee: src.redup.core.python_parser._parse_with_ast
-  call_type: resolved
-- caller: src.redup.core.python_parser.parse_python_functions
-  callee: src.redup.core.python_parser._parse_with_libcst
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._read_file_safe
-  callee: src.redup.core.scanner_utils._read_file_with_mmap
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._load_files_simple
-  callee: src.redup.core.scanner_utils._read_file_safe
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._load_files_with_progress
-  callee: src.redup.core.scanner_utils._read_file_safe
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._load_all_files
-  callee: src.redup.core.scanner_utils._load_files_with_progress
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._load_all_files
-  callee: src.redup.core.scanner_utils._load_files_simple
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._preload_files
-  callee: src.redup.core.scanner_utils._print_load_result
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._preload_files
-  callee: src.redup.core.scanner_utils._load_all_files
-  call_type: resolved
-- caller: src.redup.core.scanner_utils._preload_files
-  callee: src.redup.core.scanner_utils._load_files_simple
   call_type: resolved
 - caller: src.redup.core.comparator.compare_projects
   callee: src.redup.core.comparator._scan_project_blocks
@@ -2084,44 +2036,35 @@ edges:
 - caller: src.redup.core.lsh_matcher.find_near_duplicates
   callee: src.redup.core.lsh_matcher.build_lsh_index
   call_type: resolved
-- caller: src.redup.core.fuzzy_similarity.HTMLComponentExtractor._extract_attributes
+- caller: src.redup.core.cache.hash_block_with_cache
+  callee: src.redup.core.hasher.hash_block
+  call_type: resolved
+- caller: src.redup.core.cache.hash_block_with_cache
+  callee: src.redup.core.hasher.hash_block_structural
+  call_type: resolved
+- caller: src.redup.core.cache.build_hash_index_with_cache
+  callee: src.redup.core.cache.hash_block_with_cache
+  call_type: resolved
+- caller: src.redup.core.scanner_filters._collect_target_files
   callee: src.redup.config.RedupConfig.set
   call_type: resolved
-- caller: src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_attribute_similarity
+- caller: src.redup.core.scanner_filters._collect_target_files
+  callee: src.redup.core.scanner_cache._should_exclude
+  call_type: resolved
+- caller: src.redup.core.scanner_filters._collect_target_files
+  callee: src.redup.core.scanner_filters._project_relative_path
+  call_type: resolved
+- caller: src.redup.core.scanner_filters._collect_files
   callee: src.redup.config.RedupConfig.set
   call_type: resolved
-- caller: src.redup.core.differ.compare_scans
-  callee: src.redup.core.differ._load_duplication_map
+- caller: src.redup.core.scanner_filters._collect_files
+  callee: src.redup.core.scanner_filters._collect_target_files
   call_type: resolved
-- caller: src.redup.core.differ.compare_scans
-  callee: src.redup.core.differ._group_by_id
+- caller: src.redup.core.scanner_filters._collect_files
+  callee: src.redup.core.scanner_filters._project_relative_path
   call_type: resolved
-- caller: src.redup.core.differ._format_groups_section
-  callee: src.redup.core.differ._format_group_header
-  call_type: resolved
-- caller: src.redup.core.differ._format_groups_section
-  callee: src.redup.core.differ._format_group_details
-  call_type: resolved
-- caller: src.redup.core.differ.format_diff_result
-  callee: src.redup.core.differ._format_groups_section
-  call_type: resolved
-- caller: src.redup.core.differ.format_diff_result
-  callee: src.redup.core.differ._format_assessment
-  call_type: resolved
-- caller: src.redup.core.ts_extractor.main._get_dispatcher
-  callee: src.redup.core.ts_extractor.dispatcher.initialize_language_dispatcher
-  call_type: resolved
-- caller: src.redup.core.ts_extractor.main.extract_functions_treesitter
-  callee: src.redup.core.ts_extractor.main._get_dispatcher
-  call_type: resolved
-- caller: src.redup.core.ts_extractor.main.extract_functions_treesitter
-  callee: src.redup.core.ts_extractor.main._get_tree_sitter_language
-  call_type: resolved
-- caller: src.redup.core.ts_extractor.main.get_supported_languages
-  callee: src.redup.core.ts_extractor.main._get_tree_sitter_language
-  call_type: resolved
-- caller: src.redup.core.ts_extractor.main.is_language_supported
-  callee: src.redup.core.ts_extractor.main._get_tree_sitter_language
+- caller: src.redup.core.scanner_filters._collect_files
+  callee: src.redup.core.scanner_cache._should_exclude
   call_type: resolved
 - caller: src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby
   callee: src.redup.core.ts_extractor.extractors.base.get_node_text
@@ -2129,8 +2072,11 @@ edges:
 - caller: src.redup.core.ts_extractor.extractors.ruby.extract_functions_ruby
   callee: src.redup.core.ts_extractor.extractors.base.create_code_block
   call_type: resolved
-- caller: src.redup.core.ts_extractor.extractors.query.extract_blocks_sql
-  callee: src.redup.core.ts_extractor.extractors.base.create_code_block
+- caller: benchmarks.bench_libraries.benchmark
+  callee: benchmarks.bench_libraries.generate_test_project
+  call_type: resolved
+- caller: benchmarks.bench_libraries.benchmark
+  callee: src.redup.core.pipeline.analyze
   call_type: resolved
 - caller: src.redup.core.ts_extractor.extractors.dotnet._extract_class_name
   callee: src.redup.core.ts_extractor.extractors.base.get_node_text
@@ -2144,7 +2090,7 @@ edges:
 - caller: src.redup.core.ts_extractor.extractors.dotnet.extract_functions_c_sharp
   callee: src.redup.core.ts_extractor.extractors.base.create_code_block
   call_type: resolved
-- caller: src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp
+- caller: src.redup.core.ts_extractor.extractors.query.extract_blocks_sql
   callee: src.redup.core.ts_extractor.extractors.base.create_code_block
   call_type: resolved
 - caller: src.redup.core.ts_extractor.extractors.web._extract_function_declaration
@@ -2171,16 +2117,19 @@ edges:
 - caller: src.redup.core.ts_extractor.extractors.web.extract_functions_javascript
   callee: src.redup.core.ts_extractor.extractors.web._extract_arrow_function
   call_type: resolved
+- caller: src.redup.core.ts_extractor.extractors.shell.extract_functions_bash
+  callee: src.redup.core.ts_extractor.extractors.base.get_node_text
+  call_type: resolved
+- caller: src.redup.core.ts_extractor.extractors.shell.extract_functions_bash
+  callee: src.redup.core.ts_extractor.extractors.base.create_code_block
+  call_type: resolved
 - caller: src.redup.core.ts_extractor.extractors.markup.extract_blocks_html_xml
   callee: src.redup.core.ts_extractor.extractors.base.create_code_block
   call_type: resolved
 - caller: src.redup.core.ts_extractor.extractors.stylesheet.extract_blocks_css
   callee: src.redup.core.ts_extractor.extractors.base.create_code_block
   call_type: resolved
-- caller: src.redup.core.ts_extractor.extractors.shell.extract_functions_bash
-  callee: src.redup.core.ts_extractor.extractors.base.get_node_text
-  call_type: resolved
-- caller: src.redup.core.ts_extractor.extractors.shell.extract_functions_bash
+- caller: src.redup.core.ts_extractor.extractors.c_family.extract_functions_c_cpp
   callee: src.redup.core.ts_extractor.extractors.base.create_code_block
   call_type: resolved
 - caller: src.redup.core.ts_extractor.extractors.php._extract_class_name
@@ -2194,6 +2143,69 @@ edges:
   call_type: resolved
 - caller: src.redup.core.ts_extractor.extractors.php.extract_functions_php
   callee: src.redup.core.ts_extractor.extractors.base.create_code_block
+  call_type: resolved
+- caller: src.redup.core.utils.hash_utils.create_hash_function
+  callee: src.redup.core.hasher._hash_text
+  call_type: resolved
+- caller: src.redup.core.utils.duplicate_finders.create_duplicate_finder
+  callee: src.redup.core.hasher._find_duplicates
+  call_type: resolved
+- caller: src.redup.core.semantic.SemanticDetector.find_semantic_duplicates
+  callee: src.redup.config.RedupConfig.set
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups
+  callee: src.redup.core.pipeline.duplicate_finder.find_near_duplicate_groups
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_exact_groups
+  callee: src.redup.core.hasher.find_exact_duplicates
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_exact_groups
+  callee: src.redup.core.pipeline.groups.blocks_to_group
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
+  callee: src.redup.config.RedupConfig.set
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
+  callee: src.redup.core.hasher.find_structural_duplicates
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
+  callee: src.redup.core.matcher.refine_structural_matches
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
+  callee: src.redup.core.pipeline.groups.match_results_to_blocks
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
+  callee: src.redup.core.pipeline.groups.blocks_to_group
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_near_duplicate_groups
+  callee: src.redup.core.lsh_matcher.LSHIndex.find_near_duplicates
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized
+  callee: src.redup.core.hasher.build_hash_index
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized
+  callee: src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized
+  callee: src.redup.core.lazy_grouper.find_all_duplicates_lazy
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
+  callee: src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
+  callee: src.redup.core.cache.build_hash_index_with_cache
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
+  callee: src.redup.core.hasher.build_hash_index
+  call_type: resolved
+- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
+  callee: src.redup.core.lazy_grouper.find_all_duplicates_lazy
+  call_type: resolved
+- caller: src.redup.core.pipeline.phases.scan_phase
+  callee: src.redup.core.scanner.scan_project
+  call_type: resolved
+- caller: src.redup.core.pipeline.phases.scan_phase_parallel
+  callee: src.redup.core.scanner.scan_project
   call_type: resolved
 - caller: src.redup.core.scanner._get_source_for_file
   callee: src.redup.core.scanner._read_source_text
@@ -2252,33 +2264,6 @@ edges:
 - caller: src.redup.core.scanner.scan_project_parallel_memory_optimized
   callee: src.redup.core.scanner.scan_project
   call_type: resolved
-- caller: src.redup.core.utils.diff_helpers._groups_match
-  callee: src.redup.core.utils.diff_helpers._group_files
-  call_type: resolved
-- caller: src.redup.core.utils.diff_helpers.GroupMatcher._match_exact_ids
-  callee: src.redup.core.differ._groups_match
-  call_type: resolved
-- caller: src.redup.core.utils.diff_helpers.GroupMatcher._find_best_match
-  callee: src.redup.core.differ._groups_match
-  call_type: resolved
-- caller: src.redup.core.utils.diff_helpers.GroupMatcher._ensure_matches
-  callee: src.redup.config.RedupConfig.set
-  call_type: resolved
-- caller: src.redup.core.utils.diff_helpers.GroupMatcher._match_score
-  callee: src.redup.core.utils.diff_helpers._group_files
-  call_type: resolved
-- caller: src.redup.core.utils.hash_utils.create_hash_function
-  callee: src.redup.core.hasher._hash_text
-  call_type: resolved
-- caller: src.redup.core.utils.duplicate_finders.create_duplicate_finder
-  callee: src.redup.core.hasher._find_duplicates
-  call_type: resolved
-- caller: src.redup.core.pipeline.phases.scan_phase
-  callee: src.redup.core.scanner.scan_project
-  call_type: resolved
-- caller: src.redup.core.pipeline.phases.scan_phase_parallel
-  callee: src.redup.core.scanner.scan_project
-  call_type: resolved
 - caller: src.redup.core.pipeline.groups.blocks_to_group
   callee: src.redup.config.RedupConfig.set
   call_type: resolved
@@ -2287,6 +2272,18 @@ edges:
   call_type: resolved
 - caller: src.redup.core.pipeline.groups.match_results_to_blocks
   callee: src.redup.config.RedupConfig.set
+  call_type: resolved
+- caller: src.redup.reporters.json_reporter.duplication_map_to_dict
+  callee: src.redup.reporters.json_reporter._group_to_dict
+  call_type: resolved
+- caller: src.redup.reporters.json_reporter.duplication_map_to_dict
+  callee: src.redup.reporters.json_reporter._suggestion_to_dict
+  call_type: resolved
+- caller: src.redup.reporters.json_reporter.to_json
+  callee: src.redup.reporters.json_reporter.duplication_map_to_dict
+  call_type: resolved
+- caller: src.redup.reporters.yaml_reporter.to_yaml
+  callee: src.redup.reporters.json_reporter.duplication_map_to_dict
   call_type: resolved
 - caller: src.redup.reporters.code2llm_reporter._get_layers
   callee: src.redup.reporters.code2llm_reporter._calculate_avg_cc
@@ -2303,17 +2300,71 @@ edges:
 - caller: src.redup.reporters.code2llm_reporter.export_code2llm
   callee: src.redup.reporters.code2llm_reporter.to_code2llm_context
   call_type: resolved
+- caller: src.redup.core.ts_extractor.main._get_dispatcher
+  callee: src.redup.core.ts_extractor.dispatcher.initialize_language_dispatcher
+  call_type: resolved
+- caller: src.redup.core.ts_extractor.main.extract_functions_treesitter
+  callee: src.redup.core.ts_extractor.main._get_dispatcher
+  call_type: resolved
+- caller: src.redup.core.ts_extractor.main.extract_functions_treesitter
+  callee: src.redup.core.ts_extractor.main._get_tree_sitter_language
+  call_type: resolved
+- caller: src.redup.core.ts_extractor.main.get_supported_languages
+  callee: src.redup.core.ts_extractor.main._get_tree_sitter_language
+  call_type: resolved
+- caller: src.redup.core.ts_extractor.main.is_language_supported
+  callee: src.redup.core.ts_extractor.main._get_tree_sitter_language
+  call_type: resolved
+- caller: src.redup.cli_app.output_writer.write_output
+  callee: src.redup.config.get_default_filename
+  call_type: resolved
+- caller: src.redup.cli_app.output_writer.write_results
+  callee: src.redup.reporters.json_reporter.to_json
+  call_type: resolved
+- caller: src.redup.cli_app.output_writer.write_results
+  callee: src.redup.cli_app.output_writer.write_output
+  call_type: resolved
+- caller: src.redup.cli_app.output_writer.write_results
+  callee: src.redup.reporters.yaml_reporter.to_yaml
+  call_type: resolved
+- caller: src.redup.cli_app.output_writer.write_results
+  callee: src.redup.reporters.toon_reporter.to_toon
+  call_type: resolved
+- caller: src.redup.cli_app.output_writer.write_results
+  callee: src.redup.reporters.markdown_reporter.to_markdown
+  call_type: resolved
+- caller: src.redup.core.fuzzy_similarity.HTMLComponentExtractor._extract_attributes
+  callee: src.redup.config.RedupConfig.set
+  call_type: resolved
+- caller: src.redup.core.fuzzy_similarity.FuzzySimilarityDetector._compute_attribute_similarity
+  callee: src.redup.config.RedupConfig.set
+  call_type: resolved
+- caller: src.redup.cli_app.quality_commands.run_jscpd_budget
+  callee: src.redup.cli_app.quality_commands._repo_root
+  call_type: resolved
+- caller: src.redup.cli_app.quality_commands.run_jscpd_budget
+  callee: src.redup.cli_app.quality_commands._read_jscpd_stats
+  call_type: resolved
+- caller: src.redup.cli_app.quality_commands.run_jscpd_budget
+  callee: src.redup.cli_app.quality_commands._budget_violations
+  call_type: resolved
+- caller: src.redup.cli_app.quality_commands.jscpd_run
+  callee: src.redup.cli_app.quality_commands._repo_root
+  call_type: resolved
+- caller: src.redup.cli_app.quality_commands.jscpd_run
+  callee: src.redup.cli_app.quality_commands._jscpd_command
+  call_type: resolved
+- caller: src.redup.cli_app.quality_commands.jscpd
+  callee: src.redup.cli_app.quality_commands.run_jscpd_budget
+  call_type: resolved
 - caller: src.redup.reporters.enhanced_reporter.EnhancedReporter._get_language_metrics
   callee: src.redup.config.RedupConfig.set
   call_type: resolved
-- caller: src.redup.reporters.json_reporter.duplication_map_to_dict
-  callee: src.redup.reporters.json_reporter._group_to_dict
+- caller: src.redup.cli_app.scan_helpers.apply_fuzzy_similarity
+  callee: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
   call_type: resolved
-- caller: src.redup.reporters.json_reporter.duplication_map_to_dict
-  callee: src.redup.reporters.json_reporter._suggestion_to_dict
-  call_type: resolved
-- caller: src.redup.reporters.json_reporter.to_json
-  callee: src.redup.reporters.json_reporter.duplication_map_to_dict
+- caller: src.redup.cli_app.tasks_command.tasks
+  callee: src.redup.core.pipeline.analyze
   call_type: resolved
 - caller: src.redup.reporters.toon_reporter._render_hotspots
   callee: src.redup.config.RedupConfig.set
@@ -2351,26 +2402,29 @@ edges:
 - caller: src.redup.reporters.toon_reporter.to_toon
   callee: src.redup.reporters.toon_reporter._render_effort_estimate
   call_type: resolved
-- caller: src.redup.reporters.yaml_reporter.to_yaml
-  callee: src.redup.reporters.json_reporter.duplication_map_to_dict
+- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
+  callee: src.redup.cli_app.fuzzy_similarity._validate_fuzzy_input
   call_type: resolved
-- caller: src.redup.cli_app.output_writer.write_output
-  callee: src.redup.config.get_default_filename
+- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
+  callee: src.redup.cli_app.fuzzy_similarity._extract_all_blocks
   call_type: resolved
-- caller: src.redup.cli_app.output_writer.write_results
-  callee: src.redup.reporters.json_reporter.to_json
+- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
+  callee: src.redup.cli_app.fuzzy_similarity._separate_blocks_by_type
   call_type: resolved
-- caller: src.redup.cli_app.output_writer.write_results
-  callee: src.redup.cli_app.output_writer.write_output
+- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
+  callee: src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors
   call_type: resolved
-- caller: src.redup.cli_app.output_writer.write_results
-  callee: src.redup.reporters.yaml_reporter.to_yaml
+- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
+  callee: src.redup.cli_app.fuzzy_similarity._report_fuzzy_results
   call_type: resolved
-- caller: src.redup.cli_app.output_writer.write_results
-  callee: src.redup.reporters.toon_reporter.to_toon
+- caller: src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors
+  callee: src.redup.cli_app.fuzzy_similarity._analyze_html_css_blocks
   call_type: resolved
-- caller: src.redup.cli_app.output_writer.write_results
-  callee: src.redup.reporters.markdown_reporter.to_markdown
+- caller: src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors
+  callee: src.redup.cli_app.fuzzy_similarity._analyze_other_language_blocks
+  call_type: resolved
+- caller: src.redup.cli_app.fuzzy_similarity._report_fuzzy_results
+  callee: src.redup.config.RedupConfig.set
   call_type: resolved
 - caller: src.redup.cli_app.compare_command.compare_command
   callee: src.redup.cli_app.compare_command._parse_extensions
@@ -2438,36 +2492,6 @@ edges:
 - caller: src.redup.cli_app.compare_command._build_json_report
   callee: src.redup.cli_app.compare_command._build_recommendation_dict
   call_type: resolved
-- caller: src.redup.cli_app.scan_helpers.apply_fuzzy_similarity
-  callee: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
-  call_type: resolved
-- caller: src.redup.cli_app.tasks_command.tasks
-  callee: src.redup.core.pipeline.analyze
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
-  callee: src.redup.cli_app.fuzzy_similarity._validate_fuzzy_input
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
-  callee: src.redup.cli_app.fuzzy_similarity._extract_all_blocks
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
-  callee: src.redup.cli_app.fuzzy_similarity._separate_blocks_by_type
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
-  callee: src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._apply_fuzzy_similarity
-  callee: src.redup.cli_app.fuzzy_similarity._report_fuzzy_results
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors
-  callee: src.redup.cli_app.fuzzy_similarity._analyze_html_css_blocks
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._analyze_blocks_with_detectors
-  callee: src.redup.cli_app.fuzzy_similarity._analyze_other_language_blocks
-  call_type: resolved
-- caller: src.redup.cli_app.fuzzy_similarity._report_fuzzy_results
-  callee: src.redup.config.RedupConfig.set
-  call_type: resolved
 - caller: src.redup.mcp.server.handle_request
   callee: src.redup.mcp.server.handle_initialize
   call_type: resolved
@@ -2479,6 +2503,75 @@ edges:
   call_type: resolved
 - caller: src.redup.mcp.server.run_server
   callee: src.redup.mcp.server.handle_request
+  call_type: resolved
+- caller: src.redup.analysis_logic._build_scan_config
+  callee: src.redup.core.config.config_to_scan_config
+  call_type: resolved
+- caller: src.redup.analysis_logic._build_scan_config
+  callee: src.redup.analysis_logic._parse_extensions
+  call_type: resolved
+- caller: src.redup.analysis_logic._build_scan_config
+  callee: src.redup.core.config.load_config
+  call_type: resolved
+- caller: src.redup.core.matcher.sequence_similarity
+  callee: src.redup.core.hasher._normalize_text
+  call_type: resolved
+- caller: src.redup.core.matcher.fuzzy_similarity
+  callee: src.redup.core.hasher._normalize_text
+  call_type: resolved
+- caller: src.redup.core.matcher.fuzzy_similarity
+  callee: src.redup.core.matcher.sequence_similarity
+  call_type: resolved
+- caller: src.redup.core.matcher.match_candidates
+  callee: src.redup.core.matcher._compare_against_reference
+  call_type: resolved
+- caller: src.redup.core.matcher.refine_structural_matches
+  callee: src.redup.core.matcher._compare_against_reference
+  call_type: resolved
+- caller: src.redup.cli_app.scan_commands.diff_command
+  callee: src.redup.core.differ.compare_scans
+  call_type: resolved
+- caller: src.redup.cli_app.scan_commands.diff_command
+  callee: src.redup.core.differ.format_diff_result
+  call_type: resolved
+- caller: src.redup.cli_app.scan_commands.check_command
+  callee: src.redup.cli_app.config_builder.build_config_with_file_support
+  call_type: resolved
+- caller: src.redup.cli_app.scan_commands.check_command
+  callee: src.redup.cli_app.scan_helpers.print_scan_header
+  call_type: resolved
+- caller: src.redup.cli_app.scan_commands.check_command
+  callee: src.redup.core.pipeline.analyze
+  call_type: resolved
+- caller: src.redup.cli_app.scan_commands.config_command
+  callee: src.redup.core.config.create_sample_redup_toml
+  call_type: resolved
+- caller: src.redup.cli_app.scan_commands.config_command
+  callee: src.redup.core.config.load_config
+  call_type: resolved
+- caller: src.redup.cli_app.main.diff
+  callee: src.redup.cli_app.scan_commands.diff_command
+  call_type: resolved
+- caller: src.redup.cli_app.main.check
+  callee: src.redup.cli_app.scan_commands.check_command
+  call_type: resolved
+- caller: src.redup.cli_app.main.config
+  callee: src.redup.cli_app.scan_commands.config_command
+  call_type: resolved
+- caller: src.redup.cli_app.main.info
+  callee: src.redup.cli_app.scan_commands.info_command
+  call_type: resolved
+- caller: src.redup.cli_app.config_builder.build_config
+  callee: src.redup.core.config.load_config
+  call_type: resolved
+- caller: src.redup.cli_app.config_builder.build_config
+  callee: src.redup.core.config.config_to_scan_config
+  call_type: resolved
+- caller: src.redup.cli_app.config_builder.build_config_with_file_support
+  callee: src.redup.core.config.load_config
+  call_type: resolved
+- caller: src.redup.cli_app.config_builder.build_config_with_file_support
+  callee: src.redup.core.config.config_to_scan_config
   call_type: resolved
 - caller: src.redup.mcp.handlers._build_scan_config
   callee: src.redup.core.config.config_to_scan_config
@@ -2558,72 +2651,6 @@ edges:
 - caller: src.redup.mcp.handlers.handle_project_info
   callee: src.redup.mcp.handlers._get_optional_deps
   call_type: resolved
-- caller: src.redup.core.cache.hash_block_with_cache
-  callee: src.redup.core.hasher.hash_block
-  call_type: resolved
-- caller: src.redup.core.cache.hash_block_with_cache
-  callee: src.redup.core.hasher.hash_block_structural
-  call_type: resolved
-- caller: src.redup.core.cache.build_hash_index_with_cache
-  callee: src.redup.core.cache.hash_block_with_cache
-  call_type: resolved
-- caller: src.redup.core.scanner_filters._collect_files
-  callee: src.redup.config.RedupConfig.set
-  call_type: resolved
-- caller: src.redup.core.scanner_filters._collect_files
-  callee: src.redup.core.scanner_filters._project_relative_path
-  call_type: resolved
-- caller: src.redup.core.scanner_filters._collect_files
-  callee: src.redup.core.scanner_cache._should_exclude
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups
-  callee: src.redup.core.pipeline.duplicate_finder.find_near_duplicate_groups
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_exact_groups
-  callee: src.redup.core.hasher.find_exact_duplicates
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_exact_groups
-  callee: src.redup.core.pipeline.groups.blocks_to_group
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
-  callee: src.redup.config.RedupConfig.set
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
-  callee: src.redup.core.hasher.find_structural_duplicates
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
-  callee: src.redup.core.matcher.refine_structural_matches
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
-  callee: src.redup.core.pipeline.groups.match_results_to_blocks
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_structural_groups
-  callee: src.redup.core.pipeline.groups.blocks_to_group
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_near_duplicate_groups
-  callee: src.redup.core.lsh_matcher.LSHIndex.find_near_duplicates
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized
-  callee: src.redup.core.hasher.build_hash_index
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized
-  callee: src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_optimized
-  callee: src.redup.core.lazy_grouper.find_all_duplicates_lazy
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
-  callee: src.redup.core.pipeline.duplicate_finder._finalize_duplicate_groups
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
-  callee: src.redup.core.cache.build_hash_index_with_cache
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
-  callee: src.redup.core.hasher.build_hash_index
-  call_type: resolved
-- caller: src.redup.core.pipeline.duplicate_finder.find_duplicates_phase_lazy
-  callee: src.redup.core.lazy_grouper.find_all_duplicates_lazy
-  call_type: resolved
 - caller: src.redup.core.pipeline._build_duplication_map
   callee: src.redup.core.planner.generate_suggestions
   call_type: resolved
@@ -2672,68 +2699,53 @@ edges:
 - caller: src.redup.core.pipeline.analyze_parallel
   callee: src.redup.core.pipeline._build_duplication_map
   call_type: resolved
-- caller: src.redup.cli_app.scan_commands.diff_command
-  callee: src.redup.core.differ.compare_scans
+- caller: src.redup.core.utils.diff_helpers._groups_match
+  callee: src.redup.core.utils.diff_helpers._group_files
   call_type: resolved
-- caller: src.redup.cli_app.scan_commands.diff_command
-  callee: src.redup.core.differ.format_diff_result
+- caller: src.redup.core.utils.diff_helpers.GroupMatcher._match_exact_ids
+  callee: src.redup.core.utils.diff_helpers._groups_match
   call_type: resolved
-- caller: src.redup.cli_app.scan_commands.check_command
-  callee: src.redup.cli_app.config_builder.build_config_with_file_support
+- caller: src.redup.core.utils.diff_helpers.GroupMatcher._find_best_match
+  callee: src.redup.core.utils.diff_helpers._groups_match
   call_type: resolved
-- caller: src.redup.cli_app.scan_commands.check_command
-  callee: src.redup.cli_app.scan_helpers.print_scan_header
+- caller: src.redup.core.utils.diff_helpers.GroupMatcher._ensure_matches
+  callee: src.redup.config.RedupConfig.set
   call_type: resolved
-- caller: src.redup.cli_app.scan_commands.check_command
-  callee: src.redup.core.pipeline.analyze
+- caller: src.redup.core.utils.diff_helpers.GroupMatcher._match_score
+  callee: src.redup.core.utils.diff_helpers._group_files
   call_type: resolved
-- caller: src.redup.cli_app.scan_commands.config_command
-  callee: src.redup.core.config.create_sample_redup_toml
+- caller: src.redup.core.differ.compare_scans
+  callee: src.redup.core.differ._load_duplication_map
   call_type: resolved
-- caller: src.redup.cli_app.scan_commands.config_command
-  callee: src.redup.core.config.load_config
+- caller: src.redup.core.differ.compare_scans
+  callee: src.redup.core.differ._group_by_id
   call_type: resolved
-- caller: src.redup.cli_app.quality_commands.run_jscpd_budget
-  callee: src.redup.cli_app.quality_commands._repo_root
+- caller: src.redup.core.differ._format_groups_section
+  callee: src.redup.core.differ._format_group_header
   call_type: resolved
-- caller: src.redup.cli_app.quality_commands.run_jscpd_budget
-  callee: src.redup.cli_app.quality_commands._read_jscpd_stats
+- caller: src.redup.core.differ._format_groups_section
+  callee: src.redup.core.differ._format_group_details
   call_type: resolved
-- caller: src.redup.cli_app.quality_commands.run_jscpd_budget
-  callee: src.redup.cli_app.quality_commands._budget_violations
+- caller: src.redup.core.differ.format_diff_result
+  callee: src.redup.core.differ._format_groups_section
   call_type: resolved
-- caller: src.redup.cli_app.quality_commands.jscpd_run
-  callee: src.redup.cli_app.quality_commands._repo_root
+- caller: src.redup.core.differ.format_diff_result
+  callee: src.redup.core.differ._format_assessment
   call_type: resolved
-- caller: src.redup.cli_app.quality_commands.jscpd_run
-  callee: src.redup.cli_app.quality_commands._jscpd_command
+- caller: src.redup.core.python_parser._extract_function_info
+  callee: src.redup.core.python_parser._extract_decorators
   call_type: resolved
-- caller: src.redup.cli_app.quality_commands.jscpd
-  callee: src.redup.cli_app.quality_commands.run_jscpd_budget
+- caller: src.redup.core.python_parser._parse_with_ast
+  callee: src.redup.core.python_parser._build_parent_map
   call_type: resolved
-- caller: src.redup.cli_app.config_builder.build_config
-  callee: src.redup.core.config.load_config
+- caller: src.redup.core.python_parser._parse_with_ast
+  callee: src.redup.core.python_parser._extract_function_info
   call_type: resolved
-- caller: src.redup.cli_app.config_builder.build_config
-  callee: src.redup.core.config.config_to_scan_config
+- caller: src.redup.core.python_parser.parse_python_functions
+  callee: src.redup.core.python_parser._parse_with_ast
   call_type: resolved
-- caller: src.redup.cli_app.config_builder.build_config_with_file_support
-  callee: src.redup.core.config.load_config
-  call_type: resolved
-- caller: src.redup.cli_app.config_builder.build_config_with_file_support
-  callee: src.redup.core.config.config_to_scan_config
-  call_type: resolved
-- caller: src.redup.cli_app.main.diff
-  callee: src.redup.cli_app.scan_commands.diff_command
-  call_type: resolved
-- caller: src.redup.cli_app.main.check
-  callee: src.redup.cli_app.scan_commands.check_command
-  call_type: resolved
-- caller: src.redup.cli_app.main.config
-  callee: src.redup.cli_app.scan_commands.config_command
-  call_type: resolved
-- caller: src.redup.cli_app.main.info
-  callee: src.redup.cli_app.scan_commands.info_command
+- caller: src.redup.core.python_parser.parse_python_functions
+  callee: src.redup.core.python_parser._parse_with_libcst
   call_type: resolved
 modules:
   benchmark:
@@ -2833,7 +2845,6 @@ modules:
   - src.redup.core.differ._format_group_header
   - src.redup.core.differ._format_groups_section
   - src.redup.core.differ._group_by_id
-  - src.redup.core.differ._groups_match
   - src.redup.core.differ._load_duplication_map
   - src.redup.core.differ.compare_scans
   - src.redup.core.differ.format_diff_result
@@ -2945,6 +2956,7 @@ modules:
   - src.redup.core.scanner_cache._should_exclude
   src.redup.core.scanner_filters:
   - src.redup.core.scanner_filters._collect_files
+  - src.redup.core.scanner_filters._collect_target_files
   - src.redup.core.scanner_filters._project_relative_path
   src.redup.core.scanner_utils:
   - src.redup.core.scanner_utils._load_all_files
@@ -3089,6 +3101,7 @@ entry_points:
 - src.redup.core.cache.HashCache.get_stats
 - src.redup.core.cache.HashCache.is_file_unchanged
 - src.redup.core.cache.HashCache.store_file_hashes
+- src.redup.core.differ._groups_match
 - src.redup.core.fuzzy_similarity.CSSComponentExtractor.__init__
 - src.redup.core.fuzzy_similarity.CSSComponentExtractor._compute_css_hash
 - src.redup.core.fuzzy_similarity.CSSComponentExtractor._detect_css_component_type
@@ -3191,7 +3204,6 @@ entry_points:
 - src.redup.core.utils.diff_helpers.GroupMatcher.get_new_groups
 - src.redup.core.utils.diff_helpers.GroupMatcher.get_resolved_groups
 - src.redup.core.utils.diff_helpers.GroupMatcher.get_unchanged_groups
-- src.redup.core.utils.diff_helpers._groups_match
 - src.redup.core.utils.duplicate_finders.create_duplicate_finder
 - src.redup.core.utils.function_extractor.FunctionExtractor.__init__
 - src.redup.core.utils.function_extractor.FunctionExtractor._create_function_block

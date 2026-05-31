@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 
 class DuplicateType(str, Enum):
@@ -14,7 +15,8 @@ class DuplicateType(str, Enum):
     STRUCTURAL = "structural"
     FUZZY = "fuzzy"
     NEAR_DUPLICATE = "near_duplicate"
-    SEMANTIC = "semantic"  # ← NOWY
+    SEMANTIC = "semantic"
+    INTENT = "intent"
 
 
 class RefactorAction(str, Enum):
@@ -183,6 +185,11 @@ class ScanConfig:
     functions_only: bool = True
     fuzzy_enabled: bool = False
     fuzzy_threshold: float = 0.8
+    intent_enabled: bool = False
+    intent_threshold: float = 0.84
+    intent_manifest_path: Path | None = None
+    intent_fail_on: str = "violation,missing_required_p1,invalid_manifest"
+    intent_warn_on: str = "partial,unknown"
     # LSH configuration
     lsh_enabled: bool = True
     lsh_min_lines: int = 50
@@ -219,6 +226,7 @@ class DuplicateGroup:
     similarity_score: float = 1.0
     normalized_hash: str = ""
     normalized_name: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def occurrences(self) -> int:
