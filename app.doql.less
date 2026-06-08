@@ -2,19 +2,42 @@
 
 app {
   name: redup;
-  version: 0.4.29;
+  version: 0.4.30;
+  description: "Code duplication analyzer and refactoring planner for LLMs";
+  license: Apache-2.0;
+  authors: "Tom Sapletta <tom@sapletta.com>";
+  keywords: "duplication, refactoring, code-analysis, LLM, AST, static-analysis";
+  homepage: https://github.com/semcod/redup;
+  repository: https://github.com/semcod/redup;
 }
 
 dependencies {
   runtime: "pyyaml>=6.0, typer>=0.12.0, rich>=13.0, pydantic>=2.0, tomli>=2.0; python_version<'3.11', python-dotenv>=1.0, goal>=2.1.0, costs>=0.1.20, pfix>=0.1.60";
+  all: "redup[fast], redup[fuzzy], redup[ast], redup[lsh], redup[semantic], redup[intent], redup[compare], redup[tasks]";
+  tasks: planfile>=0.1.0;
+  compare: networkx>=3.0;
+  llm: litellm>=1.0;
+  fast: "xxhash>=3.0, libcst>=1.0, pybloom-live>=4.0";
+  fuzzy: rapidfuzz>=3.0;
+  ast: "tree-sitter>=0.21, tree-sitter-javascript>=0.21.0, tree-sitter-typescript>=0.21.0, tree-sitter-go>=0.21.0, tree-sitter-rust>=0.21.0, tree-sitter-java>=0.21.0, tree-sitter-c>=0.21.0, tree-sitter-cpp>=0.21.0, tree-sitter-c-sharp>=0.21.0, tree-sitter-html>=0.19.0, tree-sitter-css>=0.19.0, tree-sitter-sql>=0.3.0, tree-sitter-json>=0.21.0, tree-sitter-yaml>=0.7.0, tree-sitter-bash>=0.21.0, tree-sitter-ruby>=0.21.0, tree-sitter-php>=0.21.0, tree-sitter-dockerfile>=0.2.0";
+  lsh: datasketch>=1.6;
+  semantic: sentence-transformers>=2.0;
+  intent: intract>=0.5.7;
   dev: "pytest>=7.0, pytest-cov>=4.0, ruff>=0.4, mypy>=1.8, goal>=2.1.0, costs>=0.1.20, pfix>=0.1.60";
+}
+
+interface[type="mcp"] {
+  framework: stdio;
+}
+interface[type="mcp"] page[name="redup-mcp"] {
+  entry: redup.mcp_server:run_server;
 }
 
 interface[type="cli"] {
   framework: argparse;
 }
 interface[type="cli"] page[name="redup"] {
-
+  entry: redup.cli_app.main:app;
 }
 
 workflow[name="install"] {
@@ -194,6 +217,14 @@ print('Generated SUMR.json')
 " 2>/dev/null || echo 'Python generation failed, using fallback';
 }
 
+tests {
+  import: testql-scenarios/**/*.testql.toon.yaml;
+}
+
+env_vars {
+  keys: OPENROUTER_API_KEY, LLM_MODEL, PFIX_AUTO_APPLY, PFIX_AUTO_INSTALL_DEPS, PFIX_AUTO_RESTART, PFIX_MAX_RETRIES, PFIX_DRY_RUN, PFIX_ENABLED, PFIX_GIT_COMMIT, PFIX_GIT_PREFIX, PFIX_CREATE_BACKUPS;
+}
+
 deploy {
   target: pip;
 }
@@ -201,5 +232,9 @@ deploy {
 environment[name="local"] {
   runtime: python;
   env_file: .env;
-  python_version: >=3.10;
+  template_file: .env.example;
+  python_version: >=3.10,<3.14;
+  vars: LLM_MODEL, OPENROUTER_API_KEY, PFIX_AUTO_APPLY, PFIX_AUTO_INSTALL_DEPS, PFIX_AUTO_RESTART, PFIX_CREATE_BACKUPS, PFIX_DRY_RUN, PFIX_ENABLED, PFIX_GIT_COMMIT, PFIX_GIT_PREFIX, PFIX_MAX_RETRIES;
+  runtime_llm: OPENROUTER_API_KEY;
+  runtime_pfix: PFIX_AUTO_APPLY, PFIX_AUTO_INSTALL_DEPS, PFIX_AUTO_RESTART, PFIX_CREATE_BACKUPS, PFIX_DRY_RUN, PFIX_ENABLED, PFIX_GIT_COMMIT, PFIX_GIT_PREFIX, PFIX_MAX_RETRIES;
 }
