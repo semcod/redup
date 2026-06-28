@@ -35,6 +35,14 @@
 - refactor(docs): multiple code analysis engine and docs refactors
 - feat(None): code improvements
 
+## [0.4.32] - 2026-06-29
+
+### Docs
+- Update README.md
+
+### Other
+- Update VERSION
+
 ## [0.4.30] - 2026-05-31
 
 ### Docs
