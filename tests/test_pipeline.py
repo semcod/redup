@@ -4,8 +4,10 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
-from redup.core.models import ScanConfig
+from redup.core.models import DuplicateType, ScanConfig
 from redup.core.pipeline import analyze, analyze_optimized
+from redup.core.pipeline.duplicate_finder import find_fuzzy_groups
+from redup.core.scanner import CodeBlock
 
 
 def _create_test_project(root: Path) -> None:
@@ -157,3 +159,39 @@ def test_analyze_optimized_stores_incremental_cache():
             file_count = conn.execute("SELECT COUNT(*) FROM file_hashes").fetchone()[0]
 
         assert file_count >= 1
+
+
+def test_find_fuzzy_groups_detects_renamed_env_readers():
+    blocks = [
+        CodeBlock(
+            file="a.py",
+            line_start=1,
+            line_end=6,
+            text=(
+                'def read_enter() -> str:\n'
+                '    raw = os.environ.get("ENTER", "").strip()\n'
+                '    if raw.isdigit():\n'
+                '        return raw\n'
+                '    return "28"\n'
+            ),
+            function_name="read_enter",
+        ),
+        CodeBlock(
+            file="b.py",
+            line_start=1,
+            line_end=6,
+            text=(
+                'def read_ctrl() -> str:\n'
+                '    raw = os.environ.get("CTRL", "").strip()\n'
+                '    if raw.isdigit():\n'
+                '        return raw\n'
+                '    return "29"\n'
+            ),
+            function_name="read_ctrl",
+        ),
+    ]
+    config = ScanConfig(min_block_lines=3, min_similarity=0.85)
+    groups = find_fuzzy_groups(blocks, config)
+    assert len(groups) == 1
+    assert groups[0].duplicate_type == DuplicateType.FUZZY
+    assert groups[0].occurrences == 2

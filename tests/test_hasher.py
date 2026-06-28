@@ -33,6 +33,20 @@ def test_structural_hash_ignores_literals():
     assert hash_block_structural(a) == hash_block_structural(b)
 
 
+def test_structural_hash_env_var_readers():
+    a = '''def read_a() -> str:
+    raw = os.environ.get("VAR_A", "").strip()
+    if raw.isdigit():
+        return raw
+    return "28"'''
+    b = '''def read_b() -> str:
+    raw = os.environ.get("VAR_B", "").strip()
+    if raw.isdigit():
+        return raw
+    return "29"'''
+    assert hash_block_structural(a) == hash_block_structural(b)
+
+
 def test_structural_hash_different_structure():
     a = "x = 1\ny = 2"
     b = "for i in range(10):\n    print(i)"

@@ -17,6 +17,94 @@ from redup.core.models import DuplicateFragment, DuplicateGroup, DuplicateType, 
 from redup.core.scanner_types import CodeBlock
 
 
+def find_fuzzy_groups(
+    all_blocks: list[CodeBlock],
+    config: ScanConfig,
+    covered_locations: set[tuple[str, int]] | None = None,
+) -> list[DuplicateGroup]:
+    """Find high-similarity function pairs missed by exact/structural hashing."""
+    from redup.core.matcher import sequence_similarity
+
+    covered = set(covered_locations or ())
+    min_lines = config.min_block_lines
+    min_similarity = config.min_similarity
+
+    candidates = [
+        block
+        for block in all_blocks
+        if block.function_name
+        and block.line_count >= min_lines
+        and (block.file, block.line_start) not in covered
+    ]
+    if len(candidates) < 2:
+        return []
+
+    candidates.sort(key=lambda block: (block.line_count, block.file, block.line_start))
+    used: set[tuple[str, int]] = set()
+    groups: list[DuplicateGroup] = []
+
+    for index, anchor in enumerate(candidates):
+        anchor_key = (anchor.file, anchor.line_start)
+        if anchor_key in used:
+            continue
+
+        cluster = [anchor]
+        for other in candidates[index + 1 :]:
+            other_key = (other.file, other.line_start)
+            if other_key in used:
+                continue
+            if abs(other.line_count - anchor.line_count) > 4:
+                break
+            if other.file == anchor.file and other.line_start == anchor.line_start:
+                continue
+            similarity = sequence_similarity(anchor.text, other.text)
+            if similarity < min_similarity:
+                continue
+            cluster.append(other)
+
+        if len(cluster) < 2:
+            continue
+
+        fragments = [
+            DuplicateFragment(
+                file=block.file,
+                line_start=block.line_start,
+                line_end=block.line_end,
+                text=block.text,
+                function_name=block.function_name,
+                class_name=block.class_name,
+            )
+            for block in cluster
+        ]
+        avg_similarity = sum(
+            sequence_similarity(cluster[0].text, block.text) for block in cluster[1:]
+        ) / (len(cluster) - 1)
+
+        groups.append(
+            DuplicateGroup(
+                id=f"F{len(groups) + 1:04d}",
+                duplicate_type=DuplicateType.FUZZY,
+                fragments=fragments,
+                similarity_score=avg_similarity,
+                normalized_hash=f"fuzzy_{anchor.file}_{anchor.line_start}",
+                normalized_name=anchor.function_name,
+            )
+        )
+        for block in cluster:
+            used.add((block.file, block.line_start))
+
+    return groups
+
+
+def _covered_locations(groups: list[DuplicateGroup]) -> set[tuple[str, int]]:
+    """Collect file/line locations already assigned to duplicate groups."""
+    covered: set[tuple[str, int]] = set()
+    for group in groups:
+        for fragment in group.fragments:
+            covered.add((fragment.file, fragment.line_start))
+    return covered
+
+
 def _finalize_duplicate_groups(
     groups: list[DuplicateGroup],
     all_blocks: list[CodeBlock],
@@ -25,6 +113,9 @@ def _finalize_duplicate_groups(
     cache: HashCache | None = None,
 ) -> list[DuplicateGroup]:
     """Attach near duplicates, sort by impact, and report timing."""
+    covered = _covered_locations(groups)
+    groups.extend(find_fuzzy_groups(all_blocks, config, covered))
+    covered = _covered_locations(groups)
     groups.extend(find_near_duplicate_groups(all_blocks, config))
     if getattr(config, "intent_enabled", False):
         groups.extend(find_intent_groups(all_blocks, config))

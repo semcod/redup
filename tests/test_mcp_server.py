@@ -80,6 +80,7 @@ def _analyze_test_project(root: Path):
 
 def test_initialize_and_tools_list() -> None:
     init_response = handle_request({"jsonrpc": "2.0", "method": "initialize", "id": 1})
+    assert init_response["result"]["protocolVersion"] == "2024-11-05"
     assert init_response["result"]["serverInfo"]["name"] == "redup"
     assert init_response["result"]["serverInfo"]["version"]
 

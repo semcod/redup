@@ -37,12 +37,16 @@ def find_exact_duplicates_lazy(index: HashIndex, min_lines: int = 3) -> Iterator
 
 
 def find_structural_duplicates_lazy(
-    index: HashIndex, min_lines: int = 3
+    index: HashIndex,
+    min_lines: int = 3,
+    covered_locations: set[tuple[str, int]] | None = None,
 ) -> Iterator[DuplicateGroup]:
     """Find structural duplicate groups with lazy evaluation and early exit.
 
     Similar to find_exact_duplicates_lazy but for structural hashes.
     """
+    covered = covered_locations or set()
+
     for hash_val, blocks in index.structural.items():
         if len(blocks) < 2:
             continue
@@ -51,8 +55,18 @@ def find_structural_duplicates_lazy(
         if not _blocks_from_different_locations(blocks):
             continue
 
+        uncovered = [
+            hb
+            for hb in blocks
+            if (hb.block.file, hb.block.line_start) not in covered
+        ]
+        if len(uncovered) < 2:
+            continue
+        if not _blocks_from_different_locations(uncovered):
+            continue
+
         # Create group and check line threshold
-        group = _create_duplicate_group(hash_val, blocks, DuplicateType.STRUCTURAL)
+        group = _create_duplicate_group(hash_val, uncovered, DuplicateType.STRUCTURAL)
         if group.total_lines >= min_lines:
             yield group
 
@@ -106,11 +120,23 @@ def find_all_duplicates_lazy(
     Yields:
         DuplicateGroup objects that meet the threshold
     """
+    covered_locations: set[tuple[str, int]] = set()
+
     if include_exact:
-        yield from find_exact_duplicates_lazy(index, min_lines)
+        for group in find_exact_duplicates_lazy(index, min_lines):
+            for fragment in group.fragments:
+                covered_locations.add((fragment.file, fragment.line_start))
+            yield group
 
     if include_structural:
-        yield from find_structural_duplicates_lazy(index, min_lines)
+        for group in find_structural_duplicates_lazy(
+            index,
+            min_lines,
+            covered_locations=covered_locations,
+        ):
+            for fragment in group.fragments:
+                covered_locations.add((fragment.file, fragment.line_start))
+            yield group
 
 
 class DuplicateGroupCollector:

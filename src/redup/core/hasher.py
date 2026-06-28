@@ -70,7 +70,7 @@ def _ast_to_normalized_string(tree: object) -> str:
         elif isinstance(node, _ast.Attribute):
             token = "ATTR"
         elif isinstance(node, _ast.Constant):
-            token = f"CONST_{type(node.value).__name__}"
+            token = "CONST"
         elif isinstance(node, _ast.BinOp):
             token = f"BINOP_{type(node.op).__name__}"
         elif isinstance(node, _ast.Compare):
