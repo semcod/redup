@@ -72,8 +72,12 @@ def _collect_target_files(config: ScanConfig) -> list[Path]:
 def _collect_files(config: ScanConfig) -> list[Path]:
     """Collect all files to scan based on configuration.
 
-    Uses os.walk with topdown pruning to skip hidden directories early,
-    avoiding descent into .rebuild_ev/, .regres/, etc.
+    Uses os.walk with topdown pruning to skip hidden and excluded
+    directories early, avoiding descent into .rebuild_ev/, venv/,
+    node_modules/, site-packages/, etc. Without this, a populated
+    virtualenv (tens of thousands of files) gets fully walked and
+    stat'd before its files are filtered out, making every scan of a
+    repo root dramatically slower than scanning a subdirectory.
     """
     if config.target_files is not None:
         return _collect_target_files(config)
@@ -84,7 +88,15 @@ def _collect_files(config: ScanConfig) -> list[Path]:
     root_str = str(config.root)
 
     for dirpath, dirnames, filenames in os.walk(root_str, topdown=True):
-        dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+        kept = []
+        for d in dirnames:
+            if d.startswith("."):
+                continue
+            relative_dir = _project_relative_path(Path(os.path.join(dirpath, d)), config.root)
+            if _should_exclude(relative_dir, exclude_patterns):
+                continue
+            kept.append(d)
+        dirnames[:] = kept
 
         for filename in filenames:
             file_path = Path(os.path.join(dirpath, filename))

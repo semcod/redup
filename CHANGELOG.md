@@ -1,5 +1,18 @@
 # 📝 **CHANGELOG**
 
+## [0.4.33] - 2026-07-05
+
+### Fixed
+- Default `exclude_patterns` used broad prefix globs (`python*`, `venv*`, `env*`) and bare
+  generic names (`lib`, `lib64`) that matched legitimate source directories anywhere in the
+  tree (e.g. `adapters/python/urirun`, `env2llm`), causing `redup scan .` to silently skip
+  real code and under-report duplicates. Replaced with exact-name matches (`venv`, `.venv`,
+  `env`, `.env`, `virtualenv`, `site-packages`) that only catch actual virtualenv directories.
+- `os.walk` topdown pruning in the file collector only skipped dot-directories, so every scan
+  fully walked and stat'd populated `venv`/`site-packages`/`node_modules` trees (tens of
+  thousands of files) before filtering them out post-hoc. Now excluded directories are pruned
+  before descent, matching the existing exclude-pattern logic.
+
 ## [0.1.10] - 2026-05-19
 
 ### Fixed
@@ -34,6 +47,17 @@
 - refactor(config): code analysis engine improvements
 - refactor(docs): multiple code analysis engine and docs refactors
 - feat(None): code improvements
+
+## [0.4.34] - 2026-07-05
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+
+### Other
+- Update VERSION
+- Update local.dev.txt
+- Update uv.lock
 
 ## [0.4.32] - 2026-06-29
 
