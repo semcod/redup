@@ -1,5 +1,22 @@
 # 📝 **CHANGELOG**
 
+## [Unreleased]
+
+### Fixed
+- File collection didn't resolve symlinks, so a file shared via symlink across multiple
+  directories (e.g. one canonical firmware source symlinked into several per-board deploy
+  folders) was read and hashed once per alias and reported as duplicated content across all
+  of them. Now each real file is only scanned once, regardless of how many symlinks point to it.
+
+## [0.4.35] - 2026-07-05
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+
+### Other
+- Update project/planfile-tickets.yaml
+
 ## [0.4.33] - 2026-07-05
 
 ### Fixed

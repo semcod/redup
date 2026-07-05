@@ -83,6 +83,7 @@ def _collect_files(config: ScanConfig) -> list[Path]:
         return _collect_target_files(config)
 
     files = []
+    seen_real_paths = set()
     ext_set = set(config.extensions)
     exclude_patterns = tuple(config.exclude_patterns)
     root_str = str(config.root)
@@ -108,6 +109,18 @@ def _collect_files(config: ScanConfig) -> list[Path]:
                 continue
             if not config.include_tests and _is_test_file(relative_path):
                 continue
+            # Symlinks (common for sharing one canonical file across
+            # multiple deploy targets, e.g. per-board firmware entry
+            # points) resolve to the same real file. Without this,
+            # each symlink is read and hashed independently, reporting
+            # a single shared file as duplicated across every alias.
+            try:
+                real_path = file_path.resolve()
+            except OSError:
+                continue
+            if real_path in seen_real_paths:
+                continue
+            seen_real_paths.add(real_path)
             try:
                 if file_path.stat().st_size > config.max_file_size_kb * 1024:
                     continue
