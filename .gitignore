@@ -28,3 +28,9 @@ htmlcov/
 
 # Environment variables
 .env
+.code2llm_cache/
+.github/
+.jscpd/
+.pyqual/
+.redup/
+.taskill/
