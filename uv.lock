@@ -2323,7 +2323,7 @@ wheels = [
 
 [[package]]
 name = "planfile"
-version = "0.1.102"
+version = "0.1.117"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
@@ -2337,9 +2337,9 @@ dependencies = [
     { name = "rich" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/a5/39b846504788b4a921b299f70cee00c97932973e2e21fd80d3ce43baf373/planfile-0.1.102.tar.gz", hash = "sha256:8126b3b83c963e058cca038f91a69d5a3b1d382dab36e4a6fc744cd6a60f006a", size = 206495, upload-time = "2026-05-24T21:02:56.445Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7f/a0/b84dc6ce2abf05412dc15021bea08ca87cf76250678f0ac30968552c4933/planfile-0.1.117.tar.gz", hash = "sha256:3461c7d8dde6f68ebce19901791a95b4e486df612254b69c92240fd1631a8335", size = 267346, upload-time = "2026-07-20T08:26:41.109Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/53/f51869b4213db55b2fa96c6f2a57c9e232abf910510d705266b28768be4d/planfile-0.1.102-py3-none-any.whl", hash = "sha256:0ceb94aaefd62554e3f2f13f98f09c9ed78bc54dfcf4acee771d1929cb603d89", size = 222765, upload-time = "2026-05-24T21:02:54.331Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/95/942617cd2131f29bdc134ab694e2afa59cf46a294562f465405fb70c5898/planfile-0.1.117-py3-none-any.whl", hash = "sha256:99388abba094146bead15b92fe3363892147e5e7b794e40aa6d84b2c3f16906d", size = 259055, upload-time = "2026-07-20T08:26:39.225Z" },
 ]
 
 [[package]]
@@ -3064,7 +3064,7 @@ requires-dist = [
     { name = "networkx", marker = "extra == 'compare'", specifier = ">=3.0" },
     { name = "pfix", specifier = ">=0.1.60" },
     { name = "pfix", marker = "extra == 'dev'", specifier = ">=0.1.60" },
-    { name = "planfile", marker = "extra == 'tasks'", specifier = ">=0.1.0" },
+    { name = "planfile", marker = "extra == 'tasks'", specifier = ">=0.1.117" },
     { name = "pybloom-live", marker = "extra == 'fast'", specifier = ">=4.0" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0" },
