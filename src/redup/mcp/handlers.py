@@ -49,6 +49,12 @@ def _build_scan_config(path: Path, params: dict[str, Any]) -> ScanConfig:
         scan_config.fuzzy_enabled = bool(params["fuzzy"])
     if params.get("fuzzy_threshold") is not None:
         scan_config.fuzzy_threshold = float(params["fuzzy_threshold"])
+    if params.get("semantic") is not None:
+        scan_config.semantic_enabled = bool(params["semantic"])
+    if params.get("semantic_threshold") is not None:
+        scan_config.semantic_threshold = float(params["semantic_threshold"])
+    if params.get("semantic_model") is not None:
+        scan_config.semantic_model = str(params["semantic_model"])
     if params.get("intent") is not None:
         scan_config.intent_enabled = bool(params["intent"])
     if params.get("intent_threshold") is not None:
@@ -315,6 +321,8 @@ def _get_optional_deps() -> dict[str, bool]:
         "tree_sitter": "tree_sitter",
         "datasketch": "datasketch",
         "rapidfuzz": "rapidfuzz",
+        "sentence_transformers": "sentence_transformers",
+        "intract": "intract",
     }
     optional = {}
     for name, module in deps.items():

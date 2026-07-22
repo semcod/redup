@@ -29,6 +29,9 @@ def build_config_with_file_support(
     functions_only: bool = False,
     fuzzy: bool = False,
     fuzzy_threshold: float = 0.8,
+    semantic: bool | None = None,
+    semantic_threshold: float = 0.80,
+    semantic_model: str | None = None,
     intent: bool = False,
     intent_threshold: float = 0.84,
     intent_manifest: str | None = None,
@@ -69,6 +72,12 @@ def build_config_with_file_support(
     # Add fuzzy support
     scan_config.fuzzy_enabled = fuzzy
     scan_config.fuzzy_threshold = fuzzy_threshold
+
+    if semantic is not None:
+        scan_config.semantic_enabled = semantic
+    scan_config.semantic_threshold = semantic_threshold
+    if semantic_model:
+        scan_config.semantic_model = semantic_model
 
     scan_config.intent_enabled = intent
     scan_config.intent_threshold = intent_threshold

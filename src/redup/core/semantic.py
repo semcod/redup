@@ -36,11 +36,11 @@ class SemanticDetector:
                 from sentence_transformers import SentenceTransformer
 
                 self._model = SentenceTransformer(self.model_name)
-            except ImportError:
+            except ImportError as exc:
                 raise ImportError(
                     "sentence-transformers is required for semantic detection. "
                     "Install with: pip install redup[semantic]"
-                )
+                ) from exc
 
     def find_semantic_duplicates(
         self,
@@ -135,33 +135,35 @@ class SemanticDetector:
         texts = [b.text for b in blocks]
         embeddings = self._model.encode(texts, convert_to_tensor=True)
 
-        # Paraphrase mining — finds top-k most similar pairs efficiently
-        pairs = util.paraphrase_mining(
-            self._model,
-            texts,
-            corpus_embeddings=embeddings,
-            top_k=top_k,
-            show_progress_bar=False,
-        )
-
         matches: list[SemanticMatch] = []
-        for score, i, j in pairs:
-            if score >= self.threshold:
-                # Skip same-file same-function matches
-                if (
-                    blocks[i].file == blocks[j].file
-                    and blocks[i].line_start == blocks[j].line_start
-                ):
+        seen: set[tuple[int, int]] = set()
+        hits = util.semantic_search(
+            embeddings,
+            embeddings,
+            top_k=min(top_k + 1, len(blocks)),
+        )
+        for i, neighbors in enumerate(hits):
+            for neighbor in neighbors:
+                j = int(neighbor["corpus_id"])
+                if i == j:
+                    continue
+                pair = (min(i, j), max(i, j))
+                if pair in seen:
+                    continue
+                seen.add(pair)
+                score = float(neighbor["score"])
+                if score < self.threshold:
                     continue
                 matches.append(
                     SemanticMatch(
-                        block_a=blocks[i],
-                        block_b=blocks[j],
-                        similarity=float(score),
+                        block_a=blocks[pair[0]],
+                        block_b=blocks[pair[1]],
+                        similarity=score,
                         model=self.model_name,
                     )
                 )
 
+        matches.sort(key=lambda match: match.similarity, reverse=True)
         return matches
 
     def compute_semantic_similarity(self, text_a: str, text_b: str) -> float:

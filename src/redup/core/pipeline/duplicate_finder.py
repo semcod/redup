@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
+import re
 import time
+from collections import defaultdict
+from pathlib import Path
 
 from redup.core.cache import HashCache, build_hash_index_with_cache
 from redup.core.hasher import (
@@ -15,6 +19,106 @@ from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.matcher import refine_structural_matches
 from redup.core.models import DuplicateFragment, DuplicateGroup, DuplicateType, ScanConfig
 from redup.core.scanner_types import CodeBlock
+
+_FUZZY_KEYWORDS = {
+    "and",
+    "as",
+    "async",
+    "await",
+    "break",
+    "case",
+    "catch",
+    "class",
+    "const",
+    "continue",
+    "def",
+    "do",
+    "else",
+    "except",
+    "false",
+    "finally",
+    "for",
+    "foreach",
+    "from",
+    "function",
+    "if",
+    "import",
+    "in",
+    "let",
+    "match",
+    "new",
+    "none",
+    "not",
+    "null",
+    "or",
+    "pass",
+    "raise",
+    "return",
+    "switch",
+    "throw",
+    "true",
+    "try",
+    "var",
+    "while",
+    "with",
+    "yield",
+}
+_FUZZY_TOKEN_RE = re.compile(
+    r"[A-Za-z_$][A-Za-z0-9_$]*|==={0,1}|!==?|<=|>=|=>|\+\+|--|&&|\|\||\?\?|\S"
+)
+
+
+def _fuzzy_simhash(text: str) -> int:
+    """Return a language-neutral SimHash used only to shortlist fuzzy comparisons."""
+    text = re.sub(r"/\*.*?\*/|//[^\n]*|#[^\n]*", " ", text, flags=re.DOTALL)
+    text = re.sub(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'', " STR ", text)
+    text = re.sub(r"\b\d+(?:\.\d+)?\b", " NUM ", text)
+    tokens = []
+    for token in _FUZZY_TOKEN_RE.findall(text):
+        lowered = token.lower()
+        if re.match(r"^[A-Za-z_$]", token) and lowered not in _FUZZY_KEYWORDS:
+            tokens.append("ID")
+        else:
+            tokens.append(lowered)
+
+    width = 3 if len(tokens) >= 3 else 1
+    features = ["\x1f".join(tokens[i : i + width]) for i in range(len(tokens) - width + 1)]
+    if not features:
+        return 0
+
+    weights = [0] * 64
+    for feature in features:
+        value = int.from_bytes(
+            hashlib.blake2b(feature.encode("utf-8"), digest_size=8).digest(), "big"
+        )
+        for bit in range(64):
+            weights[bit] += 1 if value & (1 << bit) else -1
+    return sum(1 << bit for bit, weight in enumerate(weights) if weight >= 0)
+
+
+def _fuzzy_candidate_indices(candidates: list[CodeBlock]) -> dict[int, set[int]]:
+    """Build bounded candidate sets using four SimHash bands instead of all pairs."""
+    buckets: dict[tuple[str, int, int], list[int]] = defaultdict(list)
+    band_hits: dict[tuple[int, int], int] = defaultdict(int)
+    result: dict[int, set[int]] = defaultdict(set)
+
+    for index, block in enumerate(candidates):
+        fingerprint = _fuzzy_simhash(block.text)
+        language = Path(block.file).suffix.lower()
+        for band in range(4):
+            key = (language, band, (fingerprint >> (band * 16)) & 0xFFFF)
+            for other_index in buckets[key]:
+                if abs(candidates[other_index].line_count - block.line_count) <= 4:
+                    band_hits[(other_index, index)] += 1
+            buckets[key].append(index)
+
+    # One matching 16-bit band produces too many random candidates in large
+    # repositories. Near-identical source normally shares at least two bands.
+    for (left, right), matching_bands in band_hits.items():
+        if matching_bands >= 2:
+            result[left].add(right)
+
+    return result
 
 
 def find_fuzzy_groups(
@@ -40,6 +144,7 @@ def find_fuzzy_groups(
         return []
 
     candidates.sort(key=lambda block: (block.line_count, block.file, block.line_start))
+    candidate_indices = _fuzzy_candidate_indices(candidates)
     used: set[tuple[str, int]] = set()
     groups: list[DuplicateGroup] = []
 
@@ -49,13 +154,16 @@ def find_fuzzy_groups(
             continue
 
         cluster = [anchor]
-        for other in candidates[index + 1 :]:
+        for other_index in sorted(candidate_indices.get(index, ())):
+            other = candidates[other_index]
             other_key = (other.file, other.line_start)
             if other_key in used:
                 continue
-            if abs(other.line_count - anchor.line_count) > 4:
-                break
             if other.file == anchor.file and other.line_start == anchor.line_start:
+                continue
+            if other.file == anchor.file and not (
+                other.line_end < anchor.line_start or other.line_start > anchor.line_end
+            ):
                 continue
             similarity = sequence_similarity(anchor.text, other.text)
             if similarity < min_similarity:
@@ -116,8 +224,15 @@ def _finalize_duplicate_groups(
     covered = _covered_locations(groups)
     if config.fuzzy_enabled:
         groups.extend(find_fuzzy_groups(all_blocks, config, covered))
-    covered = _covered_locations(groups)
     groups.extend(find_near_duplicate_groups(all_blocks, config))
+    if getattr(config, "semantic_enabled", False):
+        groups.extend(
+            find_semantic_groups(
+                all_blocks,
+                threshold=config.semantic_threshold,
+                model_name=config.semantic_model,
+            )
+        )
     if getattr(config, "intent_enabled", False):
         groups.extend(find_intent_groups(all_blocks, config))
     groups.sort(key=lambda g: g.impact_score, reverse=True)
@@ -263,45 +378,100 @@ def find_near_duplicate_groups(
     return groups
 
 
-def find_semantic_groups(blocks: list[CodeBlock], threshold: float = 0.80) -> list[DuplicateGroup]:
+def find_semantic_groups(
+    blocks: list[CodeBlock],
+    threshold: float = 0.80,
+    model_name: str = "microsoft/codebert-base",
+) -> list[DuplicateGroup]:
     """Tier 4: Semantic duplicate detection via embeddings."""
     try:
         from redup.core.semantic import SemanticDetector
     except ImportError:
         return []
 
-    detector = SemanticDetector(threshold=threshold)
+    detector = SemanticDetector(model_name=model_name, threshold=threshold)
 
     # Only function-level blocks (skip sliding window noise)
     func_blocks = [b for b in blocks if b.function_name]
     if len(func_blocks) < 2:
         return []
 
-    matches = detector.find_semantic_duplicates_fast(func_blocks)
+    try:
+        matches = detector.find_semantic_duplicates_fast(func_blocks)
+    except ImportError as exc:
+        print(f"⚠️  Semantic detection unavailable: {exc}")
+        return []
+    except Exception as exc:
+        print(f"⚠️  Semantic detection failed: {exc}")
+        return []
+
+    adjacency: dict[tuple[str, int], set[tuple[str, int]]] = defaultdict(set)
+    blocks_by_location: dict[tuple[str, int], CodeBlock] = {}
+    scores: dict[frozenset[tuple[str, int]], float] = {}
+    models: dict[frozenset[tuple[str, int]], str] = {}
+    for match in matches:
+        left = (match.block_a.file, match.block_a.line_start)
+        right = (match.block_b.file, match.block_b.line_start)
+        if left == right:
+            continue
+        adjacency[left].add(right)
+        adjacency[right].add(left)
+        blocks_by_location[left] = match.block_a
+        blocks_by_location[right] = match.block_b
+        pair = frozenset((left, right))
+        scores[pair] = match.similarity
+        models[pair] = match.model
+
+    components: list[list[tuple[str, int]]] = []
+    visited: set[tuple[str, int]] = set()
+    for start in sorted(adjacency):
+        if start in visited:
+            continue
+        stack = [start]
+        component: list[tuple[str, int]] = []
+        while stack:
+            location = stack.pop()
+            if location in visited:
+                continue
+            visited.add(location)
+            component.append(location)
+            stack.extend(adjacency[location] - visited)
+        if len(component) >= 2:
+            components.append(sorted(component))
 
     groups: list[DuplicateGroup] = []
-    for i, match in enumerate(matches):
+    for i, component in enumerate(components):
+        component_set = set(component)
+        component_scores = [
+            score for pair, score in scores.items() if pair.issubset(component_set)
+        ]
+        component_models = [
+            model for pair, model in models.items() if pair.issubset(component_set)
+        ]
+        component_blocks = [blocks_by_location[location] for location in component]
+        fingerprint = hashlib.sha256(repr(component).encode("utf-8")).hexdigest()[:16]
         groups.append(
             DuplicateGroup(
                 id=f"M{i + 1:04d}",
                 duplicate_type=DuplicateType.SEMANTIC,
                 fragments=[
                     DuplicateFragment(
-                        file=match.block_a.file,
-                        line_start=match.block_a.line_start,
-                        line_end=match.block_a.line_end,
-                        text=match.block_a.text,
-                        function_name=match.block_a.function_name,
-                    ),
-                    DuplicateFragment(
-                        file=match.block_b.file,
-                        line_start=match.block_b.line_start,
-                        line_end=match.block_b.line_end,
-                        text=match.block_b.text,
-                        function_name=match.block_b.function_name,
-                    ),
+                        file=block.file,
+                        line_start=block.line_start,
+                        line_end=block.line_end,
+                        text=block.text,
+                        function_name=block.function_name,
+                        class_name=block.class_name,
+                    )
+                    for block in component_blocks
                 ],
-                similarity_score=match.similarity,
+                similarity_score=sum(component_scores) / len(component_scores),
+                normalized_hash=f"semantic:{fingerprint}",
+                normalized_name=component_blocks[0].function_name,
+                metadata={
+                    "model": component_models[0],
+                    "matched_pairs": len(component_scores),
+                },
             )
         )
 

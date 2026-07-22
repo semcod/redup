@@ -7,7 +7,7 @@ from typing import Any
 import typer
 
 from redup.cli_app.config_builder import build_config, build_config_with_file_support
-from redup.cli_app.scan_helpers import apply_fuzzy_similarity, print_scan_header, print_scan_summary
+from redup.cli_app.scan_helpers import print_scan_header, print_scan_summary
 from redup.core.config import create_sample_redup_toml
 from redup.core.pipeline import analyze, analyze_optimized
 
@@ -142,6 +142,21 @@ def scan_command(
     fuzzy_threshold: float = typer.Option(
         0.8, "--fuzzy-threshold", help="Fuzzy similarity threshold (0.0-1.0)."
     ),
+    semantic: bool | None = typer.Option(
+        None,
+        "--semantic/--no-semantic",
+        help="Enable embedding-based semantic detection (requires reDUP[semantic]).",
+    ),
+    semantic_threshold: float = typer.Option(
+        0.80,
+        "--semantic-threshold",
+        help="Semantic similarity threshold (0.0-1.0).",
+    ),
+    semantic_model: str | None = typer.Option(
+        None,
+        "--semantic-model",
+        help="Sentence Transformers model used for semantic detection.",
+    ),
     intent: bool = typer.Option(
         False,
         "--intent",
@@ -193,6 +208,7 @@ def scan_command(
             max_cache_mb,
             changed_only,
             fuzzy,
+            semantic,
             intent,
         ]
     ):
@@ -210,6 +226,9 @@ def scan_command(
             functions_only,
             fuzzy,
             fuzzy_threshold,
+            semantic,
+            semantic_threshold,
+            semantic_model,
             intent,
             intent_threshold,
             intent_manifest,
@@ -230,10 +249,6 @@ def scan_command(
         dup_map = analyze_optimized(config, use_memory_cache=memory_cache, max_cache_mb=max_cache_mb)
     else:
         dup_map = analyze(config)
-
-    # Apply fuzzy similarity if requested
-    if fuzzy:
-        dup_map = apply_fuzzy_similarity(dup_map, fuzzy_threshold)
 
     # Print summary
     print_scan_summary(dup_map)

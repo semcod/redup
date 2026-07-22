@@ -5,12 +5,12 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.36-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.37-green.svg)](https://pypi.org/project/redup/)
 
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.36-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.37-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![AI Cost](https://img.shields.io/badge/AI%20Cost-$10.17-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-31.6h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fdeep%2Fdeep--v4--pro-lightgrey)
 
 - 🤖 **LLM usage:** $10.1681 (82 commits)
@@ -32,6 +32,8 @@ reDUP scans codebases for duplicated functions, blocks, and structural patterns 
 - **Incremental scan cache** (`--incremental`) for faster repeat runs
 - **Changed-only scan mode** (`--changed-only`) for git-diff focused analysis
 - **Fuzzy near-duplicate matching** via SequenceMatcher / rapidfuzz
+- **Semantic duplicate matching** via optional code embeddings, including cross-language pairs
+- **Declared-intent matching** via optional Intract contracts
 - **Function-level analysis** using Python AST and tree-sitter extraction
 - **Impact scoring** — prioritizes duplicates by `saved_lines × similarity`
 - **Refactoring planner** — generates concrete extract/inline suggestions
@@ -64,19 +66,18 @@ redup-mcp --transport http --port 8000
 - `suggest_refactoring` — AI-powered refactoring suggestions
 - `project_info` — Project metadata
 
-### 🌐 Universal Fuzzy Similarity Detection
+### 🌐 Cross-language Semantic Similarity Detection
 
-Cross-language duplicate detection across all 35+ supported languages:
+Embedding-based matching finds related functions even when their syntax and implementation differ:
 
 ```bash
-# Detect similar code across languages
-redup scan . --fuzzy --fuzzy-threshold 0.65
+# Install the optional model runtime, then scan selected languages
+pip install 'redup[semantic,ast]'
+redup scan . --semantic --semantic-threshold 0.80 --ext .py,.js,.ts,.php
 ```
 
-**Cross-Language Matching:**
-- JavaScript ↔ Python functions: ~65% similarity
-- Docker ↔ YAML configs: ~40% similarity
-- Auth patterns across languages: ~70% similarity
+`--fuzzy` remains a faster source-text similarity pass for near-identical implementations.
+Use `--intent` with Intract contracts when intent must be explicit and auditable rather than inferred.
 
 **Supported Patterns:**
 - Functions, classes, API endpoints
@@ -112,28 +113,23 @@ ts_extractor/
 
 ## New Features (v0.5.0+)
 
-### 🌐 Universal Fuzzy Similarity Detection
+### 🌐 Semantic Similarity Detection
 
-Cross-language fuzzy matching for detecting similar code patterns across **all 35+ supported languages**:
+Cross-language matching for functions whose implementation syntax differs:
 
 ```bash
-# Detect similar patterns across different languages
-redup scan . --fuzzy --ext .py,.js,.ts
+# Detect similar behavior across different languages
+redup scan . --semantic --semantic-threshold 0.80 --ext .py,.js,.ts
 
-# Cross-project comparison with fuzzy matching
-redup compare ./project-a ./project-b --fuzzy --threshold 0.65
+# Cross-project semantic comparison
+redup compare ./project-a ./project-b --semantic --threshold 0.75
 ```
 
 **Features:**
-- Detects similar functions, API endpoints, validation logic across languages (e.g., JS ↔ Python)
-- Pattern recognition: authentication, error handling, database queries, web components
-- Language-agnostic signature generation with identifier normalization
-- Complexity scoring (0.0-1.0) for each detected pattern
-
-**Example patterns detected:**
-- Express.js route handler ↔ Flask endpoint (70% similarity)
-- Docker Compose service ↔ Kubernetes deployment (40% similarity)
-- Auth middleware patterns across frameworks
+- Adds `SEMANTIC` groups to normal scan reports
+- Supports a configurable Sentence Transformers code model
+- Keeps source-text fuzzy matching separate for predictable thresholds
+- Leaves auditable intent equivalence to explicit Intract contracts
 
 ### 🧩 Modular ts_extractor Architecture
 
@@ -201,6 +197,8 @@ pip install redup[all]       # Everything
 pip install redup[fuzzy]     # rapidfuzz for better similarity matching
 pip install redup[ast]       # tree-sitter for multi-language AST
 pip install redup[lsh]       # datasketch for LSH near-duplicate detection
+pip install redup[semantic]  # sentence-transformers for semantic scan matches
+pip install redup[intent]    # Intract for declared-intent duplicate detection
 pip install redup[compare]   # networkx for cross-project community detection
 pip install redup[llm]       # litellm for LLM-powered refactoring plans
 ```
@@ -227,6 +225,12 @@ redup scan . --changed-only --base-ref origin/main --incremental
 
 # Multi-language scanning with 35+ supported languages
 redup scan . --ext ".py,.js,.ts,.go,.rs,.java,.rb,.php,.html,.css,.sql,.lua,.scala,.kt,.swift,.m,.json,.yaml,.toml,.xml,.md,.graphql,.dockerfile,.svelte,.vue"
+
+# Cross-language / different-implementation matching (optional model dependency)
+redup scan . --semantic --semantic-threshold 0.80 --ext ".py,.js,.ts,.php,.go,.rs,.java"
+
+# Auditable same-intent matching from Intract contracts
+redup scan . --intent --intent-manifest intent.yaml
 
 # CI gate with thresholds
 redup check . --max-groups 10 --max-lines 100

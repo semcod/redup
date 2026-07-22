@@ -110,6 +110,7 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
 
     scan_config = config.get("scan", {})
     lsh_config = config.get("lsh", {})
+    semantic_config = config.get("semantic", {})
 
     return ScanConfig(
         root=path,
@@ -120,6 +121,9 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
         lsh_enabled=lsh_config.get("enabled", True),
         lsh_min_lines=lsh_config.get("min_lines", 12),
         lsh_threshold=lsh_config.get("threshold", 0.8),
+        semantic_enabled=semantic_config.get("enabled", False),
+        semantic_threshold=semantic_config.get("threshold", 0.80),
+        semantic_model=semantic_config.get("model", "microsoft/codebert-base"),
     )
 
 
@@ -150,6 +154,13 @@ enabled = true
 min_lines = 12
 # Similarity threshold for LSH (0.0-1.0)
 threshold = 0.8
+
+[semantic]
+# Embedding-based matching can find similar behavior across languages and implementations.
+# It is opt-in because it requires `pip install 'redup[semantic]'` and a model download.
+enabled = false
+threshold = 0.80
+model = "microsoft/codebert-base"
 
 [check]
 # CI gate thresholds

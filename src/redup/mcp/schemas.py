@@ -58,6 +58,20 @@ SCAN_PROPERTIES = {
         "default": 0.8,
         "description": "Fuzzy similarity threshold",
     },
+    "semantic": {
+        "type": "boolean",
+        "default": False,
+        "description": "Enable embedding-based semantic duplicate detection",
+    },
+    "semantic_threshold": {
+        "type": "number",
+        "default": 0.8,
+        "description": "Minimum similarity for semantic duplicate groups",
+    },
+    "semantic_model": {
+        "type": "string",
+        "description": "Sentence Transformers model used for semantic detection",
+    },
     "include_snippets": {
         "type": "boolean",
         "default": False,

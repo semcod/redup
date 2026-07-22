@@ -8,6 +8,7 @@ from pathlib import Path
 
 from redup.core.models import ScanConfig
 from redup.core.pipeline import analyze
+from redup.mcp.handlers import _build_scan_config
 from redup.mcp_server import handle_request
 from redup.reporters.json_reporter import to_json
 
@@ -96,6 +97,21 @@ def test_initialize_and_tools_list() -> None:
         "suggest_refactoring",
         "project_info",
     } <= tool_names
+
+
+def test_mcp_scan_config_accepts_semantic_options(tmp_path: Path) -> None:
+    config = _build_scan_config(
+        tmp_path,
+        {
+            "semantic": True,
+            "semantic_threshold": 0.74,
+            "semantic_model": "example/code-model",
+        },
+    )
+
+    assert config.semantic_enabled is True
+    assert config.semantic_threshold == 0.74
+    assert config.semantic_model == "example/code-model"
 
 
 def test_analyze_project_returns_json_report() -> None:

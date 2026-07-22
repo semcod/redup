@@ -98,6 +98,7 @@ class ScanConfig:
             ".next",
             ".nuxt",
             ".vuepress/dist",
+            "_site",
             # Java/Maven/Gradle
             "target",
             "build",
@@ -183,6 +184,9 @@ class ScanConfig:
     functions_only: bool = True
     fuzzy_enabled: bool = False
     fuzzy_threshold: float = 0.8
+    semantic_enabled: bool = False
+    semantic_threshold: float = 0.80
+    semantic_model: str = "microsoft/codebert-base"
     intent_enabled: bool = False
     intent_threshold: float = 0.84
     intent_manifest_path: Path | None = None

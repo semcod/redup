@@ -13,6 +13,7 @@ warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 
 # Import refactored modules
+from redup.cli_app.intract_commands import intract_command  # noqa: E402
 from redup.cli_app.quality_commands import app as quality_app  # noqa: E402
 from redup.cli_app.scan_commands import (  # noqa: E402
     check_command,
@@ -21,7 +22,6 @@ from redup.cli_app.scan_commands import (  # noqa: E402
     info_command,
     scan_command,
 )
-from redup.cli_app.intract_commands import intract_command  # noqa: E402
 
 app = typer.Typer(
     name="redup",
@@ -130,6 +130,21 @@ def scan(
         "--fuzzy-threshold",
         help="Fuzzy similarity threshold (0.0-1.0).",
     ),
+    semantic: bool | None = typer.Option(
+        None,
+        "--semantic/--no-semantic",
+        help="Enable semantic similarity across implementations (requires redup[semantic]).",
+    ),
+    semantic_threshold: float = typer.Option(
+        0.80,
+        "--semantic-threshold",
+        help="Semantic similarity threshold (0.0-1.0).",
+    ),
+    semantic_model: str | None = typer.Option(
+        None,
+        "--semantic-model",
+        help="Sentence Transformers model used for semantic detection.",
+    ),
     intent: bool = typer.Option(
         False,
         "--intent",
@@ -176,6 +191,9 @@ def scan(
         include_untracked,
         fuzzy,
         fuzzy_threshold,
+        semantic,
+        semantic_threshold,
+        semantic_model,
         intent,
         intent_threshold,
         intent_manifest,

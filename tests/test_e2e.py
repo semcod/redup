@@ -329,6 +329,51 @@ class TestCLIOptions:
 
         assert config.enable_cache is True
 
+    def test_semantic_options_reach_scan_config(self, tmp_path: Path):
+        from redup.cli_app.config_builder import build_config_with_file_support
+
+        config = build_config_with_file_support(
+            tmp_path,
+            extensions=".py,.js",
+            min_lines=5,
+            min_similarity=0.9,
+            include_tests=False,
+            semantic=True,
+            semantic_threshold=0.72,
+            semantic_model="example/code-model",
+        )
+
+        assert config.semantic_enabled is True
+        assert config.semantic_threshold == 0.72
+        assert config.semantic_model == "example/code-model"
+
+    def test_semantic_scan_is_graceful_without_optional_runtime(self, tmp_path, monkeypatch):
+        (tmp_path / "a.py").write_text("def first():\n    return 1\n", encoding="utf-8")
+        (tmp_path / "b.py").write_text("def second():\n    return 2\n", encoding="utf-8")
+
+        def missing_runtime(self, blocks):
+            raise ImportError("install redup[semantic]")
+
+        monkeypatch.setattr(
+            "redup.core.semantic.SemanticDetector.find_semantic_duplicates_fast",
+            missing_runtime,
+        )
+
+        result = runner.invoke(
+            app,
+            [
+                "scan",
+                str(tmp_path),
+                "--semantic",
+                "--semantic-threshold",
+                "0.75",
+                "--no-memory-cache",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert "Semantic detection unavailable" in result.output
+
     def test_changed_only_scans_modified_files(self, tmp_path: Path):
         git_check = subprocess.run(["git", "--version"], capture_output=True, text=True)
         if git_check.returncode != 0:

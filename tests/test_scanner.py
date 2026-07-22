@@ -25,6 +25,21 @@ def test_should_not_exclude_normal():
     assert not _should_exclude(Path("src/main.py"), (".git", "venv"))
 
 
+def test_default_config_excludes_generated_site(tmp_path):
+    from redup.core.models import ScanConfig
+    from redup.core.scanner import scan_project
+
+    (tmp_path / "source.py").write_text("def source():\n    return 1\n", encoding="utf-8")
+    generated = tmp_path / "examples" / "_site"
+    generated.mkdir(parents=True)
+    (generated / "source.py").write_text("def source():\n    return 1\n", encoding="utf-8")
+
+    files, stats = scan_project(ScanConfig(root=tmp_path), function_level_only=True)
+
+    assert stats.files_scanned == 1
+    assert [scanned.path for scanned in files] == ["source.py"]
+
+
 def test_is_test_file():
     assert _is_test_file(Path("tests/test_foo.py"))
     assert _is_test_file(Path("src/foo_test.py"))
