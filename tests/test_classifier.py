@@ -33,6 +33,18 @@ def test_classifies_package_copied_into_web_runtime_as_generated():
     assert result["actionability"] == "generated"
 
 
+def test_classifies_shared_behavior_in_standalone_public_assets_for_review():
+    result = classify_duplicate_group(
+        _group(
+            "relcom/central-node/public/live-stream.js",
+            "relcom/central-node/public/relcom.js",
+        )
+    )
+
+    assert result["provenance"] == "standalone_assets"
+    assert result["actionability"] == "review"
+
+
 def test_classifies_nested_deployment_mirror_as_generated():
     result = classify_duplicate_group(
         _group("net-user/sites/shop/app.py", "pc1/net-user/sites/shop/app.py")

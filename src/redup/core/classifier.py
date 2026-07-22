@@ -8,6 +8,7 @@ from pathlib import PurePosixPath
 from redup.core.models import DuplicateGroup, DuplicateType
 
 _PUBLISHED_SEGMENTS = {"assets", "build", "dist", "httpdocs", "public", "static", "www"}
+_PUBLIC_ASSET_SEGMENTS = {"assets", "httpdocs", "public", "static", "www"}
 _COMPONENT_CONTAINERS = {"examples"}
 _CONTROL_FLOW = re.compile(r"\b(?:case|catch|else|except|for|if|match|switch|try|while)\b")
 _CALL = re.compile(r"\b([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*\(")
@@ -151,6 +152,12 @@ def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:
             "provenance": "published_copy",
             "actionability": "generated",
             "reason": "identical asset appears in a published/static location",
+        }
+    if exact and all(_PUBLIC_ASSET_SEGMENTS.intersection(path) for path in paths):
+        return {
+            "provenance": "standalone_assets",
+            "actionability": "review",
+            "reason": "independently served browser assets intentionally inline shared behavior",
         }
     if _same_relative_path_across_roots(paths):
         return {
