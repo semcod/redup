@@ -156,6 +156,44 @@ def test_classifies_lazy_facades_from_one_module_for_review():
     assert result["actionability"] == "review"
 
 
+def test_ignores_code_examples_in_wrapper_docstrings():
+    group = DuplicateGroup(
+        id="G1",
+        duplicate_type=DuplicateType.STRUCTURAL,
+        fragments=[
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=1,
+                line_end=10,
+                function_name="command",
+                text=(
+                    'def command(uri):\n    """Example::\n'
+                    "        def sample():\n            return True\n"
+                    '    """\n    from runtime.routes import uri_command\n'
+                    "    return uri_command(uri)"
+                ),
+            ),
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=12,
+                line_end=20,
+                function_name="handler",
+                text=(
+                    'def handler(uri):\n    """Example::\n'
+                    "        def sample():\n            return False\n"
+                    '    """\n    from runtime.routes import uri_handler\n'
+                    "    return uri_handler(uri)"
+                ),
+            ),
+        ],
+    )
+
+    result = classify_duplicate_group(group)
+
+    assert result["provenance"] == "delegating_wrappers"
+    assert result["actionability"] == "review"
+
+
 def test_keeps_small_functions_with_control_flow_actionable():
     group = DuplicateGroup(
         id="G1",
