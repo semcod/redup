@@ -8,6 +8,8 @@ from pathlib import PurePosixPath
 from redup.core.models import DuplicateGroup, DuplicateType
 
 _PUBLISHED_SEGMENTS = {"assets", "build", "dist", "httpdocs", "public", "static", "www"}
+_CONTROL_FLOW = re.compile(r"\b(?:case|catch|else|except|for|if|match|switch|try|while)\b")
+_CALL = re.compile(r"\b([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*\(")
 
 
 def _parts(path: str) -> tuple[str, ...]:
@@ -55,6 +57,31 @@ def _shared_family_prefix(roots: set[str]) -> bool:
     return prefix_length >= 2
 
 
+def _is_delegating_wrapper_group(group: DuplicateGroup) -> bool:
+    """Recognize small public wrappers that intentionally share call structure.
+
+    This check is deliberately conservative and language-neutral: every fragment
+    must be short, have a distinct name, contain one return, avoid control flow,
+    and delegate to at least one common callee.
+    """
+    if len(group.fragments) < 2 or any(not fragment.text for fragment in group.fragments):
+        return False
+    names = [fragment.function_name for fragment in group.fragments]
+    if any(not name for name in names) or len(set(names)) != len(names):
+        return False
+
+    shared_calls: set[str] | None = None
+    for fragment, name in zip(group.fragments, names, strict=True):
+        if fragment.line_count > 20 or _CONTROL_FLOW.search(fragment.text):
+            return False
+        if len(re.findall(r"\breturn\b", fragment.text)) != 1:
+            return False
+        calls = set(_CALL.findall(fragment.text))
+        calls.discard(name)
+        shared_calls = calls if shared_calls is None else shared_calls & calls
+    return bool(shared_calls)
+
+
 def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:
     """Return conservative provenance and actionability metadata for a group."""
     paths = [_parts(fragment.file) for fragment in group.fragments]
@@ -63,6 +90,12 @@ def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:
     exact = group.duplicate_type == DuplicateType.EXACT
 
     if len(files) == 1:
+        if _is_delegating_wrapper_group(group):
+            return {
+                "provenance": "delegating_wrappers",
+                "actionability": "review",
+                "reason": "distinct public APIs intentionally share a thin delegation pattern",
+            }
         return {
             "provenance": "same_file",
             "actionability": "refactor",

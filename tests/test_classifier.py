@@ -66,6 +66,72 @@ def test_classifies_same_component_as_actionable():
     assert group.metadata["model"] == "existing-evidence"
 
 
+def test_classifies_distinct_thin_wrappers_for_review():
+    group = DuplicateGroup(
+        id="G1",
+        duplicate_type=DuplicateType.STRUCTURAL,
+        fragments=[
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=1,
+                line_end=5,
+                function_name="list_routes",
+                text='def list_routes(registry):\n    return project(registry, result="routes")',
+            ),
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=8,
+                line_end=12,
+                function_name="list_tools",
+                text='def list_tools(registry):\n    return project(registry, result="tools")',
+            ),
+        ],
+    )
+
+    result = classify_duplicate_group(group)
+
+    assert result["provenance"] == "delegating_wrappers"
+    assert result["actionability"] == "review"
+
+
+def test_keeps_small_functions_with_control_flow_actionable():
+    group = DuplicateGroup(
+        id="G1",
+        duplicate_type=DuplicateType.STRUCTURAL,
+        fragments=[
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=1,
+                line_end=6,
+                function_name="route_a",
+                text=(
+                    "def route_a(value):\n"
+                    "    if value:\n"
+                    "        return project(value)\n"
+                    "    return {}"
+                ),
+            ),
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=8,
+                line_end=13,
+                function_name="route_b",
+                text=(
+                    "def route_b(value):\n"
+                    "    if value:\n"
+                    "        return project(value)\n"
+                    "    return {}"
+                ),
+            ),
+        ],
+    )
+
+    result = classify_duplicate_group(group)
+
+    assert result["provenance"] == "same_file"
+    assert result["actionability"] == "refactor"
+
+
 def test_duplication_map_exposes_classification_counts():
     groups = [
         _group("pkg/a.py", "pkg/b.py"),
