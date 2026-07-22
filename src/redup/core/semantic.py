@@ -7,6 +7,7 @@ like CodeBERT to find functionally similar code despite different implementation
 from __future__ import annotations
 
 import re
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -57,11 +58,21 @@ _GENERIC_IDENTIFIERS = {
     "for",
     "function",
     "if",
+    "impl",
     "in",
+    "init",
+    "initializer",
     "let",
+    "main",
+    "method",
     "none",
     "null",
+    "handler",
+    "callback",
+    "arrow",
+    "function",
     "return",
+    "run",
     "self",
     "this",
     "true",
@@ -173,9 +184,18 @@ def intent_profile_similarity(left: dict[str, Any], right: dict[str, Any]) -> fl
     for field, weight in weights.items():
         left_terms = set(left[field])
         right_terms = set(right[field])
-        union = left_terms.union(right_terms)
-        if union:
-            score += weight * len(left_terms.intersection(right_terms)) / len(union)
+        denominator = len(left_terms) + len(right_terms)
+        if denominator:
+            # Sørensen-Dice rewards a compact shared intent vocabulary without
+            # penalizing language-specific implementation details as strongly
+            # as Jaccard similarity.
+            score += weight * 2 * len(left_terms.intersection(right_terms)) / denominator
+    shared_purpose = set(left["purpose"]).intersection(right["purpose"])
+    shared_operations = set(left["operations"]).intersection(right["operations"])
+    if len(shared_purpose) >= 2:
+        score += 0.10
+    if len(shared_operations) >= 2:
+        score += 0.05
     return min(score, 1.0)
 
 
@@ -225,6 +245,94 @@ class SemanticDetector:
                     "Install with: pip install redup[semantic]"
                 ) from exc
 
+    def _find_intent_profile_duplicates(
+        self,
+        blocks: list[CodeBlock],
+        *,
+        top_k: int = 10,
+    ) -> list[SemanticMatch]:
+        """Find explainable semantic candidates without transformer dependencies.
+
+        Candidate pairs share at least one non-ubiquitous purpose, call or data
+        term. The final score uses the language-neutral intent profile, so the
+        fallback can match different implementations and languages without
+        downloading a GPU/ML runtime.
+        """
+        if len(blocks) < 2:
+            return []
+
+        profiles = [build_intent_profile(block) for block in blocks]
+        postings: dict[str, list[int]] = defaultdict(list)
+        for index, profile in enumerate(profiles):
+            block = blocks[index]
+            if block.line_end - block.line_start + 1 < 3 or not profile["purpose"]:
+                continue
+            anchors = set(profile["purpose"] + profile["calls"] + profile["data"])
+            for anchor in anchors:
+                postings[anchor].append(index)
+
+        # Avoid quadratic explosions from generic project-wide vocabulary.
+        max_postings = max(24, min(96, len(blocks) // 20))
+        candidates: set[tuple[int, int]] = set()
+        for indices in postings.values():
+            if len(indices) < 2 or len(indices) > max_postings:
+                continue
+            for offset, left in enumerate(indices[:-1]):
+                for right in indices[offset + 1 :]:
+                    candidates.add((left, right))
+
+        # The explainable profile is intentionally sparse, so its calibrated
+        # threshold is lower than an embedding cosine threshold.
+        profile_threshold = max(0.70, min(0.82, self.threshold - 0.10))
+        ranked: list[SemanticMatch] = []
+        for left, right in candidates:
+            shared_purpose = set(profiles[left]["purpose"]).intersection(
+                profiles[right]["purpose"]
+            )
+            shared_support = (
+                set(profiles[left]["calls"] + profiles[left]["data"])
+                .intersection(profiles[right]["calls"] + profiles[right]["data"])
+            )
+            if not shared_purpose or (
+                len(shared_purpose) == 1 and len(shared_support) < 2
+            ):
+                continue
+            score = intent_profile_similarity(profiles[left], profiles[right])
+            if score < profile_threshold:
+                continue
+            ranked.append(
+                SemanticMatch(
+                    block_a=blocks[left],
+                    block_b=blocks[right],
+                    similarity=score,
+                    model="redup/intent-profile-v1",
+                    evidence=_match_evidence(profiles[left], profiles[right]),
+                )
+            )
+
+        ranked.sort(key=lambda match: match.similarity, reverse=True)
+        retained: list[SemanticMatch] = []
+        neighbor_counts: dict[tuple[str, int], int] = defaultdict(int)
+        # Connected-component grouping is deliberately used by the embedding
+        # engine, but weak lexical links can otherwise form giant transitive
+        # chains. Greedy one-to-one pairs keep fallback findings reviewable.
+        neighbor_limit = 1
+        max_matches = min(200, max(20, len(blocks) // 25))
+        for match in ranked:
+            left_key = (match.block_a.file, match.block_a.line_start)
+            right_key = (match.block_b.file, match.block_b.line_start)
+            if (
+                neighbor_counts[left_key] >= neighbor_limit
+                or neighbor_counts[right_key] >= neighbor_limit
+            ):
+                continue
+            retained.append(match)
+            neighbor_counts[left_key] += 1
+            neighbor_counts[right_key] += 1
+            if len(retained) >= max_matches:
+                break
+        return retained
+
     def find_semantic_duplicates(
         self,
         blocks: list[CodeBlock],
@@ -244,7 +352,10 @@ class SemanticDetector:
         Returns:
             List of semantic matches sorted by similarity (highest first)
         """
-        self._ensure_model()
+        try:
+            self._ensure_model()
+        except ImportError:
+            return self._find_intent_profile_duplicates(blocks)
         from sentence_transformers import util
 
         if len(blocks) < 2:
@@ -311,7 +422,10 @@ class SemanticDetector:
         Returns:
             List of semantic matches sorted by similarity (highest first)
         """
-        self._ensure_model()
+        try:
+            self._ensure_model()
+        except ImportError:
+            return self._find_intent_profile_duplicates(blocks, top_k=top_k)
         from sentence_transformers import util
 
         if len(blocks) < 2:

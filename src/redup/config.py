@@ -18,6 +18,58 @@ import os
 from pathlib import Path
 from typing import Any
 
+
+# Keep the zero-config scan focused on source code while covering every
+# programming-language family supported by the bundled extractors. Data and
+# prose formats (JSON, YAML, Markdown) stay opt-in because generated fixtures
+# would otherwise dominate repository-wide reports.
+DEFAULT_CODE_EXTENSIONS: tuple[str, ...] = (
+    ".py",
+    ".pyw",
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".cjs",
+    ".ts",
+    ".tsx",
+    ".mts",
+    ".php",
+    ".phtml",
+    ".go",
+    ".rs",
+    ".java",
+    ".c",
+    ".h",
+    ".cpp",
+    ".cc",
+    ".cxx",
+    ".hpp",
+    ".cs",
+    ".scala",
+    ".kt",
+    ".swift",
+    ".m",
+    ".mm",
+    ".lua",
+    ".rb",
+    ".rake",
+    ".gemspec",
+    ".sql",
+    ".sh",
+    ".bash",
+    ".zsh",
+    ".fish",
+    ".html",
+    ".htm",
+    ".xhtml",
+    ".css",
+    ".scss",
+    ".sass",
+    ".less",
+    ".svelte",
+    ".vue",
+)
+
 # Try to load .env file if python-dotenv is available
 try:
     from dotenv import load_dotenv
@@ -47,7 +99,7 @@ class RedupConfig:
     # Scan settings
     DEFAULT_MIN_LINES: int = 3
     DEFAULT_MIN_SIMILARITY: float = 0.85
-    DEFAULT_EXTENSIONS: str = ".py"
+    DEFAULT_EXTENSIONS: str = ",".join(DEFAULT_CODE_EXTENSIONS)
     DEFAULT_INCLUDE_TESTS: bool = False
 
     # Performance settings

@@ -115,5 +115,89 @@ def test_intent_profiles_align_different_language_cart_implementations():
     assert "total" in profiles[0]["purpose"]
     assert "total" in profiles[1]["purpose"]
     assert "language: php" in semantic_document(blocks[2])
-    assert intent_profile_similarity(profiles[0], profiles[1]) >= 0.35
-    assert intent_profile_similarity(profiles[1], profiles[2]) >= 0.35
+    assert intent_profile_similarity(profiles[0], profiles[1]) >= 0.70
+    assert intent_profile_similarity(profiles[1], profiles[2]) >= 0.70
+
+
+def test_generic_entry_point_names_do_not_become_intent():
+    block = CodeBlock(
+        file="cli.py",
+        line_start=1,
+        line_end=3,
+        text="def main():\n    return run()\n",
+        function_name="main",
+    )
+
+    assert build_intent_profile(block)["purpose"] == []
+
+
+def test_semantic_search_falls_back_to_polyglot_intent_profiles(monkeypatch):
+    blocks = [
+        CodeBlock(
+            file="cart.py",
+            line_start=1,
+            line_end=4,
+            text=(
+                "def calculate_order_total(items):\n"
+                "    return sum(item['price'] * item['quantity'] for item in items)\n"
+            ),
+            function_name="calculate_order_total",
+        ),
+        CodeBlock(
+            file="cart.js",
+            line_start=1,
+            line_end=3,
+            text=(
+                "function computeCartAmount(products) {\n"
+                "  return products.reduce((sum, item) => sum + item.price * item.quantity, 0);\n"
+                "}\n"
+            ),
+            function_name="computeCartAmount",
+        ),
+        CodeBlock(
+            file="mail.php",
+            line_start=1,
+            line_end=3,
+            text="function sendWelcomeEmail($user) { return mail($user, 'welcome'); }\n",
+            function_name="sendWelcomeEmail",
+        ),
+    ]
+    detector = SemanticDetector(threshold=0.8)
+
+    def missing_model():
+        raise ImportError("optional transformer runtime is absent")
+
+    monkeypatch.setattr(detector, "_ensure_model", missing_model)
+    matches = detector.find_semantic_duplicates_fast(blocks)
+
+    assert len(matches) == 1
+    assert {matches[0].block_a.file, matches[0].block_b.file} == {"cart.py", "cart.js"}
+    assert matches[0].model == "redup/intent-profile-v1"
+    assert matches[0].evidence["intent_similarity"] >= 0.70
+
+
+def test_intent_profile_fallback_does_not_create_transitive_chains(monkeypatch):
+    blocks = [
+        CodeBlock(
+            file=f"module_{index}.py",
+            line_start=1,
+            line_end=3,
+            text="def validate_token(token):\n    if token:\n        return token\n",
+            function_name="validate_token",
+        )
+        for index in range(4)
+    ]
+    detector = SemanticDetector(threshold=0.8)
+
+    def missing_model():
+        raise ImportError("optional transformer runtime is absent")
+
+    monkeypatch.setattr(detector, "_ensure_model", missing_model)
+    matches = detector.find_semantic_duplicates_fast(blocks, top_k=10)
+
+    locations = [
+        (match.block_a.file, match.block_b.file)
+        for match in matches
+    ]
+    assert len(matches) == 2
+    assert len({file for pair in locations for file in pair}) == 4

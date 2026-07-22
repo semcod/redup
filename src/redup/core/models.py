@@ -7,6 +7,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+from redup.config import DEFAULT_CODE_EXTENSIONS
+
 
 class DuplicateType(str, Enum):
     """How the duplicate was detected."""
@@ -41,7 +43,7 @@ class ScanConfig:
     """Configuration for project scanning."""
 
     root: Path = field(default_factory=lambda: Path("."))
-    extensions: list[str] = field(default_factory=lambda: [".py"])
+    extensions: list[str] = field(default_factory=lambda: list(DEFAULT_CODE_EXTENSIONS))
     exclude_patterns: list[str] = field(
         default_factory=lambda: [
             # Universal system files (but not normal code files)

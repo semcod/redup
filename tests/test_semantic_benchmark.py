@@ -74,7 +74,7 @@ def test_polyglot_intent_profile_precision_and_recall():
         ),
     ]
     profiles = [build_intent_profile(block) for _, block in cases]
-    threshold = 0.30
+    threshold = 0.60
     true_positive = false_positive = false_negative = 0
 
     for left, right in combinations(range(len(cases)), 2):

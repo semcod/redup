@@ -95,6 +95,17 @@ def test_duplication_map_totals():
 def test_scan_config_defaults():
     config = ScanConfig()
     assert ".py" in config.extensions
+    assert ".js" in config.extensions
+    assert ".ts" in config.extensions
+    assert ".php" in config.extensions
+    assert ".go" in config.extensions
+    assert ".rs" in config.extensions
+    assert ".java" in config.extensions
+    assert ".cpp" in config.extensions
+    assert ".sh" in config.extensions
+    assert ".vue" in config.extensions
+    assert ".json" not in config.extensions
+    assert ".md" not in config.extensions
     assert config.min_block_lines == 3
     assert config.min_similarity == 0.85
     assert not config.include_tests

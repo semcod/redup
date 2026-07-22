@@ -100,7 +100,7 @@ def load_config() -> dict[str, Any]:
 
 def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     """Convert configuration dict to ScanConfig object."""
-    extensions = config.get("extensions", ".py")
+    extensions = config.get("extensions", global_config.DEFAULT_EXTENSIONS)
     if isinstance(extensions, str):
         ext_list = [
             e.strip() if e.startswith(".") else f".{e.strip()}" for e in extensions.split(",")
@@ -139,7 +139,7 @@ def create_sample_redup_toml() -> str:
 
 [scan]
 # File extensions to scan (comma-separated)
-extensions = ".py,.js,.ts,.go,.rs,.java"
+extensions = ".py,.pyw,.js,.jsx,.mjs,.cjs,.ts,.tsx,.mts,.php,.phtml,.go,.rs,.java,.c,.h,.cpp,.cc,.cxx,.hpp,.cs,.scala,.kt,.swift,.m,.mm,.lua,.rb,.rake,.gemspec,.sql,.sh,.bash,.zsh,.fish,.html,.htm,.xhtml,.css,.scss,.sass,.less,.svelte,.vue"
 # Minimum block size in lines to consider as duplicate
 min_lines = 3
 # Minimum similarity score (0.0-1.0) for fuzzy matches
