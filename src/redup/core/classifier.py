@@ -11,6 +11,7 @@ _PUBLISHED_SEGMENTS = {"assets", "build", "dist", "httpdocs", "public", "static"
 _COMPONENT_CONTAINERS = {"examples"}
 _CONTROL_FLOW = re.compile(r"\b(?:case|catch|else|except|for|if|match|switch|try|while)\b")
 _CALL = re.compile(r"\b([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*\(")
+_FROM_IMPORT = re.compile(r"\bfrom\s+([A-Za-z_][\w.]*)\s+import\s+")
 
 
 def _parts(path: str) -> tuple[str, ...]:
@@ -79,6 +80,7 @@ def _is_delegating_wrapper_group(group: DuplicateGroup) -> bool:
         return False
 
     shared_calls: set[str] | None = None
+    shared_imports: set[str] | None = None
     for fragment, name in zip(group.fragments, names, strict=True):
         if fragment.line_count > 20 or _CONTROL_FLOW.search(fragment.text):
             return False
@@ -87,7 +89,9 @@ def _is_delegating_wrapper_group(group: DuplicateGroup) -> bool:
         calls = set(_CALL.findall(fragment.text))
         calls.discard(name)
         shared_calls = calls if shared_calls is None else shared_calls & calls
-    return bool(shared_calls)
+        imports = set(_FROM_IMPORT.findall(fragment.text))
+        shared_imports = imports if shared_imports is None else shared_imports & imports
+    return bool(shared_calls or shared_imports)
 
 
 def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:

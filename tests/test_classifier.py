@@ -120,6 +120,42 @@ def test_classifies_distinct_thin_wrappers_for_review():
     assert result["actionability"] == "review"
 
 
+def test_classifies_lazy_facades_from_one_module_for_review():
+    group = DuplicateGroup(
+        id="G1",
+        duplicate_type=DuplicateType.STRUCTURAL,
+        fragments=[
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=1,
+                line_end=5,
+                function_name="command",
+                text=(
+                    "def command(uri):\n"
+                    "    from runtime.routes import uri_command\n"
+                    "    return uri_command(uri)"
+                ),
+            ),
+            DuplicateFragment(
+                file="runtime/api.py",
+                line_start=8,
+                line_end=12,
+                function_name="handler",
+                text=(
+                    "def handler(uri):\n"
+                    "    from runtime.routes import uri_handler\n"
+                    "    return uri_handler(uri)"
+                ),
+            ),
+        ],
+    )
+
+    result = classify_duplicate_group(group)
+
+    assert result["provenance"] == "delegating_wrappers"
+    assert result["actionability"] == "review"
+
+
 def test_keeps_small_functions_with_control_flow_actionable():
     group = DuplicateGroup(
         id="G1",
