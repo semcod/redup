@@ -249,3 +249,20 @@ def test_toon_single_package_no_dependency_risk():
     )
     output = to_toon(dm)
     assert "DEPENDENCY_RISK" not in output
+
+
+def test_toon_reports_provenance_summary():
+    group = DuplicateGroup(
+        id="P001",
+        duplicate_type=DuplicateType.EXACT,
+        normalized_name="client",
+        metadata={"provenance": "generated_copy", "actionability": "generated"},
+        fragments=[
+            DuplicateFragment(file="pkg/src/client.js", line_start=1, line_end=10),
+            DuplicateFragment(file="pkg/client.js", line_start=1, line_end=10),
+        ],
+    )
+    output = to_toon(DuplicationMap(groups=[group]))
+
+    assert "generated:     1" in output
+    assert "provenance=generated_copy action=generated" in output

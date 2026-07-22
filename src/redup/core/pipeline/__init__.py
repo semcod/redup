@@ -6,6 +6,7 @@ import signal
 import time
 from contextlib import suppress
 
+from redup.core.classifier import classify_duplicate_groups
 from redup.core.models import DuplicateGroup, DuplicationMap, ScanConfig, ScanStats
 
 # Import from submodules
@@ -61,11 +62,12 @@ def _build_duplication_map(
     if start_time is not None:
         stats.scan_time_ms = (time.time() - start_time) * 1000
 
+    classified_groups = classify_duplicate_groups(deduplicate_groups(groups))
     dup_map = DuplicationMap(
         project_path=config.root.as_posix(),
         config=config,
         stats=stats,
-        groups=deduplicate_groups(groups),
+        groups=classified_groups,
     )
     dup_map.suggestions = generate_suggestions(dup_map)
     return dup_map

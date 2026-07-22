@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from redup.core.models import DuplicationMap, DuplicateType
+from redup.core.models import DuplicateType, DuplicationMap
 
 
 def _group_to_dict(group: Any, include_snippets: bool = False) -> dict:
@@ -37,9 +37,10 @@ def _group_to_dict(group: Any, include_snippets: bool = False) -> dict:
         "impact_score": round(group.impact_score, 1),
         "fragments": fragments,
     }
+    if group.metadata:
+        payload["metadata"] = group.metadata
     if group.duplicate_type == DuplicateType.INTENT:
         payload["engine"] = "intract"
-        payload["metadata"] = getattr(group, "metadata", {}) or {}
     return payload
 
 
@@ -72,6 +73,12 @@ def duplication_map_to_dict(
         },
         "summary": {
             "total_groups": dup_map.total_groups,
+            "actionable_groups": dup_map.actionable_groups,
+            "review_groups": dup_map.review_groups,
+            "generated_groups": dup_map.generated_groups,
+            "actionable_saved_lines": dup_map.saved_lines_for("refactor"),
+            "review_saved_lines": dup_map.saved_lines_for("review"),
+            "generated_saved_lines": dup_map.saved_lines_for("generated"),
             "total_fragments": dup_map.total_fragments,
             "total_saved_lines": dup_map.total_saved_lines,
         },

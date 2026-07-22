@@ -300,6 +300,30 @@ class DuplicationMap:
     def total_saved_lines(self) -> int:
         return sum(g.saved_lines_potential for g in self.groups)
 
+    @property
+    def actionable_groups(self) -> int:
+        return sum(
+            1 for group in self.groups if group.metadata.get("actionability") == "refactor"
+        )
+
+    @property
+    def review_groups(self) -> int:
+        return sum(1 for group in self.groups if group.metadata.get("actionability") == "review")
+
+    @property
+    def generated_groups(self) -> int:
+        return sum(
+            1 for group in self.groups if group.metadata.get("actionability") == "generated"
+        )
+
+    def saved_lines_for(self, actionability: str) -> int:
+        """Return recoverable lines for one provenance actionability class."""
+        return sum(
+            group.saved_lines_potential
+            for group in self.groups
+            if group.metadata.get("actionability") == actionability
+        )
+
     def sorted_by_impact(self) -> list[DuplicateGroup]:
         """Return groups sorted by refactoring impact (highest first)."""
         return sorted(self.groups, key=lambda g: g.impact_score, reverse=True)

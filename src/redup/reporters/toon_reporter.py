@@ -7,7 +7,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from redup.core.models import DuplicateGroup, DuplicationMap, DuplicateType
+from redup.core.models import DuplicateGroup, DuplicateType, DuplicationMap
 
 
 def _render_header(dup_map: DuplicationMap) -> list[str]:
@@ -27,6 +27,12 @@ def _render_summary(dup_map: DuplicationMap) -> list[str]:
         f"  files_scanned: {dup_map.stats.files_scanned}",
         f"  total_lines:   {dup_map.stats.total_lines}",
         f"  dup_groups:    {dup_map.total_groups}",
+        f"  actionable:    {dup_map.actionable_groups}",
+        f"  review:        {dup_map.review_groups}",
+        f"  generated:     {dup_map.generated_groups}",
+        f"  actionable_L:  {dup_map.saved_lines_for('refactor')}",
+        f"  review_L:      {dup_map.saved_lines_for('review')}",
+        f"  generated_L:   {dup_map.saved_lines_for('generated')}",
         f"  dup_fragments: {dup_map.total_fragments}",
         f"  saved_lines:   {dup_map.total_saved_lines}",
         f"  scan_ms:       {dup_map.stats.scan_time_ms:.0f}",
@@ -54,6 +60,21 @@ def _render_duplicates(groups: list) -> list[str]:
                 contracts = metadata.get("evidence", {}).get("contracts", [])
                 if contracts:
                     lines.append(f"      intent={','.join(contracts)} engine={metadata.get('engine', 'intract')}")
+            metadata = getattr(group, "metadata", {}) or {}
+            if group.duplicate_type == DuplicateType.SEMANTIC:
+                evidence = metadata.get("semantic_evidence", {})
+                shared = evidence.get("shared", {})
+                terms = sorted({term for values in shared.values() for term in values})
+                if terms:
+                    lines.append(
+                        f"      intent_clues={','.join(terms[:12])} "
+                        f"languages={','.join(evidence.get('languages', []))}"
+                    )
+            if metadata.get("provenance") != "local_duplicate":
+                lines.append(
+                    f"      provenance={metadata.get('provenance', 'unknown')} "
+                    f"action={metadata.get('actionability', 'review')}"
+                )
             for frag in group.fragments:
                 fn_info = f"  ({frag.function_name})" if frag.function_name else ""
                 lines.append(f"      {frag.file}:{frag.line_start}-{frag.line_end}{fn_info}")
@@ -86,6 +107,8 @@ def _render_hotspots(dup_map: DuplicationMap) -> list[str]:
     file_stats: dict[str, dict] = defaultdict(lambda: {"dup_lines": 0, "groups": 0, "fragments": 0})
 
     for group in dup_map.groups:
+        if group.metadata.get("actionability") == "generated":
+            continue
         files_in_group: set[str] = set()
         for frag in group.fragments:
             file_stats[frag.file]["dup_lines"] += frag.line_count
@@ -118,6 +141,8 @@ def _render_dependency_risk(dup_map: DuplicationMap) -> list[str]:
 
     risky: list[tuple[str, int, list[str]]] = []
     for group in dup_map.groups:
+        if group.metadata.get("actionability") == "generated":
+            continue
         files = sorted({frag.file for frag in group.fragments})
         packages = {f.split(os.sep)[0] for f in files if os.sep in f}
         if len(packages) >= 2:
@@ -219,6 +244,8 @@ def _render_effort_estimate(dup_map: DuplicationMap) -> list[str]:
 
     for group in dup_map.sorted_by_impact():
         if group.saved_lines_potential == 0:
+            continue
+        if group.metadata.get("actionability") == "generated":
             continue
         name, difficulty, minutes = _calculate_group_effort(group)
         estimates.append((name, difficulty, group.saved_lines_potential, minutes))

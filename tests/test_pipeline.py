@@ -209,7 +209,11 @@ def test_find_semantic_groups_maps_cross_language_match(monkeypatch):
     assert len(groups) == 1
     assert groups[0].duplicate_type == DuplicateType.SEMANTIC
     assert groups[0].similarity_score == 0.91
-    assert groups[0].metadata == {"model": "test/code-model", "matched_pairs": 1}
+    assert groups[0].metadata == {
+        "model": "test/code-model",
+        "matched_pairs": 1,
+        "semantic_evidence": {"languages": [], "intent_similarity": None, "shared": {}},
+    }
     assert {fragment.file for fragment in groups[0].fragments} == {"cart.py", "cart.js"}
 
 

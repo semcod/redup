@@ -41,6 +41,9 @@ def _assess_risk(group: DuplicateGroup) -> RiskLevel:
     """Assess the risk of refactoring a duplicate group."""
     files = {f.file for f in group.fragments}
 
+    if group.metadata.get("actionability") == "review":
+        return RiskLevel.MEDIUM
+
     if len(files) == 1:
         return RiskLevel.LOW
 
@@ -75,6 +78,8 @@ def generate_suggestions(dup_map: DuplicationMap) -> list[RefactorSuggestion]:
 
     for priority, group in enumerate(ranked, start=1):
         if group.saved_lines_potential == 0:
+            continue
+        if group.metadata.get("actionability") == "generated":
             continue
 
         action = _choose_action(group)

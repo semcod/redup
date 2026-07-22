@@ -409,6 +409,7 @@ def find_semantic_groups(
     blocks_by_location: dict[tuple[str, int], CodeBlock] = {}
     scores: dict[frozenset[tuple[str, int]], float] = {}
     models: dict[frozenset[tuple[str, int]], str] = {}
+    evidences: dict[frozenset[tuple[str, int]], dict] = {}
     for match in matches:
         left = (match.block_a.file, match.block_a.line_start)
         right = (match.block_b.file, match.block_b.line_start)
@@ -421,6 +422,7 @@ def find_semantic_groups(
         pair = frozenset((left, right))
         scores[pair] = match.similarity
         models[pair] = match.model
+        evidences[pair] = match.evidence or {}
 
     components: list[list[tuple[str, int]]] = []
     visited: set[tuple[str, int]] = set()
@@ -448,6 +450,25 @@ def find_semantic_groups(
         component_models = [
             model for pair, model in models.items() if pair.issubset(component_set)
         ]
+        component_evidence = [
+            evidence for pair, evidence in evidences.items() if pair.issubset(component_set)
+        ]
+        languages = sorted(
+            {
+                language
+                for evidence in component_evidence
+                for language in evidence.get("languages", [])
+            }
+        )
+        intent_scores = [
+            float(evidence["intent_similarity"])
+            for evidence in component_evidence
+            if evidence.get("intent_similarity") is not None
+        ]
+        shared_terms: dict[str, set[str]] = defaultdict(set)
+        for evidence in component_evidence:
+            for field, terms in evidence.get("shared", {}).items():
+                shared_terms[field].update(terms)
         component_blocks = [blocks_by_location[location] for location in component]
         fingerprint = hashlib.sha256(repr(component).encode("utf-8")).hexdigest()[:16]
         groups.append(
@@ -471,6 +492,15 @@ def find_semantic_groups(
                 metadata={
                     "model": component_models[0],
                     "matched_pairs": len(component_scores),
+                    "semantic_evidence": {
+                        "languages": languages,
+                        "intent_similarity": (
+                            sum(intent_scores) / len(intent_scores) if intent_scores else None
+                        ),
+                        "shared": {
+                            field: sorted(terms) for field, terms in shared_terms.items()
+                        },
+                    },
                 },
             )
         )

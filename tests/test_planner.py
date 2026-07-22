@@ -6,6 +6,7 @@ from redup.core.models import (
     DuplicateType,
     DuplicationMap,
     RefactorAction,
+    RiskLevel,
 )
 from redup.core.planner import generate_suggestions
 
@@ -118,3 +119,37 @@ def test_large_block_extract_module():
     )
     suggestions = generate_suggestions(dm)
     assert suggestions[0].action == RefactorAction.EXTRACT_MODULE
+
+
+def test_generated_copy_does_not_get_refactor_suggestion():
+    dm = DuplicationMap(
+        groups=[
+            DuplicateGroup(
+                id="generated",
+                duplicate_type=DuplicateType.EXACT,
+                metadata={"provenance": "generated_copy", "actionability": "generated"},
+                fragments=[
+                    DuplicateFragment(file="src/app.js", line_start=1, line_end=20),
+                    DuplicateFragment(file="app.js", line_start=1, line_end=20),
+                ],
+            )
+        ]
+    )
+
+    assert generate_suggestions(dm) == []
+
+
+def test_review_group_is_not_presented_as_low_risk():
+    group = DuplicateGroup(
+        id="review",
+        duplicate_type=DuplicateType.EXACT,
+        metadata={"provenance": "cross_component", "actionability": "review"},
+        fragments=[
+            DuplicateFragment(file="one/helper.py", line_start=1, line_end=10),
+            DuplicateFragment(file="two/helper.py", line_start=1, line_end=10),
+        ],
+    )
+
+    suggestion = generate_suggestions(DuplicationMap(groups=[group]))[0]
+
+    assert suggestion.risk_level == RiskLevel.MEDIUM

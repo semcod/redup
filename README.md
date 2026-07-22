@@ -5,12 +5,12 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.37-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.38-green.svg)](https://pypi.org/project/redup/)
 
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.37-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.38-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![AI Cost](https://img.shields.io/badge/AI%20Cost-$10.17-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-31.6h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fdeep%2Fdeep--v4--pro-lightgrey)
 
 - 🤖 **LLM usage:** $10.1681 (82 commits)
@@ -33,6 +33,8 @@ reDUP scans codebases for duplicated functions, blocks, and structural patterns 
 - **Changed-only scan mode** (`--changed-only`) for git-diff focused analysis
 - **Fuzzy near-duplicate matching** via SequenceMatcher / rapidfuzz
 - **Semantic duplicate matching** via optional code embeddings, including cross-language pairs
+- **Explainable intent profiles** from purpose names, calls, data terms, and control-flow effects
+- **Provenance classification** separates actionable debt from generated/deployment copies
 - **Declared-intent matching** via optional Intract contracts
 - **Function-level analysis** using Python AST and tree-sitter extraction
 - **Impact scoring** — prioritizes duplicates by `saved_lines × similarity`
@@ -78,6 +80,10 @@ redup scan . --semantic --semantic-threshold 0.80 --ext .py,.js,.ts,.php
 
 `--fuzzy` remains a faster source-text similarity pass for near-identical implementations.
 Use `--intent` with Intract contracts when intent must be explicit and auditable rather than inferred.
+
+Normal reports classify each group as `refactor`, `review`, or `generated`. Generated
+source-to-build and deployment-mirror groups stay visible but are excluded from automatic
+refactoring suggestions.
 
 **Supported Patterns:**
 - Functions, classes, API endpoints
