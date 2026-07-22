@@ -139,6 +139,27 @@ def test_generated_copy_does_not_get_refactor_suggestion():
     assert generate_suggestions(dm) == []
 
 
+def test_delegating_wrappers_do_not_get_refactor_suggestion():
+    dm = DuplicationMap(
+        groups=[
+            DuplicateGroup(
+                id="wrappers",
+                duplicate_type=DuplicateType.STRUCTURAL,
+                metadata={
+                    "provenance": "delegating_wrappers",
+                    "actionability": "review",
+                },
+                fragments=[
+                    DuplicateFragment(file="api.py", line_start=1, line_end=10),
+                    DuplicateFragment(file="api.py", line_start=12, line_end=21),
+                ],
+            )
+        ]
+    )
+
+    assert generate_suggestions(dm) == []
+
+
 def test_review_group_is_not_presented_as_low_risk():
     group = DuplicateGroup(
         id="review",

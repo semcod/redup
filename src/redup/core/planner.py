@@ -81,6 +81,8 @@ def generate_suggestions(dup_map: DuplicationMap) -> list[RefactorSuggestion]:
             continue
         if group.metadata.get("actionability") == "generated":
             continue
+        if group.metadata.get("provenance") == "delegating_wrappers":
+            continue
 
         action = _choose_action(group)
         new_module = _suggest_module_name(group)
