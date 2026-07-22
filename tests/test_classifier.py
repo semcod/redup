@@ -21,6 +21,18 @@ def test_classifies_source_to_published_file_as_generated():
     assert result["actionability"] == "generated"
 
 
+def test_classifies_package_copied_into_web_runtime_as_generated():
+    result = classify_duplicate_group(
+        _group(
+            "app/packages/ifuri-page/handlers.js",
+            "app/src/ifuri_app/web/page/handlers.js",
+        )
+    )
+
+    assert result["provenance"] == "vendored_copy"
+    assert result["actionability"] == "generated"
+
+
 def test_classifies_nested_deployment_mirror_as_generated():
     result = classify_duplicate_group(
         _group("net-user/sites/shop/app.py", "pc1/net-user/sites/shop/app.py")

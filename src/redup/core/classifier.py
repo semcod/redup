@@ -39,6 +39,16 @@ def _contains_source_output_pair(paths: list[tuple[str, ...]]) -> bool:
     return any("src" in path and _without_segment(path, "src") in path_set for path in paths)
 
 
+def _contains_vendored_web_pair(paths: list[tuple[str, ...]]) -> bool:
+    package_paths = [path for path in paths if "packages" in path]
+    web_paths = [path for path in paths if "web" in path]
+    return any(
+        package_path != web_path and package_path[-1] == web_path[-1]
+        for package_path in package_paths
+        for web_path in web_paths
+    )
+
+
 def _contains_nested_mirror_pair(paths: list[tuple[str, ...]]) -> bool:
     for left in paths:
         for right in paths:
@@ -120,6 +130,12 @@ def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:
             "provenance": "generated_copy",
             "actionability": "generated",
             "reason": "source file is copied to a published/build location",
+        }
+    if exact and _contains_vendored_web_pair(paths):
+        return {
+            "provenance": "vendored_copy",
+            "actionability": "generated",
+            "reason": "package source is copied into an embedded web runtime",
         }
     if exact and _contains_nested_mirror_pair(paths):
         return {
