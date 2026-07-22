@@ -4,8 +4,10 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from redup.core.models import DuplicateType, ScanConfig
-from redup.core.pipeline import analyze, analyze_optimized
+from redup.core.pipeline import analyze, analyze_optimized, duplicate_finder
 from redup.core.pipeline.duplicate_finder import find_fuzzy_groups
 from redup.core.scanner import CodeBlock
 
@@ -116,6 +118,26 @@ def test_analyze_empty_project():
         assert result.total_groups == 0
         assert result.total_saved_lines == 0
         assert result.stats.files_scanned == 0
+
+
+def test_analyze_rejects_missing_scan_root(tmp_path):
+    missing = tmp_path / "missing"
+
+    with pytest.raises(FileNotFoundError, match="scan root does not exist"):
+        analyze(config=ScanConfig(root=missing))
+
+
+def test_analyze_skips_quadratic_fuzzy_phase_unless_enabled(tmp_path, monkeypatch):
+    (tmp_path / "sample.py").write_text("def sample():\n    return 1\n", encoding="utf-8")
+
+    def unexpected_fuzzy(*args, **kwargs):
+        raise AssertionError("fuzzy phase must be opt-in")
+
+    monkeypatch.setattr(duplicate_finder, "find_fuzzy_groups", unexpected_fuzzy)
+
+    result = analyze(config=ScanConfig(root=tmp_path, fuzzy_enabled=False))
+
+    assert result.stats.files_scanned == 1
 
 
 def test_analyze_no_duplicates():

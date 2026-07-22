@@ -27,7 +27,7 @@ def find_fuzzy_groups(
 
     covered = set(covered_locations or ())
     min_lines = config.min_block_lines
-    min_similarity = config.min_similarity
+    min_similarity = config.fuzzy_threshold
 
     candidates = [
         block
@@ -114,7 +114,8 @@ def _finalize_duplicate_groups(
 ) -> list[DuplicateGroup]:
     """Attach near duplicates, sort by impact, and report timing."""
     covered = _covered_locations(groups)
-    groups.extend(find_fuzzy_groups(all_blocks, config, covered))
+    if config.fuzzy_enabled:
+        groups.extend(find_fuzzy_groups(all_blocks, config, covered))
     covered = _covered_locations(groups)
     groups.extend(find_near_duplicate_groups(all_blocks, config))
     if getattr(config, "intent_enabled", False):

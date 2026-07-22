@@ -129,6 +129,16 @@ class TestCLIInfo:
 
 
 class TestCLIScanToon:
+    def test_scan_missing_root_fails_without_writing_report(self, tmp_path: Path):
+        missing = tmp_path / "missing"
+        output = tmp_path / "duplication.toon.yaml"
+
+        result = runner.invoke(app, ["scan", str(missing), "-f", "toon", "-o", str(output)])
+
+        assert result.exit_code == 2
+        assert "scan root does not exist" in result.output
+        assert not output.exists()
+
     def test_scan_toon_stdout(self, project_with_duplicates: Path):
         result = runner.invoke(app, ["scan", str(project_with_duplicates), "-f", "toon"])
         assert result.exit_code == 0

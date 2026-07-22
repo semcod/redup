@@ -18,10 +18,14 @@ from redup.core.scanner_types import CodeBlock, ScannedFile, ScanStrategy
 
 
 def _normalize_scan_config(config: ScanConfig) -> ScanConfig:
-    """Coerce the scan root into an absolute path."""
+    """Coerce the scan root into an existing absolute directory path."""
     if not isinstance(config.root, Path):
         config.root = Path(config.root)
     config.root = config.root.expanduser().resolve()
+    if not config.root.exists():
+        raise FileNotFoundError(f"scan root does not exist: {config.root}")
+    if not config.root.is_dir():
+        raise NotADirectoryError(f"scan root is not a directory: {config.root}")
     return config
 
 

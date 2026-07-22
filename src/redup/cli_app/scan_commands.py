@@ -1,7 +1,7 @@
 """Scan command implementations for reDUP CLI."""
 
-from pathlib import Path
 import subprocess
+from pathlib import Path
 from typing import Any
 
 import typer
@@ -10,6 +10,16 @@ from redup.cli_app.config_builder import build_config, build_config_with_file_su
 from redup.cli_app.scan_helpers import apply_fuzzy_similarity, print_scan_header, print_scan_summary
 from redup.core.config import create_sample_redup_toml
 from redup.core.pipeline import analyze, analyze_optimized
+
+
+def _validate_scan_path(path: Path) -> Path:
+    """Reject invalid roots before a zero-file report can overwrite a valid scan."""
+    resolved = path.expanduser().resolve()
+    if not resolved.exists():
+        raise typer.BadParameter(f"scan root does not exist: {resolved}", param_hint="path")
+    if not resolved.is_dir():
+        raise typer.BadParameter(f"scan root is not a directory: {resolved}", param_hint="path")
+    return resolved
 
 
 def _resolve_changed_files(
@@ -159,6 +169,7 @@ def scan_command(
     ),
 ) -> None:
     """Scan a project for code duplicates."""
+    path = _validate_scan_path(path)
 
     target_files = None
     if changed_only:
