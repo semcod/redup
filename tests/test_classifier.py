@@ -51,6 +51,32 @@ def test_classifies_product_family_for_review():
     assert result["actionability"] == "review"
 
 
+def test_classifies_separate_examples_as_cross_component():
+    result = classify_duplicate_group(
+        _group(
+            "examples/33-office/run.py",
+            "examples/52-office-vm/run.py",
+            duplicate_type=DuplicateType.FUZZY,
+        )
+    )
+
+    assert result["provenance"] == "cross_component"
+    assert result["actionability"] == "review"
+
+
+def test_keeps_files_in_one_example_actionable():
+    result = classify_duplicate_group(
+        _group(
+            "examples/33-office/run.py",
+            "examples/33-office/helpers.py",
+            duplicate_type=DuplicateType.FUZZY,
+        )
+    )
+
+    assert result["provenance"] == "local_duplicate"
+    assert result["actionability"] == "refactor"
+
+
 def test_classifies_same_component_as_actionable():
     group = _group(
         "runtime/commands.py",

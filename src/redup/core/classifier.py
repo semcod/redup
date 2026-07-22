@@ -8,6 +8,7 @@ from pathlib import PurePosixPath
 from redup.core.models import DuplicateGroup, DuplicateType
 
 _PUBLISHED_SEGMENTS = {"assets", "build", "dist", "httpdocs", "public", "static", "www"}
+_COMPONENT_CONTAINERS = {"examples"}
 _CONTROL_FLOW = re.compile(r"\b(?:case|catch|else|except|for|if|match|switch|try|while)\b")
 _CALL = re.compile(r"\b([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*\(")
 
@@ -22,6 +23,13 @@ def _without_segment(parts: tuple[str, ...], segment: str) -> tuple[str, ...]:
     except ValueError:
         return parts
     return parts[:index] + parts[index + 1 :]
+
+
+def _component_root(parts: tuple[str, ...]) -> str:
+    """Return the ownership root, accounting for umbrella example folders."""
+    if len(parts) > 1 and parts[0] in _COMPONENT_CONTAINERS:
+        return "/".join(parts[:2])
+    return parts[0] if parts else ""
 
 
 def _contains_source_output_pair(paths: list[tuple[str, ...]]) -> bool:
@@ -85,7 +93,7 @@ def _is_delegating_wrapper_group(group: DuplicateGroup) -> bool:
 def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:
     """Return conservative provenance and actionability metadata for a group."""
     paths = [_parts(fragment.file) for fragment in group.fragments]
-    roots = {path[0] for path in paths if path}
+    roots = {_component_root(path) for path in paths if path}
     files = {fragment.file for fragment in group.fragments}
     exact = group.duplicate_type == DuplicateType.EXACT
 
