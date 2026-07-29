@@ -8,6 +8,14 @@
   folders) was read and hashed once per alias and reported as duplicated content across all
   of them. Now each real file is only scanned once, regardless of how many symlinks point to it.
 
+## [0.4.46] - 2026-07-29
+
+### Docs
+- Update README.md
+
+### Other
+- Update uv.lock
+
 ## [0.4.35] - 2026-07-05
 
 ### Docs
