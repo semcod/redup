@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Fleet verification entry point (auto-generated).
+set -euo pipefail
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+# Detect project type and run the most appropriate local checks.
+if [ -f package.json ]; then
+  if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+    npm ci >/dev/null 2>&1 || npm install >/dev/null 2>&1
+  else
+    npm install >/dev/null 2>&1
+  fi
+  if npm run --silent verify 2>/dev/null; then
+    npm run verify
+    exit 0
+  fi
+  if npm run --silent test 2>/dev/null; then
+    npm test
+    exit 0
+  fi
+fi
+
+if [ -f pyproject.toml ] || [ -f setup.py ] || [ -f requirements.txt ]; then
+  if command -v pytest >/dev/null 2>&1; then
+    pytest
+    exit 0
+  fi
+  if python3 -m pytest --help >/dev/null 2>&1; then
+    python3 -m pytest
+    exit 0
+  fi
+  echo "WARNING: Python project detected but pytest is not installed." >&2
+  exit 0
+fi
+
+if [ -f Cargo.toml ]; then
+  cargo test
+  exit 0
+fi
+
+if [ -f go.mod ]; then
+  go test ./...
+  exit 0
+fi
+
+if [ -f Makefile ] && grep -qE '^verify\s*:' Makefile; then
+  make verify
+  exit 0
+fi
+
+echo "WARNING: No recognizable test/verify target for $repo_root" >&2
