@@ -18,6 +18,20 @@ from redup.config import config as global_config
 from redup.core.models import DEFAULT_SEMANTIC_MODEL, DEFAULT_SEMANTIC_THRESHOLD, ScanConfig
 
 
+def normalize_extensions(value: Any) -> list[str] | None:
+    """Normalize string or iterable extensions to the dotted scanner format."""
+    if value is None:
+        return None
+    parts = value.split(",") if isinstance(value, str) else list(value)
+    extensions: list[str] = []
+    for part in parts:
+        extension = str(part).strip()
+        if not extension:
+            continue
+        extensions.append(extension if extension.startswith(".") else f".{extension}")
+    return extensions or None
+
+
 def _load_toml_file(file_path: Path) -> dict[str, Any]:
     """Load TOML file and return as dictionary."""
     if tomllib is None:
@@ -102,12 +116,9 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     extensions = config.get(
         "extensions", scan_config.get("extensions", global_config.DEFAULT_EXTENSIONS)
     )
-    if isinstance(extensions, str):
-        ext_list = [
-            e.strip() if e.startswith(".") else f".{e.strip()}" for e in extensions.split(",")
-        ]
-    else:
-        ext_list = extensions
+    ext_list = normalize_extensions(extensions)
+    if ext_list is None:
+        ext_list = list(global_config.DEFAULT_EXTENSIONS)
 
     lsh_config = config.get("lsh", {})
     semantic_config = config.get("semantic", {})

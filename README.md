@@ -85,6 +85,9 @@ pip install 'redup[semantic,ast]'
 redup scan . --semantic --semantic-threshold 0.75 --ext .py,.js,.ts,.php
 ```
 
+Extension names may be passed with or without a leading dot, so agent-generated
+values such as `--ext py,js,ts` are equivalent.
+
 `--fuzzy` remains a faster source-text similarity pass for near-identical implementations.
 Use `--intent` with Intract contracts when intent must be explicit and auditable rather than inferred.
 The default embedding model is

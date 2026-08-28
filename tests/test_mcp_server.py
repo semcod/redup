@@ -107,6 +107,12 @@ def test_initialize_and_tools_list() -> None:
         tool for tool in tools_response["result"]["tools"] if tool["name"] == "find_duplicates"
     )
     assert find_tool["inputSchema"]["properties"]["max_groups"]["default"] == 10
+    analyze_tool = next(
+        tool for tool in tools_response["result"]["tools"] if tool["name"] == "analyze_project"
+    )
+    scan_properties = analyze_tool["inputSchema"]["properties"]
+    assert "parallel" not in scan_properties
+    assert "leading dots are optional" in scan_properties["extensions"]["description"]
 
 
 def test_mcp_scan_config_accepts_semantic_options(tmp_path: Path) -> None:

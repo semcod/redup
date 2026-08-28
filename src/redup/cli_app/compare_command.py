@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING
 from rich.console import Console
 from rich.table import Table
 
+from redup.core.config import normalize_extensions
+
 if TYPE_CHECKING:
     from redup.core.comparator import CrossProjectComparison
 
@@ -31,7 +33,7 @@ def compare_command(
     """Compare two projects and recommend refactoring strategy."""
     from redup.core.comparator import compare_projects
 
-    ext_list = _parse_extensions(extensions)
+    ext_list = normalize_extensions(extensions)
 
     console.print(
         f"[bold]Comparing[/bold] {project_a.name} ↔ {project_b.name}  (threshold={threshold})"
@@ -57,13 +59,6 @@ def compare_command(
     _generate_llm_plan(report, refactor_plan, env_file, llm_model, comparison)
 
     _export_json(report, output)
-
-
-def _parse_extensions(extensions: str | None) -> list[str] | None:
-    """Parse comma-separated extensions string into list."""
-    if not extensions:
-        return None
-    return [e.strip() for e in extensions.split(",")]
 
 
 def _print_summary_table(comparison: CrossProjectComparison) -> None:

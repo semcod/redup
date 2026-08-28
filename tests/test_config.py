@@ -3,6 +3,13 @@
 from pathlib import Path
 
 from redup.cli_app.config_builder import build_config_with_file_support
+from redup.core.config import normalize_extensions
+
+
+def test_extension_normalization_accepts_llm_friendly_values() -> None:
+    assert normalize_extensions("py, .js,ts") == [".py", ".js", ".ts"]
+    assert normalize_extensions(["py", ".rs"]) == [".py", ".rs"]
+    assert normalize_extensions(" , ") is None
 
 
 def test_config_is_loaded_from_scanned_project_not_process_cwd(
@@ -40,3 +47,15 @@ min_lines = 99
     assert config.extensions == [".py", ".js"]
     assert config.min_block_lines == 9
     assert config.include_tests is True
+
+
+def test_cli_extension_override_is_normalized(tmp_path: Path) -> None:
+    config = build_config_with_file_support(
+        tmp_path,
+        extensions="py,js",
+        min_lines=None,
+        min_similarity=None,
+        include_tests=False,
+    )
+
+    assert config.extensions == [".py", ".js"]

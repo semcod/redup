@@ -2,6 +2,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+from redup.core.config import normalize_extensions
+
 
 def json_safe(value: Any) -> Any:
     if isinstance(value, Enum):
@@ -21,8 +23,5 @@ def resolve_path(raw: Any) -> Path:
 
 
 def parse_extensions(value: Any) -> list[str] | None:
-    if value is None:
-        return None
-    parts = value.split(",") if isinstance(value, str) else list(value)
-    exts = [str(p).strip() for p in parts if str(p).strip()]
-    return [e if e.startswith(".") else f".{e}" for e in exts] or None
+    """Backward-compatible MCP alias for the shared extension normalizer."""
+    return normalize_extensions(value)

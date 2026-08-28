@@ -14,11 +14,12 @@ SCAN_PROPERTIES = {
         "type": "string",
         "enum": ["standard", "optimized", "parallel"],
         "default": "optimized",
-        "description": (
-            "Execution strategy; choose parallel here instead of also setting parallel=true"
-        ),
+        "description": "Execution strategy; use mode=parallel for large projects",
     },
-    "extensions": {"type": "string", "description": "Comma-separated file extensions"},
+    "extensions": {
+        "type": "string",
+        "description": "Comma-separated file extensions; leading dots are optional (py,.js,ts)",
+    },
     "min_lines": {"type": "integer", "default": 3, "description": "Minimum block size in lines"},
     "min_similarity": {
         "type": "number",
@@ -30,11 +31,6 @@ SCAN_PROPERTIES = {
         "type": "boolean",
         "default": True,
         "description": "Only analyze function-level blocks",
-    },
-    "parallel": {
-        "type": "boolean",
-        "default": False,
-        "description": "Deprecated compatibility alias for mode=parallel; omit when mode is set",
     },
     "memory_cache": {
         "type": "boolean",
@@ -178,7 +174,10 @@ COMPARE_PROJECT_PROPERTIES = {
         "default": False,
         "description": "Also evaluate semantic similarity (slower)",
     },
-    "extensions": {"type": "string", "description": "Comma-separated file extensions"},
+    "extensions": {
+        "type": "string",
+        "description": "Comma-separated file extensions; leading dots are optional (py,.js,ts)",
+    },
     "min_lines": {"type": "integer", "minimum": 1, "default": 3},
     "functions_only": {"type": "boolean", "default": True},
     "max_matches": {
@@ -195,8 +194,8 @@ TOOL_SCHEMA_REDUP = {
         "description": (
             "Detailed in-project duplication scan. JSON defaults to the top 20 non-generated "
             "groups; use group_scope=all and max_groups=0 only when a complete raw report is "
-            "needed. "
-            "Identical calls are cached until source files change."
+            "needed. Call once per unchanged path/config: identical calls return the same cached "
+            "analysis and should not be repeated."
         ),
         "inputSchema": {"type": "object", "properties": SCAN_PROPERTIES, "required": ["path"]},
     },

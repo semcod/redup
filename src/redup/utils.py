@@ -31,16 +31,7 @@ def _resolve_path(raw: Any) -> Path:
 
 
 def _parse_extensions(value: Any) -> list[str] | None:
-    if value is None:
-        return None
-    if isinstance(value, str):
-        parts = value.split(",")
-    else:
-        parts = list(value)
-    extensions = []
-    for part in parts:
-        ext = str(part).strip()
-        if not ext:
-            continue
-        extensions.append(ext if ext.startswith(".") else f".{ext}")
-    return extensions or None
+    """Backward-compatible alias for the shared extension normalizer."""
+    from redup.core.config import normalize_extensions
+
+    return normalize_extensions(value)

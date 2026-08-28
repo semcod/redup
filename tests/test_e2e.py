@@ -308,6 +308,16 @@ class TestCLIOptions:
         assert result.exit_code == 0
         assert "1 files" in result.output or "files" in result.output.lower()
 
+    def test_custom_extension_without_dot_scans_files(self, tmp_path: Path):
+        (tmp_path / "code.py").write_text("def foo():\n    return 1\n", encoding="utf-8")
+
+        result = runner.invoke(
+            app, ["scan", str(tmp_path), "--ext", "py", "-f", "toon"]
+        )
+
+        assert result.exit_code == 0
+        assert "Scanned 1 files" in result.output
+
     def test_min_lines_filter(self, project_with_duplicates: Path):
         result_low = runner.invoke(
             app, ["scan", str(project_with_duplicates), "--min-lines", "3", "-f", "toon"]

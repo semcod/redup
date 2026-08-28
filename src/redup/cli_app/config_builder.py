@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any
 
-from redup.core.config import config_to_scan_config, load_config
+from redup.core.config import config_to_scan_config, load_config, normalize_extensions
 from redup.core.models import DEFAULT_SEMANTIC_THRESHOLD, ScanConfig
 
 
@@ -45,7 +45,7 @@ def build_config_with_file_support(
 
     # Override with CLI parameters if provided
     if extensions is not None:
-        scan_config.extensions = [e.strip() for e in extensions.split(",")]
+        scan_config.extensions = normalize_extensions(extensions) or []
     if min_lines is not None:
         scan_config.min_block_lines = min_lines
     if min_similarity is not None:
