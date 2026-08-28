@@ -176,6 +176,66 @@ def test_analyze_project_returns_json_report() -> None:
         assert payload["selection"]["group_scope"] == "non_generated"
 
 
+def test_llm_mcp_payload_normalizes_comma_separated_extensions(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """Exercise the public MCP route with the argument shape emitted by LLM clients."""
+    for name, source in {
+        "sample.py": "def python_sample():\n    return 1\n",
+        "sample.js": "function javascriptSample() { return 1; }\n",
+        "sample.ts": "function typescriptSample(): number { return 1; }\n",
+    }.items():
+        (tmp_path / name).write_text(source, encoding="utf-8")
+
+    captured: dict[str, object] = {}
+
+    def analyze_without_optional_semantic_backend(
+        config: ScanConfig, *, function_level_only: bool, max_workers: int | None
+    ):
+        captured["extensions"] = config.extensions
+        captured["semantic_enabled"] = config.semantic_enabled
+        config.semantic_enabled = False
+        return analyze(config=config, function_level_only=function_level_only)
+
+    monkeypatch.setattr(mcp_handlers, "analyze_parallel", analyze_without_optional_semantic_backend)
+    mcp_handlers._ANALYSIS_CACHE.clear()
+
+    response = handle_request(
+        {
+            "jsonrpc": "2.0",
+            "method": "tools/call",
+            "id": 33,
+            "params": {
+                "name": "analyze_project",
+                "arguments": {
+                    "path": str(tmp_path),
+                    "extensions": "py,js,ts",
+                    "format": "json",
+                    "functions_only": True,
+                    "fuzzy": True,
+                    "fuzzy_threshold": 0.86,
+                    "include_snippets": False,
+                    "include_tests": False,
+                    "min_lines": 2,
+                    "min_similarity": 0.86,
+                    "mode": "parallel",
+                    "parallel": True,
+                    "semantic": True,
+                    "semantic_threshold": 0.9,
+                },
+            },
+        }
+    )
+
+    assert "error" not in response
+    payload = json.loads(response["result"]["content"][0]["text"])
+    assert captured == {
+        "extensions": [".py", ".js", ".ts"],
+        "semantic_enabled": True,
+    }
+    assert payload["stats"]["files_scanned"] == 3
+
+
 def test_identical_mcp_analysis_uses_cache_until_source_changes(tmp_path: Path) -> None:
     mcp_handlers._ANALYSIS_CACHE.clear()
     _create_test_project(tmp_path)
