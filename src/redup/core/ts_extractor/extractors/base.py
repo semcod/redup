@@ -51,8 +51,19 @@ def traverse_tree(
 def get_node_text(node: Any) -> str:
     """Safely get decoded text from a node."""
     if hasattr(node, "text") and node.text:
-        return node.text.decode()
+        return str(node.text.decode())
     return ""
+
+
+def get_ancestor_name(node: Any, ancestor_type: str) -> str | None:
+    """Return the ``name`` field from the nearest ancestor of a given type."""
+    ancestor = node.parent
+    while ancestor and ancestor.type != ancestor_type:
+        ancestor = ancestor.parent
+    if ancestor is None:
+        return None
+    name_node = ancestor.child_by_field_name("name")
+    return get_node_text(name_node) if name_node else None
 
 
 def create_code_block(

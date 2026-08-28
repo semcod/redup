@@ -13,7 +13,7 @@ def _parse_extensions(ext_string: str | None) -> list[str] | None:
 
 
 def _build_scan_config(path: Path, params: dict[str, Any]) -> ScanConfig:
-    scan_config = config_to_scan_config(load_config(), path)
+    scan_config = config_to_scan_config(load_config(path), path)
 
     extensions = _parse_extensions(params.get("extensions"))
     if extensions is not None:

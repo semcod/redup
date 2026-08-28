@@ -75,15 +75,15 @@ def scan(
         "--include-tests",
         help="Include test files. Overrides config.",
     ),
-    no_functions_only: bool = typer.Option(
-        False,
-        "--no-functions-only",
-        help="Analyze all code, not just functions (default: functions-only mode is ON).",
+    functions_only: bool = typer.Option(
+        True,
+        "--functions-only/--no-functions-only",
+        help="Analyze only functions (default) or include sliding source blocks.",
     ),
-    no_parallel: bool = typer.Option(
+    parallel: bool = typer.Option(
         False,
-        "--no-parallel",
-        help="Disable parallel scanning for large projects (default: disabled).",
+        "--parallel/--no-parallel",
+        help="Process source files concurrently.",
     ),
     max_workers: int | None = typer.Option(
         None,
@@ -133,7 +133,7 @@ def scan(
     semantic: bool | None = typer.Option(
         None,
         "--semantic/--no-semantic",
-        help="Enable semantic similarity across implementations (requires redup[semantic]).",
+        help="Enable semantic similarity across implementations (semantic extra recommended).",
     ),
     semantic_threshold: float = typer.Option(
         0.80,
@@ -148,7 +148,7 @@ def scan(
     intent: bool = typer.Option(
         False,
         "--intent",
-        help="Enable Intract intent duplicate detection (requires reDUP[intent]).",
+        help="Enable Intract intent duplicate detection (intent extra required).",
     ),
     intent_threshold: float = typer.Option(
         0.84,
@@ -180,8 +180,8 @@ def scan(
         min_lines,
         min_similarity,
         include_tests,
-        not no_functions_only,
-        not no_parallel,
+        functions_only,
+        parallel,
         max_workers,
         incremental,
         not no_memory_cache,
@@ -205,8 +205,12 @@ def scan(
 @app.command()
 def intract(
     path: Path = typer.Argument(DEFAULT_PATH, help="Project root to validate."),
-    manifest: Path | None = typer.Option(None, "--manifest", help="Path to intract.yaml / intent.yaml."),
-    intent: bool = typer.Option(True, "--intent/--no-intent", help="Include intent duplicate groups."),
+    manifest: Path | None = typer.Option(
+        None, "--manifest", help="Path to intract.yaml / intent.yaml."
+    ),
+    intent: bool = typer.Option(
+        True, "--intent/--no-intent", help="Include intent duplicate groups."
+    ),
     intent_threshold: float = typer.Option(0.84, "--intent-threshold"),
     fail_on: str | None = typer.Option(
         "violation,missing_required_p1,invalid_manifest,intent_duplicate",

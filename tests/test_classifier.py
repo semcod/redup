@@ -45,6 +45,21 @@ def test_classifies_shared_behavior_in_standalone_public_assets_for_review():
     assert result["actionability"] == "review"
 
 
+def test_classifies_semantic_similarity_as_review_only():
+    group = _group(
+        "runtime/writer.py",
+        "runtime/exporter.py",
+        duplicate_type=DuplicateType.SEMANTIC,
+    )
+    group.metadata["model"] = "redup/intent-profile-v1"
+
+    result = classify_duplicate_group(group)
+
+    assert result["provenance"] == "intent_profile_candidate"
+    assert result["actionability"] == "review"
+    assert "verification" in result["reason"]
+
+
 def test_classifies_nested_deployment_mirror_as_generated():
     result = classify_duplicate_group(
         _group("net-user/sites/shop/app.py", "pc1/net-user/sites/shop/app.py")

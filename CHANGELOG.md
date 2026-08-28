@@ -2,7 +2,35 @@
 
 ## [Unreleased]
 
+## [0.4.47] - 2026-08-28
+
+### Added
+- MCP analyses now cache identical scans in process until source metadata changes and expose
+  bounded JSON results through `group_scope` and `max_groups`.
+- The scanner now performs actual concurrent file processing when parallel mode is selected.
+- The shared in-memory file cache is synchronized for parallel scans.
+
+### Changed
+- MCP `find_duplicates` is a compact first-pass tool, while `analyze_project` defaults to the top
+  20 non-generated groups. Full summary totals are retained in both responses.
+- Semantic and dependency-free intent-profile matches are conservatively classified as `review`.
+- CLI and MCP cross-project reports now share one formatter.
+- PHP and C# extractors now share their ancestor-name lookup helper.
+
 ### Fixed
+- `compare_projects` in MCP now scans two directories instead of incorrectly treating them as
+  saved scan reports.
+- Optimized and parallel pipelines now honor non-function scans instead of always extracting only
+  functions.
+- Parallel mode previously configured workers but still processed every file sequentially.
+- The public `scan` command now exposes the documented `--parallel` and
+  `--functions-only/--no-functions-only` flags with defaults matching their help text.
+- Cross-project saved-line estimates now count inclusive source ranges correctly.
+- Cross-project normalized-exact matches are labeled `exact` instead of always `structural`.
+- MCP tool diagnostics are redirected to stderr so they cannot corrupt the stdio JSON-RPC stream.
+- Project scans now load `redup.toml` and `[tool.redup]` from the requested project root instead
+  of accidentally inheriting the MCP server's working-directory configuration.
+- Nested `[scan].extensions` settings are now honored alongside the other scan settings.
 - File collection didn't resolve symlinks, so a file shared via symlink across multiple
   directories (e.g. one canonical firmware source symlinked into several per-board deploy
   folders) was read and hashed once per alias and reported as duplicated content across all

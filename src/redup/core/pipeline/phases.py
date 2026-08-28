@@ -22,11 +22,15 @@ def scan_phase(
 
 
 def scan_phase_parallel(
-    config: ScanConfig, max_workers: int | None = None
+    config: ScanConfig,
+    max_workers: int | None = None,
+    function_level_only: bool | None = None,
 ) -> tuple[list[ScannedFile], ScanStats]:
     """Phase 1: Scan project files in parallel."""
+    if function_level_only is None:
+        function_level_only = config.functions_only
     strategy = ScanStrategy(parallel=True, max_workers=max_workers or 4)
-    return scan_project(config, strategy, function_level_only=True)
+    return scan_project(config, strategy, function_level_only=function_level_only)
 
 
 def process_blocks(scanned_files: list[ScannedFile], function_level_only: bool) -> list[CodeBlock]:

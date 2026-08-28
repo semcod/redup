@@ -8,6 +8,7 @@ from pathlib import Path
 
 from redup.core.models import ScanConfig
 from redup.core.pipeline import analyze
+from redup.mcp import handlers as mcp_handlers
 from redup.mcp.handlers import _build_scan_config
 from redup.mcp_server import handle_request
 from redup.reporters.json_reporter import to_json
@@ -98,6 +99,15 @@ def test_initialize_and_tools_list() -> None:
         "project_info",
     } <= tool_names
 
+    compare_tool = next(
+        tool for tool in tools_response["result"]["tools"] if tool["name"] == "compare_projects"
+    )
+    assert compare_tool["inputSchema"]["required"] == ["project_a", "project_b"]
+    find_tool = next(
+        tool for tool in tools_response["result"]["tools"] if tool["name"] == "find_duplicates"
+    )
+    assert find_tool["inputSchema"]["properties"]["max_groups"]["default"] == 10
+
 
 def test_mcp_scan_config_accepts_semantic_options(tmp_path: Path) -> None:
     config = _build_scan_config(
@@ -140,6 +150,61 @@ def test_analyze_project_returns_json_report() -> None:
         payload = json.loads(response["result"]["content"][0]["text"])
         assert payload["project_path"] == str(root)
         assert payload["summary"]["total_groups"] >= 1
+        assert payload["selection"]["group_scope"] == "non_generated"
+
+
+def test_identical_mcp_analysis_uses_cache_until_source_changes(tmp_path: Path) -> None:
+    mcp_handlers._ANALYSIS_CACHE.clear()
+    _create_test_project(tmp_path)
+    arguments = {
+        "path": str(tmp_path),
+        "format": "json",
+        "mode": "standard",
+        "functions_only": True,
+    }
+
+    first = json.loads(mcp_handlers.handle_analyze_project(arguments))
+    second = json.loads(mcp_handlers.handle_analyze_project(arguments))
+    assert first["execution"]["analysis_cache_hit"] is False
+    assert second["execution"]["analysis_cache_hit"] is True
+
+    with (tmp_path / "unique.py").open("a", encoding="utf-8") as source:
+        source.write("\ndef another_unique():\n    return 42\n")
+
+    third = json.loads(mcp_handlers.handle_analyze_project(arguments))
+    assert third["execution"]["analysis_cache_hit"] is False
+
+
+def test_compare_projects_scans_directories(tmp_path: Path) -> None:
+    project_a = tmp_path / "a"
+    project_b = tmp_path / "b"
+    project_a.mkdir()
+    project_b.mkdir()
+    shared = "def shared(value):\n    result = value + 1\n    return result * 2\n"
+    (project_a / "one.py").write_text(shared, encoding="utf-8")
+    (project_b / "two.py").write_text(shared, encoding="utf-8")
+
+    response = handle_request(
+        {
+            "jsonrpc": "2.0",
+            "method": "tools/call",
+            "id": 31,
+            "params": {
+                "name": "compare_projects",
+                "arguments": {
+                    "project_a": str(project_a),
+                    "project_b": str(project_b),
+                    "extensions": "py",
+                },
+            },
+        }
+    )
+
+    payload = json.loads(response["result"]["content"][0]["text"])
+    assert payload["project_a"] == str(project_a)
+    assert payload["project_b"] == str(project_b)
+    assert payload["total_matches"] >= 1
+    assert payload["matches"][0]["loc"] == 3
 
 
 def test_compare_scans_returns_summary() -> None:
@@ -214,3 +279,24 @@ def test_unknown_tool_returns_error() -> None:
     )
 
     assert response["error"]["code"] == -32601
+
+
+def test_tool_progress_output_cannot_corrupt_stdio_protocol(monkeypatch, capsys) -> None:
+    def noisy_handler(_):
+        print("progress from analysis")
+        return "{}"
+
+    monkeypatch.setitem(mcp_handlers.TOOL_HANDLERS, "noisy", noisy_handler)
+    response = handle_request(
+        {
+            "jsonrpc": "2.0",
+            "method": "tools/call",
+            "id": 99,
+            "params": {"name": "noisy", "arguments": {}},
+        }
+    )
+
+    captured = capsys.readouterr()
+    assert response["result"]["content"][0]["text"] == "{}"
+    assert captured.out == ""
+    assert "progress from analysis" in captured.err

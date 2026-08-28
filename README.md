@@ -5,12 +5,12 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.46-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.47-green.svg)](https://pypi.org/project/redup/)
 
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.46-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.47-blue) ![Python](https://img.shields.io/badge/python-3.10+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![AI Cost](https://img.shields.io/badge/AI%20Cost-$12.62-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-37.9h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fdeep%2Fdeep--v4--pro-lightgrey)
 
 - 🤖 **LLM usage:** $12.6211 (95 commits)
@@ -55,18 +55,25 @@ Full MCP (Model Context Protocol) server for AI assistant integration:
 ```bash
 # Start MCP server
 redup-mcp
-
-# Or HTTP mode
-redup-mcp --transport http --port 8000
 ```
 
+The bundled server uses MCP's stdio transport. Its analysis diagnostics are sent to stderr,
+so progress messages cannot corrupt JSON-RPC responses.
+
 **Available Tools:**
-- `analyze_project` — Full duplication analysis
-- `find_duplicates` — Quick duplicate detection
+- `find_duplicates` — recommended compact first pass (top 10 non-generated groups)
+- `analyze_project` — configurable scan (top 20 non-generated compact groups by default)
 - `check_project` — Quality gate check
-- `compare_projects` — Cross-project comparison
-- `suggest_refactoring` — AI-powered refactoring suggestions
+- `compare_projects` — scan and compare two project directories
+- `compare_scans` — compare two saved JSON reports
+- `suggest_refactoring` — prioritized heuristic refactoring suggestions
 - `project_info` — Project metadata
+
+For agent workflows, call `find_duplicates` once per project first. Summary totals always cover
+the complete scan even when `groups` is bounded. Use `group_scope="all", max_groups=0` only when
+the complete raw list (including generated/deployment copies) is needed. Identical MCP scans are
+served from an in-process cache until source file metadata changes; pass `refresh=true` to bypass it.
+Set `detail="full"` only when normalized hashes and complete detector metadata are required.
 
 ### 🌐 Cross-language Semantic Similarity Detection
 
@@ -80,6 +87,9 @@ redup scan . --semantic --semantic-threshold 0.80 --ext .py,.js,.ts,.php
 
 `--fuzzy` remains a faster source-text similarity pass for near-identical implementations.
 Use `--intent` with Intract contracts when intent must be explicit and auditable rather than inferred.
+If `sentence-transformers` is unavailable, `--semantic` uses the explainable
+`redup/intent-profile-v1` fallback. Both embedding and fallback semantic matches are candidates for
+manual review, never proof that implementations are interchangeable.
 
 Normal reports classify each group as `refactor`, `review`, or `generated`. Generated
 source-to-build and deployment-mirror groups stay visible but are excluded from automatic

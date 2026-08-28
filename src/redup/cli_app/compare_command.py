@@ -10,7 +10,6 @@ from rich.console import Console
 from rich.table import Table
 
 if TYPE_CHECKING:
-    from redup.core.community import CodeCommunity
     from redup.core.comparator import CrossProjectComparison
 
 console = Console()
@@ -52,8 +51,10 @@ def compare_command(
     _print_recommendation(comparison, communities)
     _print_match_details(comparison)
 
-    report = _build_json_report(comparison, communities)
-    plan = _generate_llm_plan(report, refactor_plan, env_file, llm_model, comparison)
+    from redup.reporters.comparison_reporter import comparison_to_dict
+
+    report = comparison_to_dict(comparison, communities)
+    _generate_llm_plan(report, refactor_plan, env_file, llm_model, comparison)
 
     _export_json(report, output)
 
@@ -227,129 +228,3 @@ def _short_path(path: str, max_parts: int = 3) -> str:
     if len(parts) <= max_parts:
         return str(Path(*parts))
     return str(Path("...", *parts[-max_parts:]))
-
-
-def _make_relative_path(path: str, proj_a: str, proj_b: str) -> str:
-    """Strip project root prefix to get relative path."""
-    for prefix in (proj_a + "/", proj_b + "/"):
-        if path.startswith(prefix):
-            return path[len(prefix) :]
-    return path
-
-
-def _deduplicate_matches(
-    matches: list,
-    proj_a: str,
-    proj_b: str,
-) -> list[dict]:
-    """Deduplicate matches by (func_a, func_b, file_a, file_b), keep highest sim."""
-    deduped: dict[tuple, dict] = {}
-    for m in matches:
-        key = (m.function_a, m.function_b, m.file_a, m.file_b)
-        if key not in deduped or m.similarity > deduped[key]["similarity"]:
-            deduped[key] = {
-                "type": m.similarity_type,
-                "similarity": round(m.similarity, 2),
-                "func_a": m.function_a,
-                "func_b": m.function_b,
-                "file_a": _make_relative_path(m.file_a, proj_a, proj_b),
-                "file_b": _make_relative_path(m.file_b, proj_a, proj_b),
-                "loc": max(m.lines_a[1] - m.lines_a[0], m.lines_b[1] - m.lines_b[0]),
-            }
-
-    # Sort by LOC descending, filter trivial
-    sorted_matches = sorted(deduped.values(), key=lambda x: x["loc"], reverse=True)
-    return [m for m in sorted_matches if m["loc"] > 2]
-
-
-def _compact_community(
-    c: CodeCommunity,
-    proj_a: str,
-    proj_b: str,
-) -> dict:
-    """Convert community to compact dict format."""
-    funcs: list[dict] = []
-    for proj, node_key in c.members:
-        # node_key format: "project::file::func"
-        parts = node_key.split("::")
-        func_name = parts[-1] if len(parts) >= 3 else parts[-1]
-        file_path = parts[-2] if len(parts) >= 3 else ""
-        funcs.append(
-            {
-                "project": "A" if proj == proj_a else "B",
-                "file": _make_relative_path(file_path, proj_a, proj_b),
-                "function": func_name,
-            }
-        )
-
-    return {
-        "name": c.extraction_candidate_name,
-        "similarity": round(c.avg_similarity, 2),
-        "loc": c.total_loc,
-        "members": funcs,
-    }
-
-
-def _filter_significant_communities(
-    communities: list[CodeCommunity],
-    proj_a: str,
-    proj_b: str,
-) -> list[dict]:
-    """Convert communities to compact format and filter by significance."""
-    compact = [_compact_community(c, proj_a, proj_b) for c in communities]
-    significant = [c for c in compact if c["loc"] >= 8]
-    return significant[:20]
-
-
-def _build_recommendation_dict(
-    comparison: CrossProjectComparison,
-    communities: list,
-) -> dict | None:
-    """Build recommendation dict or None if no communities."""
-    if not communities:
-        return None
-
-    from redup.core.decision import recommend
-
-    rec = recommend(comparison, communities)
-    return {
-        "decision": rec.decision.value,
-        "rationale": rec.rationale,
-        "overlap_pct": round(rec.overlap_percent, 4),
-        "shared_loc": rec.shared_loc,
-        "confidence": rec.confidence,
-    }
-
-
-def _build_json_report(
-    comparison: CrossProjectComparison,
-    communities: list,
-) -> dict:
-    """Build a compact, human-readable JSON report.
-
-    Optimisations vs. verbose format:
-    - Relative file paths (strips project root prefix)
-    - Matches deduplicated & grouped by function pair (keeps highest sim)
-    - Communities: short member dicts instead of raw node keys
-    - overlap_percent rounded to 4 decimals
-    """
-    proj_a = str(comparison.project_a)
-    proj_b = str(comparison.project_b)
-
-    significant_matches = _deduplicate_matches(comparison.matches, proj_a, proj_b)
-    significant_communities = _filter_significant_communities(communities, proj_a, proj_b)
-    recommendation = _build_recommendation_dict(comparison, communities)
-
-    return {
-        "project_a": proj_a,
-        "project_b": proj_b,
-        "stats": {
-            "a": comparison.stats_a,
-            "b": comparison.stats_b,
-        },
-        "total_matches": len(significant_matches),
-        "shared_loc_potential": comparison.shared_loc_potential,
-        "recommendation": recommendation,
-        "communities": significant_communities,
-        "matches": significant_matches,
-    }

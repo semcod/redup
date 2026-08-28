@@ -43,7 +43,7 @@ def detect_communities(
     except ImportError:
         raise ImportError(
             "networkx is required for community detection. Install with: pip install redup[compare]"
-        )
+        ) from None
 
     G = nx.Graph()
 
@@ -58,13 +58,13 @@ def detect_communities(
             node_a,
             project=match.project_a,
             function=match.function_a,
-            loc=match.lines_a[1] - match.lines_a[0],
+            loc=match.lines_a[1] - match.lines_a[0] + 1,
         )
         G.add_node(
             node_b,
             project=match.project_b,
             function=match.function_b,
-            loc=match.lines_b[1] - match.lines_b[0],
+            loc=match.lines_b[1] - match.lines_b[0] + 1,
         )
         G.add_edge(node_a, node_b, weight=match.similarity)
 

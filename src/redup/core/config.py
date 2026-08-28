@@ -33,20 +33,20 @@ def _load_toml_file(file_path: Path) -> dict[str, Any]:
         return {}
 
 
-def _get_config_from_pyproject() -> dict[str, Any]:
+def _get_config_from_pyproject(root: Path | None = None) -> dict[str, Any]:
     """Get reDUP configuration from pyproject.toml [tool.redup] section."""
-    pyproject_path = Path.cwd() / "pyproject.toml"
+    pyproject_path = (root or Path.cwd()) / "pyproject.toml"
     data = _load_toml_file(pyproject_path)
     return data.get("tool", {}).get("redup", {})
 
 
-def _get_config_from_redup_toml() -> dict[str, Any]:
+def _get_config_from_redup_toml(root: Path | None = None) -> dict[str, Any]:
     """Get reDUP configuration from redup.toml file."""
-    redup_toml_path = Path.cwd() / "redup.toml"
+    redup_toml_path = (root or Path.cwd()) / "redup.toml"
     return _load_toml_file(redup_toml_path)
 
 
-def load_config() -> dict[str, Any]:
+def load_config(root: Path | None = None) -> dict[str, Any]:
     """Load reDUP configuration from available sources.
 
     Priority order:
@@ -56,21 +56,19 @@ def load_config() -> dict[str, Any]:
     4. [tool.redup] in pyproject.toml
     5. Global config defaults (redup.config)
     """
-    # Start with global config defaults (already includes .env if present)
-    config = {
-        "extensions": global_config.DEFAULT_EXTENSIONS,
-        "min_lines": global_config.DEFAULT_MIN_LINES,
-        "min_similarity": global_config.DEFAULT_MIN_SIMILARITY,
-        "include_tests": global_config.DEFAULT_INCLUDE_TESTS,
+    # File and environment values are kept sparse here. ``config_to_scan_config``
+    # applies defaults after nested ``[scan]`` values have had a chance to win;
+    # eagerly inserting top-level defaults would mask every nested setting.
+    config: dict[str, Any] = {
         "output": global_config.DEFAULT_OUTPUT_DIR,
         "format": global_config.DEFAULT_FORMAT,
     }
 
     # Load from redup.toml
-    config.update(_get_config_from_redup_toml())
+    config.update(_get_config_from_redup_toml(root))
 
     # Load from pyproject.toml (overwrites redup.toml)
-    config.update(_get_config_from_pyproject())
+    config.update(_get_config_from_pyproject(root))
 
     # Override with environment variables
     env_mappings = {
@@ -88,7 +86,7 @@ def load_config() -> dict[str, Any]:
         value = os.getenv(env_var)
         if value is not None:
             try:
-                if type_func == bool:
+                if type_func is bool:
                     config[key] = value.lower() in ("true", "1", "yes", "on")
                 else:
                     config[key] = type_func(value)
@@ -100,7 +98,10 @@ def load_config() -> dict[str, Any]:
 
 def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     """Convert configuration dict to ScanConfig object."""
-    extensions = config.get("extensions", global_config.DEFAULT_EXTENSIONS)
+    scan_config = config.get("scan", {})
+    extensions = config.get(
+        "extensions", scan_config.get("extensions", global_config.DEFAULT_EXTENSIONS)
+    )
     if isinstance(extensions, str):
         ext_list = [
             e.strip() if e.startswith(".") else f".{e.strip()}" for e in extensions.split(",")
@@ -108,7 +109,6 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     else:
         ext_list = extensions
 
-    scan_config = config.get("scan", {})
     lsh_config = config.get("lsh", {})
     semantic_config = config.get("semantic", {})
 
@@ -129,7 +129,13 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
 
 def create_sample_redup_toml() -> str:
     """Create a sample redup.toml configuration file content."""
-    return """# reDUP Configuration File
+    extensions = (
+        ".py,.pyw,.js,.jsx,.mjs,.cjs,.ts,.tsx,.mts,.php,.phtml,.go,.rs,.java,"
+        ".c,.h,.cpp,.cc,.cxx,.hpp,.cs,.scala,.kt,.swift,.m,.mm,.lua,.rb,.rake,"
+        ".gemspec,.sql,.sh,.bash,.zsh,.fish,.html,.htm,.xhtml,.css,.scss,.sass,"
+        ".less,.svelte,.vue"
+    )
+    return f"""# reDUP Configuration File
 # See https://github.com/semcod/redup for documentation
 #
 # You can also use a .env file in your project directory:
@@ -139,7 +145,7 @@ def create_sample_redup_toml() -> str:
 
 [scan]
 # File extensions to scan (comma-separated)
-extensions = ".py,.pyw,.js,.jsx,.mjs,.cjs,.ts,.tsx,.mts,.php,.phtml,.go,.rs,.java,.c,.h,.cpp,.cc,.cxx,.hpp,.cs,.scala,.kt,.swift,.m,.mm,.lua,.rb,.rake,.gemspec,.sql,.sh,.bash,.zsh,.fish,.html,.htm,.xhtml,.css,.scss,.sass,.less,.svelte,.vue"
+extensions = "{extensions}"
 # Minimum block size in lines to consider as duplicate
 min_lines = 3
 # Minimum similarity score (0.0-1.0) for fuzzy matches

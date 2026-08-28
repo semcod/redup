@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
+from contextlib import redirect_stdout
 from typing import Any
 
 from redup import __version__
@@ -67,7 +68,11 @@ def handle_tools_call(request_id: Any, params: dict[str, Any]) -> dict[str, Any]
         }
 
     try:
-        result = TOOL_HANDLERS[tool_name](arguments)
+        # Analysis dependencies and legacy pipeline code may print progress to
+        # stdout. In stdio MCP transport, every stdout line must be JSON-RPC, so
+        # route diagnostics to stderr for the duration of a tool call.
+        with redirect_stdout(sys.stderr):
+            result = TOOL_HANDLERS[tool_name](arguments)
         return {
             "jsonrpc": "2.0",
             "id": request_id,

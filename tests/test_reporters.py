@@ -54,6 +54,54 @@ def test_json_reporter_valid_json():
     assert len(data["refactor_suggestions"]) == 0  # no suggestions without planner
 
 
+def test_json_reporter_can_bound_non_generated_groups():
+    groups = []
+    for index, actionability in enumerate(("generated", "refactor", "review"), start=1):
+        group = DuplicateGroup(
+            id=f"G{index}",
+            duplicate_type=DuplicateType.EXACT,
+            fragments=[
+                DuplicateFragment(file=f"a{index}.py", line_start=1, line_end=10),
+                DuplicateFragment(file=f"b{index}.py", line_start=1, line_end=10),
+            ],
+            metadata={"actionability": actionability},
+        )
+        groups.append(group)
+    dup_map = DuplicationMap(project_path="/tmp/test", groups=groups)
+
+    data = json.loads(to_json(dup_map, group_scope="non_generated", max_groups=1))
+
+    assert data["summary"]["total_groups"] == 3
+    assert len(data["groups"]) == 1
+    assert data["groups"][0]["metadata"]["actionability"] == "refactor"
+    assert data["selection"] == {
+        "group_scope": "non_generated",
+        "max_groups": 1,
+        "matching_groups": 2,
+        "returned_groups": 1,
+        "omitted_groups": 1,
+        "truncated": True,
+    }
+
+
+def test_compact_json_flattens_actionability_and_omits_hashes():
+    dup_map = _sample_map()
+    dup_map.groups[0].metadata = {
+        "actionability": "review",
+        "provenance": "semantic_candidate",
+        "reason": "verify behavior",
+    }
+
+    data = json.loads(to_json(dup_map, compact=True))
+    group = data["groups"][0]
+
+    assert group["actionability"] == "review"
+    assert group["provenance"] == "semantic_candidate"
+    assert "metadata" not in group
+    assert "normalized_hash" not in group
+    assert "class_name" not in group["fragments"][0]
+
+
 def test_json_reporter_with_suggestions():
     dm = _sample_map()
     # Generate suggestions via planner

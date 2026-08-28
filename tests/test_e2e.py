@@ -278,6 +278,30 @@ class TestCLIScanAll:
 
 
 class TestCLIOptions:
+    def test_public_scan_accepts_documented_parallel_flag(self, tmp_path: Path):
+        (tmp_path / "code.py").write_text("def value():\n    return 1\n", encoding="utf-8")
+
+        result = runner.invoke(
+            app,
+            ["scan", str(tmp_path), "--parallel", "--max-workers", "2", "-f", "json"],
+        )
+
+        assert result.exit_code == 0
+
+    def test_config_builder_can_disable_function_only_mode(self, tmp_path: Path):
+        from redup.cli_app.config_builder import build_config_with_file_support
+
+        config = build_config_with_file_support(
+            tmp_path,
+            extensions=None,
+            min_lines=None,
+            min_similarity=None,
+            include_tests=False,
+            functions_only=False,
+        )
+
+        assert config.functions_only is False
+
     def test_custom_extensions(self, tmp_path: Path):
         (tmp_path / "code.js").write_text("function foo() { return 1; }\n")
         result = runner.invoke(app, ["scan", str(tmp_path), "--ext", ".js", "-f", "toon"])
@@ -397,7 +421,13 @@ class TestCLIOptions:
             capture_output=True,
             text=True,
         )
-        subprocess.run(["git", "add", "."], cwd=tmp_path, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "add", "."],
+            cwd=tmp_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
         subprocess.run(
             ["git", "commit", "-m", "initial"],
             cwd=tmp_path,
@@ -507,7 +537,8 @@ class TestFullRoundtrip:
             print(f"Groups found: {len(data['groups'])}")
             for i, group in enumerate(data["groups"]):
                 print(
-                    f"  Group {i}: {group.get('normalized_name', 'unnamed')} - {group.get('occurrences', 0)} occurrences"
+                    f"  Group {i}: {group.get('normalized_name', 'unnamed')} - "
+                    f"{group.get('occurrences', 0)} occurrences"
                 )
 
         self._verify_json_structure(data)

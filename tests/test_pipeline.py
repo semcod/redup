@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from redup.core.models import DuplicateType, ScanConfig
-from redup.core.pipeline import analyze, analyze_optimized, duplicate_finder
+from redup.core.pipeline import analyze, analyze_optimized, analyze_parallel, duplicate_finder
 from redup.core.pipeline.duplicate_finder import (
     _fuzzy_candidate_indices,
     find_fuzzy_groups,
@@ -277,7 +277,11 @@ def test_analyze_no_duplicates():
             "def foo(x):\n    if x > 0:\n        return x * 2\n    return -1\n"
         )
         (root / "b.py").write_text(
-            "def bar(items):\n    total = 0\n    for i in items:\n        total += i\n    return total\n"
+            "def bar(items):\n"
+            "    total = 0\n"
+            "    for i in items:\n"
+            "        total += i\n"
+            "    return total\n"
         )
 
         config = ScanConfig(root=root, min_block_lines=3)
@@ -311,6 +315,19 @@ def test_analyze_optimized_stores_incremental_cache():
             file_count = conn.execute("SELECT COUNT(*) FROM file_hashes").fetchone()[0]
 
         assert file_count >= 1
+
+
+@pytest.mark.parametrize("runner", [analyze_optimized, analyze_parallel])
+def test_optimized_modes_respect_non_function_scan(tmp_path: Path, runner):
+    repeated_block = "first = value + 1\nsecond = first * 2\nprint(second)\n"
+    (tmp_path / "a.py").write_text(repeated_block, encoding="utf-8")
+    (tmp_path / "b.py").write_text(repeated_block, encoding="utf-8")
+    config = ScanConfig(root=tmp_path, min_block_lines=3, functions_only=False)
+
+    result = runner(config=config, function_level_only=False)
+
+    assert result.stats.total_blocks >= 2
+    assert result.total_groups >= 1
 
 
 def test_find_fuzzy_groups_detects_renamed_env_readers():
@@ -359,7 +376,12 @@ def test_fuzzy_candidate_index_avoids_all_pairs():
                 f"def function_{index}(value):\n"
                 + ("    if value:\n        return value + 1\n" if index % 2 else "")
                 + ("    for item in value:\n        print(item)\n" if index % 3 else "")
-                + ("    try:\n        return value[0]\n    except IndexError:\n        return None\n" if index % 5 else "")
+                + (
+                    "    try:\n        return value[0]\n"
+                    "    except IndexError:\n        return None\n"
+                    if index % 5
+                    else ""
+                )
             ),
             function_name=f"function_{index}",
         )

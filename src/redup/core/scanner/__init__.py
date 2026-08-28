@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import time
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from pathlib import Path
 
 from redup.core.models import ScanConfig, ScanStats
@@ -214,7 +216,7 @@ def scan_project(
     if config is None:
         from redup.core.config import config_to_scan_config, load_config
 
-        config = config_to_scan_config(load_config(), Path.cwd())
+        config = config_to_scan_config(load_config(Path.cwd()), Path.cwd())
 
     config = _normalize_scan_config(config)
     strategy, function_level_only = _init_strategy(strategy, function_level_only)
@@ -230,10 +232,23 @@ def scan_project(
     total_lines = 0
     total_blocks = 0
 
-    for file_path in files:
-        scanned = _process_single_file(
-            file_path, config, preloaded_sources, file_cache, function_level_only
-        )
+    process_file = partial(
+        _process_single_file,
+        config=config,
+        preloaded_sources=preloaded_sources,
+        file_cache=file_cache,
+        function_level_only=function_level_only,
+    )
+    if strategy.parallel and len(files) > 1:
+        # ``executor.map`` preserves the deterministic file order while overlapping
+        # file reads and parsers implemented outside the Python GIL (tree-sitter).
+        with ThreadPoolExecutor(max_workers=max(1, strategy.max_workers)) as executor:
+            scan_results = executor.map(process_file, files)
+            scanned_files_or_none = list(scan_results)
+    else:
+        scanned_files_or_none = [process_file(file_path) for file_path in files]
+
+    for scanned in scanned_files_or_none:
         if scanned is not None:
             scanned_files.append(scanned)
             total_lines += len(scanned.lines)

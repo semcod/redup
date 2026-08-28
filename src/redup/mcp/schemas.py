@@ -4,15 +4,17 @@ SCAN_PROPERTIES = {
     "path": {"type": "string", "description": "Path to the project directory"},
     "format": {
         "type": "string",
-        "enum": ["json", "yaml", "toon", "markdown", "enhanced", "code2llm", "all"],
+        "enum": ["json", "yaml", "toon", "markdown", "enhanced", "code2llm"],
         "default": "json",
-        "description": "Output format",
+        "description": "Output format; JSON supports result limits and is best for agents",
     },
     "mode": {
         "type": "string",
         "enum": ["standard", "optimized", "parallel"],
-        "default": "standard",
-        "description": "Analysis mode",
+        "default": "optimized",
+        "description": (
+            "Execution strategy; choose parallel here instead of also setting parallel=true"
+        ),
     },
     "extensions": {"type": "string", "description": "Comma-separated file extensions"},
     "min_lines": {"type": "integer", "default": 3, "description": "Minimum block size in lines"},
@@ -30,7 +32,7 @@ SCAN_PROPERTIES = {
     "parallel": {
         "type": "boolean",
         "default": False,
-        "description": "Use parallel scanning for large projects",
+        "description": "Deprecated compatibility alias for mode=parallel; omit when mode is set",
     },
     "memory_cache": {
         "type": "boolean",
@@ -61,7 +63,10 @@ SCAN_PROPERTIES = {
     "semantic": {
         "type": "boolean",
         "default": False,
-        "description": "Enable embedding-based semantic duplicate detection",
+        "description": (
+            "Enable semantic candidates; without the optional model runtime, the explainable "
+            "intent-profile fallback is used and findings are marked for review"
+        ),
     },
     "semantic_threshold": {
         "type": "number",
@@ -77,6 +82,12 @@ SCAN_PROPERTIES = {
         "default": False,
         "description": "Include code snippets in JSON output",
     },
+    "detail": {
+        "type": "string",
+        "enum": ["compact", "full"],
+        "default": "compact",
+        "description": "Compact removes redundant hashes and verbose metadata from JSON groups",
+    },
     "intent": {
         "type": "boolean",
         "default": False,
@@ -90,6 +101,25 @@ SCAN_PROPERTIES = {
     "intent_manifest": {
         "type": "string",
         "description": "Path to intract.yaml / intent.yaml for intent analysis",
+    },
+    "group_scope": {
+        "type": "string",
+        "enum": ["non_generated", "refactor", "review", "generated", "all"],
+        "default": "non_generated",
+        "description": "JSON result filter; non_generated keeps refactor and review findings",
+    },
+    "max_groups": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 20,
+        "description": "Maximum JSON groups returned; use 0 for every matching group",
+    },
+    "refresh": {
+        "type": "boolean",
+        "default": False,
+        "description": (
+            "Ignore the in-process result cache even when files and options are unchanged"
+        ),
     },
 }
 
@@ -112,21 +142,72 @@ def _make_check_properties() -> dict[str, Any]:
     }
 
 
+def _make_find_properties() -> dict[str, Any]:
+    """Build compact first-pass properties with the advertised ten-group default."""
+    return {
+        **SCAN_PROPERTIES,
+        "max_groups": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 10,
+            "description": "Maximum JSON groups returned; use 0 for every matching group",
+        },
+    }
+
+
 COMPARE_PROPERTIES = {
     "before": {"type": "string", "description": "Path to the earlier scan file"},
     "after": {"type": "string", "description": "Path to the later scan file"},
 }
 
+COMPARE_PROJECT_PROPERTIES = {
+    "project_a": {"type": "string", "description": "First project directory"},
+    "project_b": {"type": "string", "description": "Second project directory"},
+    "threshold": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "default": 0.75,
+        "description": "Minimum cross-project similarity",
+    },
+    "semantic": {
+        "type": "boolean",
+        "default": False,
+        "description": "Also evaluate semantic similarity (slower)",
+    },
+    "extensions": {"type": "string", "description": "Comma-separated file extensions"},
+    "min_lines": {"type": "integer", "minimum": 1, "default": 3},
+    "functions_only": {"type": "boolean", "default": True},
+    "max_matches": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 20,
+        "description": "Maximum matches returned; use 0 for all matches",
+    },
+}
+
 TOOL_SCHEMA_REDUP = {
     "analyze_project": {
         "name": "analyze_project",
-        "description": "Analyze a project and generate duplication findings",
+        "description": (
+            "Detailed in-project duplication scan. JSON defaults to the top 20 non-generated "
+            "groups; use group_scope=all and max_groups=0 only when a complete raw report is "
+            "needed. "
+            "Identical calls are cached until source files change."
+        ),
         "inputSchema": {"type": "object", "properties": SCAN_PROPERTIES, "required": ["path"]},
     },
     "find_duplicates": {
         "name": "find_duplicates",
-        "description": "Find duplicate code blocks in a project",
-        "inputSchema": {"type": "object", "properties": SCAN_PROPERTIES, "required": ["path"]},
+        "description": (
+            "Start here for an LLM-friendly first pass: returns the top 10 non-generated duplicate "
+            "groups plus complete summary totals. Do not repeat the same call."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": _make_find_properties(),
+            "required": ["path"],
+        },
     },
     "compare_scans": {
         "name": "compare_scans",
@@ -139,11 +220,11 @@ TOOL_SCHEMA_REDUP = {
     },
     "compare_projects": {
         "name": "compare_projects",
-        "description": "Compare two saved reDUP scan outputs",
+        "description": "Scan two project directories and report shared or duplicated code",
         "inputSchema": {
             "type": "object",
-            "properties": COMPARE_PROPERTIES,
-            "required": ["before", "after"],
+            "properties": COMPARE_PROJECT_PROPERTIES,
+            "required": ["project_a", "project_b"],
         },
     },
     "check_project": {

@@ -114,6 +114,21 @@ def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:
     files = {fragment.file for fragment in group.fragments}
     exact = group.duplicate_type == DuplicateType.EXACT
 
+    # Semantic similarity is evidence for review, not proof that two implementations
+    # are interchangeable. In particular, the dependency-free intent-profile engine
+    # compares names and behavior clues rather than source equivalence.
+    if group.duplicate_type == DuplicateType.SEMANTIC:
+        fallback = group.metadata.get("model") == "redup/intent-profile-v1"
+        return {
+            "provenance": "intent_profile_candidate" if fallback else "semantic_candidate",
+            "actionability": "review",
+            "reason": (
+                "lexical intent-profile similarity requires behavioral verification"
+                if fallback
+                else "embedding similarity requires behavioral verification"
+            ),
+        }
+
     if len(files) == 1:
         if _is_delegating_wrapper_group(group):
             return {

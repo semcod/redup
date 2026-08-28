@@ -119,7 +119,7 @@ def analyze(
 
 def analyze_optimized(
     config: ScanConfig | None = None,
-    function_level_only: bool = False,
+    function_level_only: bool | None = None,
     use_memory_cache: bool = True,
     max_cache_mb: int = 512,
 ) -> DuplicationMap:
@@ -137,6 +137,8 @@ def analyze_optimized(
         A DuplicationMap with all duplicate groups and refactoring suggestions.
     """
     config = ensure_config(config)
+    if function_level_only is None:
+        function_level_only = config.functions_only
 
     # Initialize cache if enabled
     cache = None
@@ -165,7 +167,9 @@ def analyze_optimized(
                 memory_cache=use_memory_cache,
                 max_cache_mb=max_cache_mb if use_memory_cache else 256,
             )
-            scanned_files, stats = scan_project(config, strategy, function_level_only=True)
+            scanned_files, stats = scan_project(
+                config, strategy, function_level_only=function_level_only
+            )
         elif config.parallel_workers is None and getattr(config, "_parallel_enabled", False):
             # Auto-detect CPU count when parallel_workers is None (default behavior)
             import multiprocessing as mp
@@ -177,12 +181,18 @@ def analyze_optimized(
                 memory_cache=use_memory_cache,
                 max_cache_mb=max_cache_mb if use_memory_cache else 256,
             )
-            scanned_files, stats = scan_project(config, strategy, function_level_only=True)
+            scanned_files, stats = scan_project(
+                config, strategy, function_level_only=function_level_only
+            )
         elif use_memory_cache:
             strategy = ScanStrategy(memory_cache=True, max_cache_mb=max_cache_mb)
-            scanned_files, stats = scan_project(config, strategy, function_level_only=True)
+            scanned_files, stats = scan_project(
+                config, strategy, function_level_only=function_level_only
+            )
         else:
-            scanned_files, stats = scan_project(config, function_level_only=True)
+            scanned_files, stats = scan_project(
+                config, function_level_only=function_level_only
+            )
 
         # Phase 2: Process blocks
         all_blocks = process_blocks(scanned_files, function_level_only)
@@ -210,7 +220,7 @@ def analyze_optimized(
 
 def analyze_parallel(
     config: ScanConfig | None = None,
-    function_level_only: bool = False,
+    function_level_only: bool | None = None,
     max_workers: int | None = None,
 ) -> DuplicationMap:
     """Run reDUP analysis with parallel scanning for large projects.
@@ -226,6 +236,8 @@ def analyze_parallel(
     start_time = time.time()
 
     config = ensure_config(config)
+    if function_level_only is None:
+        function_level_only = config.functions_only
 
     def handle_interrupt(signum, frame):
         """Handle Ctrl+C gracefully."""
@@ -237,7 +249,9 @@ def analyze_parallel(
 
     try:
         # Phase 1: Parallel Scan
-        scanned_files, stats = scan_phase_parallel(config, max_workers)
+        scanned_files, stats = scan_phase_parallel(
+            config, max_workers, function_level_only=function_level_only
+        )
 
         # Phase 2: Process blocks
         all_blocks = process_blocks(scanned_files, function_level_only)

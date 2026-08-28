@@ -179,7 +179,6 @@ class ScanConfig:
     include_tests: bool = False
     target_files: list[str] | None = None
     enable_cache: bool = False
-    parallel_workers: int = 1
     _parallel_enabled: bool = False
     _memory_cache: bool = True
     _max_cache_mb: int = 512

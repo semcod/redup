@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import platform
+from collections import OrderedDict
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -20,10 +23,13 @@ from redup.reporters.markdown_reporter import to_markdown
 from redup.reporters.toon_reporter import to_toon
 from redup.reporters.yaml_reporter import to_yaml
 
+_ANALYSIS_CACHE_MAX_ENTRIES = 4
+_ANALYSIS_CACHE: OrderedDict[str, tuple[ScanConfig, Any]] = OrderedDict()
+
 
 def _build_scan_config(path: Path, params: dict[str, Any]) -> ScanConfig:
     """Build scan config from parameters."""
-    scan_config = config_to_scan_config(load_config(), path)
+    scan_config = config_to_scan_config(load_config(path), path)
 
     extensions = parse_extensions(params.get("extensions"))
     if extensions is not None:
@@ -68,14 +74,50 @@ def _build_scan_config(path: Path, params: dict[str, Any]) -> ScanConfig:
     return scan_config
 
 
-def _run_analysis(path: Path, params: dict[str, Any]) -> tuple[ScanConfig, Any]:
+def _analysis_cache_key(scan_config: ScanConfig, params: dict[str, Any]) -> str:
+    """Fingerprint scan options and source metadata for safe in-process reuse."""
+    from redup.core.scanner_filters import _collect_files
+
+    digest = hashlib.sha256()
+    scan_payload = {
+        "config": asdict(scan_config),
+        "mode": str(params.get("mode", "optimized")).lower(),
+        "functions_only": bool(params.get("functions_only", scan_config.functions_only)),
+    }
+    digest.update(json.dumps(scan_payload, sort_keys=True, default=str).encode("utf-8"))
+    for file_path in sorted(_collect_files(scan_config)):
+        try:
+            stat = file_path.stat()
+            relative = file_path.relative_to(scan_config.root).as_posix()
+        except (OSError, ValueError):
+            continue
+        digest.update(f"\0{relative}\0{stat.st_size}\0{stat.st_mtime_ns}".encode())
+    return digest.hexdigest()
+
+
+def _remember_analysis(cache_key: str, scan_config: ScanConfig, dup_map: Any) -> None:
+    """Keep a small LRU of complete MCP results to avoid identical rescans."""
+    _ANALYSIS_CACHE[cache_key] = (scan_config, dup_map)
+    _ANALYSIS_CACHE.move_to_end(cache_key)
+    while len(_ANALYSIS_CACHE) > _ANALYSIS_CACHE_MAX_ENTRIES:
+        _ANALYSIS_CACHE.popitem(last=False)
+
+
+def _run_analysis(path: Path, params: dict[str, Any]) -> tuple[ScanConfig, Any, bool]:
     """Run analysis based on mode and parameters."""
     scan_config = _build_scan_config(path, params)
-    mode = str(params.get("mode", "standard")).lower()
+    mode = str(params.get("mode", "optimized")).lower()
+    if mode not in {"standard", "optimized", "parallel"}:
+        raise ValueError("mode must be one of: standard, optimized, parallel")
     functions_only = bool(params.get("functions_only", scan_config.functions_only))
     parallel_requested = bool(params.get("parallel", False)) or mode == "parallel"
-    memory_cache_requested = params.get("memory_cache")
-    use_memory_cache = True if memory_cache_requested is None else bool(memory_cache_requested)
+    use_memory_cache = bool(params.get("memory_cache", True))
+
+    cache_key = _analysis_cache_key(scan_config, params)
+    if not bool(params.get("refresh", False)) and cache_key in _ANALYSIS_CACHE:
+        cached_config, cached_map = _ANALYSIS_CACHE[cache_key]
+        _ANALYSIS_CACHE.move_to_end(cache_key)
+        return cached_config, cached_map, True
 
     if parallel_requested:
         result = analyze_parallel(
@@ -83,7 +125,7 @@ def _run_analysis(path: Path, params: dict[str, Any]) -> tuple[ScanConfig, Any]:
             function_level_only=functions_only,
             max_workers=scan_config.parallel_workers,
         )
-    elif mode == "optimized" or use_memory_cache or bool(params.get("incremental", False)):
+    elif mode == "optimized" or bool(params.get("incremental", False)):
         result = analyze_optimized(
             scan_config,
             function_level_only=functions_only,
@@ -93,7 +135,8 @@ def _run_analysis(path: Path, params: dict[str, Any]) -> tuple[ScanConfig, Any]:
     else:
         result = analyze(scan_config, function_level_only=functions_only)
 
-    return scan_config, result
+    _remember_analysis(cache_key, scan_config, result)
+    return scan_config, result, False
 
 
 def _estimate_code2llm_counts(dup_map: Any) -> tuple[int, int]:
@@ -126,10 +169,24 @@ def _format_analysis_result(
     dup_map: Any,
     fmt: str,
     include_snippets: bool = False,
+    group_scope: str = "all",
+    max_groups: int | None = None,
+    cache_hit: bool = False,
+    compact: bool = False,
 ) -> str:
     """Format analysis result based on output format."""
     if fmt == "json":
-        return to_json(dup_map, include_snippets=include_snippets)
+        payload = json.loads(
+            to_json(
+                dup_map,
+                include_snippets=include_snippets,
+                group_scope=group_scope,
+                max_groups=max_groups,
+                compact=compact,
+            )
+        )
+        payload["execution"] = {"analysis_cache_hit": cache_hit}
+        return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     if fmt == "yaml":
         return to_yaml(dup_map)
     if fmt == "toon":
@@ -176,12 +233,35 @@ def handle_analyze_project(params: dict[str, Any]) -> str:
     if not path.exists() or not path.is_dir():
         raise FileNotFoundError(f"Project directory not found: {path}")
 
-    scan_config, dup_map = _run_analysis(path, params)
+    scan_config, dup_map, cache_hit = _run_analysis(path, params)
     fmt = str(params.get("format", "json")).lower()
+    group_scope = str(params.get("group_scope", "non_generated")).lower()
+    max_groups = int(params.get("max_groups", 20))
+    detail = str(params.get("detail", "compact")).lower()
+    if detail not in {"compact", "full"}:
+        raise ValueError("detail must be one of: compact, full")
+    compact = detail == "compact"
 
     return _format_analysis_result(
-        scan_config, dup_map, fmt, include_snippets=bool(params.get("include_snippets", False))
+        scan_config,
+        dup_map,
+        fmt,
+        include_snippets=bool(params.get("include_snippets", False)),
+        group_scope=group_scope,
+        max_groups=max_groups,
+        cache_hit=cache_hit,
+        compact=compact,
     )
+
+
+def handle_find_duplicates(params: dict[str, Any]) -> str:
+    """Return a compact first-pass report suitable for an LLM context window."""
+    compact_params = dict(params)
+    compact_params.setdefault("format", "json")
+    compact_params.setdefault("mode", "optimized")
+    compact_params.setdefault("group_scope", "non_generated")
+    compact_params.setdefault("max_groups", 10)
+    return handle_analyze_project(compact_params)
 
 
 def handle_suggest_refactoring(params: dict[str, Any]) -> str:
@@ -190,7 +270,7 @@ def handle_suggest_refactoring(params: dict[str, Any]) -> str:
     if not path.exists() or not path.is_dir():
         raise FileNotFoundError(f"Project directory not found: {path}")
 
-    scan_config, dup_map = _run_analysis(path, params)
+    scan_config, dup_map, _ = _run_analysis(path, params)
     reporter = EnhancedReporter(dup_map)
 
     payload = {
@@ -242,7 +322,48 @@ def handle_compare_scans(params: dict[str, Any]) -> str:
     return json.dumps(payload, indent=2, ensure_ascii=False)
 
 
-def _check_thresholds(dup_map: Any, params: dict[str, Any]) -> list[dict]:
+def handle_compare_projects(params: dict[str, Any]) -> str:
+    """Scan and compare two project directories."""
+    project_a = resolve_path(params.get("project_a", params.get("before")))
+    project_b = resolve_path(params.get("project_b", params.get("after")))
+    for project in (project_a, project_b):
+        if not project.exists() or not project.is_dir():
+            raise FileNotFoundError(f"Project directory not found: {project}")
+
+    from redup.core.comparator import compare_projects
+    from redup.reporters.comparison_reporter import comparison_to_dict
+
+    threshold = float(params.get("threshold", 0.75))
+    comparison = compare_projects(
+        project_a,
+        project_b,
+        similarity_threshold=threshold,
+        use_semantic=bool(params.get("semantic", False)),
+        extensions=parse_extensions(params.get("extensions")),
+        min_lines=int(params.get("min_lines", 3)),
+        functions_only=bool(params.get("functions_only", True)),
+    )
+
+    communities = []
+    community_detection = "available"
+    if comparison.matches:
+        try:
+            from redup.core.community import detect_communities
+
+            communities = detect_communities(comparison, min_similarity=threshold)
+        except ImportError:
+            community_detection = "unavailable: install redup[compare] for recommendations"
+
+    payload = comparison_to_dict(
+        comparison,
+        communities,
+        max_matches=int(params.get("max_matches", 20)),
+    )
+    payload["community_detection"] = community_detection
+    return json.dumps(json_safe(payload), indent=2, ensure_ascii=False)
+
+
+def _check_thresholds(dup_map: Any, params: dict[str, Any]) -> list[dict[str, Any]]:
     """Check project against quality thresholds."""
     max_groups = int(params.get("max_groups", 10))
     max_saved_lines = int(params.get("max_saved_lines", params.get("max_lines", 100)))
@@ -268,7 +389,7 @@ def _check_thresholds(dup_map: Any, params: dict[str, Any]) -> list[dict]:
     return violations
 
 
-def _format_top_groups(dup_map: Any, max_groups: int) -> list[dict]:
+def _format_top_groups(dup_map: Any, max_groups: int) -> list[dict[str, Any]]:
     """Format top groups by impact for response."""
     return [
         {
@@ -289,7 +410,7 @@ def handle_check_project(params: dict[str, Any]) -> str:
     if not path.exists() or not path.is_dir():
         raise FileNotFoundError(f"Project directory not found: {path}")
 
-    _, dup_map = _run_analysis(path, params)
+    _, dup_map, _ = _run_analysis(path, params)
     max_groups = int(params.get("max_groups", 10))
     max_saved_lines = int(params.get("max_saved_lines", params.get("max_lines", 100)))
 
@@ -351,9 +472,9 @@ def handle_project_info(_: dict[str, Any]) -> str:
 TOOL_HANDLERS = {
     "analyze_project": handle_analyze_project,
     "scan_project": handle_analyze_project,
-    "find_duplicates": handle_analyze_project,
+    "find_duplicates": handle_find_duplicates,
     "compare_scans": handle_compare_scans,
-    "compare_projects": handle_compare_scans,
+    "compare_projects": handle_compare_projects,
     "check_project": handle_check_project,
     "suggest_refactoring": handle_suggest_refactoring,
     "project_info": handle_project_info,

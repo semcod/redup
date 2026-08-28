@@ -1,6 +1,8 @@
 """Tests for reDUP scanner."""
 
 import tempfile
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from redup.core import scanner_filters
@@ -11,6 +13,8 @@ from redup.core.scanner import (
     _should_exclude,
     scan_project,
 )
+from redup.core.scanner_cache import MemoryFileCache
+from redup.core.scanner_types import ScannedFile, ScanStrategy
 
 
 def test_should_exclude_git():
@@ -87,6 +91,41 @@ def test_scan_project_real_dir():
         paths = {Path(f.path).name for f in files}
         assert "a.py" in paths
         assert "b.py" in paths
+
+
+def test_parallel_strategy_processes_files_concurrently(tmp_path, monkeypatch):
+    for name in ("a.py", "b.py"):
+        (tmp_path / name).write_text("def value():\n    return 1\n", encoding="utf-8")
+
+    worker_threads: set[int] = set()
+    workers_started = threading.Barrier(2)
+
+    def record_worker(file_path, config, preloaded_sources, file_cache, function_level_only):
+        worker_threads.add(threading.get_ident())
+        workers_started.wait(timeout=2)
+        return ScannedFile(path=file_path.name, lines=["value = 1"], blocks=[])
+
+    monkeypatch.setitem(scan_project.__globals__, "_process_single_file", record_worker)
+    _, stats = scan_project(
+        ScanConfig(root=tmp_path),
+        ScanStrategy(parallel=True, max_workers=2),
+        function_level_only=True,
+    )
+
+    assert stats.files_scanned == 2
+    assert len(worker_threads) == 2
+
+
+def test_memory_file_cache_is_safe_for_parallel_reads(tmp_path):
+    source_path = tmp_path / "source.py"
+    source_path.write_bytes(b"def value():\n    return 1\n")
+    cache = MemoryFileCache(max_memory_mb=1)
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        contents = list(executor.map(cache.get_file_content, [source_path] * 32))
+
+    assert contents == [source_path.read_bytes()] * 32
+    assert list(cache.cache) == [source_path]
 
 
 def test_scan_project_target_files_only():

@@ -91,6 +91,27 @@ class TestFindHashMatches:
         matches = _find_hash_matches([block_a], [block_b], "/a", "/b")
         assert len(matches) == 1
         assert matches[0].similarity == 1.0
+        assert matches[0].similarity_type == "exact"
+
+    def test_renamed_blocks_are_labeled_structural(self):
+        block_a = CodeBlock(
+            file="a/f.py",
+            line_start=1,
+            line_end=3,
+            text="def double(value):\n    result = value * 2\n    return result\n",
+            function_name="double",
+        )
+        block_b = CodeBlock(
+            file="b/g.py",
+            line_start=1,
+            line_end=3,
+            text="def scale(number):\n    output = number * 2\n    return output\n",
+            function_name="scale",
+        )
+
+        matches = _find_hash_matches([block_a], [block_b], "/a", "/b")
+
+        assert len(matches) == 1
         assert matches[0].similarity_type == "structural"
 
     def test_different_blocks_no_match(self):
@@ -103,6 +124,29 @@ class TestFindHashMatches:
 
         matches = _find_hash_matches([block_a], [block_b], "/a", "/b")
         assert len(matches) == 0
+
+
+def test_shared_loc_counts_inclusive_source_lines():
+    comparison = CrossProjectComparison(
+        project_a=Path("/a"),
+        project_b=Path("/b"),
+        matches=[
+            CrossProjectMatch(
+                project_a="/a",
+                project_b="/b",
+                file_a="a.py",
+                file_b="b.py",
+                function_a="shared",
+                function_b="shared",
+                similarity=1.0,
+                similarity_type="structural",
+                lines_a=(1, 3),
+                lines_b=(5, 7),
+            )
+        ],
+    )
+
+    assert comparison.shared_loc_potential == 3
 
 
 # ---------------------------------------------------------------------------
@@ -120,8 +164,8 @@ class TestCompareProjects:
         assert result.stats_b["files"] >= 1
         # The shared validate_email function should produce at least one match
         assert result.total_matches >= 1
-        structural = [m for m in result.matches if m.similarity_type == "structural"]
-        assert len(structural) >= 1
+        exact = [m for m in result.matches if m.similarity_type == "exact"]
+        assert len(exact) >= 1
 
     def test_disjoint_projects_no_matches(self, disjoint_projects):
         proj_a, proj_b = disjoint_projects

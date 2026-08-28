@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from redup.core.hasher import hash_block_structural
+from redup.core.hasher import hash_block, hash_block_structural
 from redup.core.lsh_matcher import LSHIndex
 from redup.core.models import ScanConfig
 from redup.core.scanner import scan_project
@@ -50,7 +50,11 @@ class CrossProjectComparison:
     def shared_loc_potential(self) -> int:
         """Lines that could be saved by extracting shared code."""
         return sum(
-            max(m.lines_a[1] - m.lines_a[0], m.lines_b[1] - m.lines_b[0]) for m in self.matches
+            max(
+                m.lines_a[1] - m.lines_a[0] + 1,
+                m.lines_b[1] - m.lines_b[0] + 1,
+            )
+            for m in self.matches
         )
 
 
@@ -184,6 +188,9 @@ def _find_hash_matches(
     for block_b in blocks_b:
         h = hash_block_structural(block_b.text)
         for block_a in index.get(h, []):
+            similarity_type = (
+                "exact" if hash_block(block_a.text) == hash_block(block_b.text) else "structural"
+            )
             matches.append(
                 CrossProjectMatch(
                     project_a=proj_a,
@@ -193,7 +200,7 @@ def _find_hash_matches(
                     function_a=block_a.function_name or "",
                     function_b=block_b.function_name or "",
                     similarity=1.0,
-                    similarity_type="structural",
+                    similarity_type=similarity_type,
                     lines_a=(block_a.line_start, block_a.line_end),
                     lines_b=(block_b.line_start, block_b.line_end),
                 )

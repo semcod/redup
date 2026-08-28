@@ -11,7 +11,7 @@ def build_config(
     path: Path, extensions: str, min_lines: int, min_similarity: float, include_tests: bool
 ) -> ScanConfig:
     """Build basic scan configuration."""
-    config = load_config()
+    config = load_config(path)
     return config_to_scan_config(config, path)
 
 
@@ -40,7 +40,7 @@ def build_config_with_file_support(
     target_files: list[str] | None = None,
 ) -> ScanConfig:
     """Build scan configuration with advanced options."""
-    config = load_config()
+    config = load_config(path)
     scan_config = config_to_scan_config(config, path)
 
     # Override with CLI parameters if provided
@@ -52,8 +52,7 @@ def build_config_with_file_support(
         scan_config.min_similarity = min_similarity
     if include_tests is not None:
         scan_config.include_tests = include_tests
-    if functions_only:
-        scan_config.functions_only = functions_only
+    scan_config.functions_only = bool(functions_only)
 
     # Performance and caching
     scan_config._parallel_enabled = parallel
