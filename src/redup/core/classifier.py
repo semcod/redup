@@ -60,6 +60,14 @@ def _contains_nested_mirror_pair(paths: list[tuple[str, ...]]) -> bool:
     return False
 
 
+def _contains_packaged_artifact(paths: list[tuple[str, ...]]) -> bool:
+    """Recognize self-contained artifacts unpacked from a ``*.lps`` bundle."""
+    return any(
+        any(part.endswith(".lps") for part in path) and "artifacts" in path
+        for path in paths
+    )
+
+
 def _same_relative_path_across_roots(paths: list[tuple[str, ...]]) -> bool:
     if len(paths) < 2 or any(len(path) < 2 for path in paths):
         return False
@@ -158,6 +166,12 @@ def classify_duplicate_group(group: DuplicateGroup) -> dict[str, object]:
             "provenance": "deployment_mirror",
             "actionability": "generated",
             "reason": "one location mirrors the complete path of another deployment",
+        }
+    if exact and _contains_packaged_artifact(paths):
+        return {
+            "provenance": "packaged_artifact",
+            "actionability": "generated",
+            "reason": "standalone artifact is embedded in an exported .lps bundle",
         }
     basenames = {path[-1] for path in paths if path}
     if exact and len(basenames) == 1 and any(

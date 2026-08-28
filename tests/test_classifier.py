@@ -69,6 +69,18 @@ def test_classifies_nested_deployment_mirror_as_generated():
     assert result["actionability"] == "generated"
 
 
+def test_classifies_lps_bundle_artifact_as_generated():
+    result = classify_duplicate_group(
+        _group(
+            "examples/rpi5-camera3/software/vision_app.py",
+            "examples/rpi5-camera3/demo-rpi5.lps/artifacts/vision_app.py",
+        )
+    )
+
+    assert result["provenance"] == "packaged_artifact"
+    assert result["actionability"] == "generated"
+
+
 def test_classifies_parallel_relative_paths_for_review():
     result = classify_duplicate_group(
         _group("chrome-plugin/content.js", "firefox-plugin/content.js")
