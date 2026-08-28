@@ -9,6 +9,7 @@ import typer
 from redup.cli_app.config_builder import build_config, build_config_with_file_support
 from redup.cli_app.scan_helpers import print_scan_header, print_scan_summary
 from redup.core.config import create_sample_redup_toml
+from redup.core.models import DEFAULT_SEMANTIC_THRESHOLD
 from redup.core.pipeline import analyze, analyze_optimized
 
 
@@ -32,7 +33,16 @@ def _resolve_changed_files(
 
     try:
         diff_proc = subprocess.run(
-            ["git", "-C", str(root), "diff", "--name-only", "--diff-filter=ACMRTUXB", base_ref, "--"],
+            [
+                "git",
+                "-C",
+                str(root),
+                "diff",
+                "--name-only",
+                "--diff-filter=ACMRTUXB",
+                base_ref,
+                "--",
+            ],
             capture_output=True,
             text=True,
             check=False,
@@ -46,9 +56,7 @@ def _resolve_changed_files(
             f"failed to resolve changed files against {base_ref!r}: {error_output}"
         )
 
-    changed: set[str] = {
-        line.strip() for line in diff_proc.stdout.splitlines() if line.strip()
-    }
+    changed: set[str] = {line.strip() for line in diff_proc.stdout.splitlines() if line.strip()}
 
     if include_untracked:
         untracked_proc = subprocess.run(
@@ -58,7 +66,9 @@ def _resolve_changed_files(
             check=False,
         )
         if untracked_proc.returncode == 0:
-            changed.update(line.strip() for line in untracked_proc.stdout.splitlines() if line.strip())
+            changed.update(
+                line.strip() for line in untracked_proc.stdout.splitlines() if line.strip()
+            )
 
     result: list[str] = []
     for rel in sorted(changed):
@@ -100,7 +110,7 @@ def scan_command(
     min_similarity: Any = typer.Option(
         None, "--min-sim", help="Minimum similarity score (0.0-1.0). Overrides config."
     ),
-    include_tests: bool = typer.Option(
+    include_tests: bool | None = typer.Option(
         False, "--include-tests", help="Include test files in analysis."
     ),
     functions_only: bool = typer.Option(
@@ -148,7 +158,7 @@ def scan_command(
         help="Enable embedding-based semantic detection (requires reDUP[semantic]).",
     ),
     semantic_threshold: float = typer.Option(
-        0.80,
+        DEFAULT_SEMANTIC_THRESHOLD,
         "--semantic-threshold",
         help="Semantic similarity threshold (0.0-1.0).",
     ),
@@ -190,7 +200,8 @@ def scan_command(
     if changed_only:
         target_files = _resolve_changed_files(path, base_ref, include_untracked)
         typer.echo(
-            f"🧩 Changed-only mode: {len(target_files)} file(s) selected from git diff vs {base_ref}"
+            f"🧩 Changed-only mode: {len(target_files)} file(s) selected "
+            f"from git diff vs {base_ref}"
         )
 
     # Build configuration
@@ -246,7 +257,11 @@ def scan_command(
 
     # Run analysis
     if parallel or memory_cache or incremental:
-        dup_map = analyze_optimized(config, use_memory_cache=memory_cache, max_cache_mb=max_cache_mb)
+        dup_map = analyze_optimized(
+            config,
+            use_memory_cache=memory_cache,
+            max_cache_mb=max_cache_mb,
+        )
     else:
         dup_map = analyze(config)
 
@@ -287,9 +302,9 @@ def diff_command(before: Path, after: Path) -> None:
         diff = compare_scans(before, after)
         result = format_diff_result(diff)
         typer.echo(result)
-    except Exception as e:
-        typer.echo(f"❌ Error comparing scans: {e}", err=True)
-        raise typer.Exit(1)
+    except Exception as exc:
+        typer.echo(f"❌ Error comparing scans: {exc}", err=True)
+        raise typer.Exit(1) from exc
 
 
 def check_command(
@@ -300,8 +315,10 @@ def check_command(
         dir_okay=True,
         file_okay=False,
     ),
-    max_groups: int = typer.Option(10, "--max-groups", help="Maximum duplicate groups to report."),
-    max_saved_lines: int = typer.Option(
+    max_groups: int | None = typer.Option(
+        10, "--max-groups", help="Maximum duplicate groups to report."
+    ),
+    max_saved_lines: int | None = typer.Option(
         100, "--max-saved-lines", help="Maximum saved lines to report."
     ),
     extensions: Any = typer.Option(
@@ -311,7 +328,7 @@ def check_command(
     min_similarity: Any = typer.Option(
         None, "--min-sim", help="Minimum similarity score (0.0-1.0)."
     ),
-    include_tests: bool = typer.Option(False, "--include-tests", help="Include test files."),
+    include_tests: bool | None = typer.Option(False, "--include-tests", help="Include test files."),
 ) -> None:
     """Quick check for duplicates with summary report."""
 
@@ -333,7 +350,8 @@ def check_command(
             if group.saved_lines_potential <= _max_saved:
                 break
             typer.echo(
-                f"  {i + 1}. {group.id}: {group.occurrences} occurrences, {group.saved_lines_potential} lines recoverable"
+                f"  {i + 1}. {group.id}: {group.occurrences} occurrences, "
+                f"{group.saved_lines_potential} lines recoverable"
             )
     else:
         typer.echo("✅ No duplicates found!")

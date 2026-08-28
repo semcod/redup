@@ -8,6 +8,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from redup import __version__
 from redup.core.models import (
     DuplicationMap,
 )
@@ -88,7 +89,7 @@ class EnhancedReporter:
                 lang_stats[lang]["groups"] += 1
 
         # Convert sets to counts
-        for lang, stats in lang_stats.items():
+        for stats in lang_stats.values():
             stats["files"] = len(stats["files"])
 
         return dict(lang_stats)
@@ -233,28 +234,33 @@ class EnhancedReporter:
             "title": "Processing Timeline",
         }
 
-    def save_enhanced_report(self, output_path: Path) -> None:
-        """Save enhanced report with metrics and visualizations."""
-        report = {
+    def _report_payload(self) -> dict[str, Any]:
+        """Build the serializable enhanced report shared by CLI and file output."""
+        return {
             "metadata": {
                 "generated_at": time.time(),
                 "project_path": self.dup_map.project_path,
-                "redup_version": "0.3.2",
+                "redup_version": __version__,
             },
             "metrics": self.generate_metrics_report(),
             "visualizations": self.generate_visualization_data(),
             "groups_summary": [
                 {
-                    "id": g.id,
-                    "type": g.duplicate_type.value,
-                    "fragments": len(g.fragments),
-                    "similarity": g.similarity_score,
-                    "impact_score": g.impact_score,
-                    "saved_lines": g.saved_lines_potential,
+                    "id": group.id,
+                    "type": group.duplicate_type.value,
+                    "fragments": len(group.fragments),
+                    "similarity": group.similarity_score,
+                    "impact_score": group.impact_score,
+                    "saved_lines": group.saved_lines_potential,
                 }
-                for g in self.groups[:20]  # Top 20 groups
+                for group in self.groups[:20]
             ],
         }
 
-        with open(output_path, "w") as f:
-            json.dump(report, f, indent=2, default=str)
+    def generate_report(self) -> str:
+        """Return the enhanced report as JSON."""
+        return json.dumps(self._report_payload(), indent=2, default=str)
+
+    def save_enhanced_report(self, output_path: Path) -> None:
+        """Save enhanced report with metrics and visualizations."""
+        output_path.write_text(self.generate_report(), encoding="utf-8")

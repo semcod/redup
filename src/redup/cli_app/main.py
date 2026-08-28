@@ -22,6 +22,7 @@ from redup.cli_app.scan_commands import (  # noqa: E402
     info_command,
     scan_command,
 )
+from redup.core.models import DEFAULT_SEMANTIC_THRESHOLD  # noqa: E402
 
 app = typer.Typer(
     name="redup",
@@ -136,7 +137,7 @@ def scan(
         help="Enable semantic similarity across implementations (semantic extra recommended).",
     ),
     semantic_threshold: float = typer.Option(
-        0.80,
+        DEFAULT_SEMANTIC_THRESHOLD,
         "--semantic-threshold",
         help="Semantic similarity threshold (0.0-1.0).",
     ),

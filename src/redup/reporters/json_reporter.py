@@ -10,9 +10,7 @@ from redup.core.models import DuplicateType, DuplicationMap
 _GROUP_SCOPES = frozenset({"all", "non_generated", "refactor", "review", "generated"})
 
 
-def _fragment_to_dict(
-    fragment: Any, include_snippets: bool, *, compact: bool
-) -> dict[str, Any]:
+def _fragment_to_dict(fragment: Any, include_snippets: bool, *, compact: bool) -> dict[str, Any]:
     payload = {
         "file": fragment.file,
         "line_start": fragment.line_start,
@@ -83,6 +81,7 @@ def _suggestion_to_dict(s: Any) -> dict[str, Any]:
         "action": s.action.value,
         "new_module": s.new_module,
         "function_name": s.function_name,
+        "class_name": s.class_name,
         "original_files": s.original_files,
         "risk_level": s.risk_level.value,
         "rationale": s.rationale,
@@ -112,17 +111,13 @@ def duplication_map_to_dict(
     ranked_groups = dup_map.sorted_by_impact()
     if group_scope == "non_generated":
         matching_groups = [
-            group
-            for group in ranked_groups
-            if group.metadata.get("actionability") != "generated"
+            group for group in ranked_groups if group.metadata.get("actionability") != "generated"
         ]
     elif group_scope == "all":
         matching_groups = ranked_groups
     else:
         matching_groups = [
-            group
-            for group in ranked_groups
-            if group.metadata.get("actionability") == group_scope
+            group for group in ranked_groups if group.metadata.get("actionability") == group_scope
         ]
 
     selected_groups = matching_groups
@@ -150,8 +145,7 @@ def duplication_map_to_dict(
             "total_saved_lines": dup_map.total_saved_lines,
         },
         "groups": [
-            _group_to_dict(group, include_snippets, compact=compact)
-            for group in selected_groups
+            _group_to_dict(group, include_snippets, compact=compact) for group in selected_groups
         ],
         "refactor_suggestions": [
             (

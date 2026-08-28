@@ -7,6 +7,7 @@ import re
 import time
 from collections import defaultdict
 from pathlib import Path
+from typing import Any
 
 from redup.core.cache import HashCache, build_hash_index_with_cache
 from redup.core.hasher import (
@@ -17,7 +18,14 @@ from redup.core.hasher import (
 )
 from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.matcher import refine_structural_matches
-from redup.core.models import DuplicateFragment, DuplicateGroup, DuplicateType, ScanConfig
+from redup.core.models import (
+    DEFAULT_SEMANTIC_MODEL,
+    DEFAULT_SEMANTIC_THRESHOLD,
+    DuplicateFragment,
+    DuplicateGroup,
+    DuplicateType,
+    ScanConfig,
+)
 from redup.core.scanner_types import CodeBlock
 
 _FUZZY_KEYWORDS = {
@@ -380,8 +388,8 @@ def find_near_duplicate_groups(
 
 def find_semantic_groups(
     blocks: list[CodeBlock],
-    threshold: float = 0.80,
-    model_name: str = "microsoft/codebert-base",
+    threshold: float = DEFAULT_SEMANTIC_THRESHOLD,
+    model_name: str = DEFAULT_SEMANTIC_MODEL,
 ) -> list[DuplicateGroup]:
     """Tier 4: Semantic duplicate detection via embeddings."""
     try:
@@ -405,18 +413,15 @@ def find_semantic_groups(
         print(f"⚠️  Semantic detection failed: {exc}")
         return []
 
-    adjacency: dict[tuple[str, int], set[tuple[str, int]]] = defaultdict(set)
     blocks_by_location: dict[tuple[str, int], CodeBlock] = {}
     scores: dict[frozenset[tuple[str, int]], float] = {}
     models: dict[frozenset[tuple[str, int]], str] = {}
-    evidences: dict[frozenset[tuple[str, int]], dict] = {}
+    evidences: dict[frozenset[tuple[str, int]], dict[str, Any]] = {}
     for match in matches:
         left = (match.block_a.file, match.block_a.line_start)
         right = (match.block_b.file, match.block_b.line_start)
         if left == right:
             continue
-        adjacency[left].add(right)
-        adjacency[right].add(left)
         blocks_by_location[left] = match.block_a
         blocks_by_location[right] = match.block_b
         pair = frozenset((left, right))
@@ -424,32 +429,60 @@ def find_semantic_groups(
         models[pair] = match.model
         evidences[pair] = match.evidence or {}
 
-    components: list[list[tuple[str, int]]] = []
-    visited: set[tuple[str, int]] = set()
-    for start in sorted(adjacency):
-        if start in visited:
+    # Greedy complete-link clustering prevents weak A~B~C chains from turning
+    # an entire subsystem into one alleged duplicate group. A block may join a
+    # cluster only when every pair to its existing members was independently
+    # accepted by the semantic detector.
+    clusters: list[set[tuple[str, int]]] = []
+    cluster_by_location: dict[tuple[str, int], int] = {}
+
+    def fully_connected(
+        left_cluster: set[tuple[str, int]],
+        right_cluster: set[tuple[str, int]],
+    ) -> bool:
+        return all(
+            frozenset((left, right)) in scores for left in left_cluster for right in right_cluster
+        )
+
+    ranked_pairs = sorted(
+        scores,
+        key=lambda pair: (-scores[pair], tuple(sorted(pair))),
+    )
+    for pair in ranked_pairs:
+        left, right = sorted(pair)
+        left_index = cluster_by_location.get(left)
+        right_index = cluster_by_location.get(right)
+
+        if left_index is None and right_index is None:
+            cluster_by_location[left] = cluster_by_location[right] = len(clusters)
+            clusters.append({left, right})
             continue
-        stack = [start]
-        component: list[tuple[str, int]] = []
-        while stack:
-            location = stack.pop()
-            if location in visited:
-                continue
-            visited.add(location)
-            component.append(location)
-            stack.extend(adjacency[location] - visited)
-        if len(component) >= 2:
-            components.append(sorted(component))
+        if left_index is not None and right_index is None:
+            if fully_connected(clusters[left_index], {right}):
+                clusters[left_index].add(right)
+                cluster_by_location[right] = left_index
+            continue
+        if left_index is None and right_index is not None:
+            if fully_connected({left}, clusters[right_index]):
+                clusters[right_index].add(left)
+                cluster_by_location[left] = right_index
+            continue
+        if left_index == right_index:
+            continue
+        assert left_index is not None and right_index is not None
+        if fully_connected(clusters[left_index], clusters[right_index]):
+            clusters[left_index].update(clusters[right_index])
+            for location in clusters[right_index]:
+                cluster_by_location[location] = left_index
+            clusters[right_index].clear()
+
+    components = sorted(sorted(cluster) for cluster in clusters if len(cluster) >= 2)
 
     groups: list[DuplicateGroup] = []
     for i, component in enumerate(components):
         component_set = set(component)
-        component_scores = [
-            score for pair, score in scores.items() if pair.issubset(component_set)
-        ]
-        component_models = [
-            model for pair, model in models.items() if pair.issubset(component_set)
-        ]
+        component_scores = [score for pair, score in scores.items() if pair.issubset(component_set)]
+        component_models = [model for pair, model in models.items() if pair.issubset(component_set)]
         component_evidence = [
             evidence for pair, evidence in evidences.items() if pair.issubset(component_set)
         ]
@@ -497,9 +530,7 @@ def find_semantic_groups(
                         "intent_similarity": (
                             sum(intent_scores) / len(intent_scores) if intent_scores else None
                         ),
-                        "shared": {
-                            field: sorted(terms) for field, terms in shared_terms.items()
-                        },
+                        "shared": {field: sorted(terms) for field, terms in shared_terms.items()},
                     },
                 },
             )

@@ -1,6 +1,8 @@
 """Tests for reDUP data models."""
 
 from redup.core.models import (
+    DEFAULT_SEMANTIC_MODEL,
+    DEFAULT_SEMANTIC_THRESHOLD,
     DuplicateFragment,
     DuplicateGroup,
     DuplicateType,
@@ -110,8 +112,8 @@ def test_scan_config_defaults():
     assert config.min_similarity == 0.85
     assert not config.include_tests
     assert not config.semantic_enabled
-    assert config.semantic_threshold == 0.80
-    assert config.semantic_model == "microsoft/codebert-base"
+    assert config.semantic_threshold == DEFAULT_SEMANTIC_THRESHOLD == 0.75
+    assert config.semantic_model == DEFAULT_SEMANTIC_MODEL
     assert not config.intent_enabled
     assert config.intent_threshold == 0.84
 

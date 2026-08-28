@@ -9,6 +9,9 @@ from typing import Any
 
 from redup.config import DEFAULT_CODE_EXTENSIONS
 
+DEFAULT_SEMANTIC_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+DEFAULT_SEMANTIC_THRESHOLD = 0.75
+
 
 class DuplicateType(str, Enum):
     """How the duplicate was detected."""
@@ -186,8 +189,8 @@ class ScanConfig:
     fuzzy_enabled: bool = False
     fuzzy_threshold: float = 0.8
     semantic_enabled: bool = False
-    semantic_threshold: float = 0.80
-    semantic_model: str = "microsoft/codebert-base"
+    semantic_threshold: float = DEFAULT_SEMANTIC_THRESHOLD
+    semantic_model: str = DEFAULT_SEMANTIC_MODEL
     intent_enabled: bool = False
     intent_threshold: float = 0.84
     intent_manifest_path: Path | None = None
@@ -303,9 +306,7 @@ class DuplicationMap:
 
     @property
     def actionable_groups(self) -> int:
-        return sum(
-            1 for group in self.groups if group.metadata.get("actionability") == "refactor"
-        )
+        return sum(1 for group in self.groups if group.metadata.get("actionability") == "refactor")
 
     @property
     def review_groups(self) -> int:
@@ -313,9 +314,7 @@ class DuplicationMap:
 
     @property
     def generated_groups(self) -> int:
-        return sum(
-            1 for group in self.groups if group.metadata.get("actionability") == "generated"
-        )
+        return sum(1 for group in self.groups if group.metadata.get("actionability") == "generated")
 
     def saved_lines_for(self, actionability: str) -> int:
         """Return recoverable lines for one provenance actionability class."""

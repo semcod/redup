@@ -78,7 +78,7 @@ def compare_projects(
         project_a: Root of first project.
         project_b: Root of second project.
         similarity_threshold: Minimum similarity for LSH / semantic matches.
-        use_semantic: Enable (slow) semantic tier via CodeBERT.
+        use_semantic: Enable the slower intent-profile embedding tier.
         extensions: File extensions to scan (default: [".py"]).
         min_lines: Minimum block line count.
         functions_only: Only compare function-level blocks.

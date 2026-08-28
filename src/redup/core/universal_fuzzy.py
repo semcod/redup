@@ -17,8 +17,8 @@ except ImportError:
     MinHash = None
     MinHashLSH = None
 
-# Import rapidfuzz functions from fuzzy_similarity module
-from redup.core.fuzzy_similarity import _text_ratio
+# Import shared fuzzy helpers from fuzzy_similarity module
+from redup.core.fuzzy_similarity import _PairwiseSimilarityDetector, _text_ratio
 from redup.core.scanner import CodeBlock
 
 
@@ -340,7 +340,6 @@ class UniversalFuzzyExtractor:
         """Compute complexity score for the code block."""
         # Simple complexity metrics
         lines = len(code.splitlines())
-        chars = len(code)
 
         # Count control structures
         control_patterns = r"\b(if|else|for|while|switch|case|try|catch|except|return)\b"
@@ -359,7 +358,7 @@ class UniversalFuzzyExtractor:
         return str(hash(normalized_code))
 
 
-class UniversalFuzzyDetector:
+class UniversalFuzzyDetector(_PairwiseSimilarityDetector[UniversalSignature]):
     """Universal fuzzy similarity detector for all languages and DSLs."""
 
     def __init__(self, similarity_threshold: float = 0.7):
@@ -372,30 +371,11 @@ class UniversalFuzzyDetector:
         else:
             self.lsh = None
 
-    def find_similar_components(
-        self, code_blocks: list[CodeBlock]
-    ) -> list[tuple[CodeBlock, CodeBlock, float]]:
-        """Find similar components across all languages and DSLs."""
-        # Extract signatures for all blocks
-        signatures = []
-        for block in code_blocks:
-            signature = self.extractor.extract_universal_signature(block)
-            if signature:
-                signatures.append((block, signature))
+    def _extract_signature(self, block: CodeBlock) -> UniversalSignature | None:
+        """Extract a universal signature for shared pair discovery."""
+        return self.extractor.extract_universal_signature(block)
 
-        # Find similar pairs
-        similar_pairs = []
-        for i, (block1, sig1) in enumerate(signatures):
-            for block2, sig2 in signatures[i + 1 :]:
-                similarity = self._compute_universal_similarity(sig1, sig2)
-                if similarity >= self.similarity_threshold:
-                    similar_pairs.append((block1, block2, similarity))
-
-        return similar_pairs
-
-    def _compute_universal_similarity(
-        self, sig1: UniversalSignature, sig2: UniversalSignature
-    ) -> float:
+    def _compute_similarity(self, sig1: UniversalSignature, sig2: UniversalSignature) -> float:
         """Compute similarity between two universal signatures."""
         # Start with base similarity
         similarity = 0.0

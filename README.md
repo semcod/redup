@@ -5,12 +5,12 @@
 [![PyPI](https://img.shields.io/pypi/v/redup)](https://pypi.org/project/redup/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-0.4.47-green.svg)](https://pypi.org/project/redup/)
+[![Version](https://img.shields.io/badge/version-0.4.48-green.svg)](https://pypi.org/project/redup/)
 
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.47-blue) ![Python](https://img.shields.io/badge/python-3.10+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.4.48-blue) ![Python](https://img.shields.io/badge/python-3.10+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![AI Cost](https://img.shields.io/badge/AI%20Cost-$12.62-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-37.9h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fdeep%2Fdeep--v4--pro-lightgrey)
 
 - 🤖 **LLM usage:** $12.6211 (95 commits)
@@ -82,11 +82,16 @@ Embedding-based matching finds related functions even when their syntax and impl
 ```bash
 # Install the optional model runtime, then scan selected languages
 pip install 'redup[semantic,ast]'
-redup scan . --semantic --semantic-threshold 0.80 --ext .py,.js,.ts,.php
+redup scan . --semantic --semantic-threshold 0.75 --ext .py,.js,.ts,.php
 ```
 
 `--fuzzy` remains a faster source-text similarity pass for near-identical implementations.
 Use `--intent` with Intract contracts when intent must be explicit and auditable rather than inferred.
+The default embedding model is
+[`sentence-transformers/all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2);
+reDUP embeds compact, language-neutral intent profiles instead of feeding raw polyglot source to a
+general-purpose sentence model. Override it with `--semantic-model` when a project has a calibrated
+specialized model.
 If `sentence-transformers` is unavailable, `--semantic` uses the explainable
 `redup/intent-profile-v1` fallback. Both embedding and fallback semantic matches are candidates for
 manual review, never proof that implementations are interchangeable.
@@ -135,7 +140,7 @@ Cross-language matching for functions whose implementation syntax differs:
 
 ```bash
 # Detect similar behavior across different languages
-redup scan . --semantic --semantic-threshold 0.80 --ext .py,.js,.ts
+redup scan . --semantic --semantic-threshold 0.75 --ext .py,.js,.ts
 
 # Cross-project semantic comparison
 redup compare ./project-a ./project-b --semantic --threshold 0.75
@@ -143,7 +148,7 @@ redup compare ./project-a ./project-b --semantic --threshold 0.75
 
 **Features:**
 - Adds `SEMANTIC` groups to normal scan reports
-- Supports a configurable Sentence Transformers code model
+- Uses a configurable Sentence Transformers model over extracted intent signals
 - Keeps source-text fuzzy matching separate for predictable thresholds
 - Leaves auditable intent equivalence to explicit Intract contracts
 
@@ -243,7 +248,7 @@ redup scan . --changed-only --base-ref origin/main --incremental
 redup scan . --ext ".py,.js,.ts,.go,.rs,.java,.rb,.php,.html,.css,.sql,.lua,.scala,.kt,.swift,.m,.json,.yaml,.toml,.xml,.md,.graphql,.dockerfile,.svelte,.vue"
 
 # Cross-language / different-implementation matching (optional model dependency)
-redup scan . --semantic --semantic-threshold 0.80 --ext ".py,.js,.ts,.php,.go,.rs,.java"
+redup scan . --semantic --semantic-threshold 0.75 --ext ".py,.js,.ts,.php,.go,.rs,.java"
 
 # Auditable same-intent matching from Intract contracts
 redup scan . --intent --intent-manifest intent.yaml
@@ -571,7 +576,7 @@ The comparison uses a **3-tier similarity detection**:
 
 1. **Structural hash** — exact AST matches (fast, O(n+m))
 2. **LSH (Locality Sensitive Hashing)** — near-duplicates via MinHash
-3. **Semantic similarity** — CodeBERT embeddings (optional, slowest)
+3. **Semantic similarity** — language-neutral intent-profile embeddings (optional, slowest)
 
 Matches are deduplicated by `(function_a, function_b, file_a, file_b)` with the highest similarity score retained.
 

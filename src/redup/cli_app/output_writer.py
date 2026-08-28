@@ -45,7 +45,7 @@ def write_results(dup_map: DuplicationMap, format: str, output: Any, path: Path)
     elif format == "enhanced":
         reporter = EnhancedReporter(dup_map)
         content = reporter.generate_report()
-        write_output(content, output, "html")
+        write_output(content, output, "json")
     elif format == "code2llm":
         if output:
             content = to_code2llm_context(dup_map)

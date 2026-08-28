@@ -113,6 +113,15 @@ def test_json_reporter_with_suggestions():
     data = json.loads(output)
     assert len(data["refactor_suggestions"]) >= 1
     assert data["refactor_suggestions"][0]["priority"] == 1
+    assert "class_name" in data["refactor_suggestions"][0]
+
+
+def test_json_reporter_max_groups_zero_returns_all_groups():
+    data = json.loads(to_json(_sample_map(), max_groups=0))
+
+    assert len(data["groups"]) == 1
+    assert data["selection"]["returned_groups"] == 1
+    assert data["selection"]["omitted_groups"] == 0
 
 
 def test_toon_reporter_header():

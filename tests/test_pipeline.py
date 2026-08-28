@@ -217,7 +217,7 @@ def test_find_semantic_groups_maps_cross_language_match(monkeypatch):
     assert {fragment.file for fragment in groups[0].fragments} == {"cart.py", "cart.js"}
 
 
-def test_find_semantic_groups_clusters_transitive_matches(monkeypatch):
+def test_find_semantic_groups_does_not_cluster_transitive_matches(monkeypatch):
     blocks = [
         CodeBlock(
             file=f"cart.{extension}",
@@ -247,9 +247,41 @@ def test_find_semantic_groups_clusters_transitive_matches(monkeypatch):
     groups = find_semantic_groups(blocks, model_name="test/code-model")
 
     assert len(groups) == 1
+    assert groups[0].occurrences == 2
+    assert groups[0].similarity_score == pytest.approx(0.93)
+    assert groups[0].metadata["matched_pairs"] == 1
+
+
+def test_find_semantic_groups_keeps_fully_connected_matches(monkeypatch):
+    blocks = [
+        CodeBlock(
+            file=f"cart_{index}.py",
+            line_start=1,
+            line_end=3,
+            text=f"def cart_total_{index}(items): return sum(items)",
+            function_name=f"cart_total_{index}",
+        )
+        for index in range(3)
+    ]
+
+    def fake_find(self, found_blocks):
+        return [
+            SemanticMatch(found_blocks[0], found_blocks[1], 0.93, self.model_name),
+            SemanticMatch(found_blocks[1], found_blocks[2], 0.90, self.model_name),
+            SemanticMatch(found_blocks[0], found_blocks[2], 0.87, self.model_name),
+        ]
+
+    monkeypatch.setattr(
+        "redup.core.semantic.SemanticDetector.find_semantic_duplicates_fast",
+        fake_find,
+    )
+
+    groups = find_semantic_groups(blocks, model_name="test/code-model")
+
+    assert len(groups) == 1
     assert groups[0].occurrences == 3
     assert groups[0].similarity_score == pytest.approx(0.90)
-    assert groups[0].metadata["matched_pairs"] == 2
+    assert groups[0].metadata["matched_pairs"] == 3
 
 
 def test_find_semantic_groups_is_optional_without_dependency(monkeypatch, capsys):
@@ -337,10 +369,10 @@ def test_find_fuzzy_groups_detects_renamed_env_readers():
             line_start=1,
             line_end=6,
             text=(
-                'def read_enter() -> str:\n'
+                "def read_enter() -> str:\n"
                 '    raw = os.environ.get("ENTER", "").strip()\n'
-                '    if raw.isdigit():\n'
-                '        return raw\n'
+                "    if raw.isdigit():\n"
+                "        return raw\n"
                 '    return "28"\n'
             ),
             function_name="read_enter",
@@ -350,10 +382,10 @@ def test_find_fuzzy_groups_detects_renamed_env_readers():
             line_start=1,
             line_end=6,
             text=(
-                'def read_ctrl() -> str:\n'
+                "def read_ctrl() -> str:\n"
                 '    raw = os.environ.get("CTRL", "").strip()\n'
-                '    if raw.isdigit():\n'
-                '        return raw\n'
+                "    if raw.isdigit():\n"
+                "        return raw\n"
                 '    return "29"\n'
             ),
             function_name="read_ctrl",

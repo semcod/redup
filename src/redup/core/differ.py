@@ -6,7 +6,14 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from redup.core.models import DuplicateGroup, DuplicationMap
+from redup.core.models import (
+    DuplicateGroup,
+    DuplicationMap,
+    RefactorAction,
+    RefactorSuggestion,
+    RiskLevel,
+    ScanStats,
+)
 from redup.core.utils.diff_helpers import DiffCalculator, GroupMatcher
 
 
@@ -55,35 +62,62 @@ def _load_duplication_map(file_path: Path) -> DuplicationMap:
         # Create DuplicateGroup
         from redup.core.models import DuplicateGroup, DuplicateType
 
+        metadata = dict(group_data.get("metadata", {}))
+        for field in ("actionability", "provenance", "reason"):
+            if group_data.get(field) is not None:
+                metadata[field] = group_data[field]
+
         group = DuplicateGroup(
             id=group_data["id"],
             duplicate_type=DuplicateType(group_data["type"]),
             normalized_name=group_data.get("normalized_name"),
-            normalized_hash=group_data["normalized_hash"],
-            similarity_score=group_data["similarity_score"],
+            normalized_hash=group_data.get("normalized_hash", ""),
+            similarity_score=group_data.get("similarity_score", 1.0),
             fragments=fragments,
+            metadata=metadata,
         )
         groups.append(group)
 
-    # Create suggestions
+    # Full reports use ``refactor_suggestions``. Keep the old key readable and
+    # tolerate compact reports, because compare-scans only requires the groups.
     suggestions = []
-    for suggestion_data in data.get("suggestions", []):
-        from redup.core.models import RefactorSuggestion
+    suggestion_items = data.get("refactor_suggestions", data.get("suggestions", []))
+    for suggestion_data in suggestion_items:
+        group_id = suggestion_data.get("group_id")
+        if not group_id:
+            continue
+        try:
+            suggestions.append(
+                RefactorSuggestion(
+                    group_id=group_id,
+                    priority=suggestion_data.get("priority", 0),
+                    action=RefactorAction(
+                        suggestion_data.get("action", RefactorAction.EXTRACT_FUNCTION.value)
+                    ),
+                    new_module=suggestion_data.get("new_module", ""),
+                    function_name=suggestion_data.get("function_name"),
+                    class_name=suggestion_data.get("class_name"),
+                    rationale=suggestion_data.get("rationale", ""),
+                    original_files=suggestion_data.get("original_files", []),
+                    risk_level=RiskLevel(suggestion_data.get("risk_level", RiskLevel.LOW.value)),
+                )
+            )
+        except (TypeError, ValueError):
+            continue
 
-        suggestion = RefactorSuggestion(
-            priority=suggestion_data["priority"],
-            action=suggestion_data["action"],
-            new_module=suggestion_data["new_module"],
-            rationale=suggestion_data["rationale"],
-            original_files=suggestion_data["original_files"],
-            risk_level=suggestion_data["risk_level"],
-        )
-        suggestions.append(suggestion)
+    stats_data = data.get("stats", {})
+    stats = ScanStats(
+        files_scanned=stats_data.get("files_scanned", 0),
+        files_skipped=stats_data.get("files_skipped", 0),
+        total_lines=stats_data.get("total_lines", 0),
+        total_blocks=stats_data.get("total_blocks", 0),
+        scan_time_ms=stats_data.get("scan_time_ms", 0.0),
+    )
 
     return DuplicationMap(
         project_path=data.get("project_path", ""),
-        config=data.get("config", {}),
-        stats=data.get("stats", {}),
+        config=None,
+        stats=stats,
         groups=groups,
         suggestions=suggestions,
     )
@@ -95,29 +129,6 @@ def _group_by_id(groups: list[DuplicateGroup]) -> dict[str, DuplicateGroup]:
     for group in groups:
         result[group.id] = group
     return result
-
-
-def _groups_match(group1: DuplicateGroup, group2: DuplicateGroup) -> bool:
-    """Check if two groups represent the same duplicate (similar structure and files)."""
-    # Check if they have the same type and similar similarity
-    if group1.duplicate_type != group2.duplicate_type:
-        return False
-
-    # Check similarity scores are close
-    if abs(group1.similarity_score - group2.similarity_score) > 0.1:
-        return False
-
-    # Check if they involve similar files (at least 50% overlap)
-    files1 = {frag.file for frag in group1.fragments}
-    files2 = {frag.file for frag in group2.fragments}
-
-    if not files1 or not files2:
-        return False
-
-    overlap = len(files1.intersection(files2))
-    union = len(files1.union(files2))
-
-    return overlap / union >= 0.5
 
 
 def compare_scans(before_file: Path, after_file: Path) -> DiffResult:

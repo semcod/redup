@@ -15,7 +15,7 @@ except ImportError:
         tomllib = None
 
 from redup.config import config as global_config
-from redup.core.models import ScanConfig
+from redup.core.models import DEFAULT_SEMANTIC_MODEL, DEFAULT_SEMANTIC_THRESHOLD, ScanConfig
 
 
 def _load_toml_file(file_path: Path) -> dict[str, Any]:
@@ -122,8 +122,8 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
         lsh_min_lines=lsh_config.get("min_lines", 12),
         lsh_threshold=lsh_config.get("threshold", 0.8),
         semantic_enabled=semantic_config.get("enabled", False),
-        semantic_threshold=semantic_config.get("threshold", 0.80),
-        semantic_model=semantic_config.get("model", "microsoft/codebert-base"),
+        semantic_threshold=semantic_config.get("threshold", DEFAULT_SEMANTIC_THRESHOLD),
+        semantic_model=semantic_config.get("model", DEFAULT_SEMANTIC_MODEL),
     )
 
 
@@ -165,8 +165,8 @@ threshold = 0.8
 # Embedding-based matching can find similar behavior across languages and implementations.
 # It is opt-in because it requires `pip install 'redup[semantic]'` and a model download.
 enabled = false
-threshold = 0.80
-model = "microsoft/codebert-base"
+threshold = {DEFAULT_SEMANTIC_THRESHOLD}
+model = "{DEFAULT_SEMANTIC_MODEL}"
 
 [check]
 # CI gate thresholds

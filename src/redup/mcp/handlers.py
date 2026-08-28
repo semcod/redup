@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import platform
 from collections import OrderedDict
@@ -13,7 +14,7 @@ from typing import Any
 from redup import __version__
 from redup.core.config import config_to_scan_config, load_config
 from redup.core.differ import compare_scans, format_diff_result
-from redup.core.models import ScanConfig
+from redup.core.models import DEFAULT_SEMANTIC_MODEL, DEFAULT_SEMANTIC_THRESHOLD, ScanConfig
 from redup.core.pipeline import analyze, analyze_optimized, analyze_parallel
 from redup.mcp.utils import json_safe, parse_extensions, resolve_path
 from redup.reporters.code2llm_reporter import to_code2llm_context, to_code2llm_toon
@@ -437,7 +438,7 @@ def handle_check_project(params: dict[str, Any]) -> str:
 
 
 def _get_optional_deps() -> dict[str, bool]:
-    """Check which optional dependencies are available."""
+    """Check optional packages without importing their expensive runtimes."""
     deps = {
         "tree_sitter": "tree_sitter",
         "datasketch": "datasketch",
@@ -448,9 +449,8 @@ def _get_optional_deps() -> dict[str, bool]:
     optional = {}
     for name, module in deps.items():
         try:
-            __import__(module)
-            optional[name] = True
-        except ImportError:
+            optional[name] = importlib.util.find_spec(module) is not None
+        except (AttributeError, ImportError, ValueError):
             optional[name] = False
     return optional
 
@@ -464,6 +464,11 @@ def handle_project_info(_: dict[str, Any]) -> str:
         "platform": platform.platform(),
         "installation_path": str(Path(__file__).resolve().parents[2]),
         "optional_dependencies": _get_optional_deps(),
+        "semantic_defaults": {
+            "model": DEFAULT_SEMANTIC_MODEL,
+            "threshold": DEFAULT_SEMANTIC_THRESHOLD,
+            "fallback": "redup/intent-profile-v1",
+        },
     }
     return json.dumps(payload, indent=2, ensure_ascii=False)
 

@@ -20,7 +20,7 @@ def _build_scan_config(path: Path, params: dict[str, Any]) -> ScanConfig:
         scan_config.extensions = extensions
 
     if params.get("min_lines") is not None:
-        scan_config.min_lines = int(params["min_lines"])
+        scan_config.min_block_lines = int(params["min_lines"])
 
     # other parameters...
 

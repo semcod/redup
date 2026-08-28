@@ -15,9 +15,9 @@ Example .env file:
 from __future__ import annotations
 
 import os
+from contextlib import suppress
 from pathlib import Path
 from typing import Any
-
 
 # Keep the zero-config scan focused on source code while covering every
 # programming-language family supported by the bundled extractors. Data and
@@ -129,7 +129,7 @@ class RedupConfig:
     @classmethod
     def _load_from_env(cls) -> dict[str, Any]:
         """Load configuration from environment variables."""
-        config = {}
+        config: dict[str, Any] = {}
         for attr_name in dir(cls):
             if attr_name.startswith("DEFAULT_"):
                 env_name = cls._env_name(attr_name)
@@ -140,15 +140,11 @@ class RedupConfig:
                     if isinstance(default_value, bool):
                         config[attr_name] = value.lower() in ("true", "1", "yes", "on")
                     elif isinstance(default_value, int):
-                        try:
+                        with suppress(ValueError):
                             config[attr_name] = int(value)
-                        except ValueError:
-                            pass
                     elif isinstance(default_value, float):
-                        try:
+                        with suppress(ValueError):
                             config[attr_name] = float(value)
-                        except ValueError:
-                            pass
                     else:
                         config[attr_name] = value
         return config

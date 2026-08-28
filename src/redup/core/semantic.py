@@ -1,8 +1,4 @@
-"""Semantic duplicate detection via code embeddings.
-
-This module provides semantic duplicate detection using transformer models
-like CodeBERT to find functionally similar code despite different implementations.
-"""
+"""Semantic duplicate detection via language-neutral intent embeddings."""
 
 from __future__ import annotations
 
@@ -12,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from redup.core.models import DEFAULT_SEMANTIC_MODEL, DEFAULT_SEMANTIC_THRESHOLD
 from redup.core.scanner import CodeBlock
 
 _INTENT_ALIASES = {
@@ -43,6 +40,7 @@ _INTENT_ALIASES = {
     "sum": "aggregate",
     "terminate": "stop",
     "total": "total",
+    "valid": "validate",
     "validate": "validate",
     "verify": "validate",
 }
@@ -62,6 +60,7 @@ _GENERIC_IDENTIFIERS = {
     "in",
     "init",
     "initializer",
+    "is",
     "let",
     "main",
     "method",
@@ -70,7 +69,6 @@ _GENERIC_IDENTIFIERS = {
     "handler",
     "callback",
     "arrow",
-    "function",
     "return",
     "run",
     "self",
@@ -154,21 +152,51 @@ def build_intent_profile(block: CodeBlock) -> dict[str, Any]:
     }
 
 
-def semantic_document(block: CodeBlock) -> str:
-    """Build a code+intent document suitable for cross-language code embeddings."""
-    profile = build_intent_profile(block)
+def _profile_document(profile: dict[str, Any]) -> str:
+    """Render one extracted intent profile as embedding input."""
+    labels = {
+        "purpose": "Purpose",
+        "calls": "Calls",
+        "data": "Data",
+        "domain": "Domain",
+        "operations": "Operations",
+        "comments": "Description",
+    }
     fields = [
-        f"language: {profile['language']}",
-        f"purpose: {' '.join(profile['purpose'])}",
-        f"calls: {' '.join(profile['calls'])}",
-        f"data: {' '.join(profile['data'])}",
-        f"domain: {' '.join(profile['domain'])}",
-        f"operations: {' '.join(profile['operations'])}",
+        f"{label}: {' '.join(profile[field])}" for field, label in labels.items() if profile[field]
     ]
-    if profile["comments"]:
-        fields.append(f"description: {' '.join(profile['comments'])}")
-    fields.append(f"implementation:\n{block.text[:6000]}")
     return "\n".join(fields)
+
+
+def semantic_document(block: CodeBlock) -> str:
+    """Build a compact language-neutral document for sentence embeddings.
+
+    The default model is trained for natural-language similarity rather than raw
+    source code. Embedding the extracted intent signals also avoids making two
+    implementations look different solely because they use different languages.
+    """
+    return _profile_document(build_intent_profile(block))
+
+
+def _embedding_inputs(
+    blocks: list[CodeBlock],
+) -> tuple[list[CodeBlock], list[dict[str, Any]], list[str]]:
+    """Keep only blocks with enough intent information for meaningful embeddings."""
+    candidates: list[CodeBlock] = []
+    profiles: list[dict[str, Any]] = []
+    documents: list[str] = []
+    for block in blocks:
+        profile = build_intent_profile(block)
+        anchors = profile["purpose"] + profile["calls"] + profile["data"] + profile["comments"]
+        if not anchors:
+            continue
+        document = _profile_document(profile)
+        if not document:
+            continue
+        candidates.append(block)
+        profiles.append(profile)
+        documents.append(document)
+    return candidates, profiles, documents
 
 
 def intent_profile_similarity(left: dict[str, Any], right: dict[str, Any]) -> float:
@@ -213,6 +241,14 @@ def _match_evidence(left: dict[str, Any], right: dict[str, Any]) -> dict[str, An
     }
 
 
+def _has_semantic_support(evidence: dict[str, Any], threshold: float) -> bool:
+    """Require shared purpose and independent profile support for an embedding hit."""
+    shared_purpose = evidence.get("shared", {}).get("purpose", [])
+    intent_similarity = float(evidence.get("intent_similarity", 0.0))
+    support_threshold = max(0.50, threshold - 0.25)
+    return bool(shared_purpose) and intent_similarity >= support_threshold
+
+
 @dataclass
 class SemanticMatch:
     """A pair of semantically similar code blocks."""
@@ -227,12 +263,16 @@ class SemanticMatch:
 class SemanticDetector:
     """Detects semantically similar code using transformer embeddings."""
 
-    def __init__(self, model_name: str = "microsoft/codebert-base", threshold: float = 0.80):
+    def __init__(
+        self,
+        model_name: str = DEFAULT_SEMANTIC_MODEL,
+        threshold: float = DEFAULT_SEMANTIC_THRESHOLD,
+    ):
         self.threshold = threshold
         self.model_name = model_name
-        self._model = None
+        self._model: Any | None = None
 
-    def _ensure_model(self):
+    def _ensure_model(self) -> None:
         """Lazy-load the model only when needed."""
         if self._model is None:
             try:
@@ -286,16 +326,11 @@ class SemanticDetector:
         profile_threshold = max(0.70, min(0.82, self.threshold - 0.10))
         ranked: list[SemanticMatch] = []
         for left, right in candidates:
-            shared_purpose = set(profiles[left]["purpose"]).intersection(
-                profiles[right]["purpose"]
+            shared_purpose = set(profiles[left]["purpose"]).intersection(profiles[right]["purpose"])
+            shared_support = set(profiles[left]["calls"] + profiles[left]["data"]).intersection(
+                profiles[right]["calls"] + profiles[right]["data"]
             )
-            shared_support = (
-                set(profiles[left]["calls"] + profiles[left]["data"])
-                .intersection(profiles[right]["calls"] + profiles[right]["data"])
-            )
-            if not shared_purpose or (
-                len(shared_purpose) == 1 and len(shared_support) < 2
-            ):
+            if not shared_purpose or (len(shared_purpose) == 1 and len(shared_support) < 2):
                 continue
             score = intent_profile_similarity(profiles[left], profiles[right])
             if score < profile_threshold:
@@ -352,19 +387,20 @@ class SemanticDetector:
         Returns:
             List of semantic matches sorted by similarity (highest first)
         """
+        candidates, profiles, texts = _embedding_inputs(blocks)
+        if len(candidates) < 2:
+            return []
+
         try:
             self._ensure_model()
         except ImportError:
             return self._find_intent_profile_duplicates(blocks)
         from sentence_transformers import util
 
-        if len(blocks) < 2:
-            return []
-
         # Encode (batched for efficiency)
-        profiles = [build_intent_profile(block) for block in blocks]
-        texts = [semantic_document(block) for block in blocks]
-        embeddings = self._model.encode(
+        model = self._model
+        assert model is not None
+        embeddings = model.encode(
             texts,
             batch_size=batch_size,
             convert_to_tensor=True,
@@ -378,27 +414,30 @@ class SemanticDetector:
         matches: list[SemanticMatch] = []
         seen: set[tuple[int, int]] = set()
 
-        for i in range(len(blocks)):
-            for j in range(i + 1, len(blocks)):
+        for i in range(len(candidates)):
+            for j in range(i + 1, len(candidates)):
                 score = cos_scores[i][j].item()
                 if score >= self.threshold:
                     # Skip same-file same-function matches
                     if (
-                        blocks[i].file == blocks[j].file
-                        and blocks[i].line_start == blocks[j].line_start
+                        candidates[i].file == candidates[j].file
+                        and candidates[i].line_start == candidates[j].line_start
                     ):
                         continue
 
                     pair = (min(i, j), max(i, j))
                     if pair not in seen:
+                        evidence = _match_evidence(profiles[i], profiles[j])
+                        if not _has_semantic_support(evidence, self.threshold):
+                            continue
                         seen.add(pair)
                         matches.append(
                             SemanticMatch(
-                                block_a=blocks[i],
-                                block_b=blocks[j],
+                                block_a=candidates[i],
+                                block_b=candidates[j],
                                 similarity=score,
                                 model=self.model_name,
-                                evidence=_match_evidence(profiles[i], profiles[j]),
+                                evidence=evidence,
                             )
                         )
 
@@ -422,25 +461,26 @@ class SemanticDetector:
         Returns:
             List of semantic matches sorted by similarity (highest first)
         """
+        candidates, profiles, texts = _embedding_inputs(blocks)
+        if len(candidates) < 2:
+            return []
+
         try:
             self._ensure_model()
         except ImportError:
             return self._find_intent_profile_duplicates(blocks, top_k=top_k)
         from sentence_transformers import util
 
-        if len(blocks) < 2:
-            return []
-
-        profiles = [build_intent_profile(block) for block in blocks]
-        texts = [semantic_document(block) for block in blocks]
-        embeddings = self._model.encode(texts, convert_to_tensor=True)
+        model = self._model
+        assert model is not None
+        embeddings = model.encode(texts, convert_to_tensor=True)
 
         matches: list[SemanticMatch] = []
         seen: set[tuple[int, int]] = set()
         hits = util.semantic_search(
             embeddings,
             embeddings,
-            top_k=min(top_k + 1, len(blocks)),
+            top_k=min(top_k + 1, len(candidates)),
         )
         for i, neighbors in enumerate(hits):
             for neighbor in neighbors:
@@ -454,13 +494,16 @@ class SemanticDetector:
                 score = float(neighbor["score"])
                 if score < self.threshold:
                     continue
+                evidence = _match_evidence(profiles[pair[0]], profiles[pair[1]])
+                if not _has_semantic_support(evidence, self.threshold):
+                    continue
                 matches.append(
                     SemanticMatch(
-                        block_a=blocks[pair[0]],
-                        block_b=blocks[pair[1]],
+                        block_a=candidates[pair[0]],
+                        block_b=candidates[pair[1]],
                         similarity=score,
                         model=self.model_name,
-                        evidence=_match_evidence(profiles[pair[0]], profiles[pair[1]]),
+                        evidence=evidence,
                     )
                 )
 
@@ -480,6 +523,8 @@ class SemanticDetector:
         self._ensure_model()
         from sentence_transformers import util
 
-        embeddings = self._model.encode([text_a, text_b], convert_to_tensor=True)
+        model = self._model
+        assert model is not None
+        embeddings = model.encode([text_a, text_b], convert_to_tensor=True)
         cosine_score = util.cos_sim(embeddings[0], embeddings[1])
         return float(cosine_score.item())

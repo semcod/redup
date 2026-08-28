@@ -1,5 +1,7 @@
 from typing import Any
 
+from redup.core.models import DEFAULT_SEMANTIC_MODEL, DEFAULT_SEMANTIC_THRESHOLD
+
 SCAN_PROPERTIES = {
     "path": {"type": "string", "description": "Path to the project directory"},
     "format": {
@@ -70,11 +72,12 @@ SCAN_PROPERTIES = {
     },
     "semantic_threshold": {
         "type": "number",
-        "default": 0.8,
+        "default": DEFAULT_SEMANTIC_THRESHOLD,
         "description": "Minimum similarity for semantic duplicate groups",
     },
     "semantic_model": {
         "type": "string",
+        "default": DEFAULT_SEMANTIC_MODEL,
         "description": "Sentence Transformers model used for semantic detection",
     },
     "include_snippets": {

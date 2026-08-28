@@ -2,6 +2,36 @@
 
 ## [Unreleased]
 
+## [0.4.48] - 2026-08-28
+
+### Added
+- `project_info` now reports the active semantic defaults and dependency-free fallback without
+  loading optional runtimes.
+- Saved-report round-trip tests cover full suggestions, compact reports, and scan statistics.
+
+### Changed
+- Semantic detection now defaults to the native Sentence Transformers model
+  `sentence-transformers/all-MiniLM-L6-v2` at a calibrated `0.75` threshold.
+- Embeddings use compact, language-neutral intent profiles; low-information functions and pairs
+  without independent intent support are filtered before grouping.
+- Semantic groups use complete-link clustering, preventing transitive similarity chains from
+  merging unrelated functions into oversized findings. They remain review-only candidates.
+- Semantic model and threshold defaults are defined once and shared by Python, CLI, MCP, and the
+  generated configuration sample.
+- HTML/CSS and universal fuzzy detectors now share one signature-pair comparison helper.
+
+### Fixed
+- MCP `project_info` imported `sentence-transformers` and PyTorch merely to check availability,
+  making a metadata call take more than ten seconds in some environments.
+- Saved scan loading looked for the wrong suggestion key, omitted `group_id`, did not restore
+  enums or stats, and failed on compact reports without normalized hashes.
+- Full JSON suggestions omitted `class_name`.
+- CLI `--format enhanced` called a missing method, labeled JSON as HTML, and embedded a stale
+  reDUP version.
+- The compatibility scan-config builder assigned `min_lines` to a nonexistent field.
+- Duplicate group-matching logic in the saved-scan differ was removed in favor of the shared
+  matcher implementation.
+
 ## [0.4.47] - 2026-08-28
 
 ### Added

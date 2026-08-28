@@ -47,8 +47,8 @@ def test_fast_semantic_search_deduplicates_symmetric_neighbors(monkeypatch):
             file=f"module_{index}.py",
             line_start=1,
             line_end=3,
-            text=f"def function_{index}(): return {index}",
-            function_name=f"function_{index}",
+            text=f"def validate_email_{index}(address): return address or {index}",
+            function_name=f"validate_email_{index}",
         )
         for index in range(3)
     ]
@@ -62,8 +62,36 @@ def test_fast_semantic_search_deduplicates_symmetric_neighbors(monkeypatch):
     assert matches[0].block_a == blocks[0]
     assert matches[0].block_b == blocks[1]
     assert matches[0].similarity == 0.91
-    assert model.texts[0].startswith("language: py\npurpose: ")
-    assert "implementation:" in model.texts[0]
+    assert model.texts[0].startswith("Purpose: ")
+    assert "implementation:" not in model.texts[0]
+    assert "language:" not in model.texts[0]
+
+
+def test_uninformative_blocks_do_not_load_embedding_model(monkeypatch):
+    blocks = [
+        CodeBlock(
+            file="main.py",
+            line_start=1,
+            line_end=2,
+            text="def main():\n    return None\n",
+            function_name="main",
+        ),
+        CodeBlock(
+            file="run.py",
+            line_start=1,
+            line_end=2,
+            text="def run():\n    return None\n",
+            function_name="run",
+        ),
+    ]
+    detector = SemanticDetector()
+
+    def unexpected_model_load():
+        raise AssertionError("the model should not load for empty intent profiles")
+
+    monkeypatch.setattr(detector, "_ensure_model", unexpected_model_load)
+
+    assert detector.find_semantic_duplicates_fast(blocks) == []
 
 
 def test_intent_profiles_align_different_language_cart_implementations():
@@ -114,7 +142,8 @@ def test_intent_profiles_align_different_language_cart_implementations():
     assert all("arithmetic" in profile["operations"] for profile in profiles)
     assert "total" in profiles[0]["purpose"]
     assert "total" in profiles[1]["purpose"]
-    assert "language: php" in semantic_document(blocks[2])
+    assert profiles[2]["language"] == "php"
+    assert "language:" not in semantic_document(blocks[2])
     assert intent_profile_similarity(profiles[0], profiles[1]) >= 0.70
     assert intent_profile_similarity(profiles[1], profiles[2]) >= 0.70
 
@@ -195,9 +224,6 @@ def test_intent_profile_fallback_does_not_create_transitive_chains(monkeypatch):
     monkeypatch.setattr(detector, "_ensure_model", missing_model)
     matches = detector.find_semantic_duplicates_fast(blocks, top_k=10)
 
-    locations = [
-        (match.block_a.file, match.block_b.file)
-        for match in matches
-    ]
+    locations = [(match.block_a.file, match.block_b.file) for match in matches]
     assert len(matches) == 2
     assert len({file for pair in locations for file in pair}) == 4

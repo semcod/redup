@@ -7,8 +7,11 @@ enabling detection of similar functionality despite different implementations.
 from __future__ import annotations
 
 import re
+from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Generic, TypeVar
 
 try:
     from datasketch import MinHash, MinHashLSH
@@ -39,6 +42,54 @@ except ImportError:
 
 from redup.core.scanner import CodeBlock
 
+_Signature = TypeVar("_Signature")
+
+
+def _find_similar_pairs(
+    code_blocks: list[CodeBlock],
+    extract_signature: Callable[[CodeBlock], _Signature | None],
+    compute_similarity: Callable[[_Signature, _Signature], float],
+    threshold: float,
+) -> list[tuple[CodeBlock, CodeBlock, float]]:
+    """Extract signatures once and compare each unique pair above a threshold."""
+    signatures = [
+        (block, signature)
+        for block in code_blocks
+        if (signature := extract_signature(block)) is not None
+    ]
+    similar_pairs = []
+    for index, (left_block, left_signature) in enumerate(signatures):
+        for right_block, right_signature in signatures[index + 1 :]:
+            similarity = compute_similarity(left_signature, right_signature)
+            if similarity >= threshold:
+                similar_pairs.append((left_block, right_block, similarity))
+    return similar_pairs
+
+
+class _PairwiseSimilarityDetector(ABC, Generic[_Signature]):
+    """Shared pair discovery for detectors with different signature formats."""
+
+    similarity_threshold: float
+
+    @abstractmethod
+    def _extract_signature(self, block: CodeBlock) -> _Signature | None:
+        """Extract the detector-specific signature for one block."""
+
+    @abstractmethod
+    def _compute_similarity(self, left: _Signature, right: _Signature) -> float:
+        """Compare two detector-specific signatures."""
+
+    def find_similar_components(
+        self, code_blocks: list[CodeBlock]
+    ) -> list[tuple[CodeBlock, CodeBlock, float]]:
+        """Find similar components using the detector-specific operations."""
+        return _find_similar_pairs(
+            code_blocks,
+            self._extract_signature,
+            self._compute_similarity,
+            self.similarity_threshold,
+        )
+
 
 @dataclass
 class ComponentSignature:
@@ -58,7 +109,10 @@ class HTMLComponentExtractor:
     COMPONENT_PATTERNS = {
         "form": r"form.*?(?:input|button|textarea|select)",
         "button": r'button|input.*type.*=.*["\']submit["\']|input.*type.*=.*["\']button["\']',
-        "card": r"(?:(?:card|panel|tile|section).*?(?:header|body|footer)|div.*class.*(?:card|panel|tile))",
+        "card": (
+            r"(?:(?:card|panel|tile|section).*?(?:header|body|footer)|"
+            r"div.*class.*(?:card|panel|tile))"
+        ),
         "navigation": r"nav|navigation|navbar|menu.*?(?:ul|li|a)",
         "table": r"table.*?(?:tr|td|th|thead|tbody)",
         "list": r"ul|ol.*li",
@@ -297,7 +351,7 @@ class CSSComponentExtractor:
         return str(hash(prop_string))
 
 
-class FuzzySimilarityDetector:
+class FuzzySimilarityDetector(_PairwiseSimilarityDetector[ComponentSignature]):
     """Detect fuzzy similarity between HTML/CSS components."""
 
     def __init__(self, similarity_threshold: float = 0.8):
@@ -310,27 +364,6 @@ class FuzzySimilarityDetector:
             self.lsh = MinHashLSH(threshold=similarity_threshold)
         else:
             self.lsh = None
-
-    def find_similar_components(
-        self, code_blocks: list[CodeBlock]
-    ) -> list[tuple[CodeBlock, CodeBlock, float]]:
-        """Find similar components among code blocks."""
-        # Extract signatures for all blocks
-        signatures = []
-        for block in code_blocks:
-            signature = self._extract_signature(block)
-            if signature:
-                signatures.append((block, signature))
-
-        # Find similar pairs
-        similar_pairs = []
-        for i, (block1, sig1) in enumerate(signatures):
-            for block2, sig2 in signatures[i + 1 :]:
-                similarity = self._compute_similarity(sig1, sig2)
-                if similarity >= self.similarity_threshold:
-                    similar_pairs.append((block1, block2, similarity))
-
-        return similar_pairs
 
     def _extract_signature(self, block: CodeBlock) -> ComponentSignature | None:
         """Extract component signature based on file type."""

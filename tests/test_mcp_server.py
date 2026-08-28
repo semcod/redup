@@ -124,6 +124,23 @@ def test_mcp_scan_config_accepts_semantic_options(tmp_path: Path) -> None:
     assert config.semantic_model == "example/code-model"
 
 
+def test_project_info_checks_optional_packages_without_importing(monkeypatch) -> None:
+    checked = []
+
+    def fake_find_spec(module: str):
+        checked.append(module)
+        return object()
+
+    monkeypatch.setattr(mcp_handlers.importlib.util, "find_spec", fake_find_spec)
+
+    payload = json.loads(mcp_handlers.handle_project_info({}))
+
+    assert "sentence_transformers" in checked
+    assert all(payload["optional_dependencies"].values())
+    assert payload["semantic_defaults"]["model"].startswith("sentence-transformers/")
+    assert payload["semantic_defaults"]["fallback"] == "redup/intent-profile-v1"
+
+
 def test_analyze_project_returns_json_report() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         root = Path(tmpdir)

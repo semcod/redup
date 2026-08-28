@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from redup.core.config import config_to_scan_config, load_config
-from redup.core.models import ScanConfig
+from redup.core.models import DEFAULT_SEMANTIC_THRESHOLD, ScanConfig
 
 
 def build_config(
@@ -30,7 +30,7 @@ def build_config_with_file_support(
     fuzzy: bool = False,
     fuzzy_threshold: float = 0.8,
     semantic: bool | None = None,
-    semantic_threshold: float = 0.80,
+    semantic_threshold: float = DEFAULT_SEMANTIC_THRESHOLD,
     semantic_model: str | None = None,
     intent: bool = False,
     intent_threshold: float = 0.84,
