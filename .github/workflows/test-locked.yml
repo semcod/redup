@@ -1,0 +1,49 @@
+name: Locked tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Check out immutable documentation standard
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: wellmanifest/docs
+          ref: ebe7501063ef4f3e63ded610c2d3183010ca636e # v0.1.1
+          path: .docs-standard
+          token: ${{ secrets.ORG_SYNC_PAT }}
+          persist-credentials: false
+      - name: Validate documentation placement
+        shell: bash
+        env:
+          DOCS_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          args=(--root . --standard-revision ebe7501063ef4f3e63ded610c2d3183010ca636e)
+          if [[ -n "$DOCS_BASE" ]]; then args+=(--base "$DOCS_BASE"); fi
+          python .docs-standard/docs/standard/check.py "${args[@]}"
+      - run: python -m pip install uv
+      - name: Install locked test dependencies
+        run: uv sync --locked --extra dev --python "${{ matrix.python-version }}"
+      - name: Test supported Python versions
+        run: uv run --no-sync python -m pytest -q

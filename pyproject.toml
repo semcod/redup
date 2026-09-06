@@ -32,7 +32,6 @@ dependencies = [
     "pydantic>=2.0",
     "tomli>=2.0; python_version<'3.11'",
     "python-dotenv>=1.0",
-    "goal>=2.1.0",
     "costs>=0.1.20",
     "pfix>=0.1.60",
 ]
@@ -81,7 +80,6 @@ dev = [
     "pytest-cov>=4.0",
     "ruff>=0.4",
     "mypy>=1.8",
-    "goal>=2.1.0",
     "costs>=0.1.20",
     "pfix>=0.1.60",
 ]
@@ -146,3 +144,9 @@ max_commits = 500
 
 # Cost thresholds for badge colors (USD)
 badge_color_thresholds = { low = 1.0, medium = 5.0, high = 10.0, critical = 50.0 }
+
+[dependency-groups]
+automation = ["goal>=2.2.0"]
+
+[tool.uv.dependency-groups.automation]
+requires-python = ">=3.12"
