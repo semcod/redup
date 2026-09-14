@@ -33,7 +33,6 @@ dependencies = [
     "tomli>=2.0; python_version<'3.11'",
     "python-dotenv>=1.0",
     "costs>=0.1.20",
-    "pfix>=0.1.60",
 ]
 
 [project.optional-dependencies]
@@ -81,7 +80,6 @@ dev = [
     "ruff>=0.4",
     "mypy>=1.8",
     "costs>=0.1.20",
-    "pfix>=0.1.60",
 ]
 
 [project.scripts]
@@ -115,22 +113,6 @@ warn_unused_configs = true
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "-v --tb=short"
-
-[tool.pfix]
-# Self-healing Python configuration
-model = "openrouter/deep/deep-v4-pro"
-auto_apply = true
-auto_install_deps = true
-auto_restart = false
-max_retries = 3
-create_backups = false
-git_auto_commit = false
-
-[tool.pfix.runtime_todo]
-enabled = true
-todo_file = "TODO.md"
-min_severity = "low"
-deduplicate = true
 
 [tool.costs]
 # AI Cost tracking configuration
