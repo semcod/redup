@@ -51,6 +51,8 @@ class ScanConfig:
         default_factory=lambda: [
             # Universal system files (but not normal code files)
             ".git",
+            ".worktrees",
+            "worktrees",
             ".svn",
             ".hg",
             "__pycache__",
