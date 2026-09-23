@@ -21,6 +21,11 @@ def test_should_exclude_git():
     assert _should_exclude(Path(".git/config"), (".git",))
 
 
+def test_should_exclude_worktrees():
+    assert _should_exclude(Path(".worktrees/ticket-123/src/code.py"), (".worktrees",))
+    assert _should_exclude(Path("worktrees/ticket-123/src/code.py"), ("worktrees",))
+
+
 def test_should_exclude_venv():
     assert _should_exclude(Path("project/venv/lib/site.py"), ("venv",))
 
