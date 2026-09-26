@@ -11,9 +11,13 @@ and filesystem I/O. It provides exact, deterministic mathematical operations:
 from __future__ import annotations
 
 import hashlib
+import os
 import re
+import shutil
+import subprocess
 from collections import defaultdict
 from collections.abc import Sequence
+from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Text Normalization
@@ -144,8 +148,56 @@ def compute_simhash_from_tokens(tokens: Sequence[str], width: int = 3) -> int:
     return sum(1 << bit for bit, weight in enumerate(weights) if weight >= 0)
 
 
-def fuzzy_simhash(text: str) -> int:
-    """Return a language-neutral 64-bit SimHash for fuzzy shortlisting."""
+def find_rust_hasher_binary() -> Path | None:
+    """Locate the native redup-fast-hash binary if compiled or installed."""
+    env_bin = os.getenv("REDUP_FAST_HASH_BIN")
+    if env_bin:
+        path = Path(env_bin)
+        if path.is_file() and os.access(path, os.X_OK):
+            return path
+
+    which_bin = shutil.which("redup-fast-hash")
+    if which_bin:
+        return Path(which_bin)
+
+    rel_bin = Path("packages") / "redup-fast-hash" / "target" / "release" / "redup-fast-hash"
+    for candidate in [
+        Path(__file__).resolve().parents[3] / rel_bin,
+        Path.cwd() / rel_bin,
+    ]:
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return candidate
+
+    return None
+
+
+def fuzzy_simhash_rust(text: str, binary_path: Path | None = None) -> int | None:
+    """Execute native Rust SimHash engine; returns None if binary is missing or fails."""
+    bin_path = binary_path or find_rust_hasher_binary()
+    if not bin_path:
+        return None
+    try:
+        proc = subprocess.run(
+            [str(bin_path), "--simhash", text],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=5,
+        )
+        return int(proc.stdout.strip())
+    except (subprocess.SubprocessError, ValueError, OSError):
+        return None
+
+
+def fuzzy_simhash(text: str, *, prefer_rust: bool = False) -> int:
+    """Return a language-neutral 64-bit SimHash for fuzzy shortlisting.
+
+    If prefer_rust is True (or REDUP_USE_RUST=1), attempts native Rust acceleration.
+    """
+    if prefer_rust or os.getenv("REDUP_USE_RUST") == "1":
+        rust_val = fuzzy_simhash_rust(text)
+        if rust_val is not None:
+            return rust_val
     tokens = extract_fuzzy_tokens(text)
     return compute_simhash_from_tokens(tokens, width=3)
 

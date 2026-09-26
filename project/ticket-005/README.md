@@ -11,3 +11,5 @@ SESSION_EXECUTION_AUTHORIZATION: on 2026-09-26 the user requested investigation 
 - AC-03: Zero coupling to file I/O or `DuplicateGroup` models in `tokens_hasher`.
 - AC-04: Full contract tests in `tests/test_tokens_hasher.py` covering golden vectors (hashes, tokens, similarity) to enable subsequent 1:1 Rust implementation verification.
 - AC-05: Existing test suite passes with zero regressions.
+- AC-06: Create native Rust prototype engine in `packages/redup-fast-hash` computing fuzzy SimHash with zero external dependencies.
+- AC-07: Integrate optional Rust accelerator in `tokens_hasher.py` with fallback to Python and benchmark speedup.

@@ -7,6 +7,8 @@
     "src/redup/core/hasher.py",
     "src/redup/core/lsh_matcher.py",
     "tests/test_tokens_hasher.py",
+    "tests/test_tokens_hasher_rust.py",
+    "packages/redup-fast-hash/**",
     "project/ticket-005/**"
   ],
   "forbiddenPaths": [

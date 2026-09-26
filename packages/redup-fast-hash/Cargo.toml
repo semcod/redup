@@ -1,0 +1,13 @@
+[package]
+name = "redup-fast-hash"
+version = "0.1.0"
+edition = "2021"
+description = "Fast native SimHash and fingerprinting engine for redup"
+
+[lib]
+name = "redup_fast_hash"
+path = "src/lib.rs"
+
+[[bin]]
+name = "redup-fast-hash"
+path = "src/main.rs"
