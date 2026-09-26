@@ -1,23 +1,40 @@
-"""Hashing layer — fingerprint code blocks for duplicate detection."""
+"""Hashing layer — fingerprint code blocks for duplicate detection.
+
+This module acts as a unified facade coordinating text normalization,
+AST structural normalization, and collision indexing.
+"""
 
 from __future__ import annotations
 
-import ast
 import hashlib
-import re
-from collections import defaultdict
 from collections.abc import Callable
-from dataclasses import dataclass, field
 
 try:
     import xxhash
 except ImportError:
     xxhash = None
 
-from redup.core.scanner import CodeBlock
+from redup.core.ast_normalizer import (
+    _ast_to_normalized_string,
+    _normalize_ast_text,
+    ast_to_normalized_string,
+    normalize_ast_text,
+)
+from redup.core.exact_matcher import (
+    HashedBlock,
+    HashIndex,
+    _blocks_from_different_locations,
+    _find_duplicates,
+    blocks_from_different_locations,
+    find_duplicates,
+    find_exact_duplicates,
+    find_structural_duplicates,
+)
+from redup.core.scanner_types import CodeBlock
 from redup.core.tokens_hasher import (
     _MAX_CACHE_SIZE,
     _normalize_cache,
+    normalize_text,
 )
 from redup.core.tokens_hasher import (
     normalize_text as _normalize_text,
@@ -29,60 +46,6 @@ def _fast_hash(data: bytes) -> str:
     if xxhash is not None:
         return xxhash.xxh64(data).hexdigest()[:16]
     return hashlib.sha256(data).hexdigest()[:16]
-
-
-def _ast_to_normalized_string(tree: object) -> str:
-    """Convert an AST to a coarse structural fingerprint."""
-    import ast as _ast
-
-    tokens: list[str] = []
-    for node in _ast.walk(tree):
-        if isinstance(node, (_ast.Load, _ast.Store, _ast.Del, _ast.Param)):
-            continue
-        if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef)):
-            token = "FUNC"
-        elif isinstance(node, _ast.ClassDef):
-            token = "CLASS"
-        elif isinstance(node, _ast.Name):
-            token = "IDENT"
-        elif isinstance(node, _ast.arg):
-            token = "ARG"
-        elif isinstance(node, _ast.Attribute):
-            token = "ATTR"
-        elif isinstance(node, _ast.Constant):
-            token = "CONST"
-        elif isinstance(node, _ast.BinOp):
-            token = f"BINOP_{type(node.op).__name__}"
-        elif isinstance(node, _ast.Compare):
-            token = "CMP_" + "_".join(type(op).__name__ for op in node.ops)
-        else:
-            token = type(node).__name__.upper()
-        tokens.append(token)
-
-    return " ".join(tokens)
-
-
-def _normalize_ast_text(text: str) -> str:
-    """Deeper normalization: replace variable names and literals with placeholders."""
-    cache_key = f"ast:{text}"
-    cached = _normalize_cache.get(cache_key)
-    if cached is not None:
-        return cached
-
-    try:
-        tree = ast.parse(text)
-    except SyntaxError:
-        result = _normalize_text(text)
-        result = re.sub(r'"[^"]*"', '"__STR__"', result)
-        result = re.sub(r"'[^']*'", "'__STR__'", result)
-        result = re.sub(r"\b\d+\.?\d*\b", "__NUM__", result)
-    else:
-        result = _ast_to_normalized_string(tree)
-
-    if len(_normalize_cache) >= _MAX_CACHE_SIZE:
-        _normalize_cache.pop(next(iter(_normalize_cache)))
-    _normalize_cache[cache_key] = result
-    return result
 
 
 def _hash_text(text: str, normalizer: Callable[[str], str]) -> str:
@@ -101,44 +64,12 @@ def hash_block_structural(text: str) -> str:
     return _hash_text(text, _normalize_ast_text)
 
 
-@dataclass
-class HashedBlock:
-    """A code block with its computed fingerprints."""
-
-    block: CodeBlock
-    exact_hash: str = ""
-    structural_hash: str = ""
-
-
-@dataclass
-class HashIndex:
-    """Index mapping hashes to blocks for fast lookup."""
-
-    exact: dict[str, list[HashedBlock]] = field(default_factory=lambda: defaultdict(list))
-    structural: dict[str, list[HashedBlock]] = field(default_factory=lambda: defaultdict(list))
-
-
 def _hashed_block(block: CodeBlock) -> HashedBlock:
     return HashedBlock(
         block=block,
         exact_hash=hash_block(block.text),
         structural_hash=hash_block_structural(block.text),
     )
-
-
-def _blocks_from_different_locations(blocks: list[HashedBlock]) -> bool:
-    """Check that at least two blocks are from different file:line locations."""
-    locations = {(b.block.file, b.block.line_start) for b in blocks}
-    return len(locations) > 1
-
-
-def _find_duplicates(hash_dict: dict[str, list[HashedBlock]]) -> dict[str, list[HashedBlock]]:
-    """Generic duplicate finder for any hash dictionary."""
-    return {
-        hash_value: blocks
-        for hash_value, blocks in hash_dict.items()
-        if len(blocks) > 1 and _blocks_from_different_locations(blocks)
-    }
 
 
 def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
@@ -156,16 +87,6 @@ def build_hash_index(blocks: list[CodeBlock], min_lines: int = 3) -> HashIndex:
     return index
 
 
-def find_exact_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
-    """Find groups of blocks with identical normalized text."""
-    return _find_duplicates(index.exact)
-
-
-def find_structural_duplicates(index: HashIndex) -> dict[str, list[HashedBlock]]:
-    """Find groups of blocks with identical structure (names may differ)."""
-    return _find_duplicates(index.structural)
-
-
 __all__ = [
     "HashedBlock",
     "HashIndex",
@@ -174,9 +95,17 @@ __all__ = [
     "find_structural_duplicates",
     "hash_block",
     "hash_block_structural",
+    "normalize_text",
+    "normalize_ast_text",
+    "ast_to_normalized_string",
+    "blocks_from_different_locations",
+    "find_duplicates",
     "_normalize_text",
     "_normalize_ast_text",
+    "_ast_to_normalized_string",
     "_hash_text",
     "_blocks_from_different_locations",
     "_find_duplicates",
+    "_MAX_CACHE_SIZE",
+    "_normalize_cache",
 ]
