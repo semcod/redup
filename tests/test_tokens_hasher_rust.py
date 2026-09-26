@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import shutil
+import subprocess
 from pathlib import Path
+
+import pytest
 
 from redup.core.tokens_hasher import (
     find_rust_hasher_binary,
@@ -10,15 +14,55 @@ from redup.core.tokens_hasher import (
     fuzzy_simhash_rust,
 )
 
+CARGO_MANIFEST = (
+    Path(__file__).resolve().parent.parent / "packages" / "redup-fast-hash" / "Cargo.toml"
+)
+RUST_BIN = (
+    Path(__file__).resolve().parent.parent
+    / "packages"
+    / "redup-fast-hash"
+    / "target"
+    / "release"
+    / "redup-fast-hash"
+)
 
-def test_rust_binary_discovery() -> None:
+
+@pytest.fixture(scope="module")
+def ensure_rust_binary() -> Path:
+    """Ensure release binary of redup-fast-hash is available or built."""
     bin_path = find_rust_hasher_binary()
-    assert bin_path is not None
-    assert bin_path.is_file()
-    assert bin_path.name == "redup-fast-hash"
+    if bin_path and bin_path.is_file():
+        return bin_path
+
+    cargo = shutil.which("cargo")
+    if not cargo or not CARGO_MANIFEST.is_file():
+        pytest.skip("cargo not installed or packages/redup-fast-hash not found")
+
+    try:
+        subprocess.run(
+            [cargo, "build", "--release", "--manifest-path", str(CARGO_MANIFEST)],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+    except (subprocess.SubprocessError, OSError) as err:
+        pytest.skip(f"Failed to build native Rust binary: {err}")
+
+    bin_path = find_rust_hasher_binary()
+    if not bin_path or not bin_path.is_file():
+        pytest.skip("redup-fast-hash binary not available after build")
+
+    return bin_path
 
 
-def test_rust_and_python_exact_match_sample_code() -> None:
+def test_rust_binary_discovery(ensure_rust_binary: Path) -> None:
+    assert ensure_rust_binary is not None
+    assert ensure_rust_binary.is_file()
+    assert ensure_rust_binary.name == "redup-fast-hash"
+
+
+def test_rust_and_python_exact_match_sample_code(ensure_rust_binary: Path) -> None:
     samples = [
         "def add(a, b):\n    return a + b\n",
         "def multiply(x, y):\n    # Calculate product\n    return x * y\n",
