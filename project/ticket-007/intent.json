@@ -1,0 +1,17 @@
+{
+  "ticket": "ticket-007",
+  "summary": "Atomize AST normalizer and exact/structural collision matching into dedicated pure modules",
+  "allowedPaths": [
+    "src/redup/core/ast_normalizer.py",
+    "src/redup/core/exact_matcher.py",
+    "src/redup/core/hasher.py",
+    "tests/test_exact_matcher.py",
+    "project/ticket-007/**"
+  ],
+  "forbiddenPaths": [
+    ".env",
+    ".github/workflows/**"
+  ],
+  "authorization": "SESSION_EXECUTION_AUTHORIZATION",
+  "outcome": "AST normalization and exact/structural collision grouping atomized into pure modules with 100% backward compatibility in hasher.py."
+}
