@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import difflib
+import os
+import subprocess
 from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
 
 from redup.core.hasher import HashedBlock, _normalize_text
 from redup.core.lsh_matcher import find_near_duplicates
+from redup.core.tokens_hasher import find_rust_hasher_binary
 
 
 @dataclass
@@ -20,25 +24,54 @@ class MatchResult:
     method: str  # "exact", "sequence", "fuzzy"
 
 
-def sequence_similarity(text_a: str, text_b: str) -> float:
+def sequence_similarity_rust(
+    text_a: str, text_b: str, binary_path: Path | None = None
+) -> float | None:
+    """Execute native Rust sequence similarity engine.
+
+    Returns None if binary is missing or execution fails.
+    """
+    bin_path = binary_path or find_rust_hasher_binary()
+    if not bin_path:
+        return None
+    try:
+        proc = subprocess.run(
+            [str(bin_path), "--similarity", text_a, text_b],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=5,
+        )
+        return float(proc.stdout.strip())
+    except (subprocess.SubprocessError, ValueError, OSError):
+        return None
+
+
+def sequence_similarity(text_a: str, text_b: str, *, prefer_rust: bool = False) -> float:
     """SequenceMatcher ratio between two normalized texts."""
     norm_a = _normalize_text(text_a)
     norm_b = _normalize_text(text_b)
     if not norm_a or not norm_b:
         return 0.0
-    return difflib.SequenceMatcher(None, norm_a, norm_b).ratio()
+    if norm_a == norm_b:
+        return 1.0
 
+    if prefer_rust or os.getenv("REDUP_USE_RUST") == "1":
+        rust_sim = sequence_similarity_rust(norm_a, norm_b)
+        if rust_sim is not None:
+            return rust_sim
 
-def fuzzy_similarity(text_a: str, text_b: str) -> float:
-    """Fuzzy similarity using rapidfuzz if available, fallback to SequenceMatcher."""
     try:
         from rapidfuzz import fuzz
 
-        norm_a = _normalize_text(text_a)
-        norm_b = _normalize_text(text_b)
         return fuzz.ratio(norm_a, norm_b) / 100.0
     except ImportError:
-        return sequence_similarity(text_a, text_b)
+        return difflib.SequenceMatcher(None, norm_a, norm_b).ratio()
+
+
+def fuzzy_similarity(text_a: str, text_b: str, *, prefer_rust: bool = False) -> float:
+    """Fuzzy similarity using rapidfuzz or Rust if available, fallback to SequenceMatcher."""
+    return sequence_similarity(text_a, text_b, prefer_rust=prefer_rust)
 
 
 def _compare_against_reference(
@@ -104,6 +137,7 @@ def refine_structural_matches(
 __all__ = [
     "MatchResult",
     "sequence_similarity",
+    "sequence_similarity_rust",
     "fuzzy_similarity",
     "match_candidates",
     "refine_structural_matches",
