@@ -1,0 +1,18 @@
+{
+  "ticket": "ticket-006",
+  "summary": "Atomize sequence similarity calculation and accelerate with native Rust engine in packages/redup-fast-hash",
+  "allowedPaths": [
+    "src/redup/core/matcher.py",
+    "src/redup/core/fuzzy_similarity.py",
+    "packages/redup-fast-hash/**",
+    "tests/test_matcher.py",
+    "tests/test_similarity_rust.py",
+    "project/ticket-006/**"
+  ],
+  "forbiddenPaths": [
+    ".env",
+    ".github/workflows/**"
+  ],
+  "authorization": "SESSION_EXECUTION_AUTHORIZATION",
+  "outcome": "Fast sequence similarity ratio calculation implemented in pure Rust and exposed to matcher.py with transparent fallback to rapidfuzz/difflib, eliminating CPU bottleneck in find_fuzzy_groups."
+}
