@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 from typing import Any
 
 try:
@@ -11,8 +10,16 @@ except ImportError:
     MinHash = None
     MinHashLSH = None
 
-from redup.core.hasher import _normalize_text
 from redup.core.scanner import CodeBlock
+from redup.core.tokens_hasher import (
+    SimpleMinHash as _SimpleMinHash,
+)
+from redup.core.tokens_hasher import (
+    create_simple_minhash as _create_simple_minhash,
+)
+from redup.core.tokens_hasher import (
+    normalize_text as _normalize_text,
+)
 
 
 def _create_minhash(text: str, num_perm: int = 128) -> MinHash | None:
@@ -30,75 +37,6 @@ def _create_minhash(text: str, num_perm: int = 128) -> MinHash | None:
         m.update(token.encode("utf-8"))
 
     return m
-
-
-def _text_to_minhash_features(text: str, num_features: int = 10) -> list[str]:
-    """Extract text features for MinHash without external dependencies."""
-    # Use cached normalization if available
-    from redup.core.hasher import _normalize_cache
-
-    cache_key = text
-    normalized = _normalize_cache.get(cache_key)
-    if normalized is None:
-        normalized = _normalize_text(text)
-
-    # Create n-gram features
-    features = []
-    words = normalized.split()
-    if not words:
-        return features
-
-    # Single words
-    features.extend(words[: num_features // 2])
-
-    # 2-grams - early exit optimization
-    max_2grams = min(len(words) - 1, num_features - len(features))
-    for i in range(max_2grams):
-        features.append(f"{words[i]} {words[i + 1]}")
-
-    # 3-grams - early exit optimization
-    remaining = num_features - len(features)
-    max_3grams = min(len(words) - 2, remaining)
-    for i in range(max_3grams):
-        features.append(f"{words[i]} {words[i + 1]} {words[i + 2]}")
-
-    return features[:num_features]
-
-
-def _create_simple_minhash(text: str, num_perm: int = 128) -> _SimpleMinHash:
-    """Create simple MinHash implementation without external dependencies."""
-    features = _text_to_minhash_features(text)
-    return _SimpleMinHash(features, num_perm)
-
-
-class _SimpleMinHash:
-    """Simple MinHash implementation for fallback without datasketch."""
-
-    def __init__(self, features: list[str], num_perm: int = 128):
-        self.num_perm = num_perm
-        self.hash_values = []
-
-        # Generate hash values for each permutation
-        for i in range(num_perm):
-            seed = i + 1
-            min_hash = float("inf")
-
-            for feature in features:
-                # Combine feature with seed for different permutations
-                hash_input = f"{feature}_{seed}"
-                hash_val = int(hashlib.md5(hash_input.encode()).hexdigest(), 16)
-                min_hash = min(min_hash, hash_val)
-
-            self.hash_values.append(min_hash)
-
-    def jaccard(self, other: _SimpleMinHash) -> float:
-        """Estimate Jaccard similarity."""
-        if len(self.hash_values) != len(other.hash_values):
-            return 0.0
-
-        # Count matching hash values
-        matches = sum(1 for a, b in zip(self.hash_values, other.hash_values) if a == b)
-        return matches / len(self.hash_values)
 
 
 class LSHIndex:

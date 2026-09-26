@@ -1,0 +1,20 @@
+{
+  "ticket": "ticket-005",
+  "summary": "Atomize tokenization, SimHash, MinHash, and normalization algorithms into pure modular tokens_hasher",
+  "allowedPaths": [
+    "src/redup/core/tokens_hasher.py",
+    "src/redup/core/pipeline/duplicate_finder.py",
+    "src/redup/core/hasher.py",
+    "src/redup/core/lsh_matcher.py",
+    "tests/test_tokens_hasher.py",
+    "tests/test_tokens_hasher_rust.py",
+    "packages/redup-fast-hash/**",
+    "project/ticket-005/**"
+  ],
+  "forbiddenPaths": [
+    ".env",
+    ".github/workflows/**"
+  ],
+  "authorization": "SESSION_EXECUTION_AUTHORIZATION",
+  "outcome": "Pure algorithmic code (normalization, fuzzy tokenization, SimHash 64-bit, MinHash) extracted to pure module redup.core.tokens_hasher with 100% backward compatibility and verified test suite."
+}
