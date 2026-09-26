@@ -15,6 +15,13 @@ except ImportError:
     xxhash = None
 
 from redup.core.scanner import CodeBlock
+from redup.core.tokens_hasher import (
+    _MAX_CACHE_SIZE,
+    _normalize_cache,
+)
+from redup.core.tokens_hasher import (
+    normalize_text as _normalize_text,
+)
 
 
 def _fast_hash(data: bytes) -> str:
@@ -22,33 +29,6 @@ def _fast_hash(data: bytes) -> str:
     if xxhash is not None:
         return xxhash.xxh64(data).hexdigest()[:16]
     return hashlib.sha256(data).hexdigest()[:16]
-
-
-_normalize_cache: dict[str, str] = {}
-_MAX_CACHE_SIZE = 10_000
-_COMMENT_RE = re.compile(r"#.*$")
-_MULTILINE_STRING_RE = re.compile(r'^\s*("""|\'\'\')')
-
-
-def _normalize_text(text: str) -> str:
-    """Normalize code text for comparison."""
-    cached = _normalize_cache.get(text)
-    if cached is not None:
-        return cached
-
-    result_lines: list[str] = []
-    for line in text.splitlines():
-        if _MULTILINE_STRING_RE.match(line):
-            continue
-        cleaned = _COMMENT_RE.sub("", line).strip()
-        if cleaned:
-            result_lines.append(cleaned)
-
-    result = "\n".join(result_lines)
-    if len(_normalize_cache) >= _MAX_CACHE_SIZE:
-        _normalize_cache.pop(next(iter(_normalize_cache)))
-    _normalize_cache[text] = result
-    return result
 
 
 def _ast_to_normalized_string(tree: object) -> str:

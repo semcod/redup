@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import re
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -27,106 +26,21 @@ from redup.core.models import (
     ScanConfig,
 )
 from redup.core.scanner_types import CodeBlock
-
-_FUZZY_KEYWORDS = {
-    "and",
-    "as",
-    "async",
-    "await",
-    "break",
-    "case",
-    "catch",
-    "class",
-    "const",
-    "continue",
-    "def",
-    "do",
-    "else",
-    "except",
-    "false",
-    "finally",
-    "for",
-    "foreach",
-    "from",
-    "function",
-    "if",
-    "import",
-    "in",
-    "let",
-    "match",
-    "new",
-    "none",
-    "not",
-    "null",
-    "or",
-    "pass",
-    "raise",
-    "return",
-    "switch",
-    "throw",
-    "true",
-    "try",
-    "var",
-    "while",
-    "with",
-    "yield",
-}
-_FUZZY_TOKEN_RE = re.compile(
-    r"[A-Za-z_$][A-Za-z0-9_$]*|==={0,1}|!==?|<=|>=|=>|\+\+|--|&&|\|\||\?\?|\S"
+from redup.core.tokens_hasher import (
+    find_simhash_band_candidates,
 )
-
-
-def _fuzzy_simhash(text: str) -> int:
-    """Return a language-neutral SimHash used only to shortlist fuzzy comparisons."""
-    text = re.sub(r"/\*.*?\*/|//[^\n]*|#[^\n]*", " ", text, flags=re.DOTALL)
-    text = re.sub(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'', " STR ", text)
-    text = re.sub(r"\b\d+(?:\.\d+)?\b", " NUM ", text)
-    tokens = []
-    for token in _FUZZY_TOKEN_RE.findall(text):
-        lowered = token.lower()
-        if re.match(r"^[A-Za-z_$]", token) and lowered not in _FUZZY_KEYWORDS:
-            tokens.append("ID")
-        else:
-            tokens.append(lowered)
-
-    width = 3 if len(tokens) >= 3 else 1
-    features = ["\x1f".join(tokens[i : i + width]) for i in range(len(tokens) - width + 1)]
-    if not features:
-        return 0
-
-    weights = [0] * 64
-    for feature in features:
-        value = int.from_bytes(
-            hashlib.blake2b(feature.encode("utf-8"), digest_size=8).digest(), "big"
-        )
-        for bit in range(64):
-            weights[bit] += 1 if value & (1 << bit) else -1
-    return sum(1 << bit for bit, weight in enumerate(weights) if weight >= 0)
+from redup.core.tokens_hasher import (
+    fuzzy_simhash as _fuzzy_simhash,
+)
 
 
 def _fuzzy_candidate_indices(candidates: list[CodeBlock]) -> dict[int, set[int]]:
     """Build bounded candidate sets using four SimHash bands instead of all pairs."""
-    buckets: dict[tuple[str, int, int], list[int]] = defaultdict(list)
-    band_hits: dict[tuple[int, int], int] = defaultdict(int)
-    result: dict[int, set[int]] = defaultdict(set)
-
-    for index, block in enumerate(candidates):
-        fingerprint = _fuzzy_simhash(block.text)
-        language = Path(block.file).suffix.lower()
-        for band in range(4):
-            key = (language, band, (fingerprint >> (band * 16)) & 0xFFFF)
-            for other_index in buckets[key]:
-                if abs(candidates[other_index].line_count - block.line_count) <= 4:
-                    band_hits[(other_index, index)] += 1
-            buckets[key].append(index)
-
-    # One matching 16-bit band produces too many random candidates in large
-    # repositories. Near-identical source normally shares at least two bands.
-    for (left, right), matching_bands in band_hits.items():
-        if matching_bands >= 2:
-            result[left].add(right)
-
-    return result
+    items = [
+        (index, _fuzzy_simhash(block.text), Path(block.file).suffix.lower(), block.line_count)
+        for index, block in enumerate(candidates)
+    ]
+    return find_simhash_band_candidates(items, min_matching_bands=2, max_line_diff=4)
 
 
 def find_fuzzy_groups(
