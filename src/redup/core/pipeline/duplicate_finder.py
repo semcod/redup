@@ -6,7 +6,7 @@ import hashlib
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from redup.core.cache import HashCache, build_hash_index_with_cache
 from redup.core.hasher import (
@@ -15,7 +15,6 @@ from redup.core.hasher import (
     find_exact_duplicates,
     find_structural_duplicates,
 )
-from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.matcher import refine_structural_matches
 from redup.core.models import (
     DEFAULT_SEMANTIC_MODEL,
@@ -32,6 +31,23 @@ from redup.core.tokens_hasher import (
 from redup.core.tokens_hasher import (
     fuzzy_simhash as _fuzzy_simhash,
 )
+
+if TYPE_CHECKING:
+    from redup.core.lsh_matcher import find_near_duplicates
+
+
+def __getattr__(name: str):
+    """Resolve the compatibility export only when explicitly requested or needed."""
+    if name != "find_near_duplicates":
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from redup.core.lsh_matcher import find_near_duplicates
+
+    globals()[name] = find_near_duplicates
+    return find_near_duplicates
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | {"find_near_duplicates"})
 
 
 def _fuzzy_candidate_indices(candidates: list[CodeBlock]) -> dict[int, set[int]]:
@@ -251,6 +267,9 @@ def find_near_duplicate_groups(
         return groups
 
     try:
+        # Resolve after eligibility checks, retaining the existing module patch point.
+        if "find_near_duplicates" not in globals():
+            __getattr__("find_near_duplicates")
         # Find near-duplicates
         near_dup_groups = find_near_duplicates(
             lsh_blocks, threshold=lsh_threshold, min_lines=lsh_min_lines
