@@ -126,7 +126,9 @@
     "project/TICKETS.md",
     "project/ticket-008/**",
     "pyproject.toml",
-    "project/ticket-007/README.md"
+    "project/ticket-007/README.md",
+    ".governance/docs.json",
+    ".github/workflows/test-locked.yml"
   ],
   "forbiddenPaths": [
     "project/ticket-*/user-*.md"
@@ -143,22 +145,22 @@
       "No reDUP algorithm or dependency-version change",
       "No protected review or required-check bypass"
     ],
-    "complexity": "M",
-    "estimatedMinutes": 60,
+    "complexity": "L",
+    "estimatedMinutes": 90,
     "standardAdoption": {
       "sourceRepository": "wellmanifest/new-project",
       "fromRevision": null,
       "toRevision": "fa7972da8f6a28a0afe2914aacf46bee4a846943"
     },
     "budgets": {
-      "maxImplementationFiles": 9,
+      "maxImplementationFiles": 10,
       "maxAffectedComponents": 2,
       "maxPublicInterfaceChanges": 0,
       "maxRuntimeDependencies": 0
     },
     "architecture": {
       "status": "accepted",
-      "decision": "Immutable published package owns managed contracts; target manifest extends integration scope for initial adoption and packaging binding. Preserve legacy source and independent publication.",
+      "decision": "Adopt immutable new-project and compatible independently merged docs checker; acquire standard-copy hashes from separately pinned standard source in CI. Preserve product code, platform tests, independent review and target scope.",
       "components": [
         {
           "name": "governance",
@@ -170,7 +172,8 @@
             "project/**",
             ".gitattributes",
             ".gitignore",
-            "project.bat"
+            "project.bat",
+            ".github/workflows/test-locked.yml"
           ]
         },
         {
@@ -197,7 +200,7 @@
         "commands": [
           "goal governance adopt --source-revision fa7972da8f6a28a0afe2914aacf46bee4a846943 --target-root . --check"
         ],
-        "evidence": "Published annotated v0.20.54 resolves to exact adopted SHA; verify all managed payload digests."
+        "evidence": "Published v0.20.54 verifies; docs checker 0714f714 is independently merged upstream, not described as a release. Pin docs policy digest and test both unchanged copy acceptance and modified-copy rejection."
       },
       {
         "criterion": "AC-02",

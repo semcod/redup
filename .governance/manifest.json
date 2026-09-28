@@ -222,7 +222,9 @@
           ".gitignore",
           "project/TICKETS.md",
           "project/ticket-008/**",
-          "project/ticket-007/README.md"
+          "project/ticket-007/README.md",
+          ".governance/docs.json",
+          ".github/workflows/test-locked.yml"
         ]
       },
       "interfaces": {
