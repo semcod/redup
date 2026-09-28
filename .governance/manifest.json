@@ -1,0 +1,394 @@
+{
+  "$schema": "./manifest.schema.json",
+  "approvalEvidence": {
+    "requiredBindings": [
+      "repository",
+      "pullRequest",
+      "headSha",
+      "ticket",
+      "actor"
+    ],
+    "reviewVerificationMethod": "github-api-allowlist",
+    "schema": "new-project.approval-evidence/v1",
+    "signedAttestationPredicateType": "https://wellmanifest.com/attestations/validator/v1"
+  },
+  "coordination": {
+    "integration": {
+      "requiredForPaths": [
+        "package.json",
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "yarn.lock",
+        "pyproject.toml",
+        "uv.lock",
+        "poetry.lock",
+        "go.mod",
+        "go.sum",
+        "Cargo.toml",
+        "Cargo.lock",
+        "pom.xml",
+        "operations/**",
+        "events/**",
+        "error/**",
+        "models/**",
+        "proto/**"
+      ],
+      "workstream": "integration"
+    },
+    "maxActiveTicketsPerWorkstream": 8,
+    "mode": "workstreams",
+    "rejectActiveScopeOverlap": true,
+    "workstreams": {
+      "application": {
+        "ownedPaths": [
+          "src/**",
+          "app/**",
+          "lib/**",
+          "packages/**",
+          "test/**",
+          "tests/**"
+        ]
+      },
+      "governance": {
+        "ownedPaths": [
+          ".aider.conf.yml",
+          ".cursor/rules/**",
+          ".githooks/**",
+          ".github/copilot-instructions.md",
+          ".github/workflows/new-project-governance.yml",
+          ".gitignore",
+          ".governance/**",
+          ".subactor/**",
+          "AGENTS.md",
+          "CLAUDE.md",
+          "GEMINI.md",
+          "README.md",
+          "TODO.md",
+          "CHANGELOG.md",
+          ".env.example",
+          "goal.yaml",
+          "LICENSE*",
+          "project.sh",
+          "project.bat",
+          "project/**",
+          "scripts/install-agent-hosts.sh",
+          "scripts/runtime.sh",
+          "wellmanifest_governance.py",
+          "worktree-guard.yaml"
+        ]
+      },
+      "infrastructure": {
+        "ownedPaths": [
+          "Dockerfile*",
+          "compose*.yml",
+          "compose*.yaml",
+          "infra/**"
+        ]
+      },
+      "integration": {
+        "ownedPaths": [
+          "VERSION",
+          "package.json",
+          "package-lock.json",
+          "pnpm-lock.yaml",
+          "yarn.lock",
+          "pyproject.toml",
+          "uv.lock",
+          "poetry.lock",
+          "go.mod",
+          "go.sum",
+          "Cargo.toml",
+          "Cargo.lock",
+          "pom.xml",
+          "docs/**",
+          "operations/**",
+          "events/**",
+          "error/**",
+          "models/**",
+          "proto/**",
+          ".governance/snapshot_allocation.py",
+          ".governance/ticket_recovery.py",
+          ".governance/work_start_check.py",
+          ".governance/work-start-report.schema.json",
+          ".governance/error/GOV-WORK-START.md",
+          "AGENTS.md",
+          ".governance/AGENT_DECISIONS.md",
+          ".subactor/.gitignore",
+          ".subactor/manifest.json",
+          ".governance/templates/conftest-worktree-bootstrap.py",
+          "project.sh",
+          "project.bat",
+          ".governance/approval-evidence.schema.json",
+          ".governance/adoption-bindings.json",
+          ".governance/adoption-bindings.schema.json",
+          ".governance/change-evaluation.schema.json",
+          ".governance/diagnostics.json",
+          ".governance/diagnostics.schema.json",
+          ".governance/ticket-allocation.json",
+          ".governance/ticket-allocation.schema.json",
+          ".governance/ticket-allocation-request.schema.json",
+          ".governance/ticket-allocation-receipt.schema.json",
+          ".governance/ticket-activity.json",
+          ".governance/ticket-activity.schema.json",
+          ".governance/ticket-activity-override.schema.json",
+          ".governance/terminal-receipt-registry.schema.json",
+          ".governance/work-continuity.schema.json",
+          ".governance/remediation-intent.schema.json",
+          ".governance/remediation-intent.template.dsl.json",
+          ".governance/error/README.md",
+          ".governance/error/GOV-APPROVAL.md",
+          ".governance/error/GOV-REMEDIATION-INTENT.md",
+          ".governance/error/GOV-TICKET-001.md",
+          ".governance/error/GOV-TICKET-ALLOCATION.md",
+          ".governance/error/GOV-TICKET-ACTIVITY.md",
+          ".governance/error/GOV-WORK-CONTINUITY.md",
+          ".governance/error/GOV-WORKSPACE-LIFECYCLE.md",
+          ".governance/error/GOV-WORKTREE-OVERLAP.md",
+          ".governance/error/GOV-CHANGE-LEASE.md",
+          ".governance/change-lease.schema.json",
+          ".governance/worktrees.schema.json",
+          ".governance/worktree_path_check.py",
+          ".governance/worktrees.lock.json",
+          ".governance/change_lease_check.py",
+          ".governance/error/GOV-INTENT.md",
+          ".governance/worktree_overlap_check.py",
+          ".governance/ticket_activity.py",
+          ".governance/work_continuity.py",
+          ".governance/ticket_input.py",
+          ".governance/ticket_storage.py",
+          ".governance/ticket_allocation.py",
+          ".governance/worktree_guard.py",
+          "worktree-guard.yaml",
+          ".governance/required-checks.json",
+          ".governance/required-checks.schema.json",
+          ".governance/decision-record.schema.json",
+          ".governance/check_required_checks.py",
+          ".governance/decision_record.py",
+          ".governance/remediation_intent.py",
+          ".governance/branch_lifecycle_check.py",
+          ".governance/workspace_lifecycle_check.py",
+          ".governance/ticket_index_merge_driver.py",
+          ".governance/prune_merged_worktrees.py",
+          ".gitattributes",
+          ".governance/intent.schema.json",
+          ".governance/lock.schema.json",
+          ".governance/manifest.schema.json",
+          ".governance/package-manifest.json",
+          ".governance/stack-profiles.json",
+          ".governance/work-classification.dsl.json",
+          ".governance/work-classification.schema.json",
+          ".governance/governance_check.py",
+          ".governance/repository_policy.py",
+          ".github/workflows/new-project-governance.yml",
+          ".github/workflows/new-project-branch-hygiene.yml",
+          "scripts/runtime.sh",
+          "project/governance-check.sh",
+          "project/governance-check.bat",
+          "project/new-ticket.sh",
+          "project/readme.sh",
+          ".governance/manifest.base.json",
+          ".governance/manifest.json",
+          ".governance/error/GOV-AGENT-HOST.md",
+          ".governance/error/GOV-STANDARD-UPDATE.md",
+          ".governance/error/GOV-PACKAGING.md",
+          "CLAUDE.md",
+          "GEMINI.md",
+          ".cursor/rules/new-project-standard.mdc",
+          ".githooks/pre-commit",
+          ".governance/precommit_standard_update.py",
+          ".governance/agent-hosts.json",
+          ".governance/agent-hosts.schema.json",
+          ".governance/agent_host_check.py",
+          "scripts/install-agent-hosts.sh",
+          ".governance/generate_required_checks.py",
+          ".aider.conf.yml",
+          ".github/copilot-instructions.md",
+          "wellmanifest_governance.py",
+          ".governance/standard-packs.json",
+          ".governance/standard-adoption.schema.json",
+          ".governance/standard-adoption.json",
+          ".governance/standard_pack_check.py",
+          ".governance/branch_intent_reconciliation.py",
+          ".governance/branch-intent-reconciliation.schema.json",
+          ".governance/docs/BRANCH_INTENT_RECONCILIATION.md",
+          ".governance/docs/LOCAL_CI_PUBLICATION.md",
+          ".governance/snapshot_migration.py",
+          ".governance/snapshot-migration.schema.json",
+          ".governance/error/GOV-SNAPSHOT-MIGRATION.md",
+          ".governance/docs/SNAPSHOT_MIGRATION.md",
+          ".governance/managed-copies.json",
+          ".governance/error/GOV-ARCHITECTURE-001.md",
+          ".governance/manifest.lock.json",
+          ".gitignore",
+          "project/TICKETS.md",
+          "project/ticket-008/**",
+          "project/ticket-007/README.md",
+          ".governance/docs.json",
+          ".github/workflows/test-locked.yml"
+        ]
+      },
+      "interfaces": {
+        "ownedPaths": [
+          "api/**",
+          "sdk/**",
+          "clients/**"
+        ]
+      }
+    }
+  },
+  "delivery": {
+    "allowedComplexityClasses": [
+      "XS",
+      "S",
+      "M",
+      "L"
+    ],
+    "checkpointMinutes": 30,
+    "dependencyManifestPaths": [
+      "package.json",
+      "package-lock.json",
+      "pnpm-lock.yaml",
+      "yarn.lock",
+      "pyproject.toml",
+      "uv.lock",
+      "poetry.lock",
+      "go.mod",
+      "go.sum",
+      "Cargo.toml",
+      "Cargo.lock",
+      "pom.xml"
+    ],
+    "maxActiveMinutes": 120,
+    "maxAffectedComponents": 5,
+    "maxImplementationFiles": 15,
+    "maxPublicInterfaceChanges": 3,
+    "maxRuntimeDependencies": 3,
+    "profiles": {
+      "L": {
+        "maxAffectedComponents": 5,
+        "maxImplementationFiles": 15,
+        "maxPublicInterfaceChanges": 3,
+        "maxRuntimeDependencies": 3
+      },
+      "M": {
+        "maxAffectedComponents": 3,
+        "maxImplementationFiles": 9,
+        "maxPublicInterfaceChanges": 2,
+        "maxRuntimeDependencies": 2
+      },
+      "S": {
+        "maxAffectedComponents": 2,
+        "maxImplementationFiles": 5,
+        "maxPublicInterfaceChanges": 1,
+        "maxRuntimeDependencies": 1
+      },
+      "XS": {
+        "maxAffectedComponents": 1,
+        "maxImplementationFiles": 2,
+        "maxPublicInterfaceChanges": 0,
+        "maxRuntimeDependencies": 0
+      }
+    },
+    "publicInterfacePaths": [
+      "api/**",
+      "sdk/**",
+      "src/public/**"
+    ],
+    "requiredForImplementation": false,
+    "targetBranches": [
+      "main"
+    ]
+  },
+  "docker": {
+    "composeFiles": [
+      "compose.yml",
+      "compose.yaml",
+      "docker-compose.yml",
+      "docker-compose.yaml",
+      "compose.e2e.yml"
+    ],
+    "dockerfiles": [
+      "Dockerfile",
+      "Dockerfile.e2e"
+    ],
+    "required": false
+  },
+  "domainContracts": {
+    "mode": "none"
+  },
+  "governancePaths": [
+    "TODO.md",
+    "project/TICKETS.md",
+    "project/ticket-*/**",
+    ".governance/standard-adoption.json",
+    "config/artifact-registry.json"
+  ],
+  "repository": {
+    "componentRoots": [],
+    "mode": "standalone"
+  },
+  "repositoryPolicy": {
+    "delivery": {
+      "checkout": "linked-worktree",
+      "mode": "ticket-branch",
+      "targetBranches": [
+        "main"
+      ]
+    },
+    "enforcement": "enforce",
+    "profile": "ticket-worktree",
+    "tickets": {
+      "backend": "files",
+      "idPattern": "^ticket-[0-9]{3,}$",
+      "referenceRequired": true
+    }
+  },
+  "requiredFiles": [
+    "README.md",
+    "VERSION",
+    "CHANGELOG.md",
+    "TODO.md",
+    "AGENTS.md",
+    "project/TICKETS.md",
+    "project/new-ticket.sh",
+    "project/readme.sh"
+  ],
+  "schema": "new-project.governance/v2",
+  "stacks": [],
+  "standard": {
+    "id": "wellmanifest/new-project",
+    "version": "0.20.54"
+  },
+  "ticket": {
+    "activeStatuses": [
+      "IN_PROGRESS"
+    ],
+    "closedStatuses": [
+      "DONE",
+      "CANCELLED"
+    ],
+    "directoryPattern": "^ticket-[0-9]{3,}$",
+    "implementationStates": [
+      "EDIT",
+      "VALIDATION",
+      "PUBLICATION"
+    ],
+    "intentFile": "intent.json",
+    "nonActiveStatuses": [
+      "BACKLOG",
+      "PLAN",
+      "BLOCKED"
+    ],
+    "requiredAgentFiles": [],
+    "requiredFiles": [
+      "README.md",
+      "intent.json"
+    ],
+    "root": "project"
+  },
+  "trustedApprovalSources": [
+    "github-review",
+    "github-app-review",
+    "signed-attestation"
+  ]
+}

@@ -29,17 +29,43 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: wellmanifest/docs
-          ref: ebe7501063ef4f3e63ded610c2d3183010ca636e # v0.1.1
+          ref: 0714f71462202788e6b775ed145e9e61a7d5c366 # merged docs checker 0.6.0
           path: .docs-standard
           token: ${{ secrets.ORG_SYNC_PAT }}
           persist-credentials: false
+      - name: Check out immutable governance standard for copy digests
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: wellmanifest/new-project
+          ref: fa7972da8f6a28a0afe2914aacf46bee4a846943 # v0.20.54
+          path: .new-project-standard
+          token: ${{ secrets.ORG_SYNC_PAT }}
+          persist-credentials: false
+      - name: Derive documentation copy inventory from pinned standard
+        shell: bash
+        run: |
+          python - <<'PYTHON'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('.new-project-standard')
+          package = json.loads((root / 'governance/package-manifest.json').read_text())
+          copies = {
+              item['target']: hashlib.sha256((root / item['source']).read_bytes()).hexdigest()
+              for item in package['files']
+              if item['strategy'] == 'managed'
+              and item['target'].startswith('.governance/docs/')
+              and item['target'].endswith('.md')
+          }
+          assert copies, 'Pinned standard must declare documentation copies'
+          (root / 'trusted-document-copies.json').write_text(json.dumps(copies))
+          PYTHON
       - name: Validate documentation placement
         shell: bash
         env:
           DOCS_BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
-          args=(--root . --standard-revision ebe7501063ef4f3e63ded610c2d3183010ca636e)
+          args=(--root . --standard-revision 0714f71462202788e6b775ed145e9e61a7d5c366 --managed-copies .new-project-standard/trusted-document-copies.json)
           if [[ -n "$DOCS_BASE" ]]; then args+=(--base "$DOCS_BASE"); fi
           python .docs-standard/docs/standard/check.py "${args[@]}"
       - run: python -m pip install uv
