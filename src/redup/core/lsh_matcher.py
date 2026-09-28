@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import Any
 
 try:
@@ -77,29 +78,29 @@ class LSHIndex:
         if not query_minhash:
             return []
 
-        # Use LSH for candidate selection
-        if self.lsh:
-            result = []
+        # Fall back to stored native hashes if candidate selection is unavailable.
+        similar_indices: Iterable[int] = range(len(self.blocks))
+        if self.lsh is not None:
             try:
-                # Find similar items
-                similar_indices = self.lsh.query(query_minhash)
-
-                for idx in similar_indices:
-                    if idx < len(self.blocks):
-                        candidate_block = self.blocks[int(idx)]
-                        candidate_minhash = self.minhashes[int(idx)]
-
-                        if candidate_minhash:
-                            similarity = query_minhash.jaccard(candidate_minhash)
-                            if similarity >= self.threshold:
-                                result.append((candidate_block, similarity))
-
-                return sorted(result, key=lambda x: x[1], reverse=True)
+                similar_indices = sorted(int(key) for key in self.lsh.query(query_minhash))
             except Exception:
-                # Fallback to simple comparison
-                pass
+                # Datasketch failed; compare all existing native MinHashes.
+                similar_indices = range(len(self.blocks))
 
-        return []
+        return self._compare_minhashes(query_minhash, similar_indices)
+
+    def _compare_minhashes(
+        self, query_minhash: Any, indices: Iterable[int]
+    ) -> list[tuple[CodeBlock, float]]:
+        result = []
+        for idx in indices:
+            if 0 <= idx < len(self.blocks):
+                candidate_minhash = self.minhashes[idx]
+                if candidate_minhash is not None:
+                    similarity = query_minhash.jaccard(candidate_minhash)
+                    if similarity >= self.threshold:
+                        result.append((self.blocks[idx], similarity))
+        return sorted(result, key=lambda x: x[1], reverse=True)
 
     def _find_near_duplicates_simple(self, block: CodeBlock) -> list[tuple[CodeBlock, float]]:
         """Fallback near-duplicate detection without LSH."""
@@ -121,15 +122,19 @@ class LSHIndex:
         groups = {}
         processed = set()
 
-        # Build block-to-index map once for O(1) lookup instead of O(n) scan
-        block_to_index = {block: i for i, block in enumerate(self.blocks)}
+        # Scanner blocks are mutable dataclasses; use occurrence identity.
+        block_to_index = {id(block): i for i, block in enumerate(self.blocks)}
 
         for i, block in enumerate(self.blocks):
             if i in processed or block.line_count < min_lines:
                 continue
 
             # Find near-duplicates
-            near_dups = self.find_near_duplicates(block)
+            near_dups = [
+                (candidate, similarity)
+                for candidate, similarity in self.find_near_duplicates(block)
+                if candidate is not block and block_to_index[id(candidate)] not in processed
+            ]
 
             if near_dups:
                 # Create group key
@@ -139,7 +144,7 @@ class LSHIndex:
                 # Mark all as processed using O(1) lookup
                 processed.add(i)
                 for dup_block, _ in near_dups:
-                    idx = block_to_index.get(dup_block)
+                    idx = block_to_index.get(id(dup_block))
                     if idx is not None:
                         processed.add(idx)
 
