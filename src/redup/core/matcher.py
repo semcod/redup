@@ -8,10 +8,27 @@ import subprocess
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from redup.core.hasher import HashedBlock, _normalize_text
-from redup.core.lsh_matcher import find_near_duplicates
 from redup.core.tokens_hasher import find_rust_hasher_binary
+
+if TYPE_CHECKING:
+    from redup.core.lsh_matcher import find_near_duplicates
+
+
+def __getattr__(name: str):
+    """Keep the native LSH export without loading its optional dependencies at startup."""
+    if name != "find_near_duplicates":
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from redup.core.lsh_matcher import find_near_duplicates
+
+    globals()[name] = find_near_duplicates
+    return find_near_duplicates
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | {"find_near_duplicates"})
 
 
 @dataclass
