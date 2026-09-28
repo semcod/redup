@@ -111,8 +111,8 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
-addopts = "-v --tb=short"
+pythonpath = ["src", "."]
+addopts = "-v --tb=short -p wellmanifest_governance"
 
 [tool.costs]
 # AI Cost tracking configuration
@@ -132,3 +132,8 @@ automation = ["goal>=2.2.0"]
 
 [tool.uv.dependency-groups.automation]
 requires-python = ">=3.12"
+
+[tool.wellmanifest]
+standard = "0.20.54"
+revision = "fa7972da8f6a28a0afe2914aacf46bee4a846943"
+gate = "project/governance-check.sh"

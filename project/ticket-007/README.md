@@ -1,6 +1,6 @@
 # ticket-007: Atomize AST normalizer and exact/structural matcher
 
-- **Status**: IN_PROGRESS / PUBLICATION
+- **Status**: IN_PROGRESS
 - **Workflow state**: VERIFIED
 
 SESSION_EXECUTION_AUTHORIZATION: on 2026-09-26 the user requested sequential execution of performance atomization for `redup` (Atom 2: Exact & Structural Block Matcher).

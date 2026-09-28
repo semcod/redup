@@ -43,3 +43,18 @@ htmlcov/
 /.subactor/receipts/
 /.subactor/cache/
 /.subactor/snapshots/
+.planfile/
+
+# koru runtime artefacts (generated)
+.planfile/.koru/
+.koru/
+.planfile/sprints/*.bak-*
+
+# Track governance contracts; operational state remains private.
+!/.aider.conf.yml
+!/.cursor/
+!/.gitattributes
+!/.githooks/
+!/.github/
+!/.governance/
+!/.subactor/

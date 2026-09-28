@@ -1,0 +1,219 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-008",
+  "summary": "Adopt governed delivery prerequisites for Koru dependency remediation",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    ".governance/snapshot_allocation.py",
+    ".governance/ticket_recovery.py",
+    ".governance/work_start_check.py",
+    ".governance/work-start-report.schema.json",
+    ".governance/error/GOV-WORK-START.md",
+    "AGENTS.md",
+    ".governance/AGENT_DECISIONS.md",
+    ".subactor/.gitignore",
+    ".subactor/manifest.json",
+    ".governance/templates/conftest-worktree-bootstrap.py",
+    "project.sh",
+    "project.bat",
+    ".governance/approval-evidence.schema.json",
+    ".governance/adoption-bindings.json",
+    ".governance/adoption-bindings.schema.json",
+    ".governance/change-evaluation.schema.json",
+    ".governance/diagnostics.json",
+    ".governance/diagnostics.schema.json",
+    ".governance/ticket-allocation.json",
+    ".governance/ticket-allocation.schema.json",
+    ".governance/ticket-allocation-request.schema.json",
+    ".governance/ticket-allocation-receipt.schema.json",
+    ".governance/ticket-activity.json",
+    ".governance/ticket-activity.schema.json",
+    ".governance/ticket-activity-override.schema.json",
+    ".governance/terminal-receipt-registry.schema.json",
+    ".governance/work-continuity.schema.json",
+    ".governance/remediation-intent.schema.json",
+    ".governance/remediation-intent.template.dsl.json",
+    ".governance/error/README.md",
+    ".governance/error/GOV-APPROVAL.md",
+    ".governance/error/GOV-REMEDIATION-INTENT.md",
+    ".governance/error/GOV-TICKET-001.md",
+    ".governance/error/GOV-TICKET-ALLOCATION.md",
+    ".governance/error/GOV-TICKET-ACTIVITY.md",
+    ".governance/error/GOV-WORK-CONTINUITY.md",
+    ".governance/error/GOV-WORKSPACE-LIFECYCLE.md",
+    ".governance/error/GOV-WORKTREE-OVERLAP.md",
+    ".governance/error/GOV-CHANGE-LEASE.md",
+    ".governance/change-lease.schema.json",
+    ".governance/worktrees.schema.json",
+    ".governance/worktree_path_check.py",
+    ".governance/worktrees.lock.json",
+    ".governance/change_lease_check.py",
+    ".governance/error/GOV-INTENT.md",
+    ".governance/worktree_overlap_check.py",
+    ".governance/ticket_activity.py",
+    ".governance/work_continuity.py",
+    ".governance/ticket_input.py",
+    ".governance/ticket_storage.py",
+    ".governance/ticket_allocation.py",
+    ".governance/worktree_guard.py",
+    "worktree-guard.yaml",
+    ".governance/required-checks.json",
+    ".governance/required-checks.schema.json",
+    ".governance/decision-record.schema.json",
+    ".governance/check_required_checks.py",
+    ".governance/decision_record.py",
+    ".governance/remediation_intent.py",
+    ".governance/branch_lifecycle_check.py",
+    ".governance/workspace_lifecycle_check.py",
+    ".governance/ticket_index_merge_driver.py",
+    ".governance/prune_merged_worktrees.py",
+    ".gitattributes",
+    ".governance/intent.schema.json",
+    ".governance/lock.schema.json",
+    ".governance/manifest.schema.json",
+    ".governance/package-manifest.json",
+    ".governance/stack-profiles.json",
+    ".governance/work-classification.dsl.json",
+    ".governance/work-classification.schema.json",
+    ".governance/governance_check.py",
+    ".governance/repository_policy.py",
+    ".github/workflows/new-project-governance.yml",
+    ".github/workflows/new-project-branch-hygiene.yml",
+    "scripts/runtime.sh",
+    "project/governance-check.sh",
+    "project/governance-check.bat",
+    "project/new-ticket.sh",
+    "project/readme.sh",
+    ".governance/manifest.base.json",
+    ".governance/manifest.json",
+    ".governance/error/GOV-AGENT-HOST.md",
+    ".governance/error/GOV-STANDARD-UPDATE.md",
+    ".governance/error/GOV-PACKAGING.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    ".cursor/rules/new-project-standard.mdc",
+    ".githooks/pre-commit",
+    ".governance/precommit_standard_update.py",
+    ".governance/agent-hosts.json",
+    ".governance/agent-hosts.schema.json",
+    ".governance/agent_host_check.py",
+    "scripts/install-agent-hosts.sh",
+    ".governance/generate_required_checks.py",
+    ".aider.conf.yml",
+    ".github/copilot-instructions.md",
+    "wellmanifest_governance.py",
+    ".governance/standard-packs.json",
+    ".governance/standard-adoption.schema.json",
+    ".governance/standard-adoption.json",
+    ".governance/standard_pack_check.py",
+    ".governance/branch_intent_reconciliation.py",
+    ".governance/branch-intent-reconciliation.schema.json",
+    ".governance/docs/BRANCH_INTENT_RECONCILIATION.md",
+    ".governance/docs/LOCAL_CI_PUBLICATION.md",
+    ".governance/snapshot_migration.py",
+    ".governance/snapshot-migration.schema.json",
+    ".governance/error/GOV-SNAPSHOT-MIGRATION.md",
+    ".governance/docs/SNAPSHOT_MIGRATION.md",
+    ".governance/managed-copies.json",
+    ".governance/error/GOV-ARCHITECTURE-001.md",
+    ".governance/manifest.lock.json",
+    ".gitignore",
+    "project/TICKETS.md",
+    "project/ticket-008/**",
+    "pyproject.toml",
+    "project/ticket-007/README.md"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "3828b7c25bf50da7f72c181e54b03fe04694c4ff",
+    "targetBranch": "main",
+    "outcome": "Install pinned governance allocator, host hooks and packaging lifecycle for bounded dependency remediation",
+    "nonGoals": [
+      "No reDUP algorithm or dependency-version change",
+      "No protected review or required-check bypass"
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 60,
+    "standardAdoption": {
+      "sourceRepository": "wellmanifest/new-project",
+      "fromRevision": null,
+      "toRevision": "fa7972da8f6a28a0afe2914aacf46bee4a846943"
+    },
+    "budgets": {
+      "maxImplementationFiles": 9,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Immutable published package owns managed contracts; target manifest extends integration scope for initial adoption and packaging binding. Preserve legacy source and independent publication.",
+      "components": [
+        {
+          "name": "governance",
+          "paths": [
+            ".governance/**",
+            "AGENTS.md",
+            "CLAUDE.md",
+            "GEMINI.md",
+            "project/**",
+            ".gitattributes",
+            ".gitignore",
+            "project.bat"
+          ]
+        },
+        {
+          "name": "packaging",
+          "paths": [
+            "pyproject.toml"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the adoption commit; original handed-off files remain in external snapshot and stash."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "goal governance adopt --source-revision fa7972da8f6a28a0afe2914aacf46bee4a846943 --target-root . --check"
+        ],
+        "evidence": "Published annotated v0.20.54 resolves to exact adopted SHA; verify all managed payload digests."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "./project/governance-check.sh --actor agent",
+          "python -m pytest tests/"
+        ],
+        "evidence": "Run managed gates and existing reDUP tests without disabling lifecycle checks."
+      },
+      {
+        "criterion": "AC-03",
+        "commands": [
+          "protected local Validator exact-head publication"
+        ],
+        "evidence": "Independent required-check and trusted review receipt before merge."
+      }
+    ]
+  }
+}
