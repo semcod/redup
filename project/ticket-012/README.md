@@ -27,3 +27,7 @@ Next: capture and verify the adopted continuity record for the local documentati
 Publication remains a separate protected delivery effect.
 The guides have passed explicit completion and were committed locally.
 No pushed, merged or deployed result is asserted here.
+
+## Continued publication scope
+
+The user explicitly requested continuation, tests and merging. SESSION_EXECUTION_AUTHORIZATION covers protected publication of this ticket through OneDev and the independent Validator, after exact-head checks. Add the source-bound first-use procedure to the operator guide. Runtime deployment and normative full manual adoption remain separate. Prior allocator-only lease and local HEAD are preserved in external handoff evidence; protected controller ownership is freshly acquired without takeover.

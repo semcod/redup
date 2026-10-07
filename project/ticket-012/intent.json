@@ -29,11 +29,10 @@
   "delivery": {
     "acceptedBaseSha": "17ab187b37df23c66627b733c2b9c6f507138bf7",
     "targetBranch": "main",
-    "outcome": "Four indexed compact operational guides and one bounded observation model, locally validated and committed for review.",
+    "outcome": "Four indexed compact operational guides and one bounded observation model, validated locally and published through independent exact-head protected review. Include concrete source-bound operator procedures.",
     "nonGoals": [
       "Runtime instrumentation or live API verification",
-      "Normative full manual adoption",
-      "External publication or merge"
+      "Normative full manual adoption"
     ],
     "complexity": "M",
     "estimatedMinutes": 60,

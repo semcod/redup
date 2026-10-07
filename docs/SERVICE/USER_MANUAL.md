@@ -3,7 +3,7 @@
   "schema": "wellmanifest.docs/document/v2",
   "id": "user-manual",
   "kind": "service",
-  "version": 3,
+  "version": 4,
   "title": "Podręcznik operatora semcod/redup",
   "status": "proposed",
   "owner": "semcod/redup",
@@ -49,6 +49,14 @@ CLI analizy duplikacji ma polecenia scan, compare, diff, check, config i info. R
 - `redup-mcp` — python-entrypoint, źródło `pyproject.toml`.
 
 Deklaracje potwierdzono w obiektach Git, bez uruchamiania poleceń. Dostępność programu, argumenty i efekty wymagają osobnej kontroli; nie kopiowano treści skryptów npm ani poświadczeń.
+
+## Pierwszy raport duplikacji
+
+1. Przygotuj katalog badanego projektu i sprawdź `redup scan --help`.
+2. Wykonaj `redup scan ./project --format json --output /tmp/redup-report.json`.
+3. Otwórz raport, wybierz grupę duplikatów i sprawdź testy obu konsumentów przed wspólną refaktoryzacją. Polecenie zapisuje raport we wskazanym pliku; nie refaktoryzuje kodu.
+
+Interfejs i opcje potwierdzają [implementacja CLI](../../src/redup/cli_app/main.py) i [README](../../README.md). To procedura na podstawie źródła; skan projektu operatora nie był uruchamiany w ramach tej dostawy.
 
 <!-- docs:section validation -->
 ## Weryfikacja
