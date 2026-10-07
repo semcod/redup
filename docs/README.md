@@ -210,3 +210,10 @@ pytest
 <!-- code2docs:end -->
 
 - [Aktualizacja zależności wewnętrznych](information/internal-dependencies.md) — lockfile, testy i codzienny audyt.
+
+## Przewodniki operacyjne
+
+- [Logi operacyjne semcod/redup](SERVICE/LOGGING_GUIDE.md)
+- [Dokumentacja operacyjna semcod/redup](SERVICE/DOCUMENTATION_GUIDE.md)
+- [Ponowne wykorzystanie kodu semcod/redup](SERVICE/REUSE_GUIDE.md)
+- [Podręcznik operatora semcod/redup](SERVICE/USER_MANUAL.md)

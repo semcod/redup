@@ -1,0 +1,115 @@
+{
+  "schema": "wellmanifest.usermanual/v1",
+  "id": "semcod/redup",
+  "name": "redup",
+  "version": "0.4.48",
+  "summary": "Adoption draft for semcod/redup, based on immutable committed source. Coverage is bounded and requires operator review.",
+  "env_variables": [],
+  "queries": [],
+  "commands": [],
+  "processes": [],
+  "dsl": {
+    "grammar": "No DSL contract inferred by this bounded observation.",
+    "capitalize_tokens": [],
+    "examples": []
+  },
+  "ui_components": [],
+  "digital_twin": {
+    "twin_urn": "urn:twin:proposal:fleet:514b411f835cbd0e:v1",
+    "role": "Proposed documentation reviewer; no implemented twin or execution authority claimed.",
+    "capabilities": [],
+    "autonomous_routines": []
+  },
+  "status": "draft",
+  "source_revision": "17ab187b37df23c66627b733c2b9c6f507138bf7",
+  "source_evidence": [
+    {
+      "path": "pyproject.toml",
+      "sha256": "31f2922e6d05a9109d5a69bc1a636e0055f38656fc1da655639e7c6618cd0c34"
+    },
+    {
+      "path": "VERSION",
+      "sha256": "adf4ddde62ee2f5f7a3c3aa5476f54c7c0535b8db9b84eeb597e716fa2b65584"
+    },
+    {
+      "path": "src/redup/__main__.py",
+      "sha256": "615ae9c1f7a633ab6083a137cd546a636c4827f13eb662872a9cb7dd14d0d588"
+    },
+    {
+      "path": "src/redup/mcp/server.py",
+      "sha256": "781b83f6e45735056271e9913d02d69bd2d122d80203f4652641d619c45747a1"
+    },
+    {
+      "path": "src/redup/mcp_server.py",
+      "sha256": "c1eada8d3b923af3734f8a5feab7eaeb447bd362ac2389c9fa31891a15564391"
+    },
+    {
+      "path": "src/redup/cli_app/main.py",
+      "sha256": "bda3ca26d14266594e403170bc91fc90fff87207e0720c502889b378e18d9d31"
+    },
+    {
+      "path": "src/redup/cli_app/__init__.py",
+      "sha256": "88f486ed963ddab4e62f0cd6f4210324b1a1545cbb13e9ba11ce3d6e544976dd"
+    },
+    {
+      "path": "src/redup/mcp_server_clean.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/redup/cli_app/scan_helpers.py",
+      "sha256": "d4211f6e1e18302121d8aff11f4d2226fab7985c21b18f8515787ea34ec23588"
+    },
+    {
+      "path": "src/redup/cli_app/output_writer.py",
+      "sha256": "3b816c80fc7ce551ded9dc025c8dd5c3de09ef74c0f5aa88ab55a70cdbd8485b"
+    }
+  ],
+  "coverage": {
+    "python_files_observed": [
+      "src/redup/__main__.py",
+      "src/redup/mcp/server.py",
+      "src/redup/mcp_server.py",
+      "src/redup/cli_app/main.py",
+      "src/redup/cli_app/__init__.py",
+      "src/redup/mcp_server_clean.py",
+      "src/redup/cli_app/scan_helpers.py",
+      "src/redup/cli_app/output_writer.py"
+    ],
+    "python_files_total": 102,
+    "complete": false,
+    "other_languages_observed": false
+  },
+  "not_applicable_or_unverified": [
+    "No process URI registration or UI component mapping asserted.",
+    "Empty arrays mean not established by this observation, not absence of the feature.",
+    "Documentation schema validity is not endpoint drift verification or deployed adoption."
+  ],
+  "declared_cli_entrypoints": [
+    {
+      "kind": "python-entrypoint",
+      "name": "redup",
+      "declared_target": "redup.cli_app.main:app",
+      "manifest": "pyproject.toml",
+      "manifest_field": "project.scripts.redup",
+      "invocation": "redup",
+      "execution_status": "not-executed",
+      "effects": "unverified"
+    },
+    {
+      "kind": "python-entrypoint",
+      "name": "redup-mcp",
+      "declared_target": "redup.mcp_server:run_server",
+      "manifest": "pyproject.toml",
+      "manifest_field": "project.scripts.redup-mcp",
+      "invocation": "redup-mcp",
+      "execution_status": "not-executed",
+      "effects": "unverified"
+    }
+  ],
+  "entrypoint_observation": {
+    "source": "artifact://fleet-operational-guides-20261007/bundle/semcod--redup--4169dff0/entrypoints.json",
+    "runtime_verified": false,
+    "effects_verified": false,
+    "declarations_count": 2
+  }
+}
