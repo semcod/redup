@@ -1,0 +1,99 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-012",
+  "summary": "Operational docs logs reuse and usermanual",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-012/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/README.md",
+    "docs/SERVICE/DOCUMENTATION_GUIDE.md",
+    "docs/SERVICE/LOGGING_GUIDE.md",
+    "docs/SERVICE/REUSE_GUIDE.md",
+    "docs/SERVICE/USER_MANUAL.md",
+    "docs/standards/usermanual-observation.json"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "17ab187b37df23c66627b733c2b9c6f507138bf7",
+    "targetBranch": "main",
+    "outcome": "Four indexed compact operational guides and one bounded observation model, validated locally and published through independent exact-head protected review. Include concrete source-bound operator procedures.",
+    "nonGoals": [
+      "Runtime instrumentation or live API verification",
+      "Normative full manual adoption"
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 60,
+    "budgets": {
+      "maxImplementationFiles": 9,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Keep four guides and the observation model in existing documentation paths; bind recovery to this ticket without changing product runtime.",
+      "components": [
+        {
+          "name": "operational-documentation",
+          "paths": [
+            "docs/SERVICE/**",
+            "docs/standards/usermanual-observation.json",
+            "docs/README.md"
+          ]
+        },
+        {
+          "name": "ticket-contract",
+          "paths": [
+            "project/ticket-012/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Before any publication, retain the previous local commit and content-addressed snapshot; revert only the owned documentation change through an authorized follow-up ticket if required."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "Pinned wellmanifest/docs checker: explicit --complete for each guide with base and preparation receipt"
+        ],
+        "evidence": "artifact:fleet-guides/semcod/redup/docs-completion"
+      },
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "Validate docs/standards/usermanual-observation.json against wellmanifest/usermanual root schema"
+        ],
+        "evidence": "artifact:fleet-guides/integrity-check"
+      },
+      {
+        "criterion": "AC-03",
+        "commands": [
+          "bash project/governance-check.sh --actor agent"
+        ],
+        "evidence": "artifact:fleet-guides/semcod/redup/governance"
+      }
+    ]
+  }
+}
