@@ -32,6 +32,15 @@ app = typer.Typer(
 app.add_typer(quality_app, name="quality", help="Run local quality gates")
 
 
+@app.callback()
+def _main_callback() -> None:
+    try:
+        from redup.autoupdate import check_for_updates
+        check_for_updates("redup")
+    except Exception:
+        pass
+
+
 OutputFormat = Literal["json", "yaml", "toon", "markdown", "all", "enhanced", "code2llm"]
 
 
