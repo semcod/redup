@@ -532,6 +532,7 @@ def find_duplicates_phase_lazy(
                     cache.store_file_hashes(file_path, content, hashes)
                 except OSError:
                     pass
+        cache.flush()
     else:
         index = build_hash_index(all_blocks, min_lines=config.min_block_lines)
 

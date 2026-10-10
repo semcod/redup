@@ -24,6 +24,11 @@ class HashCache:
         cache_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = cache_dir / "hash_cache.db"
         self.db = sqlite3.connect(str(self.db_path))
+        self.db.execute("PRAGMA journal_mode = WAL;")
+        self.db.execute("PRAGMA synchronous = NORMAL;")
+        self.db.execute("PRAGMA temp_store = MEMORY;")
+        self.db.execute("PRAGMA cache_size = -64000;")
+        self._uncommitted = 0
         self._init_tables()
 
     def _init_tables(self) -> None:
@@ -141,9 +146,36 @@ class HashCache:
                     block_data,
                 )
 
-            self.db.commit()
+            self._uncommitted += 1
+            if self._uncommitted >= 100:
+                self.flush()
         except sqlite3.Error:
             # If caching fails, continue without cache
+            pass
+
+    def flush(self) -> None:
+        """Commit any pending uncommitted database transactions."""
+        try:
+            if hasattr(self, "db") and self.db:
+                self.db.commit()
+                self._uncommitted = 0
+        except sqlite3.Error:
+            pass
+
+    def close(self) -> None:
+        """Flush pending changes and close database connection."""
+        self.flush()
+        try:
+            if hasattr(self, "db") and self.db:
+                self.db.close()
+        except sqlite3.Error:
+            pass
+
+    def __del__(self) -> None:
+        """Ensure uncommitted changes are flushed when object is garbage collected."""
+        try:
+            self.flush()
+        except Exception:
             pass
 
     def cleanup_old_entries(self, max_age_days: int = 30) -> None:
