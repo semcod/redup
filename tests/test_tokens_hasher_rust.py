@@ -113,3 +113,39 @@ def test_pyo3_in_process_simhash() -> None:
     assert fp_native == fp_python
     assert fp_native > 0
 
+
+def test_pyo3_batch_simhash() -> None:
+    try:
+        import redup_fast_hash
+    except ImportError:
+        pytest.skip("redup_fast_hash extension not installed")
+
+    codes = [
+        "def f1(x): return x + 1",
+        "def f2(y): return y + 1",
+        "class Config: pass",
+    ]
+    fps = redup_fast_hash.batch_simhash(codes)
+    assert len(fps) == 3
+    assert fps[0] == fps[1]
+    assert fps[0] != fps[2]
+
+
+def test_pyo3_find_simhash_candidates() -> None:
+    try:
+        import redup_fast_hash
+    except ImportError:
+        pytest.skip("redup_fast_hash extension not installed")
+
+    fp1 = 0x1111222233334444
+    fp2 = 0x111122223333FFFF
+    items = [
+        (0, fp1, ".py", 10),
+        (1, fp2, ".py", 11),
+        (2, 0x9999888877776666, ".py", 10),
+    ]
+    candidates = redup_fast_hash.find_simhash_candidates(items, 2, 4, 4)
+    assert 0 in candidates
+    assert 1 in candidates[0]
+
+
