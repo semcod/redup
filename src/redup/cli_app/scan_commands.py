@@ -8,7 +8,7 @@ import typer
 
 from redup.cli_app.config_builder import build_config, build_config_with_file_support
 from redup.cli_app.scan_helpers import print_scan_header, print_scan_summary
-from redup.core.config import create_sample_redup_toml
+from redup.core.config import create_sample_redup_toml, load_config
 from redup.core.models import DEFAULT_SEMANTIC_THRESHOLD
 from redup.core.pipeline import analyze, analyze_optimized
 
@@ -330,7 +330,26 @@ def check_command(
     ),
     include_tests: bool | None = typer.Option(False, "--include-tests", help="Include test files."),
 ) -> None:
-    """Quick check for duplicates with summary report."""
+    """Check raw duplicate counts against inclusive CI budgets."""
+
+    path = _validate_scan_path(path)
+    settings = load_config(path)
+    check_settings = settings.get("check", {})
+    if not isinstance(check_settings, dict):
+        raise typer.BadParameter("check configuration must be a table")
+    group_limit = (
+        max_groups
+        if max_groups is not None
+        else settings.get("max_groups", check_settings.get("max_groups", 10))
+    )
+    line_limit = (
+        max_saved_lines
+        if max_saved_lines is not None
+        else settings.get("max_lines", check_settings.get("max_lines", 100))
+    )
+    for name, limit in (("max-groups", group_limit), ("max-lines", line_limit)):
+        if type(limit) is not int or limit < 0:
+            raise typer.BadParameter(f"{name} must be a nonnegative integer")
 
     config = build_config_with_file_support(
         path, extensions, min_lines, min_similarity, include_tests
@@ -341,20 +360,26 @@ def check_command(
     dup_map = analyze(config)
     print_scan_summary(dup_map)
 
-    # Show top duplicate groups
+    # Diagnostic output is bounded independently of the pass/fail budgets.
     if dup_map.groups:
-        _max_groups = max_groups if max_groups is not None else 10
-        _max_saved = max_saved_lines if max_saved_lines is not None else 100
-        typer.echo(f"\n🎯 Top {min(_max_groups, len(dup_map.groups))} duplicate groups:")
-        for i, group in enumerate(dup_map.sorted_by_impact()[:_max_groups]):
-            if group.saved_lines_potential <= _max_saved:
-                break
+        typer.echo(f"\n🎯 Top {min(10, len(dup_map.groups))} duplicate groups:")
+        for i, group in enumerate(dup_map.sorted_by_impact()[:10]):
             typer.echo(
                 f"  {i + 1}. {group.id}: {group.occurrences} occurrences, "
                 f"{group.saved_lines_potential} lines recoverable"
             )
     else:
         typer.echo("✅ No duplicates found!")
+
+    violations = []
+    if dup_map.total_groups > group_limit:
+        violations.append(f"groups {dup_map.total_groups} > {group_limit}")
+    if dup_map.total_saved_lines > line_limit:
+        violations.append(f"recoverable lines {dup_map.total_saved_lines} > {line_limit}")
+    if violations:
+        typer.echo("❌ Duplicate budget exceeded: " + "; ".join(violations))
+        raise typer.Exit(1)
+    typer.echo(f"✅ Duplicate budgets passed: groups <= {group_limit}, lines <= {line_limit}")
 
 
 def config_command(
