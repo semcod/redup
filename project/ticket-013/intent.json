@@ -15,6 +15,9 @@
     "src/redup/core/models.py",
     "src/redup/core/config.py",
     "src/redup/cli_app/config_builder.py",
+    "src/redup/core/matcher.py",
+    "src/redup/core/tokens_hasher.py",
+    "packages/redup-fast-hash/**",
     "tests/**",
     "TODO.md",
     "project/TICKETS.md"

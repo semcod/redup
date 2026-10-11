@@ -99,3 +99,17 @@ def test_fuzzy_simhash_rust_with_missing_binary() -> None:
     # Explicitly pass non-existent binary path to ensure graceful None return
     res = fuzzy_simhash_rust("def dummy(): pass", binary_path=Path("/tmp/nonexistent_bin_12345"))
     assert res is None
+
+
+def test_pyo3_in_process_simhash() -> None:
+    try:
+        import redup_fast_hash
+    except ImportError:
+        pytest.skip("redup_fast_hash extension not installed")
+
+    code = "def calculate_total(subtotal, tax_rate):\n    return subtotal * (1 + tax_rate)\n"
+    fp_native = redup_fast_hash.compute_fuzzy_simhash(code)
+    fp_python = fuzzy_simhash(code, prefer_rust=False)
+    assert fp_native == fp_python
+    assert fp_native > 0
+
