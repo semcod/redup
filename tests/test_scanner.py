@@ -166,3 +166,22 @@ def test_scan_project_target_files_does_not_walk_tree(monkeypatch):
 
         assert stats.files_scanned == 1
         assert {Path(f.path).name for f in files} == {"b.py"}
+
+
+def test_should_exclude_managed_components():
+    config = ScanConfig(root=Path("/project"))
+    assert "managed_components" in config.exclude_patterns
+    assert _should_exclude(Path("/project/stacknet/managed_components/lvgl/code.c"), tuple(config.exclude_patterns))
+
+
+def test_config_to_scan_config_loads_custom_excludes(tmp_path):
+    from redup.core.config import config_to_scan_config
+    raw_config = {
+        "scan": {
+            "exclude": ["custom_dir", "*.generated.py"]
+        }
+    }
+    cfg = config_to_scan_config(raw_config, tmp_path)
+    assert "custom_dir" in cfg.exclude_patterns
+    assert "*.generated.py" in cfg.exclude_patterns
+

@@ -41,6 +41,12 @@ class MatchResult:
     method: str  # "exact", "sequence", "fuzzy"
 
 
+try:
+    import redup_fast_hash
+except ImportError:
+    redup_fast_hash = None
+
+
 def sequence_similarity_rust(
     text_a: str, text_b: str, binary_path: Path | None = None
 ) -> float | None:
@@ -48,6 +54,12 @@ def sequence_similarity_rust(
 
     Returns None if binary is missing or execution fails.
     """
+    if binary_path is None and redup_fast_hash is not None:
+        try:
+            return float(redup_fast_hash.sequence_ratio(text_a, text_b))
+        except Exception:
+            pass
+
     bin_path = binary_path or find_rust_hasher_binary()
     if not bin_path:
         return None
@@ -64,7 +76,9 @@ def sequence_similarity_rust(
         return None
 
 
-def sequence_similarity(text_a: str, text_b: str, *, prefer_rust: bool = False) -> float:
+def sequence_similarity(
+    text_a: str, text_b: str, *, prefer_rust: bool | None = None
+) -> float:
     """SequenceMatcher ratio between two normalized texts."""
     norm_a = _normalize_text(text_a)
     norm_b = _normalize_text(text_b)
@@ -73,7 +87,12 @@ def sequence_similarity(text_a: str, text_b: str, *, prefer_rust: bool = False) 
     if norm_a == norm_b:
         return 1.0
 
-    if prefer_rust or os.getenv("REDUP_USE_RUST") == "1":
+    use_rust = (
+        prefer_rust
+        if prefer_rust is not None
+        else (redup_fast_hash is not None or os.getenv("REDUP_USE_RUST") == "1")
+    )
+    if use_rust:
         rust_sim = sequence_similarity_rust(norm_a, norm_b)
         if rust_sim is not None:
             return rust_sim
@@ -86,7 +105,9 @@ def sequence_similarity(text_a: str, text_b: str, *, prefer_rust: bool = False) 
         return difflib.SequenceMatcher(None, norm_a, norm_b).ratio()
 
 
-def fuzzy_similarity(text_a: str, text_b: str, *, prefer_rust: bool = False) -> float:
+def fuzzy_similarity(
+    text_a: str, text_b: str, *, prefer_rust: bool | None = None
+) -> float:
     """Fuzzy similarity using rapidfuzz or Rust if available, fallback to SequenceMatcher."""
     return sequence_similarity(text_a, text_b, prefer_rust=prefer_rust)
 

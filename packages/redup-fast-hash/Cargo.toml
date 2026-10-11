@@ -6,8 +6,14 @@ description = "Fast native SimHash and fingerprinting engine for redup"
 
 [lib]
 name = "redup_fast_hash"
+crate-type = ["cdylib", "rlib"]
 path = "src/lib.rs"
 
 [[bin]]
 name = "redup-fast-hash"
 path = "src/main.rs"
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+rayon = "1.10"
+

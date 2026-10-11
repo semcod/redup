@@ -78,3 +78,35 @@ def test_rust_similarity_completely_different(ensure_rust_binary: Path) -> None:
 def test_sequence_similarity_rust_missing_binary() -> None:
     res = sequence_similarity_rust("a", "b", binary_path=Path("/tmp/nonexistent_similarity_bin"))
     assert res is None
+
+
+def test_pyo3_in_process_sequence_ratio() -> None:
+    try:
+        import redup_fast_hash
+    except ImportError:
+        return
+
+    sim = redup_fast_hash.sequence_ratio("def foo(): pass", "def foo(): pass")
+    assert sim == 1.0
+
+    sim_diff = redup_fast_hash.sequence_ratio("abc", "xyz")
+    assert sim_diff == 0.0
+
+
+def test_pyo3_batch_similarity() -> None:
+    try:
+        import redup_fast_hash
+    except ImportError:
+        return
+
+    pairs = [
+        ("def a(): return 1", "def a(): return 1"),
+        ("def a(): return 1", "def a(): return 2"),
+        ("abc", "xyz"),
+    ]
+    ratios = redup_fast_hash.batch_similarity(pairs)
+    assert len(ratios) == 3
+    assert ratios[0] == 1.0
+    assert ratios[1] > 0.8
+    assert ratios[2] == 0.0
+
