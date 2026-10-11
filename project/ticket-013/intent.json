@@ -12,6 +12,9 @@
     "project/ticket-013/**",
     "src/redup/core/cache.py",
     "src/redup/core/pipeline/duplicate_finder.py",
+    "src/redup/core/models.py",
+    "src/redup/core/config.py",
+    "src/redup/cli_app/config_builder.py",
     "tests/**",
     "TODO.md",
     "project/TICKETS.md"

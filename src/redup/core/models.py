@@ -127,6 +127,9 @@ class ScanConfig:
             "**/*.rs.bk",
             # Go
             "vendor",
+            # Embedded / ESP-IDF vendored components
+            "managed_components",
+            "*managed_components*",
             "*.exe",
             "*.exe~",
             "*.dll",

@@ -123,7 +123,17 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
     lsh_config = config.get("lsh", {})
     semantic_config = config.get("semantic", {})
 
-    return ScanConfig(
+    raw_excludes = config.get("exclude", scan_config.get("exclude", []))
+    if not raw_excludes:
+        raw_excludes = config.get("exclude_patterns", scan_config.get("exclude_patterns", []))
+    if isinstance(raw_excludes, str):
+        custom_excludes = [x.strip() for x in raw_excludes.split(",") if x.strip()]
+    elif isinstance(raw_excludes, (list, tuple)):
+        custom_excludes = [str(x).strip() for x in raw_excludes if str(x).strip()]
+    else:
+        custom_excludes = []
+
+    scan_cfg = ScanConfig(
         root=path,
         extensions=ext_list,
         min_block_lines=config.get("min_lines", scan_config.get("min_lines", 3)),
@@ -136,6 +146,9 @@ def config_to_scan_config(config: dict[str, Any], path: Path) -> ScanConfig:
         semantic_threshold=semantic_config.get("threshold", DEFAULT_SEMANTIC_THRESHOLD),
         semantic_model=semantic_config.get("model", DEFAULT_SEMANTIC_MODEL),
     )
+    if custom_excludes:
+        scan_cfg.exclude_patterns.extend(custom_excludes)
+    return scan_cfg
 
 
 def create_sample_redup_toml() -> str:
