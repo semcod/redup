@@ -1,0 +1,48 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-014",
+  "summary": "Enforce reDUP CLI duplicate budgets",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-014/**",
+    "src/redup/cli_app/main.py",
+    "src/redup/cli_app/scan_commands.py",
+    "tests/test_cli_check_budget.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "827418a798d9a5d4d455ffc7e4228e7d063c106f",
+    "targetBranch": "main",
+    "outcome": "CLI check rejects exceeded duplicate budgets and invalid limits, preserves inclusive boundaries and configuration precedence, with actual CLI regression coverage for Issue20.",
+    "nonGoals": ["No scanner or MCP changes", "No dependency or runtime activation", "No original frozen refactor changes", "No author approval or merge"],
+    "complexity": "S",
+    "estimatedMinutes": 20,
+    "budgets": {"maxImplementationFiles": 3, "maxAffectedComponents": 1, "maxPublicInterfaceChanges": 1, "maxRuntimeDependencies": 0},
+    "architecture": {
+      "status": "accepted",
+      "decision": "Resolve check budgets from existing canonical configuration loader; enforce raw DuplicationMap totals after one existing scan; keep display independent of limits. Existing command flags and scanner/MCP contracts remain stable.",
+      "components": [{"name": "cli-check", "paths": ["src/redup/cli_app/main.py", "src/redup/cli_app/scan_commands.py", "tests/test_cli_check_budget.py"]}],
+      "responsibilityChanges": false,
+      "interfaceChanges": ["The declared CI check now returns1 when either configured budget is exceeded."],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert the bounded CLI fix through independent delivery; no persisted source or runtime data is migrated."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {"criterion": "AC-01", "commands": ["python -m pytest tests/test_cli_check_budget.py"], "evidence": "16 actual CLI cases; three negative cases fail against the unchanged baseline."},
+      {"criterion": "AC-02", "commands": ["python -m pytest tests", "project/governance-check.sh", "ruff check", "ruff format --check"], "evidence": "256passed/13existing skips, zero failures; governance and lint/format pass."}
+    ]
+  }
+}

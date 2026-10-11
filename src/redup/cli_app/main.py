@@ -36,6 +36,7 @@ app.add_typer(quality_app, name="quality", help="Run local quality gates")
 def _main_callback() -> None:
     try:
         from redup.autoupdate import check_for_updates
+
         check_for_updates("redup")
     except Exception:
         pass
@@ -303,11 +304,13 @@ def check(
         None,
         "--max-groups",
         help="Maximum allowed duplicate groups. Overrides config.",
+        min=0,
     ),
     max_saved_lines: int | None = typer.Option(
         None,
         "--max-lines",
         help="Maximum allowed recoverable lines. Overrides config.",
+        min=0,
     ),
     extensions: str | None = typer.Option(
         None,
