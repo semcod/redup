@@ -243,6 +243,15 @@ def find_simhash_band_candidates(
     Returns:
         dict mapping left item index to set of right item indices.
     """
+    if redup_fast_hash is not None and hasattr(redup_fast_hash, "find_simhash_candidates"):
+        try:
+            raw = redup_fast_hash.find_simhash_candidates(
+                list(items), min_matching_bands, max_line_diff, num_bands
+            )
+            return {k: set(v) for k, v in raw.items()}
+        except Exception:
+            pass
+
     buckets: dict[tuple[str, int, int], list[int]] = defaultdict(list)
     band_hits: dict[tuple[int, int], int] = defaultdict(int)
     result: dict[int, set[int]] = defaultdict(set)
@@ -297,6 +306,12 @@ def compute_simple_minhash_values(
     features: Sequence[str], num_perm: int = 128
 ) -> list[int]:
     """Compute MinHash permutation array for given features."""
+    if redup_fast_hash is not None and hasattr(redup_fast_hash, "compute_minhash_signature"):
+        try:
+            return list(redup_fast_hash.compute_minhash_signature(list(features), num_perm))
+        except Exception:
+            pass
+
     hash_values: list[int] = []
     for i in range(num_perm):
         seed = i + 1
@@ -316,6 +331,11 @@ def compute_jaccard_similarity(
     """Estimate Jaccard similarity between two MinHash permutation vectors."""
     if not hash_values_a or len(hash_values_a) != len(hash_values_b):
         return 0.0
+    if redup_fast_hash is not None and hasattr(redup_fast_hash, "minhash_jaccard"):
+        try:
+            return float(redup_fast_hash.minhash_jaccard(list(hash_values_a), list(hash_values_b)))
+        except Exception:
+            pass
     matches = sum(1 for a, b in zip(hash_values_a, hash_values_b, strict=True) if a == b)
     return matches / len(hash_values_a)
 

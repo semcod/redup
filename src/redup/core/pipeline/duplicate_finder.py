@@ -52,10 +52,26 @@ def __dir__() -> list[str]:
 
 def _fuzzy_candidate_indices(candidates: list[CodeBlock]) -> dict[int, set[int]]:
     """Build bounded candidate sets using four SimHash bands instead of all pairs."""
-    items = [
-        (index, _fuzzy_simhash(block.text), Path(block.file).suffix.lower(), block.line_count)
-        for index, block in enumerate(candidates)
-    ]
+    try:
+        import redup_fast_hash
+
+        if hasattr(redup_fast_hash, "batch_simhash"):
+            texts = [block.text for block in candidates]
+            fps = redup_fast_hash.batch_simhash(texts)
+            items = [
+                (index, fps[index], Path(block.file).suffix.lower(), block.line_count)
+                for index, block in enumerate(candidates)
+            ]
+        else:
+            items = [
+                (index, _fuzzy_simhash(block.text), Path(block.file).suffix.lower(), block.line_count)
+                for index, block in enumerate(candidates)
+            ]
+    except ImportError:
+        items = [
+            (index, _fuzzy_simhash(block.text), Path(block.file).suffix.lower(), block.line_count)
+            for index, block in enumerate(candidates)
+        ]
     return find_simhash_band_candidates(items, min_matching_bands=2, max_line_diff=4)
 
 
