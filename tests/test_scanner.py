@@ -185,3 +185,28 @@ def test_config_to_scan_config_loads_custom_excludes(tmp_path):
     assert "custom_dir" in cfg.exclude_patterns
     assert "*.generated.py" in cfg.exclude_patterns
 
+
+
+def test_should_exclude_compiled_matches_fnmatch_semantics():
+    import fnmatch
+
+    patterns = ("*.pyc", "build", "stacknet/managed_components/**", "!keep.pyc", "c2004/**")
+    paths = [
+        "a/b/c.py",
+        "a/c.pyc",
+        "build/x.py",
+        "src/build/x.py",
+        "stacknet/managed_components/lib/x.c",
+        "c2004/fw/main.c",
+        "src/c2004x/main.c",
+    ]
+    for raw in paths:
+        path = Path(raw)
+        expected = any(
+            fnmatch.fnmatch(path.name, p)
+            or fnmatch.fnmatch(str(path), p)
+            or any(fnmatch.fnmatch(part, p) for part in path.parts)
+            for p in patterns
+            if not p.startswith("!")
+        )
+        assert _should_exclude(path, patterns) is expected, raw

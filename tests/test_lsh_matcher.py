@@ -86,3 +86,16 @@ def test_pipeline_receives_two_real_occurrences(backend):
     assert {fragment.file for fragment in groups[0].fragments} == {"left.py", "right.py"}
     assert groups[0].occurrences == 2
     assert groups[0].similarity_score == 1.0
+
+
+def test_native_minhash_matches_signature_and_is_order_invariant():
+    pytest.importorskip("datasketch")
+    native = pytest.importorskip("redup_fast_hash")
+    first = lsh_matcher._create_minhash("alpha beta gamma delta epsilon")
+    reordered = lsh_matcher._create_minhash("epsilon delta alpha beta gamma gamma")
+    expected = native.compute_minhash_signature(
+        list(dict.fromkeys(lsh_matcher._normalize_text("alpha beta gamma delta epsilon").split())),
+        128,
+    )
+    assert list(first.hashvalues) == list(expected)
+    assert first.jaccard(reordered) == 1.0
