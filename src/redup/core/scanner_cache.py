@@ -2,6 +2,8 @@
 
 import fnmatch
 import functools
+import os
+import re
 import threading
 from pathlib import Path
 
@@ -85,15 +87,39 @@ def _matches_any_include(
     )
 
 
-@functools.lru_cache(maxsize=1000)
+@functools.lru_cache(maxsize=64)
+def _compile_exclude_regex(patterns: tuple[str, ...]) -> "re.Pattern[str] | None":
+    """Compile all non-negated exclusion globs into one regex.
+
+    ``fnmatch.fnmatch`` re-dispatches every pattern for the name, the full path
+    and each path component (O(patterns x parts) Python calls per path). A single
+    alternation compiled once runs in the C regex engine with identical glob
+    semantics (``fnmatch.translate`` is what ``fnmatch`` itself uses).
+    """
+    translated = [
+        fnmatch.translate(os.path.normcase(p)) for p in patterns if not p.startswith("!")
+    ]
+    if not translated:
+        return None
+    return re.compile("|".join(translated))
+
+
+@functools.lru_cache(maxsize=65536)
 def _should_exclude(path: Path, patterns: tuple[str, ...]) -> bool:
     """Check if a path matches any exclusion pattern with support for negation."""
     name = path.name
     str_path = str(path)
     path_parts = path.parts
 
-    if _matches_any_exclude(name, str_path, path_parts, patterns):
-        return True
+    regex = _compile_exclude_regex(patterns)
+    if regex is not None:
+        normcase = os.path.normcase
+        match = regex.match
+        if match(normcase(name)) or match(normcase(str_path)):
+            return True
+        if any(match(normcase(part)) for part in path_parts):
+            return True
+
 
     if _matches_any_include(name, str_path, path_parts, patterns):
         return False

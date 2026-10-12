@@ -11,6 +11,13 @@ except ImportError:
     MinHash = None
     MinHashLSH = None
 
+try:
+    import numpy as _np
+    import redup_fast_hash as _native
+except ImportError:
+    _np = None
+    _native = None
+
 from redup.core.scanner import CodeBlock
 from redup.core.tokens_hasher import (
     SimpleMinHash as _SimpleMinHash,
@@ -31,6 +38,18 @@ def _create_minhash(text: str, num_perm: int = 128) -> MinHash | None:
     # Normalize and tokenize text
     normalized = _normalize_text(text)
     tokens = normalized.split()
+
+    # Native signature: one Rust call (min over a set is order/duplicate invariant).
+    if (
+        _native is not None
+        and _np is not None
+        and hasattr(_native, "compute_minhash_signature")
+    ):
+        try:
+            signature = _native.compute_minhash_signature(list(dict.fromkeys(tokens)), num_perm)
+            return MinHash(num_perm=num_perm, hashvalues=_np.asarray(signature, dtype=_np.uint64))
+        except Exception:
+            pass  # Fall through to the pure-datasketch path below.
 
     # Create MinHash
     m = MinHash(num_perm=num_perm)
