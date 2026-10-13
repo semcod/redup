@@ -30,6 +30,22 @@ from redup.core.tokens_hasher import (
 )
 
 
+def _make_minhash_from_signature(signature: Any, num_perm: int) -> MinHash | None:
+    """Instantiate a datasketch MinHash from raw permutation hashvalues safely."""
+    if MinHash is None or _np is None:
+        return None
+    arr = _np.asarray(signature, dtype=_np.uint64)
+    try:
+        return MinHash(num_perm=num_perm, hashvalues=arr, scheme="legacy")
+    except (TypeError, ValueError):
+        try:
+            m = MinHash(num_perm=num_perm)
+            m.hashvalues = arr
+            return m
+        except Exception:
+            return None
+
+
 def _create_minhash(text: str, num_perm: int = 128) -> MinHash | None:
     """Create MinHash from normalized text."""
     if MinHash is None:
@@ -47,7 +63,9 @@ def _create_minhash(text: str, num_perm: int = 128) -> MinHash | None:
     ):
         try:
             signature = _native.compute_minhash_signature(list(dict.fromkeys(tokens)), num_perm)
-            return MinHash(num_perm=num_perm, hashvalues=_np.asarray(signature, dtype=_np.uint64))
+            mh = _make_minhash_from_signature(signature, num_perm)
+            if mh is not None:
+                return mh
         except Exception:
             pass  # Fall through to the pure-datasketch path below.
 
@@ -86,6 +104,36 @@ class LSHIndex:
             # Fallback to simple implementation
             minhash = _create_simple_minhash(block.text, self.num_perm)
             self.minhashes.append(minhash)
+
+    def add_blocks(self, blocks: list[CodeBlock]) -> None:
+        """Add multiple code blocks to the LSH index in a vectorized/parallel batch."""
+        if not blocks:
+            return
+
+        if (
+            _native is not None
+            and _np is not None
+            and hasattr(_native, "batch_minhash_signature")
+            and MinHash is not None
+        ):
+            try:
+                feature_lists = [
+                    list(dict.fromkeys(_normalize_text(b.text).split()))
+                    for b in blocks
+                ]
+                signatures = _native.batch_minhash_signature(feature_lists, self.num_perm)
+                for block, sig in zip(blocks, signatures):
+                    self.blocks.append(block)
+                    minhash = _make_minhash_from_signature(sig, self.num_perm)
+                    if minhash and self.lsh:
+                        self.lsh.insert(str(len(self.blocks) - 1), minhash)
+                    self.minhashes.append(minhash)
+                return
+            except Exception:
+                pass
+
+        for block in blocks:
+            self.add(block)
 
     def find_near_duplicates(self, block: CodeBlock) -> list[tuple[CodeBlock, float]]:
         """Find near-duplicates of the given block."""
@@ -175,11 +223,8 @@ def build_lsh_index(
 ) -> LSHIndex:
     """Build LSH index from code blocks."""
     index = LSHIndex(threshold=threshold)
-
-    for block in blocks:
-        if block.line_count >= min_lines:
-            index.add(block)
-
+    eligible = [b for b in blocks if b.line_count >= min_lines]
+    index.add_blocks(eligible)
     return index
 
 

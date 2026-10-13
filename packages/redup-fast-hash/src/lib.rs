@@ -73,6 +73,23 @@ fn py_compute_minhash_signature(features: Vec<String>, num_perm: usize) -> Vec<u
     lsh::compute_minhash_signature(&features, num_perm)
 }
 
+/// Batch compute MinHash signatures in parallel with Rayon, releasing GIL.
+#[pyfunction]
+#[pyo3(signature = (items, num_perm = 128))]
+fn batch_minhash_signature(
+    py: Python<'_>,
+    items: Vec<Vec<String>>,
+    num_perm: usize,
+) -> Vec<Vec<u64>> {
+    use rayon::prelude::*;
+    py.allow_threads(|| {
+        items
+            .par_iter()
+            .map(|feats| lsh::compute_minhash_signature(feats, num_perm))
+            .collect()
+    })
+}
+
 /// Python wrapper for MinHash Jaccard similarity.
 #[pyfunction]
 #[pyo3(signature = (a, b))]
@@ -89,6 +106,7 @@ fn redup_fast_hash(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(batch_simhash, m)?)?;
     m.add_function(wrap_pyfunction!(py_find_simhash_candidates, m)?)?;
     m.add_function(wrap_pyfunction!(py_compute_minhash_signature, m)?)?;
+    m.add_function(wrap_pyfunction!(batch_minhash_signature, m)?)?;
     m.add_function(wrap_pyfunction!(py_minhash_jaccard, m)?)?;
 
     // Add aliases matching standard function names
