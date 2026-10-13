@@ -104,8 +104,7 @@ def test_native_minhash_matches_signature_and_is_order_invariant():
 def test_batch_minhash_signature():
     pytest.importorskip("datasketch")
     native = pytest.importorskip("redup_fast_hash")
-    if not hasattr(native, "batch_minhash_signature"):
-        pytest.skip("batch_minhash_signature not available")
+    assert hasattr(native, "batch_minhash_signature")
     items = [
         ["alpha", "beta"],
         ["gamma", "delta"],
