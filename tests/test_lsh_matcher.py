@@ -99,3 +99,31 @@ def test_native_minhash_matches_signature_and_is_order_invariant():
     )
     assert list(first.hashvalues) == list(expected)
     assert first.jaccard(reordered) == 1.0
+
+
+def test_batch_minhash_signature():
+    pytest.importorskip("datasketch")
+    native = pytest.importorskip("redup_fast_hash")
+    if not hasattr(native, "batch_minhash_signature"):
+        pytest.skip("batch_minhash_signature not available")
+    items = [
+        ["alpha", "beta"],
+        ["gamma", "delta"],
+    ]
+    sigs = native.batch_minhash_signature(items, 128)
+    assert len(sigs) == 2
+    assert sigs[0] == native.compute_minhash_signature(items[0], 128)
+    assert sigs[1] == native.compute_minhash_signature(items[1], 128)
+
+
+def test_index_add_blocks_batch(backend):
+    blocks = [
+        block("b1.py", "alpha beta gamma delta epsilon"),
+        block("b2.py", "alpha beta gamma delta epsilon"),
+        block("b3.py", "one two three four five"),
+    ]
+    index = lsh_matcher.LSHIndex(threshold=0.8)
+    index.add_blocks(blocks)
+    assert len(index.blocks) == 3
+    matches = index.find_near_duplicates(block("query.py", "alpha beta gamma delta epsilon"))
+    assert len(matches) == 2

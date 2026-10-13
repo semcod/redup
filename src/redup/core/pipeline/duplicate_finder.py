@@ -108,6 +108,7 @@ def find_fuzzy_groups(
             continue
 
         cluster = [anchor]
+        cluster_sims: list[float] = []
         for other_index in sorted(candidate_indices.get(index, ())):
             other = candidates[other_index]
             other_key = (other.file, other.line_start)
@@ -123,6 +124,7 @@ def find_fuzzy_groups(
             if similarity < min_similarity:
                 continue
             cluster.append(other)
+            cluster_sims.append(similarity)
 
         if len(cluster) < 2:
             continue
@@ -138,9 +140,7 @@ def find_fuzzy_groups(
             )
             for block in cluster
         ]
-        avg_similarity = sum(
-            sequence_similarity(cluster[0].text, block.text) for block in cluster[1:]
-        ) / (len(cluster) - 1)
+        avg_similarity = sum(cluster_sims) / len(cluster_sims)
 
         groups.append(
             DuplicateGroup(
