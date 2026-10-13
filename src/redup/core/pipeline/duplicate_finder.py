@@ -540,12 +540,13 @@ def find_duplicates_phase_lazy(
             project_root=config.root,
         )
 
-        # Store cache data for incremental scans
+        # Store cache data for incremental scans (skip unchanged files)
         for file_path, hashes in block_hash_cache.items():
             if file_path.exists():
                 try:
-                    content = file_path.read_text()
-                    cache.store_file_hashes(file_path, content, hashes)
+                    content = file_path.read_text(encoding="utf-8", errors="replace")
+                    if not cache.is_file_unchanged(file_path, content):
+                        cache.store_file_hashes(file_path, content, hashes)
                 except OSError:
                     pass
         cache.flush()
