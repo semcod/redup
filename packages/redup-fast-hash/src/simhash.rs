@@ -142,24 +142,17 @@ pub fn extract_fuzzy_tokens(cleaned: &str) -> Vec<String> {
         }
 
         // Multi-char operators: ===, !==, ==, !=, <=, >=, =>, ++, --, &&, ||, ??
-        if i + 2 < len {
-            let op3 = &cleaned[i..i + 3];
-            if op3 == "===" || op3 == "!==" {
-                tokens.push(op3.to_string());
-                i += 3;
-                continue;
-            }
+        let rem = &cleaned[i..];
+        if rem.starts_with("===") || rem.starts_with("!==") {
+            tokens.push(rem[..3].to_string());
+            i += 3;
+            continue;
         }
-        if i + 1 < len {
-            let op2 = &cleaned[i..i + 2];
-            if matches!(
-                op2,
-                "==" | "!=" | "<=" | ">=" | "=>" | "++" | "--" | "&&" | "||" | "??"
-            ) {
-                tokens.push(op2.to_string());
-                i += 2;
-                continue;
-            }
+        let op2 = ["==", "!=", "<=", ">=", "=>", "++", "--", "&&", "||", "??"].iter().find(|&&op| rem.starts_with(op));
+        if let Some(&op) = op2 {
+            tokens.push(op.to_string());
+            i += 2;
+            continue;
         }
 
         // Single non-whitespace character

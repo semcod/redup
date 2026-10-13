@@ -271,6 +271,7 @@ def build_hash_index_with_cache(
     index = HashIndex()
     block_hash_cache: dict[Path, dict[tuple[int, int], tuple[str, str]]] = {}
     file_contents: dict[Path, str | None] = {}
+    file_cached_hashes: dict[Path, dict[tuple[int, int], tuple[str, str]] | None] = {}
 
     for block in blocks:
         if block.line_count < min_lines:
@@ -285,20 +286,26 @@ def build_hash_index_with_cache(
         if cache is not None:
             if file_path not in file_contents:
                 try:
-                    file_contents[file_path] = file_path.read_text(encoding="utf-8", errors="replace")
+                    content = file_path.read_text(encoding="utf-8", errors="replace")
+                    file_contents[file_path] = content
+                    file_cached_hashes[file_path] = cache.get_cached_block_hashes(file_path, content)
                 except OSError:
                     file_contents[file_path] = None
+                    file_cached_hashes[file_path] = None
             file_content = file_contents[file_path]
 
-        # Get hashes with cache
-        exact_hash, structural_hash = hash_block_with_cache(
-            block.text,
-            file_path,
-            block.line_start,
-            block.line_end,
-            cache,
-            file_content=file_content,
-        )
+        cached_hashes = file_cached_hashes.get(file_path)
+        if cached_hashes and block_key in cached_hashes:
+            exact_hash, structural_hash = cached_hashes[block_key]
+        else:
+            exact_hash, structural_hash = hash_block_with_cache(
+                block.text,
+                file_path,
+                block.line_start,
+                block.line_end,
+                cache,
+                file_content=file_content,
+            )
 
         # Store in per-file cache for later storage
         if file_path not in block_hash_cache:
@@ -316,3 +323,4 @@ def build_hash_index_with_cache(
         index.structural[structural_hash].append(hb)
 
     return index, block_hash_cache
+

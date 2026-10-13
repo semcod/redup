@@ -159,25 +159,17 @@ def analyze_optimized(
 
     try:
         # Phase 1: Optimized scanning with memory cache
-        if config.parallel_workers and config.parallel_workers > 1:
-            # Explicit worker count specified
-            strategy = ScanStrategy(
-                parallel=True,
-                max_workers=config.parallel_workers,
-                memory_cache=use_memory_cache,
-                max_cache_mb=max_cache_mb if use_memory_cache else 256,
-            )
-            scanned_files, stats = scan_project(
-                config, strategy, function_level_only=function_level_only
-            )
-        elif config.parallel_workers is None and getattr(config, "_parallel_enabled", False):
-            # Auto-detect CPU count when parallel_workers is None (default behavior)
+        parallel_disabled = (
+            getattr(config, "_parallel_enabled", None) is False
+            or (config.parallel_workers is not None and config.parallel_workers <= 1)
+        )
+        if not parallel_disabled:
             import multiprocessing as mp
 
-            auto_workers = mp.cpu_count()
+            workers = config.parallel_workers or mp.cpu_count() or 4
             strategy = ScanStrategy(
                 parallel=True,
-                max_workers=auto_workers,
+                max_workers=workers,
                 memory_cache=use_memory_cache,
                 max_cache_mb=max_cache_mb if use_memory_cache else 256,
             )

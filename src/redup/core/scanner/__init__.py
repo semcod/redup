@@ -42,31 +42,66 @@ def _extract_function_blocks_python(source: str, filepath: str) -> list[CodeBloc
         return blocks
 
     lines = source.splitlines()
-    parent_map: dict[int, ast.ClassDef] = {}
 
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
+    class _Visitor(ast.NodeVisitor):
+        def __init__(self):
+            self.current_class: str | None = None
+
+        def visit_ClassDef(self, node: ast.ClassDef):
+            prev = self.current_class
+            self.current_class = node.name
             for child in node.body:
                 if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    parent_map[id(child)] = node
+                    start = child.lineno
+                    end = child.end_lineno or start
+                    blocks.append(
+                        CodeBlock(
+                            file=filepath,
+                            line_start=start,
+                            line_end=end,
+                            text="\n".join(lines[start - 1 : end]),
+                            function_name=child.name,
+                            class_name=node.name,
+                        )
+                    )
+                self.visit(child)
+            self.current_class = prev
 
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            start = node.lineno
-            end = node.end_lineno or start
-            class_node = parent_map.get(id(node))
-            blocks.append(
-                CodeBlock(
-                    file=filepath,
-                    line_start=start,
-                    line_end=end,
-                    text="\n".join(lines[start - 1 : end]),
-                    function_name=node.name,
-                    class_name=class_node.name if class_node else None,
+        def visit_FunctionDef(self, node: ast.FunctionDef):
+            if self.current_class is None:
+                start = node.lineno
+                end = node.end_lineno or start
+                blocks.append(
+                    CodeBlock(
+                        file=filepath,
+                        line_start=start,
+                        line_end=end,
+                        text="\n".join(lines[start - 1 : end]),
+                        function_name=node.name,
+                        class_name=None,
+                    )
                 )
-            )
+            self.generic_visit(node)
 
+        def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef):
+            if self.current_class is None:
+                start = node.lineno
+                end = node.end_lineno or start
+                blocks.append(
+                    CodeBlock(
+                        file=filepath,
+                        line_start=start,
+                        line_end=end,
+                        text="\n".join(lines[start - 1 : end]),
+                        function_name=node.name,
+                        class_name=None,
+                    )
+                )
+            self.generic_visit(node)
+
+    _Visitor().visit(tree)
     return blocks
+
 
 
 def _extract_sliding_blocks(source: str, filepath: str, min_lines: int) -> list[CodeBlock]:

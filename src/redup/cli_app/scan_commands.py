@@ -119,7 +119,7 @@ def scan_command(
         help="Only analyze function-level duplicates (default: enabled for speed).",
     ),
     parallel: bool = typer.Option(
-        False, "--parallel", help="Use parallel processing for faster analysis."
+        True, "--parallel/--no-parallel", help="Use parallel processing for faster analysis."
     ),
     max_workers: Any = typer.Option(
         None, "--max-workers", help="Maximum number of parallel workers."
