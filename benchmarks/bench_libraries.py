@@ -19,9 +19,10 @@ from redup.core.pipeline import analyze
 
 def generate_test_project(root: Path, num_files: int = 50, lines_per_file: int = 200):
     """Generate project with known duplicates for benchmarking."""
+    num_funcs = max(1, lines_per_file // 10)
     for i in range(num_files):
         funcs = []
-        for j in range(10):
+        for j in range(num_funcs):
             funcs.append(f'''
 def func_{j}(x_{j}, y_{j}):
     """Docstring for func_{j}."""

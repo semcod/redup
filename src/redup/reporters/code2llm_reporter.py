@@ -59,10 +59,13 @@ def to_code2llm_toon(
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     cc_avg = _calculate_avg_cc(dup_map)
     critical = _count_critical_functions(dup_map)
+    resolved_files = files_scanned or getattr(dup_map.stats, "files_scanned", 0)
+    resolved_lines = total_lines or getattr(dup_map.stats, "total_lines", 0)
+    classes_segment = f" | classes:{classes_count}" if classes_count else ""
 
     lines = [
-        f"# code2llm | {files_scanned}f {total_lines}L | py:{files_scanned} | {now}",
-        f"# CC̄={cc_avg:.1f} | critical:{critical}/{functions_count} | dups:{dup_map.total_groups} | cycles:0",
+        f"# code2llm | {resolved_files}f {resolved_lines}L | py:{resolved_files} | {now}",
+        f"# CC̄={cc_avg:.1f} | critical:{critical}/{functions_count}{classes_segment} | dups:{dup_map.total_groups} | cycles:0",
         "",
         "HEALTH[0]: ok",
         "",
@@ -107,6 +110,9 @@ def to_code2llm_context(
     if modules is None:
         modules = []
 
+    resolved_files = files_scanned or getattr(dup_map.stats, "files_scanned", 0)
+    resolved_lines = total_lines or getattr(dup_map.stats, "total_lines", 0)
+
     lines = [
         "# System Architecture Analysis",
         "",
@@ -114,6 +120,8 @@ def to_code2llm_context(
         "",
         f"- **Project**: {dup_map.project_path}",
         "- **Primary Language**: python",
+        f"- **Files Scanned**: {resolved_files}",
+        f"- **Total Lines**: {resolved_lines}",
         f"- **Total Functions**: {functions_count}",
         f"- **Total Classes**: {classes_count}",
         f"- **Modules**: {len(modules)}",

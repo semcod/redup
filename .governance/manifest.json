@@ -46,7 +46,8 @@
           "lib/**",
           "packages/**",
           "test/**",
-          "tests/**"
+          "tests/**",
+          "benchmarks/**"
         ]
       },
       "governance": {
@@ -321,6 +322,7 @@
     "project/TICKETS.md",
     "project/ticket-*/**",
     ".governance/standard-adoption.json",
+    ".governance/manifest.json",
     "config/artifact-registry.json"
   ],
   "repository": {

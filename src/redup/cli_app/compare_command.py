@@ -158,8 +158,8 @@ def _print_match_details(comparison: CrossProjectComparison) -> None:
             f"{m.similarity:.2f}",
             m.function_a or "(block)",
             m.function_b or "(block)",
-            _short_path(m.file_a),
-            _short_path(m.file_b),
+            _short_path(m.file_a, max_parts=3),
+            _short_path(m.file_b, max_parts=3),
         )
     console.print(match_table)
 

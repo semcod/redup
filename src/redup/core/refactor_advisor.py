@@ -133,7 +133,7 @@ def _build_prompt(report: dict) -> str:
     Supports both compact (new) and verbose (legacy) report formats.
     """
     stats_a, stats_b = _resolve_stats(report)
-    top_matches = _build_match_list(report)
+    top_matches = _build_match_list(report, limit=int(report.get("match_limit", 30)))
     communities = report.get("communities", [])
     rec = report.get("recommendation", {})
     overlap = rec.get("overlap_pct") or rec.get("overlap_percent", 0)
