@@ -31,19 +31,28 @@ def _read_file_safe(file_path: Path) -> str | None:
         return None
 
 
-def _load_files_simple(files: list[Path]) -> tuple[dict[Path, str], int]:
+def _load_files_simple(
+    files: list[Path],
+    max_bytes: int | None,
+) -> tuple[dict[Path, str], int]:
     """Load files without progress bar."""
     sources: dict[Path, str] = {}
     total_size = 0
     for file_path in files:
         content = _read_file_safe(file_path)
         if content is not None:
+            content_bytes = len(content.encode("utf-8", errors="replace"))
+            if max_bytes is not None and total_size + content_bytes > max_bytes:
+                break
             sources[file_path] = content
-            total_size += len(content)
+            total_size += content_bytes
     return sources, total_size
 
 
-def _load_files_with_progress(files: list[Path]) -> tuple[dict[Path, str], int]:
+def _load_files_with_progress(
+    files: list[Path],
+    max_bytes: int | None,
+) -> tuple[dict[Path, str], int]:
     """Load files with rich progress bar."""
     from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 
@@ -60,19 +69,25 @@ def _load_files_with_progress(files: list[Path]) -> tuple[dict[Path, str], int]:
         for file_path in files:
             content = _read_file_safe(file_path)
             if content is not None:
+                content_bytes = len(content.encode("utf-8", errors="replace"))
+                if max_bytes is not None and total_size + content_bytes > max_bytes:
+                    break
                 sources[file_path] = content
-                total_size += len(content)
+                total_size += content_bytes
                 progress.advance(task)
 
     return sources, total_size
 
 
-def _load_all_files(files: list[Path]) -> tuple[dict[Path, str], int]:
+def _load_all_files(
+    files: list[Path],
+    max_bytes: int | None,
+) -> tuple[dict[Path, str], int]:
     """Load all files with progress bar if available."""
     try:
-        return _load_files_with_progress(files)
+        return _load_files_with_progress(files, max_bytes)
     except ImportError:
-        return _load_files_simple(files)
+        return _load_files_simple(files, max_bytes)
 
 
 def _print_load_result(sources: dict[Path, str], total_size: int, load_time: float) -> None:
@@ -88,12 +103,13 @@ def _preload_files(files: list[Path], max_cache_mb: int = 256) -> dict[Path, str
 
     start_time = time.time()
     files.sort(key=lambda f: f.stat().st_size if f.exists() else 0)
+    max_bytes = int(max_cache_mb * 1024 * 1024) if max_cache_mb and max_cache_mb > 0 else None
 
     use_progress = len(files) > 50
     if use_progress:
-        sources, total_size = _load_all_files(files)
+        sources, total_size = _load_all_files(files, max_bytes)
     else:
-        sources, total_size = _load_files_simple(files)
+        sources, total_size = _load_files_simple(files, max_bytes)
 
     _print_load_result(sources, total_size, time.time() - start_time)
     return sources

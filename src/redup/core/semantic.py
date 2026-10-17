@@ -353,6 +353,8 @@ class SemanticDetector:
         # chains. Greedy one-to-one pairs keep fallback findings reviewable.
         neighbor_limit = 1
         max_matches = min(200, max(20, len(blocks) // 25))
+        if top_k and top_k > 0:
+            max_matches = min(max_matches, top_k)
         for match in ranked:
             left_key = (match.block_a.file, match.block_a.line_start)
             right_key = (match.block_b.file, match.block_b.line_start)
@@ -366,6 +368,8 @@ class SemanticDetector:
             neighbor_counts[right_key] += 1
             if len(retained) >= max_matches:
                 break
+        if top_k and top_k > 0:
+            return retained[:top_k]
         return retained
 
     def find_semantic_duplicates(

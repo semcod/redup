@@ -1,0 +1,110 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-018",
+  "summary": "Wire unused performance and reporter parameters across redup core, CLI, and benchmarks",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-018/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    ".governance/standard-adoption.json",
+    ".governance/manifest.json",
+    "benchmarks/bench_libraries.py",
+    "src/redup/cli_app/compare_command.py",
+    "src/redup/core/refactor_advisor.py",
+    "src/redup/core/scanner_utils.py",
+    "src/redup/core/semantic.py",
+    "src/redup/reporters/code2llm_reporter.py",
+    "tests/test_reporters.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "6123f654bbd625e014b5368d4c045de944a221ba",
+    "targetBranch": "main",
+    "outcome": "Wire max_cache_mb in _preload_files, top_k in _find_intent_profile_duplicates, classes_count/files_scanned/total_lines in code2llm_reporter, max_parts in _short_path, limit in _build_match_list, and lines_per_file in generate_test_project; populate standard-adoption.json with zero findings.",
+    "nonGoals": [
+      "Do not alter external CLI flag names or duplicate group hashing semantics."
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 45,
+    "budgets": {
+      "maxImplementationFiles": 9,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 1,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Enforce byte-budget preload caching in scanner_utils, slice intent-profile matches by top_k in semantic.py, include classes_count/files_scanned/total_lines in code2llm_reporter, pass max_parts and limit in compare_command and refactor_advisor, scale generated functions by lines_per_file in bench_libraries.py, and record baseline standard adoption.",
+      "components": [
+        {
+          "name": "core-and-cli",
+          "paths": [
+            "src/redup/core/scanner_utils.py",
+            "src/redup/core/semantic.py",
+            "src/redup/core/refactor_advisor.py",
+            "src/redup/cli_app/compare_command.py"
+          ]
+        },
+        {
+          "name": "reporters-and-tests",
+          "paths": [
+            "src/redup/reporters/code2llm_reporter.py",
+            "tests/test_reporters.py"
+          ]
+        },
+        {
+          "name": "benchmarks",
+          "paths": [
+            "benchmarks/bench_libraries.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert ticket-018 commit."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "PYTHONPATH=src python -m pytest -q tests/test_reporters.py"
+        ],
+        "evidence": "project/ticket-018/README.md"
+      },
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "PYTHONPATH=src python -m pytest -q"
+        ],
+        "evidence": "project/ticket-018/README.md"
+      },
+      {
+        "criterion": "AC-03",
+        "commands": [
+          "python3 .governance/standard_pack_check.py --root .",
+          "./project/governance-check.sh"
+        ],
+        "evidence": "project/ticket-018/README.md"
+      }
+    ]
+  }
+}

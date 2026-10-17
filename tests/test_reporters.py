@@ -323,3 +323,31 @@ def test_toon_reports_provenance_summary():
 
     assert "generated:     1" in output
     assert "provenance=generated_copy action=generated" in output
+
+
+def test_code2llm_reporters_wire_counts_and_stats():
+    from redup.reporters.code2llm_reporter import to_code2llm_context, to_code2llm_toon
+
+    dm = _sample_map()
+    toon = to_code2llm_toon(dm, files_scanned=12, total_lines=340, functions_count=18, classes_count=5)
+    assert "12f 340L" in toon
+    assert "classes:5" in toon
+
+    ctx = to_code2llm_context(dm, files_scanned=12, total_lines=340, functions_count=18, classes_count=5)
+    assert "**Files Scanned**: 12" in ctx
+    assert "**Total Lines**: 340" in ctx
+    assert "**Total Classes**: 5" in ctx
+
+
+def test_preload_files_respects_max_cache_mb(tmp_path):
+    from redup.core.scanner_utils import _preload_files
+
+    f1 = tmp_path / "small.py"
+    f2 = tmp_path / "large.py"
+    f1.write_text("x = 1\n", encoding="utf-8")
+    f2.write_text("y = " + ("a" * 2048) + "\n", encoding="utf-8")
+
+    loaded = _preload_files([f1, f2], max_cache_mb=0.001)
+    assert f1 in loaded
+    assert f2 not in loaded
+
