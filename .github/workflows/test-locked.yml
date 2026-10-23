@@ -31,7 +31,7 @@ jobs:
           repository: wellmanifest/docs
           ref: 0714f71462202788e6b775ed145e9e61a7d5c366 # merged docs checker 0.6.0
           path: .docs-standard
-          token: ${{ secrets.ORG_SYNC_PAT }}
+          token: ${{ github.token }}
           persist-credentials: false
       - name: Check out immutable governance standard for copy digests
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -39,7 +39,7 @@ jobs:
           repository: wellmanifest/new-project
           ref: fa7972da8f6a28a0afe2914aacf46bee4a846943 # v0.20.54
           path: .new-project-standard
-          token: ${{ secrets.ORG_SYNC_PAT }}
+          token: ${{ github.token }}
           persist-credentials: false
       - name: Derive documentation copy inventory from pinned standard
         shell: bash
