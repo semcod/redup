@@ -1,0 +1,84 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-020",
+  "summary": "Repair dependency freshness and public docs verification",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-020/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    ".github/workflows/test-locked.yml",
+    "uv.lock"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "38613b21bf972e139a368516ce6eb1277941282a",
+    "targetBranch": "main",
+    "outcome": "Refresh published stable internal dependency targets from original PR27 and fix read-only public standard checkout without reducing native tests, governance or independent review.",
+    "nonGoals": [
+      "No scanner/Rust/API changes",
+      "No standards, pins, verification or permission widening",
+      "No direct author merge or unmerged bot-branch deletion"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 45,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Retain declared dependency graph and update only published stable internal lock targets; built-in contents-read github.token checks out both immutable public standards with persist-credentials:false. Deliver on native ticket branch.",
+      "components": [
+        {
+          "name": "dependency-lock",
+          "paths": [
+            "uv.lock"
+          ]
+        },
+        {
+          "name": "locked-ci",
+          "paths": [
+            ".github/workflows/test-locked.yml"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert this bounded change through protected review; no runtime state migration."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "goal dependencies --catalog .github/internal-dependencies.json --check",
+          "uv sync --locked --extra dev --python 3.10",
+          "uv sync --locked --extra dev --python 3.13",
+          "python -m pytest -q",
+          "./project/governance-check.sh"
+        ],
+        "evidence": "Private exact-head matrix, pinned docs and governance receipts; protected CI and Validator review."
+      }
+    ]
+  }
+}
