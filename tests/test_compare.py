@@ -206,23 +206,24 @@ class TestCommunityDetection:
         )
 
     def test_detect_communities_requires_networkx(self):
-        try:
-            import networkx  # noqa: F401
-        except ImportError:
-            pytest.skip("networkx not installed")
-
         from redup.core.community import detect_communities
 
         comparison = self._make_comparison()
         communities = detect_communities(comparison, min_similarity=0.70)
         assert isinstance(communities, list)
+        assert len(communities) == 5
+        assert communities[0].total_loc == 20
+
+    def test_detect_communities_fallback_without_networkx(self):
+        from redup.core.community import detect_communities
+
+        comparison = self._make_comparison(n_matches=3)
+        communities = detect_communities(comparison, min_similarity=0.70, use_networkx=False)
+        assert len(communities) == 3
+        assert all(c.total_loc == 20 for c in communities)
+        assert all(c.avg_similarity == pytest.approx(0.90) for c in communities)
 
     def test_no_matches_yields_no_communities(self):
-        try:
-            import networkx  # noqa: F401
-        except ImportError:
-            pytest.skip("networkx not installed")
-
         from redup.core.community import detect_communities
 
         comparison = CrossProjectComparison(
@@ -288,4 +289,30 @@ class TestDecision:
             extraction_candidate_name="validate_",
         )
         rec = recommend(comparison, communities=[community])
+        assert rec.decision == RefactorDecision.EXTRACT_SHARED_LIB
+
+    def test_recommend_falls_back_to_matches_when_communities_empty(self):
+        comparison = CrossProjectComparison(
+            project_a=Path("/a"),
+            project_b=Path("/b"),
+            matches=[
+                CrossProjectMatch(
+                    project_a="/a",
+                    project_b="/b",
+                    file_a="a.py",
+                    file_b="b.py",
+                    function_a="shared",
+                    function_b="shared",
+                    similarity=1.0,
+                    similarity_type="exact",
+                    lines_a=(1, 150),
+                    lines_b=(1, 150),
+                )
+            ],
+            stats_a={"files": 5, "lines": 500},
+            stats_b={"files": 5, "lines": 500},
+        )
+        rec = recommend(comparison, communities=[])
+        assert rec.shared_loc == 300
+        assert rec.overlap_percent == pytest.approx(0.30)
         assert rec.decision == RefactorDecision.EXTRACT_SHARED_LIB
