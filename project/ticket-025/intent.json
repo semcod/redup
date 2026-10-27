@@ -1,0 +1,28 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-025",
+  "summary": "Source-bound cross-project comparison candidates for PLF-20326",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-025/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/redup/core/comparator.py",
+    "src/redup/core/comparison_evidence.py",
+    "src/redup/reporters/comparison_reporter.py",
+    "tests/test_compare.py",
+    "tests/test_comparison_reporter.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
