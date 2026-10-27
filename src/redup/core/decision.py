@@ -32,6 +32,17 @@ class DecisionRecommendation:
     confidence: float = 0.0
 
 
+def _matched_nodes_loc(comparison: CrossProjectComparison) -> int:
+    """Calculate total deduplicated LOC across matched nodes in both projects."""
+    nodes: dict[tuple[str, str, str, tuple[int, int]], int] = {}
+    for match in comparison.matches:
+        key_a = (match.project_a, match.file_a, match.function_a, match.lines_a)
+        key_b = (match.project_b, match.file_b, match.function_b, match.lines_b)
+        nodes[key_a] = max(0, match.lines_a[1] - match.lines_a[0] + 1)
+        nodes[key_b] = max(0, match.lines_b[1] - match.lines_b[0] + 1)
+    return sum(nodes.values())
+
+
 def recommend(
     comparison: CrossProjectComparison,
     communities: list[CodeCommunity],
@@ -55,7 +66,10 @@ def recommend(
     total_loc_b = comparison.stats_b.get("lines", 0)
     total_loc = total_loc_a + total_loc_b
     shared_loc = sum(c.total_loc for c in communities)
+    if shared_loc == 0 and not communities and comparison.matches:
+        shared_loc = _matched_nodes_loc(comparison)
     overlap = shared_loc / total_loc if total_loc > 0 else 0.0
+    cluster_count = len(communities) if communities else len(comparison.matches)
 
     if overlap > 0.60:
         decision = RefactorDecision.MERGE_PROJECTS
@@ -68,13 +82,13 @@ def recommend(
         decision = RefactorDecision.EXTRACT_SHARED_LIB
         rationale = (
             f"{overlap:.0%} overlap ({shared_loc} shared lines, "
-            f"{len(communities)} clusters). Extract to shared library."
+            f"{cluster_count} clusters). Extract to shared library."
         )
         confidence = 0.8
     elif overlap > 0.05:
         decision = RefactorDecision.EXTRACT_SHARED_LIB
         rationale = (
-            f"Small overlap ({overlap:.0%}) but {len(communities)} "
+            f"Small overlap ({overlap:.0%}) but {cluster_count} "
             f"well-defined clusters — worth extracting."
         )
         confidence = 0.6

@@ -1,0 +1,26 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-024",
+  "summary": "Fallback community detection without networkx and preserve shared LOC in decision engine",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-024/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/redup/core/community.py",
+    "src/redup/core/decision.py",
+    "tests/test_compare.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
