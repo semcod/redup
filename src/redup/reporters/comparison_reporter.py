@@ -5,6 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from redup.core.comparison_evidence import candidate_projection
+
 if TYPE_CHECKING:
     from redup.core.community import CodeCommunity
     from redup.core.comparator import CrossProjectComparison
@@ -102,6 +104,10 @@ def comparison_to_dict(
 
         result = recommend(comparison, communities)
         recommendation = {
+            "authority": "advisory_only",
+            "basis": "source_overlap_heuristic",
+            "quality_winner": None,
+            "compatibility": "unknown",
             "decision": result.decision.value,
             "rationale": result.rationale,
             "overlap_pct": round(result.overlap_percent, 4),
@@ -110,6 +116,7 @@ def comparison_to_dict(
         }
 
     payload = {
+        "evidence": candidate_projection(comparison, max_candidates=max_matches),
         "project_a": project_a,
         "project_b": project_b,
         "stats": {"a": comparison.stats_a, "b": comparison.stats_b},
