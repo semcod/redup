@@ -1,0 +1,130 @@
+{
+  "allowedPaths": [
+    "project/ticket-021/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "packages/redup-fast-hash/src/simhash.rs",
+    "tests/test_tokens_hasher_rust.py"
+  ],
+  "classification": {
+    "kind": "FEATURE",
+    "origin": "requested",
+    "priority": "P2"
+  },
+  "conflictsWith": [],
+  "delivery": {
+    "acceptedBaseSha": "e3fec7f8b196fc506bd3ffa8cd91e8a84ab2fb98",
+    "architecture": {
+      "components": [
+        {
+          "name": "Native SimHash implementation and Python conformance coverage",
+          "paths": [
+            "packages/redup-fast-hash/src/simhash.rs",
+            "tests/test_tokens_hasher_rust.py"
+          ]
+        }
+      ],
+      "dataChanges": [],
+      "decision": "Keep the existing native SimHash module and Python reference. Replace unmatched-byte re-encoding in clean_code_for_fuzzy with character-boundary-safe preservation while retaining established ASCII scanning and hashing semantics. Verify normalized tokens against Python's ASCII identifier regex and Unicode fallback rather than broadening identifier recognition. Add embedded Rust golden tests and one focused Python test that builds this checkout's crate and directly invokes its binary, avoiding installed extensions and fallback. Current HEAD matches acceptedBaseSha; relevant Rust and Python sources are unchanged from the audited 38613b21 revision. Existing tests can accept stale artifacts or silently fall back, which justifies the second file. Implementation remains conditional on controller reconciliation: ticket-005, ticket-006, ticket-011, ticket-013, ticket-015, ticket-016 and ticket-017 declare overlapping scopes, several leases remain claimed, and the issue #29 receipt records an existing accepted intake. Do not duplicate that intake. Use the canonical authorized linked worktree and current fencing values, with the local 120-minute session limit and 30-minute checkpoint interval.",
+      "interfaceChanges": [],
+      "responsibilityChanges": false,
+      "rollback": "If regression evidence requires rollback, revert only this delivery's material changes through a separately governed corrective change and protected review. Preserve unrelated work and receipts; do not reset shared history or replace installed artifacts.",
+      "status": "accepted",
+      "ui": {
+        "evidence": [],
+        "impact": "none",
+        "states": []
+      }
+    },
+    "budgets": {
+      "maxAffectedComponents": 1,
+      "maxImplementationFiles": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "complexity": "S",
+    "estimatedMinutes": 20,
+    "nonGoals": [
+      "No Python reference algorithm changes or general tokenizer redesign.",
+      "No consumer app.js, firmware, generated duplication report or inventory refactor.",
+      "No dependencies, manifests, providers, credentials, admission policy or governance adoption changes.",
+      "No new repository, external coordination, ownership takeover or destructive cleanup.",
+      "No PyPI release, shared-venv mutation, installed-extension replacement or runtime deployment."
+    ],
+    "outcome": "Deliver and protectively merge the bounded issue #29 Unicode SimHash correction with source-bound regression evidence, subject to existing controller admission and exact-head review. This planning turn performs no allocation, editing, commit or publication.",
+    "runtimeDependencies": [],
+    "targetBranch": "main",
+    "validation": [
+      {
+        "commands": [
+          "cargo test --manifest-path packages/redup-fast-hash/Cargo.toml simhash::tests"
+        ],
+        "criterion": "AC-01",
+        "evidence": "Candidate Rust tests demonstrate UTF-8 preservation and panic-free processing of the Unicode vectors, including Unicode adjacent to punctuation and stripped constructs."
+      },
+      {
+        "commands": [
+          "cargo test --manifest-path packages/redup-fast-hash/Cargo.toml simhash::tests",
+          "python3 -m pytest -q tests/test_tokens_hasher_rust.py -k unicode_candidate_conformance"
+        ],
+        "criterion": "AC-02",
+        "evidence": "Golden fingerprints and direct candidate/Python comparison agree for all six audited vectors; preserve exact fixture strings and source HEAD with results."
+      },
+      {
+        "commands": [
+          "cargo test --manifest-path packages/redup-fast-hash/Cargo.toml",
+          "python3 -m pytest -q tests/test_tokens_hasher.py tests/test_tokens_hasher_rust.py"
+        ],
+        "criterion": "AC-03",
+        "evidence": "Existing ASCII and identifier invariance checks plus focused comment, string and number controls pass; Unicode token expectations come from the unchanged Python reference."
+      },
+      {
+        "commands": [
+          "python3 -m pytest -q tests/test_tokens_hasher_rust.py -k unicode_candidate_conformance"
+        ],
+        "criterion": "AC-04",
+        "evidence": "The focused test builds the current crate in an isolated test target directory and directly executes that exact binary. Record artifact path, digest and build result; no installed binding, PATH discovery or Python fallback can satisfy this check."
+      },
+      {
+        "commands": [
+          "cargo test --manifest-path packages/redup-fast-hash/Cargo.toml",
+          "cargo build --release --manifest-path packages/redup-fast-hash/Cargo.toml",
+          "python3 -m pytest -q tests/test_tokens_hasher.py tests/test_tokens_hasher_rust.py tests/test_pipeline.py",
+          "python3 -m pytest -q",
+          "./project/governance-check.sh"
+        ],
+        "criterion": "AC-05",
+        "evidence": "Run in the authorized delivery checkout with isolated test dependencies. Preserve exit codes and failed, skipped or blocked states. Retain required Python 3.10/3.13 coverage and applicable protected checks; the adoption manifest declares no additional stacks and Docker is optional. Historical installed-native panic receipts do not validate or invalidate the newly built candidate."
+      },
+      {
+        "commands": [
+          "git status --short",
+          "git rev-parse HEAD",
+          "git worktree list --porcelain",
+          "python3 .governance/work_start_check.py --root . --workstream application --path packages/redup-fast-hash/src/simhash.rs --path tests/test_tokens_hasher_rust.py"
+        ],
+        "criterion": "AC-06",
+        "evidence": "Before any implementation effect, the existing controller resolves issue #29 to its matching ticket, adds the continuation ticket argument when known, reconciles overlapping owners and publication receipts, and verifies canonical checkout, current base and fenced lease. Unresolved ownership blocks writing; lease expiry alone grants no authority."
+      },
+      {
+        "commands": [
+          "git rev-parse HEAD",
+          "git diff --check",
+          "./project/governance-check.sh"
+        ],
+        "criterion": "AC-07",
+        "evidence": "Local checks are prerequisites only. Under the existing authorized delivery process, obtain a fresh protected OneDev head/current-base receipt and invoke the deployed subactor/validator-agent/bin/run-local-direct-pr.sh with controller-resolved repository, PR, ticket, HEAD and existing protected key reference. Only the protected controller may merge after trusted approval. Freeze HEAD through review; revalidate after base/head changes. Preserve separate completion, local commit, push/PR and merge receipts; deployment remains out of scope."
+      }
+    ]
+  },
+  "dependsOn": [],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "integrationTicket": null,
+  "schema": "new-project.intent/v3",
+  "stacks": [],
+  "summary": "Fix issue #29 by preserving UTF-8 during native SimHash normalization and proving Unicode parity against Python using freshly built Rust source.",
+  "ticket": "ticket-021",
+  "workstream": "application"
+}

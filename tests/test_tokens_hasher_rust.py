@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import shutil
 import subprocess
+import sys
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
@@ -25,6 +28,69 @@ RUST_BIN = (
     / "release"
     / "redup-fast-hash"
 )
+
+
+def test_unicode_candidate_conformance(
+    tmp_path: Path, record_property: Callable[[str, object], None]
+) -> None:
+    """Build this checkout and invoke it directly; no discovery or fallback."""
+    cargo = shutil.which("cargo")
+    assert cargo is not None, "Candidate conformance requires Cargo"
+    target = tmp_path / "native-target"
+    build = subprocess.run(
+        [
+            cargo,
+            "build",
+            "--locked",
+            "--release",
+            "--manifest-path",
+            str(CARGO_MANIFEST),
+            "--target-dir",
+            str(target),
+            "--bin",
+            "redup-fast-hash",
+        ],
+        capture_output=True,
+        text=True,
+        timeout=180,
+    )
+    assert build.returncode == 0, build.stdout + build.stderr
+    binary = target / "release" / (
+        "redup-fast-hash.exe" if sys.platform == "win32" else "redup-fast-hash"
+    )
+    assert binary.is_file()
+    source = CARGO_MANIFEST.parent / "src" / "simhash.rs"
+    record_property("candidate_build_exit_code", build.returncode)
+    record_property("candidate_binary", str(binary))
+    record_property("candidate_sha256", hashlib.sha256(binary.read_bytes()).hexdigest())
+    record_property("simhash_source_sha256", hashlib.sha256(source.read_bytes()).hexdigest())
+
+    samples = [
+        ("def add(a, b): return a + b", 1999307407177186558),
+        ("ą", 2684146023269591358),
+        ("zażółć gęślą jaźń", 3173260504582634983),
+        ("😀value", 17867692854670522352),
+        ("const źródło = `żółć`;", 16890555981135166839),
+        ("fn 変数() {return 1;}", 8428574849076232171),
+        ("ą/* 😀 */+変数// żółć\n😀# ą\nź", 8016116748811581599),
+        ("ą\"😀\"+'変数'; return 12.5;", 8713030534196668199),
+        ("ą\"\\😀\"ź", 13292627870420614445),
+        ("RETURN foo_2 + $bar == 12.5; // note", 8785272967380082946),
+        ("ą===😀!=変数", 8056867025399037722),
+        ("aąB_2😀z", 462200693447372014),
+        ("Ąİ変数😀", 3857494918881161239),
+    ]
+    for sample, expected in samples:
+        result = subprocess.run(
+            [str(binary), "--simhash", sample],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=True,
+            timeout=5,
+        )
+        assert int(result.stdout.strip()) == expected, repr(sample)
+        assert fuzzy_simhash(sample, prefer_rust=False) == expected, repr(sample)
 
 
 @pytest.fixture(scope="module")
