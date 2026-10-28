@@ -24,6 +24,15 @@ pub fn clean_code_for_fuzzy(text: &str) -> String {
     while i < len {
         let b = bytes[i];
 
+        // Keep unmatched Unicode intact. The scanners below recognize ASCII
+        // delimiters; UTF-8 continuation bytes cannot be those delimiters.
+        if !b.is_ascii() {
+            let ch = text[i..].chars().next().unwrap();
+            out.push(ch);
+            i += ch.len_utf8();
+            continue;
+        }
+
         // Block comment /* ... */
         if b == b'/' && i + 1 < len && bytes[i + 1] == b'*' {
             i += 2;
@@ -90,9 +99,7 @@ pub fn clean_code_for_fuzzy(text: &str) -> String {
                     }
                 }
                 let is_word_boundary_after = i >= len
-                    || !(bytes[i].is_ascii_alphanumeric()
-                        || bytes[i] == b'_'
-                        || bytes[i] == b'$');
+                    || !(bytes[i].is_ascii_alphanumeric() || bytes[i] == b'_' || bytes[i] == b'$');
                 if is_word_boundary_after {
                     out.push_str(" NUM ");
                     continue;
@@ -148,7 +155,9 @@ pub fn extract_fuzzy_tokens(cleaned: &str) -> Vec<String> {
             i += 3;
             continue;
         }
-        let op2 = ["==", "!=", "<=", ">=", "=>", "++", "--", "&&", "||", "??"].iter().find(|&&op| rem.starts_with(op));
+        let op2 = ["==", "!=", "<=", ">=", "=>", "++", "--", "&&", "||", "??"]
+            .iter()
+            .find(|&&op| rem.starts_with(op));
         if let Some(&op) = op2 {
             tokens.push(op.to_string());
             i += 2;
@@ -228,5 +237,116 @@ mod tests {
         let fp1 = compute_fuzzy_simhash(code1);
         let fp2 = compute_fuzzy_simhash(code2);
         assert_eq!(fp1, fp2);
+    }
+
+    #[test]
+    fn test_unicode_python_reference_vectors() {
+        // Generated from Python extract_fuzzy_tokens and prefer_rust=False.
+        // Its identifier regex is ASCII-only: Unicode letters remain tokens,
+        // including inside mixed identifiers. Backticks are not string quotes.
+        let cases: &[(&str, &str, &[&str], u64)] = &[
+            (
+                "def add(a, b): return a + b",
+                "def add(a, b): return a + b",
+                &[
+                    "def", "ID", "(", "ID", ",", "ID", ")", ":", "return", "ID", "+", "ID",
+                ],
+                1999307407177186558,
+            ),
+            ("ą", "ą", &["ą"], 2684146023269591358),
+            (
+                "zażółć gęślą jaźń",
+                "zażółć gęślą jaźń",
+                &[
+                    "ID", "ż", "ó", "ł", "ć", "ID", "ę", "ś", "ID", "ą", "ID", "ź", "ń",
+                ],
+                3173260504582634983,
+            ),
+            ("😀value", "😀value", &["😀", "ID"], 17867692854670522352),
+            (
+                "const źródło = `żółć`;",
+                "const źródło = `żółć`;",
+                &[
+                    "const", "ź", "ID", "ó", "ID", "ł", "ID", "=", "`", "ż", "ó", "ł", "ć", "`",
+                    ";",
+                ],
+                16890555981135166839,
+            ),
+            (
+                "fn 変数() {return 1;}",
+                "fn 変数() {return  NUM ;}",
+                &["ID", "変", "数", "(", ")", "{", "return", "ID", ";", "}"],
+                8428574849076232171,
+            ),
+            (
+                "ą/* 😀 */+変数// żółć\n😀# ą\nź",
+                "ą +変数 \n😀 \nź",
+                &["ą", "+", "変", "数", "😀", "ź"],
+                8016116748811581599,
+            ),
+            (
+                "ą\"😀\"+'変数'; return 12.5;",
+                "ą STR + STR ; return  NUM ;",
+                &["ą", "ID", "+", "ID", ";", "return", "ID", ";"],
+                8713030534196668199,
+            ),
+            (
+                "ą\"\\😀\"ź",
+                "ą STR ź",
+                &["ą", "ID", "ź"],
+                13292627870420614445,
+            ),
+            (
+                "RETURN foo_2 + $bar == 12.5; // note",
+                "RETURN foo_2 + $bar ==  NUM ;  ",
+                &["return", "ID", "+", "ID", "==", "ID", ";"],
+                8785272967380082946,
+            ),
+            (
+                "ą===😀!=変数",
+                "ą===😀!=変数",
+                &["ą", "===", "😀", "!=", "変", "数"],
+                8056867025399037722,
+            ),
+            (
+                "aąB_2😀z",
+                "aąB_2😀z",
+                &["ID", "ą", "ID", "😀", "ID"],
+                462200693447372014,
+            ),
+            (
+                "Ąİ変数😀",
+                "Ąİ変数😀",
+                &["ą", "i\u{307}", "変", "数", "😀"],
+                3857494918881161239,
+            ),
+        ];
+
+        for &(source, cleaned, tokens, fingerprint) in cases {
+            assert_eq!(clean_code_for_fuzzy(source), cleaned, "source: {source:?}");
+            assert_eq!(extract_fuzzy_tokens(cleaned), tokens, "source: {source:?}");
+            assert_eq!(
+                compute_fuzzy_simhash(source),
+                fingerprint,
+                "source: {source:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_unicode_at_unterminated_construct_boundaries() {
+        // Incomplete source is valid UTF-8 too. Preserve the existing stripping
+        // behavior while exercising byte scanners at the end of multibyte text.
+        for (source, cleaned) in [
+            ("ą/*😀", "ą "),
+            ("ą//😀", "ą "),
+            ("ą#😀", "ą "),
+            ("ą\"😀", "ą STR "),
+            ("ą'\\😀", "ą STR "),
+            ("ą\"😀\\", "ą STR "),
+        ] {
+            assert_eq!(clean_code_for_fuzzy(source), cleaned);
+            compute_fuzzy_simhash(source);
+        }
     }
 }
