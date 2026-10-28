@@ -227,6 +227,13 @@ pip install redup[compare]   # networkx for cross-project community detection
 pip install redup[llm]       # litellm for LLM-powered refactoring plans
 ```
 
+### Development / tests
+
+```bash
+pip install -e ".[dev]"
+pytest -q
+```
+
 ## Quick Start
 
 ### CLI
