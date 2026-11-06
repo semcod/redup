@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable
 from typing import Any
+
+from redup.core import tokens_hasher
 
 try:
     from datasketch import MinHash, MinHashLSH
@@ -56,11 +59,7 @@ def _create_minhash(text: str, num_perm: int = 128) -> MinHash | None:
     tokens = normalized.split()
 
     # Native signature: one Rust call (min over a set is order/duplicate invariant).
-    if (
-        _native is not None
-        and _np is not None
-        and hasattr(_native, "compute_minhash_signature")
-    ):
+    if _native is not None and _np is not None and hasattr(_native, "compute_minhash_signature"):
         try:
             signature = _native.compute_minhash_signature(list(dict.fromkeys(tokens)), num_perm)
             mh = _make_minhash_from_signature(signature, num_perm)
@@ -86,12 +85,14 @@ class LSHIndex:
         self.blocks: list[CodeBlock] = []
         self.minhashes: list[Any] = []
         self.lsh = None
+        self._simple_signature_index: tuple[Any, ...] | None = None
 
         if MinHashLSH is not None:
             self.lsh = MinHashLSH(threshold=threshold, num_perm=num_perm)
 
     def add(self, block: CodeBlock) -> None:
         """Add a code block to the LSH index."""
+        self._simple_signature_index = None
         self.blocks.append(block)
 
         # Create MinHash
@@ -118,11 +119,10 @@ class LSHIndex:
         ):
             try:
                 feature_lists = [
-                    list(dict.fromkeys(_normalize_text(b.text).split()))
-                    for b in blocks
+                    list(dict.fromkeys(_normalize_text(b.text).split())) for b in blocks
                 ]
                 signatures = _native.batch_minhash_signature(feature_lists, self.num_perm)
-                for block, sig in zip(blocks, signatures):
+                for block, sig in zip(blocks, signatures, strict=False):
                     self.blocks.append(block)
                     minhash = _make_minhash_from_signature(sig, self.num_perm)
                     if minhash and self.lsh:
@@ -169,12 +169,57 @@ class LSHIndex:
                         result.append((self.blocks[idx], similarity))
         return sorted(result, key=lambda x: x[1], reverse=True)
 
+    def _simple_candidate_indices(self, query: _SimpleMinHash) -> Iterable[int]:
+        """Retain every equality-count threshold match using disjoint bands.
+
+        With at most d unequal positions, d+1 disjoint bands contain an equal
+        band. Candidate scoring still uses the original Jaccard implementation.
+        Native scoring and unusual thresholds retain exhaustive comparisons.
+        """
+        threshold = self.threshold
+        if (
+            not isinstance(threshold, (int, float))
+            or not math.isfinite(threshold)
+            or not 0 < threshold <= 1
+            or tokens_hasher.redup_fast_hash is not None
+        ):
+            return range(len(self.minhashes))
+        width = len(query.hash_values)
+        if not width:
+            return ()
+        required = math.ceil(threshold * width)
+        # Match the original floating-point ratio comparison, including 7/25.
+        while required > 0 and (required - 1) / width >= threshold:
+            required -= 1
+        while required / width < threshold:
+            required += 1
+        bands = width - required + 1
+        key = (id(self.minhashes), len(self.minhashes), threshold, width)
+        cached = self._simple_signature_index
+        if cached is None or cached[0] != key:
+            spans = [(i * width // bands, (i + 1) * width // bands) for i in range(bands)]
+            tables: list[dict[tuple[int, ...], list[int]]] = [{} for _ in spans]
+            for number, stored in enumerate(self.minhashes):
+                if not isinstance(stored, _SimpleMinHash) or len(stored.hash_values) != width:
+                    continue
+                for table, (start, stop) in zip(tables, spans, strict=True):
+                    band = tuple(stored.hash_values[start:stop])
+                    table.setdefault(band, []).append(number)
+            cached = (key, spans, tables)
+            self._simple_signature_index = cached
+        _, spans, tables = cached
+        candidates = set()
+        for table, (start, stop) in zip(tables, spans, strict=True):
+            candidates.update(table.get(tuple(query.hash_values[start:stop]), ()))
+        return sorted(candidates)
+
     def _find_near_duplicates_simple(self, block: CodeBlock) -> list[tuple[CodeBlock, float]]:
-        """Fallback near-duplicate detection without LSH."""
+        """Fallback detection with exact signature candidate pruning."""
         query_minhash = _create_simple_minhash(block.text, self.num_perm)
         result = []
 
-        for i, stored_minhash in enumerate(self.minhashes):
+        for i in self._simple_candidate_indices(query_minhash):
+            stored_minhash = self.minhashes[i]
             if isinstance(stored_minhash, _SimpleMinHash):
                 similarity = query_minhash.jaccard(stored_minhash)
                 if similarity >= self.threshold:
