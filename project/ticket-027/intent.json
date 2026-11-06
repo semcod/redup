@@ -1,0 +1,88 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-027",
+  "summary": "Index fallback MinHash candidates without losing duplicate matches",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P2",
+    "origin": "regression"
+  },
+  "allowedPaths": [
+    "project/ticket-027/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/redup/core/lsh_matcher.py",
+    "tests/test_lsh_matcher.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "adba8c1a82468267e2d1902b8b68ff1fcf35378b",
+    "targetBranch": "main",
+    "outcome": "Fallback signature candidate indexing retains exhaustive duplicate results while avoiding unrelated pair scoring.",
+    "nonGoals": [
+      "Changing native or datasketch similarity semantics",
+      "Dependency changes or source/result caps"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 90,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add a cached component-local d+1 disjoint-band index; score candidates with the original method in original order.",
+      "components": [
+        {
+          "name": "fallback-lsh",
+          "paths": [
+            "src/redup/core/lsh_matcher.py",
+            "tests/test_lsh_matcher.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [
+        {
+          "kind": "component-local-state",
+          "component": "fallback-lsh",
+          "description": "Ephemeral signature band tables invalidated on additions or threshold changes."
+        }
+      ],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the source/test implementation commit through independently reviewed publication."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "python -m pytest tests/test_lsh_matcher.py -q"
+        ],
+        "evidence": "Native exact-parity regression log in external continuation evidence."
+      },
+      {
+        "criterion": "AC-04",
+        "commands": [
+          "python -m pytest -q",
+          "bash project/governance-check.sh"
+        ],
+        "evidence": "Native supported-version and governance logs; protected exact-head checks."
+      }
+    ]
+  }
+}
