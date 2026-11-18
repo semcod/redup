@@ -28,4 +28,6 @@ New identities are reserved exclusively by project/new-ticket.sh.
 | **ticket-024** | [`README.md`](./ticket-024/README.md) | - | - | - | - | - |
 | **ticket-025** | [`README.md`](./ticket-025/README.md) | - | - | - | - | - |
 | **ticket-026** | [`README.md`](./ticket-026/README.md) | - | - | - | - | - |
+| **ticket-027** | [`README.md`](./ticket-027/README.md) | - | - | - | - | - |
+| **ticket-029** | [`README.md`](./ticket-029/README.md) | - | - | - | - | - |
 <!-- AUTO:TICKET_INDEX:END -->
