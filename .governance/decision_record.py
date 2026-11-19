@@ -53,13 +53,18 @@ def classify_action(action: str) -> dict[str, Any]:
 
 DECISION_START = re.compile(r"^DECISION\s+(D-\d{3}-\d{4,})\s*$")
 FIELD = re.compile(r"^([A-Z][A-Z0-9_]*)\s+(.+)$")
-INPUT_LINE = re.compile(r"^INPUT\s+([A-Za-z0-9_]+)\s*=\s*(.+)$")
+JSON_STRING_PATTERN = r'"(?:[^"\\]|\\.)*"'
+INPUT_LINE = re.compile(rf"^INPUT\s+({JSON_STRING_PATTERN}|[A-Za-z0-9_]+)\s*=\s*(.+)$")
 VERDICT_LINE = re.compile(
     r"^VERDICT\s+(\S+)\s+AUTHORITY\s+(DETERMINISTIC|ADVISORY)\s*$"
 )
 REJECTED_LINE = re.compile(r"^REJECTED\s+(\S+)\s+BECAUSE\s+(.+)$")
+# The explicit JSON marker avoids reinterpreting legacy bare alternatives
+# such as '"quoted"' or 'JSON'. Only previously unrepresentable names need it.
+REJECTED_JSON_LINE = re.compile(rf"^REJECTED\s+JSON\s+({JSON_STRING_PATTERN})\s+BECAUSE\s+(.+)$")
 ADVISORY_LINE = re.compile(
-    r'^ADVISORY\s+llm_verdict\s*=\s*"([^"]*)"\s+MODEL\s+"([^"]*)"\s*$'
+    r'^ADVISORY\s+llm_verdict\s*=\s*("(?:[^"\\]|\\.)*")\s+'
+    r'MODEL\s+("(?:[^"\\]|\\.)*")\s*$'
 )
 ASSERT_LINE = re.compile(r"^ASSERT\s+(.+)$")
 
@@ -79,7 +84,7 @@ def format_value(value: Any) -> str:
 def decision_body(text: str) -> str:
     body = text.strip()
     if body.startswith("```"):
-        lines = body.splitlines()
+        lines = body.split("\n")
         if lines[0].startswith("```"):
             lines = lines[1:]
         if lines and lines[-1].strip() == "```":
@@ -110,12 +115,31 @@ def apply_decision_line(record: dict[str, Any], line: str) -> bool:
         return True
     match = INPUT_LINE.match(line)
     if match:
-        record["inputs"][match.group(1)] = parse_value(match.group(2))
+        name = match.group(1)
+        if name.startswith('"'):
+            try:
+                name = json.loads(name)
+            except json.JSONDecodeError:
+                return False
+        record["inputs"][name] = parse_value(match.group(2))
         return True
     match = VERDICT_LINE.match(line)
     if match:
         record["verdict"] = match.group(1)
         record["verdictAuthority"] = match.group(2)
+        return True
+    match = REJECTED_JSON_LINE.match(line)
+    if match:
+        try:
+            alternative = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            return False
+        if not alternative:
+            return False
+        record["rejected"] = {
+            "alternative": alternative,
+            "because": match.group(2).strip(),
+        }
         return True
     match = REJECTED_LINE.match(line)
     if match:
@@ -126,10 +150,14 @@ def apply_decision_line(record: dict[str, Any], line: str) -> bool:
         return True
     match = ADVISORY_LINE.match(line)
     if match:
-        record["advisory"] = {
-            "llmVerdict": match.group(1),
-            "model": match.group(2),
-        }
+        try:
+            advisory = {
+                "llmVerdict": json.loads(match.group(1)),
+                "model": json.loads(match.group(2)),
+            }
+        except json.JSONDecodeError:
+            return False
+        record["advisory"] = advisory
         return True
     match = ASSERT_LINE.match(line)
     if match:
@@ -168,7 +196,9 @@ def parse_dsl_record(text: str) -> dict[str, Any]:
         "advisory": None,
         "derivedFrom": None,
     }
-    for line in decision_body(text).splitlines():
+    # JSON strings may contain Unicode line separators. DSL records are
+    # separated by physical LF (with optional CR), not those string values.
+    for line in decision_body(text).split("\n"):
         line = line.rstrip()
         if not line or line.startswith("#"):
             continue
@@ -188,22 +218,28 @@ def to_dsl(record: dict[str, Any]) -> str:
         f"APPLIED_RULE {record['appliedRule']}",
     ]
     for key in sorted(record["inputs"]):
-        lines.append(f"INPUT {key} = {format_value(record['inputs'][key])}")
+        name = key if re.fullmatch(r"[A-Za-z0-9_]+", key) else format_value(key)
+        lines.append(f"INPUT {name} = {format_value(record['inputs'][key])}")
     lines.append(
         f"VERDICT {record['verdict']} AUTHORITY {record['verdictAuthority']}"
     )
     rejected = record["rejected"]
+    because = " ".join(str(rejected["because"]).splitlines()).strip()
+    alternative = rejected["alternative"]
+    if not re.fullmatch(r"\S+", alternative):
+        alternative = f"JSON {format_value(alternative)}"
     lines.append(
-        f"REJECTED {rejected['alternative']} BECAUSE {rejected['because']}"
+        f"REJECTED {alternative} BECAUSE {because}"
     )
     adv = record.get("advisory")
     if adv:
         lines.append(
-            f'ADVISORY llm_verdict = "{adv.get("llmVerdict", "")}" '
-            f'MODEL "{adv.get("model", "")}"'
+            f'ADVISORY llm_verdict = {format_value(adv.get("llmVerdict", ""))} '
+            f'MODEL {format_value(adv.get("model", ""))}'
         )
     for assertion in record.get("assertions") or []:
-        lines.append(f"ASSERT {assertion}")
+        assert_text = " ".join(str(assertion).splitlines()).strip()
+        lines.append(f"ASSERT {assert_text}")
     return "\n".join(lines) + "\n"
 
 
@@ -211,6 +247,35 @@ def record_content_hash(record: dict[str, Any]) -> str:
     # Hash the canonical DSL without relying on insertion order of free text.
     canonical = to_dsl(record)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _required_check_names(value: Any) -> list[str]:
+    if not isinstance(value, list) or not value or any(
+        not isinstance(name, str) or not name.strip() or name != name.strip()
+        for name in value
+    ) or len(set(value)) != len(value):
+        raise ValueError("GOV-DECISION-002: required_checks must contain unique nonempty check names")
+    return value
+
+
+def _checkout_required_checks() -> list[str]:
+    for candidate in (".governance/required-checks.json", "governance/required-checks.json"):
+        path = Path(candidate)
+        if not path.exists():
+            continue
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            raise ValueError("GOV-DECISION-002: local required-checks metadata is unreadable") from error
+        if not isinstance(document, dict):
+            raise ValueError("GOV-DECISION-002: local required-checks metadata must be an object")
+        value = document.get("requiredCheckNames")
+        if value is None:
+            entries = document.get("requiredChecks")
+            if isinstance(entries, list):
+                value = [item.get("name") if isinstance(item, dict) else None for item in entries]
+        return _required_check_names(value)
+    raise ValueError("GOV-DECISION-002: local required-checks metadata is missing")
 
 
 def replay_verdict(record: dict[str, Any]) -> str:
@@ -221,9 +286,7 @@ def replay_verdict(record: dict[str, Any]) -> str:
     inputs = record["inputs"]
 
     # P-CORE-015 / check-gate family: required checks must all PASS.
-    if rule in {"P-CORE-015", "C-CI-001", "C-DECISION-GATE"} or rule.startswith(
-        "P-CORE-01"
-    ):
+    if isinstance(rule, str) and rule in {"P-CORE-015", "C-CI-001", "C-DECISION-GATE"}:
         required = inputs.get("required_checks")
         observed = inputs.get("observed_checks")
         if not isinstance(required, list) or not isinstance(observed, list):
@@ -231,6 +294,7 @@ def replay_verdict(record: dict[str, Any]) -> str:
                 "GOV-DECISION-002: check-gate rules require "
                 "required_checks and observed_checks arrays"
             )
+        required = _required_check_names(required)
         status: dict[str, str] = {}
         for item in observed:
             if not isinstance(item, str) or "=" not in item:
@@ -238,20 +302,20 @@ def replay_verdict(record: dict[str, Any]) -> str:
                     f"GOV-DECISION-002: observed_checks entry not name=STATUS: {item!r}"
                 )
             name, st = item.split("=", 1)
-            status[name] = st.upper()
+            st = st.upper()
+            if name in status and status[name] != st:
+                raise ValueError("GOV-DECISION-002: contradictory observed check statuses")
+            status[name] = st
         for name in required:
             st = status.get(str(name))
             if st != "PASS" and st != "SUCCESS":
                 return "REQUEST_CHANGES"
+        if "evaluation_verdict" in inputs and str(inputs["evaluation_verdict"]).lower() not in {"allow", "approve"}:
+            return "REQUEST_CHANGES"
         unsafe = inputs.get("unsafe_change_reasons") or []
         if unsafe:
             return "REQUEST_CHANGES"
         return "APPROVE"
-
-    # Default deterministic gate: explicit expected_verdict in inputs for tests
-    # of custom rules without encoding every POLICY rule here.
-    if "expected_verdict_from_rule" in inputs:
-        return str(inputs["expected_verdict_from_rule"])
 
     raise ValueError(
         f"GOV-DECISION-002: no deterministic replay for APPLIED_RULE {rule}"
@@ -285,21 +349,24 @@ def validate_record(record: dict[str, Any]) -> list[str]:
 
 
 def split_decision_blocks(markdown: str) -> list[str]:
-    """Extract fenced ```dsl DECISION ... blocks or bare DECISION sequences."""
+    """Extract bare and fenced DSL decisions once, in document order."""
+    def decisions(text: str) -> list[str]:
+        parts = re.split(r"(?=^DECISION\s+D-)", text.strip(), flags=re.MULTILINE)
+        return [part.strip() for part in parts if part.strip().startswith("DECISION ")]
+
     blocks: list[str] = []
-    fence = re.findall(r"```dsl\n(.*?)```", markdown, flags=re.DOTALL)
-    for body in fence:
-        if "DECISION " in body:
-            # may contain multiple DECISION records
-            parts = re.split(r"(?=^DECISION\s+D-)", body.strip(), flags=re.MULTILINE)
-            for part in parts:
-                part = part.strip()
-                if part.startswith("DECISION "):
-                    blocks.append(part)
-    if blocks:
-        return blocks
-    parts = re.split(r"(?=^DECISION\s+D-)", markdown.strip(), flags=re.MULTILINE)
-    return [p.strip() for p in parts if p.strip().startswith("DECISION ")]
+    cursor = 0
+    fences = re.finditer(
+        r"^[ \t]{0,3}```([^\n]*)\n(.*?)^[ \t]{0,3}```[ \t]*(?:\n|$)",
+        markdown, flags=re.MULTILINE | re.DOTALL,
+    )
+    for fence in fences:
+        blocks.extend(decisions(markdown[cursor:fence.start()]))
+        if fence.group(1).strip() == "dsl":
+            blocks.extend(decisions(fence.group(2)))
+        cursor = fence.end()
+    blocks.extend(decisions(markdown[cursor:]))
+    return blocks
 
 
 def check_append_only(previous_markdown: str, current_markdown: str) -> list[str]:
@@ -324,7 +391,7 @@ def check_append_only(previous_markdown: str, current_markdown: str) -> list[str
     return errors
 
 
-def from_change_evaluation(evaluation: dict[str, Any], **meta: str) -> dict[str, Any]:
+def from_change_evaluation(evaluation: dict[str, Any], **meta: Any) -> dict[str, Any]:
     """Derive a decision record from t2c.change-evaluation/v1 (no dual truth)."""
     if evaluation.get("schemaVersion") != "t2c.change-evaluation/v1":
         raise ValueError("expected t2c.change-evaluation/v1")
@@ -343,6 +410,10 @@ def from_change_evaluation(evaluation: dict[str, Any], **meta: str) -> dict[str,
     if isinstance(gates, dict):
         for name, state in gates.items():
             observed.append(f"{name}={str(state).upper()}")
+    required = meta.get("required_checks")
+    if required is None:
+        required = _checkout_required_checks()
+    required = _required_check_names(required)
     record = {
         "schema": SCHEMA,
         "decisionId": meta["decisionId"],
@@ -352,12 +423,8 @@ def from_change_evaluation(evaluation: dict[str, Any], **meta: str) -> dict[str,
         "actor": meta.get("actor", "agent:validator"),
         "appliedRule": meta.get("appliedRule", "P-CORE-015"),
         "inputs": {
-            "required_checks": meta.get("required_checks")
-            or json.loads(Path("governance/required-checks.json").read_text()).get(
-                "requiredCheckNames", ["test"]
-            ),
-            "observed_checks": observed
-            or meta.get("observed_checks", ["test=PASS"]),
+            "required_checks": required,
+            "observed_checks": observed or meta.get("observed_checks", []),
             "evaluation_verdict": evaluation.get("verdict"),
         },
         "verdict": verdict if verdict != "BLOCKED" else "REQUEST_CHANGES",

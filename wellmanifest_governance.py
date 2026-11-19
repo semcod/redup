@@ -105,10 +105,10 @@ def _resolve_base(root: Path) -> str:
         if merge_base:
             return merge_base
 
-    head = _git(root, "rev-parse", "HEAD")
-    if not head:
-        raise GovernanceGateError("GOV-PACKAGING-003: cannot resolve Git base")
-    return head
+    raise GovernanceGateError(
+        "GOV-PACKAGING-003: cannot resolve Git base; "
+        "set WELLMANIFEST_BASE_SHA or fetch the target branch"
+    )
 
 
 def _changed_paths(root: Path, base: str) -> list[str]:
@@ -136,9 +136,9 @@ def pytest_sessionstart(session: object) -> None:
     root = Path(str(rootpath)).resolve()
     gate_sh = root / "project" / "governance-check.sh"
     gate_bat = root / "project" / "governance-check.bat"
-    if not gate_sh.is_file() and not gate_bat.is_file():
+    if not gate_sh.is_file() and not (sys.platform.startswith("win") and gate_bat.is_file()):
         raise GovernanceGateError(
-            "GOV-PACKAGING-003: managed governance gate is missing"
+            "GOV-PACKAGING-003: managed governance gate for this platform is missing"
         )
     if os.environ.get("WELLMANIFEST_GOVERNANCE_ACTIVE") == "1":
         raise GovernanceGateError("GOV-PACKAGING-003: recursive gate invocation")
