@@ -134,6 +134,6 @@ automation = ["goal>=2.2.0"]
 requires-python = ">=3.12"
 
 [tool.wellmanifest]
-standard = "0.20.54"
-revision = "fa7972da8f6a28a0afe2914aacf46bee4a846943"
+standard = "0.20.162"
+revision = "8e6b51dc91a2ac7e1e771908e0fac5e12da0b9a0"
 gate = "project/governance-check.sh"

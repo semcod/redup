@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import fnmatch
 import hashlib
 import importlib.util
@@ -19,6 +20,14 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+try:  # Python 3.11+
+    import tomllib
+except ImportError:
+    try:
+        import tomli as tomllib  # type: ignore[no-redef]
+    except ImportError:
+        tomllib = None  # type: ignore[assignment]
+
 # Managed validators are read-only checks. Importing adjacent managed modules
 # must not create `__pycache__` inside the repository and turn a clean checkout
 # into an implementation diff on the next validation pass.
@@ -26,7 +35,9 @@ _previous_bytecode_policy = sys.dont_write_bytecode
 sys.dont_write_bytecode = True
 try:
     try:
-        from ticket_activity import ActivityError, delivery_landed, resolve as resolve_ticket_activity
+        from ticket_activity import (ActivityError, ActivityReadBatch, delivery_landed,
+                                     parse_ticket_state_text as _shared_ticket_state,
+                                     resolve as resolve_ticket_activity)
     except ModuleNotFoundError:
         _activity_spec = importlib.util.spec_from_file_location(
             "ticket_activity", Path(__file__).with_name("ticket_activity.py")
@@ -37,8 +48,10 @@ try:
         sys.modules[_activity_spec.name] = _activity_module
         _activity_spec.loader.exec_module(_activity_module)
         ActivityError = _activity_module.ActivityError
+        ActivityReadBatch = _activity_module.ActivityReadBatch
         delivery_landed = _activity_module.delivery_landed
         resolve_ticket_activity = _activity_module.resolve
+        _shared_ticket_state = _activity_module.parse_ticket_state_text
 finally:
     sys.dont_write_bytecode = _previous_bytecode_policy
 
@@ -67,18 +80,18 @@ POLICY_DSL_LOCK = {
     "schema": "new-project.policy-dsl-lock/v1",
     "dependency": {
         "id": "wellmanifest/policy-dsl",
-        "version": "0.1.0-dev",
+        "version": "0.2.0-dev",
         "sourceRepository": "wellmanifest/policy-dsl",
-        "sourceRevision": "daaf7b7b96312a2469de1b4799f2f81c7396de4e",
+        "sourceRevision": "0ffa41efd903d3e0fc3dbf4431f2771b34c1f70e",
         "sourcePath": "tests/policy_dsl_check.py",
-        "sourceSha256": "1ebed8ada3f687bf82de235b352ec1ce94b606887ad2a1657d66bd58f04314e8",
+        "sourceSha256": "9bc02c1805ef208a5d136c045c6a829b7394bc652208c26942dd2e31561881ac"
     },
     "installation": {
         "packageSourcePath": "scripts/policy_dsl_check.py",
         "managedTargetPath": ".governance/policy_dsl_check.py",
         "lockTargetPath": ".governance/policy-dsl.lock.json",
-        "networkRequired": False,
-    },
+        "networkRequired": False
+    }
 }
 ACTIVE_DEFAULT = {"IN_PROGRESS"}
 TICKET_ACTIVITY_ERROR = "GOV-TICKET-ACTIVITY-001"
@@ -89,6 +102,9 @@ EXECUTABLE_SUFFIXES = {
 SECRET_RE = re.compile(
     r"(?i)(api[_-]?key|access[_-]?key|client[_-]?secret|password|private[_-]?key|token)"
     r"[ \t]*[:=][ \t]*['\"]?([A-Za-z0-9_./+=-]{12,})"
+)
+SECRET_FIELD_NAME_RE = re.compile(
+    r"(?i)(api[_-]?key|access[_-]?key|client[_-]?secret|password|private[_-]?key|token)"
 )
 SAFE_SECRET_VALUES = re.compile(r"(?i)^(example|placeholder|changeme|your[_-]|\$\{|<|xxx|test)")
 GENERATED_SECRET_PLACEHOLDER_RE = re.compile(r"^__GENERATE_[A-Z0-9_]+__$")
@@ -167,6 +183,9 @@ class Report:
         data = {
             "schema": "new-project.governance-report/v1",
             "runtimeVersion": RUNTIME_VERSION,
+            "validation_scope": "static-governance",
+            "runtime_enforcement": "not_checked",
+            "grants_execution_authority": False,
             "root": ".",
             "status": "passed" if self.errors == 0 else "failed",
             "summary": {
@@ -383,6 +402,37 @@ def load_policy_dsl_module(root: Path) -> Any:
     return module
 
 
+HOST_MERGE_START = "<!-- wellmanifest:autonomous-merge:start -->"
+HOST_MERGE_END = "<!-- wellmanifest:autonomous-merge:end -->"
+# The superseded block granted merge on green and administrative bypass; every
+# observed copy cites this revision of wellmanifest/merge.
+STALE_HOST_MERGE_SIGNATURE = "wellmanifest/merge@ticket-008"
+
+
+def check_host_merge_policy(root: Path, report: Report) -> None:
+    """Warn while host instructions still carry the superseded merge authority."""
+    stale = []
+    for name in ("AGENTS.md", "CLAUDE.md", "GEMINI.md"):
+        path = root / name
+        if not path.is_file() or path.is_symlink():
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        begin, end = text.find(HOST_MERGE_START), text.find(HOST_MERGE_END)
+        block = text[begin:end] if 0 <= begin < end else ""
+        if STALE_HOST_MERGE_SIGNATURE in block:
+            stale.append(name)
+    if stale:
+        report.add(
+            "GOV-HOST-MERGE-001",
+            "Host instructions carry the superseded autonomous-merge block that allows "
+            "agents to merge on green or bypass review.",
+            "Preview and apply scripts/host_publication_policy.py from the standard in an owned "
+            "ticket; only the independent Validator may approve and merge.",
+            stale,
+            severity="warning",
+        )
+
+
 def check_required_checks_declaration(root: Path, report: Report) -> None:
     script = next(
         (
@@ -402,7 +452,12 @@ def check_required_checks_declaration(root: Path, report: Report) -> None:
         if spec is None or spec.loader is None:
             raise ValueError("required-checks gate cannot be imported")
         module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        previous_bytecode_policy = sys.dont_write_bytecode
+        try:
+            sys.dont_write_bytecode = True
+            spec.loader.exec_module(module)
+        finally:
+            sys.dont_write_bytecode = previous_bytecode_policy
         code = module.main(["--root", str(root)])
     except SystemExit as error:
         code = error.code if isinstance(error.code, int) else 1
@@ -428,8 +483,12 @@ def check_policy_dsl(root: Path, report: Report) -> None:
     if not contributing.is_file():
         return
     try:
+        source = contributing.read_text(encoding="utf-8")
+        # Only a document that opts into the Policy DSL with a dsl fence is validated.
+        if not any(line.strip() == "```dsl" for line in source.splitlines()):
+            return
         policy_dsl = load_policy_dsl_module(root)
-        policy_dsl.parse_markdown(contributing.read_text(encoding="utf-8"))
+        policy_dsl.parse_markdown(source)
     except Exception as error:
         report.add(
             "GOV-POLICY-DSL-001",
@@ -476,13 +535,11 @@ def approval_evidence_config_valid(value: Any) -> bool:
     )
 
 
+BRANCH_NAME = re.compile('^(?!@?$)(?!HEAD$)(?![-/])(?![\\s\\S]*(?:\\.\\.|//|@\\{|[ ~^:?*\\[\\\\\\x00-\\x1f\\x7f]))(?![\\s\\S]*(?:^|/)\\.)(?![\\s\\S]*(?:^|/)[^/]*\\.lock(?:/|$))(?![\\s\\S]*[/.]$)[\\s\\S]+$')
+
+
 def branch_name(value: Any) -> bool:
-    return (
-        isinstance(value, str)
-        and bool(value)
-        and not value.startswith("/")
-        and re.search(r"(?:\.\.|//|@\{|[~^:?*\[\\])", value) is None
-    )
+    return isinstance(value, str) and BRANCH_NAME.fullmatch(value) is not None
 
 
 def integer_fields_valid(value: dict[str, Any], fields: Iterable[str]) -> bool:
@@ -537,7 +594,7 @@ def delivery_classes_valid(value: Any) -> bool:
 
 def delivery_profiles_valid(value: dict[str, Any], classes_valid: bool) -> bool:
     profiles = value.get("profiles")
-    return profiles is None or (
+    return "profiles" not in value or (
         classes_valid
         and isinstance(profiles, dict)
         and set(profiles) == set(value["allowedComplexityClasses"])
@@ -586,6 +643,32 @@ def effective_delivery_policy(policy: dict[str, Any], complexity: str) -> dict[s
     return policy if profile is None else {**policy, **profile}
 
 
+# Where each recognized delivery field belongs, so a misplaced one names its required path.
+DELIVERY_FIELD_PATHS = {
+    **{name: f"delivery.{name}" for name in (
+        "acceptedBaseSha", "targetBranch", "outcome", "nonGoals", "complexity", "estimatedMinutes",
+        "budgets", "architecture", "runtimeDependencies", "validation")},
+    **{name: f"delivery.budgets.{name}" for name in (
+        "maxImplementationFiles", "maxAffectedComponents", "maxPublicInterfaceChanges", "maxRuntimeDependencies")},
+    **{name: f"delivery.architecture.{name}" for name in (
+        "status", "decision", "components", "responsibilityChanges", "interfaceChanges", "dataChanges", "ui", "rollback")},
+}
+
+
+def field_set_hint(value: Any, required: set[str], optional: set[str] = frozenset(),
+                   located: dict[str, str] | None = None) -> str:
+    """Name the missing and unexpected keys so an agent can repair an intent in one edit."""
+    if not isinstance(value, dict):
+        return f" (expected an object with {', '.join(sorted(required))}; got {type(value).__name__})"
+    missing = sorted(required - set(value))
+    unexpected = sorted(set(value) - required - set(optional))
+    parts = [f"missing: {', '.join(missing)}"] if missing else []
+    if unexpected:
+        parts.append(f"unexpected: {', '.join(unexpected)}")
+    parts.extend(f"move {name} to {located[name]}" for name in unexpected if name in (located or {}))
+    return f" ({'; '.join(parts)})" if parts else ""
+
+
 def delivery_header_error(value: dict[str, Any]) -> str | None:
     if not isinstance(value.get("acceptedBaseSha"), str) or re.fullmatch(r"[0-9a-f]{40}", value["acceptedBaseSha"]) is None:
         return "delivery acceptedBaseSha must be a full lowercase commit SHA"
@@ -596,7 +679,7 @@ def delivery_header_error(value: dict[str, Any]) -> str | None:
     if not string_list(value.get("nonGoals"), nonempty=True):
         return "delivery nonGoals must be an explicit non-empty list"
     if value.get("complexity") not in {"XS", "S", "M", "L"}:
-        return "delivery complexity must be XS, S, M or L"
+        return f"delivery complexity must be XS, S, M or L (got {value.get('complexity')!r})"
     minutes = value.get("estimatedMinutes")
     if not isinstance(minutes, int) or isinstance(minutes, bool) or not 1 <= minutes <= 240:
         return "delivery estimatedMinutes must be between 1 and 240"
@@ -609,7 +692,7 @@ def delivery_budgets_error(budgets: Any) -> str | None:
         "maxPublicInterfaceChanges", "maxRuntimeDependencies",
     }
     if not isinstance(budgets, dict) or set(budgets) != fields:
-        return "delivery budgets are incomplete"
+        return "delivery budgets are incomplete" + field_set_hint(budgets, fields, located=DELIVERY_FIELD_PATHS)
     if not integer_fields_valid(budgets, fields):
         return "delivery budgets must be integers"
     if budgets["maxImplementationFiles"] < 1 or budgets["maxAffectedComponents"] < 1:
@@ -625,7 +708,7 @@ def delivery_components_error(components: Any) -> str | None:
     names: list[str] = []
     for component in components:
         if not isinstance(component, dict) or set(component) != {"name", "paths"}:
-            return "delivery component must contain name and paths"
+            return "delivery component must contain name and paths" + field_set_hint(component, {"name", "paths"})
         if not isinstance(component.get("name"), str) or not component["name"].strip():
             return "delivery component name is blank"
         if not relative_pattern_list(component.get("paths"), nonempty=True):
@@ -636,11 +719,13 @@ def delivery_components_error(components: Any) -> str | None:
 
 def delivery_ui_error(ui: Any) -> str | None:
     if not isinstance(ui, dict) or set(ui) != {"impact", "states", "evidence"}:
-        return "delivery UI decision is incomplete"
+        return ("delivery UI decision is incomplete" + field_set_hint(ui, {"impact", "states", "evidence"})
+                + '; for non-UI work use {"impact": "none", "states": [], "evidence": []}')
     if ui.get("impact") not in {"none", "single-state", "multi-state"}:
-        return "delivery UI impact is invalid"
+        return f"delivery UI impact is invalid (got {ui.get('impact')!r}; allowed: none, single-state, multi-state)"
     if not string_list(ui.get("states")) or not set(ui["states"]) <= {"loading", "empty", "error", "success"}:
-        return "delivery UI states are invalid"
+        return (f"delivery UI states are invalid (got {ui.get('states')!r}; "
+                "expected a unique list drawn from loading, empty, error, success)")
     if not string_list(ui.get("evidence")):
         return "delivery UI evidence must be a unique string list"
     return delivery_ui_impact_error(ui["impact"], ui["states"], ui["evidence"])
@@ -648,11 +733,14 @@ def delivery_ui_error(ui: Any) -> str | None:
 
 def delivery_ui_impact_error(impact: str, states: list[str], evidence: list[str]) -> str | None:
     if impact == "none" and (states or evidence):
-        return "delivery UI states/evidence must be empty when impact is none"
+        return ("delivery UI states/evidence must be empty when impact is none "
+                f"(got states={states!r}, evidence={evidence!r}; set both to [] or choose a UI impact)")
     if impact == "single-state" and (len(states) != 1 or not evidence):
-        return "single-state UI work requires one state and planned evidence"
+        return (f"single-state UI work requires one state and planned evidence "
+                f"(got {len(states)} state(s), {len(evidence)} evidence item(s))")
     if impact == "multi-state" and (len(states) < 2 or not evidence):
-        return "multi-state UI work requires at least two states and planned evidence"
+        return (f"multi-state UI work requires at least two states and planned evidence "
+                f"(got {len(states)} state(s), {len(evidence)} evidence item(s))")
     return None
 
 
@@ -703,9 +791,10 @@ def delivery_architecture_error(architecture: Any) -> str | None:
         "interfaceChanges", "dataChanges", "ui", "rollback",
     }
     if not isinstance(architecture, dict) or set(architecture) != fields:
-        return "delivery architecture decision is incomplete"
+        return "delivery architecture decision is incomplete" + field_set_hint(
+            architecture, fields, located=DELIVERY_FIELD_PATHS)
     if architecture.get("status") != "accepted":
-        return "delivery architecture status must be accepted before implementation"
+        return f"delivery architecture status must be accepted before implementation (got {architecture.get('status')!r})"
     for name in ("decision", "rollback"):
         if not isinstance(architecture.get(name), str) or not architecture[name].strip():
             return f"delivery architecture {name} is blank"
@@ -724,7 +813,7 @@ def delivery_validation_error(validation: Any) -> str | None:
     criteria: list[str] = []
     for item in validation:
         if not isinstance(item, dict) or set(item) != {"criterion", "commands", "evidence"}:
-            return "delivery validation entry is incomplete"
+            return "delivery validation entry is incomplete" + field_set_hint(item, {"criterion", "commands", "evidence"})
         if not isinstance(item.get("criterion"), str) or re.fullmatch(r"AC-[0-9]+", item["criterion"]) is None:
             return "delivery validation criterion is invalid"
         if not string_list(item.get("commands"), nonempty=True):
@@ -735,7 +824,158 @@ def delivery_validation_error(validation: Any) -> str | None:
     return "delivery validation criteria must be unique" if len(criteria) != len(set(criteria)) else None
 
 
-PLACEMENT_HOMES = {"wellmanifest", "subactor", "semcod"}
+PHYSICAL_CONTRACT_FILES = (".governance/physical-contracts.json", "governance/physical-contracts.json")
+PHYSICAL_PROPERTIES = {
+    "pin-assignment", "active-level", "pull", "capability-set",
+    "unit-scale", "limit-range", "timing", "none",
+}
+PHYSICAL_HAZARDS = {"motion", "pressure", "electrical", "thermal", "none"}
+
+
+def physical_contracts_error(value: Any) -> str | None:
+    """Adopter declaration of files whose values carry physical meaning."""
+    if not isinstance(value, dict) or set(value) != {"schema", "contracts"}:
+        return "physical contracts must contain exactly schema and contracts"
+    if value.get("schema") != "new-project.physical-contracts/v1":
+        return "physical contracts schema is unsupported"
+    contracts = value.get("contracts")
+    if not isinstance(contracts, list) or not contracts:
+        return "physical contracts must declare at least one contract"
+    ids: list[str] = []
+    for contract in contracts:
+        if not isinstance(contract, dict) or set(contract) != {"id", "paths", "properties", "hazard", "acceptance"}:
+            return "physical contract requires id, paths, properties, hazard and acceptance"
+        if not isinstance(contract["id"], str) or re.fullmatch(r"[a-z0-9][a-z0-9.-]*", contract["id"]) is None:
+            return "physical contract id is invalid"
+        if not relative_pattern_list(contract["paths"], nonempty=True):
+            return "physical contract paths must be repository-relative patterns"
+        if len(contract["paths"]) != len(set(contract["paths"])):
+            return "physical contract paths must be unique"
+        if not string_list(contract["properties"], nonempty=True) or not set(contract["properties"]) <= PHYSICAL_PROPERTIES - {"none"}:
+            return "physical contract properties are invalid"
+        if len(contract["properties"]) != len(set(contract["properties"])):
+            return "physical contract properties must be unique"
+        if not isinstance(contract["hazard"], str) or contract["hazard"] not in PHYSICAL_HAZARDS:
+            return "physical contract hazard is invalid"
+        if not isinstance(contract["acceptance"], str) or not contract["acceptance"].strip():
+            return "physical contract acceptance procedure is blank"
+        ids.append(contract["id"])
+    return "physical contract ids must be unique" if len(ids) != len(set(ids)) else None
+
+
+def physical_changes_error(changes: Any) -> str | None:
+    """Every changed physical property is declared on its own, before and after.
+
+    A pin move and a polarity flip are two entries, so neither can hide
+    inside the other. Each exact contract/property/signal has one claim;
+    "none" is exclusive with changed properties of the same contract.
+    """
+    if not isinstance(changes, list) or not changes:
+        return "intent physicalChanges must be a non-empty list"
+    seen = set()
+    claims = set()
+    unchanged_contracts = set()
+    changed_contracts = set()
+    for change in changes:
+        if not isinstance(change, dict) or not isinstance(change.get("property"), str) or change["property"] not in PHYSICAL_PROPERTIES:
+            return "physical change property is invalid"
+        if change["property"] == "none":
+            if set(change) != {"contract", "property", "rationale"}:
+                return "a no-semantics physical change requires contract, property and rationale"
+            if not isinstance(change["rationale"], str) or not change["rationale"].strip():
+                return "physical change rationale is blank"
+        else:
+            if set(change) != {"contract", "property", "signal", "before", "after", "acceptance"}:
+                return "physical change requires contract, property, signal, before, after and acceptance"
+            for name in ("signal", "before", "after"):
+                if not isinstance(change[name], str) or not change[name].strip():
+                    return f"physical change {name} is blank"
+            if change["before"] == change["after"]:
+                return "physical change before and after must differ; use property none"
+            if not string_list(change["acceptance"], nonempty=True):
+                return "physical change acceptance must list observable hardware checks"
+        if not isinstance(change["contract"], str) or not change["contract"].strip():
+            return "physical change contract is blank"
+        key = json.dumps(change, sort_keys=True)
+        if key in seen:
+            return "physical changes must be unique"
+        seen.add(key)
+        identity = (change["contract"], change["property"], change.get("signal"))
+        if identity in claims:
+            return "physical change contract, property and signal must be unique"
+        claims.add(identity)
+        if change["property"] == "none":
+            if change["contract"] in changed_contracts:
+                return "physical change property none cannot coexist with changes to the same contract"
+            unchanged_contracts.add(change["contract"])
+        else:
+            if change["contract"] in unchanged_contracts:
+                return "physical change property none cannot coexist with changes to the same contract"
+            changed_contracts.add(change["contract"])
+    return None
+
+
+def load_physical_contracts(root: Path) -> tuple[Path | None, dict[str, Any] | None, str | None]:
+    for raw in PHYSICAL_CONTRACT_FILES:
+        path = root / raw
+        if path.is_file():
+            try:
+                value = load_json(path)
+            except (OSError, json.JSONDecodeError) as error:
+                return path, None, str(error)
+            return path, value, physical_contracts_error(value)
+    return None, None, None
+
+
+def check_physical_contract_changes(
+    root: Path, intent: dict[str, Any], ticket: str, implementation: list[str], report: Report,
+) -> None:
+    path, contracts, error = load_physical_contracts(root)
+    if path is None:
+        return
+    if error:
+        report.add(
+            "GOV-PHYS-002", f"Physical contract declaration is invalid: {error}",
+            "Repair the adopter's physical-contracts.json; the gate fails closed while it is unreadable.",
+            [rel(root, path)],
+        )
+        return
+    assert contracts is not None
+    changes = intent.get("physicalChanges", [])
+    change_error = physical_changes_error(changes) if "physicalChanges" in intent else None
+    by_id = {contract["id"]: contract for contract in contracts["contracts"]}
+    if change_error is None:
+        for change in changes:
+            contract = by_id.get(change["contract"])
+            if contract is None:
+                change_error = f"Unknown physical contract '{change['contract']}'"
+                break
+            if change["property"] != "none" and change["property"] not in contract["properties"]:
+                change_error = f"Property '{change['property']}' is not declared by physical contract '{contract['id']}'"
+                break
+    if change_error:
+        report.add(
+            "GOV-PHYS-001", f"Intent physicalChanges are invalid: {change_error}",
+            "Name an existing physical contract and one of its declared properties, or property none with a rationale.",
+            [f"project/{ticket}/intent.json"], {"ticket": ticket},
+        )
+        return
+    declared = {change["contract"] for change in changes}
+    for contract in contracts["contracts"]:
+        touched = [item for item in implementation if matches(item, contract["paths"])]
+        if not touched or contract["id"] in declared:
+            continue
+        report.add(
+            "GOV-PHYS-001",
+            f"Changed paths carry physical contract '{contract['id']}' but the intent declares no physicalChanges for it.",
+            "Declare each changed property (pin, active level, pull, capability set, scale, range, timing) with before, "
+            f"after and hardware acceptance checks, or property none with a rationale. Acceptance: {contract['acceptance']}",
+            touched, {"ticket": ticket, "contract": contract["id"], "hazard": contract["hazard"],
+                      "properties": contract["properties"]},
+        )
+
+
+PLACEMENT_HOMES = {"wellmanifest", "subactor", "semcod", "paxlet-com", "dockuri"}
 PLACEMENT_SHAPES = {"domain_pack", "runtime_service", "both"}
 PLACEMENT_ADOPT = re.compile(r"^wellmanifest/[a-z0-9][a-z0-9-]*$")
 
@@ -745,15 +985,15 @@ def placement_error(value: Any) -> str | None:
     allowed = required | {"runtimeOwner", "adopt"}
     if not isinstance(value, dict) or not required <= set(value) <= allowed:
         return "placement must contain home and shape"
-    if value["home"] not in PLACEMENT_HOMES:
+    if not isinstance(value.get("home"), str) or value["home"] not in PLACEMENT_HOMES:
         return "placement home is invalid"
-    if value["shape"] not in PLACEMENT_SHAPES:
+    if not isinstance(value.get("shape"), str) or value["shape"] not in PLACEMENT_SHAPES:
         return "placement shape is invalid"
     runtime_owner = value.get("runtimeOwner")
-    if runtime_owner is not None and runtime_owner not in PLACEMENT_HOMES:
+    if runtime_owner is not None and (not isinstance(runtime_owner, str) or runtime_owner not in PLACEMENT_HOMES):
         return "placement runtimeOwner is invalid"
     if value["home"] == "wellmanifest" and value["shape"] == "runtime_service":
-        return "runtime_service must not HOME wellmanifest; ADOPT packs from subactor or semcod"
+        return "runtime_service must not HOME wellmanifest; HOME in a product organization and ADOPT wellmanifest packs"
     adopt = value.get("adopt")
     if adopt is not None and (
         not string_list(adopt) or not all(PLACEMENT_ADOPT.fullmatch(item) for item in adopt)
@@ -947,7 +1187,8 @@ def delivery_intent_error(value: Any) -> str | None:
     }
     optional_fields = {"standardAdoption", "snapshotMigration"}
     if not isinstance(value, dict) or not required_fields <= set(value) <= required_fields | optional_fields:
-        return "delivery must contain exactly the bounded-delivery fields"
+        return "delivery must contain exactly the bounded-delivery fields" + field_set_hint(
+            value, required_fields, optional_fields, located=DELIVERY_FIELD_PATHS)
     if "snapshotMigration" in value:
         try:
             migration_error = snapshot_migration_runtime().contract_error(value["snapshotMigration"])
@@ -1148,7 +1389,7 @@ def check_history_order(
     if not base:
         return
     try:
-        arguments = ["rev-list", "--reverse", f"{base}..{head}"]
+        arguments = ["rev-list", "--reverse", "--topo-order", f"{base}..{head}"]
         migration = report.snapshot_migrations.get(ticket_name)
         if migration:
             arguments.append("^" + migration["sourceSha"])
@@ -1163,31 +1404,52 @@ def check_history_order(
     first_implementation: tuple[int, str] | None = None
     for index, commit in enumerate(commits):
         try:
-            raw = git_output(root, ["diff-tree", "--root", "--no-commit-id", "--name-only", "-r", "-z", commit])
-        except subprocess.CalledProcessError:
+            parents = git_output(root, ["rev-list", "--parents", "--max-count=1", commit]).decode().split()
+            tree_diff = ["diff-tree", "--no-commit-id", "--name-only", "--no-renames",
+                         "--no-ext-diff", "--no-textconv", "--ignore-submodules=none", "-r", "-z"]
+            # Diff merge resolutions against the first parent explicitly;
+            # diff-tree's default omits merges, while -m includes every parent.
+            previous = [parents[1], commit] if len(parents) > 1 else ["--root", commit]
+            raw = git_output(root, [*tree_diff, *previous])
+            paths = [path for path in raw.decode("utf-8", "surrogateescape").split("\0") if path]
+            material = {path for path in paths if not matches(path, governance_patterns)}
+            if not material:
+                continue
+            # A historical commit that only sets these entries to their exact
+            # baseline state introduces no new implementation for this ticket.
+            # Tree diffs retain modes, types and deletions; do not filter by the
+            # final HEAD diff, which could conceal transient unapproved code.
+            # Verified migrations define their own imported baseline. A repair
+            # that reverts imported material to the ordinary base still counts
+            # there and must not receive this inherited-history exemption.
+            if not migration:
+                relative = git_output(root, [*tree_diff, base, commit])
+                different_from_base = set(relative.decode("utf-8", "surrogateescape").split("\0"))
+                if not material.intersection(different_from_base):
+                    continue
+        except (subprocess.CalledProcessError, FileNotFoundError):
             report.add(
                 "GOV-DIFF-001", f"Git could not inspect commit {commit}.",
                 "Fetch complete commit objects and rerun the governance gate.",
                 evidence={"commit": commit},
             )
             return
-        paths = [path for path in raw.decode("utf-8", "surrogateescape").split("\0") if path]
-        if any(not matches(path, governance_patterns) for path in paths):
-            first_implementation = (index, commit)
-            break
+        first_implementation = (index, commit)
+        break
     if first_implementation is None:
         return
     _, commit = first_implementation
     ticket_intent = f"{ticket_root.rstrip('/')}/{ticket_name}/{intent_path}"
     try:
-        subprocess.run(
-            ["git", "cat-file", "-e", f"{commit}:{ticket_intent}"], cwd=root,
-            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        )
-    except subprocess.CalledProcessError:
+        raw_blob = git_output(root, ["cat-file", "-p", f"{commit}:{ticket_intent}"])
+        parsed_intent = json.loads(raw_blob.decode("utf-8"))
+        _, intent_error = validate_intent_value(parsed_intent, ticket_name)
+        if intent_error is not None:
+            raise ValueError(intent_error)
+    except (subprocess.CalledProcessError, ValueError, UnicodeDecodeError):
         report.add(
             "GOV-INTENT-003",
-            f"{ticket_intent} was absent from the first material implementation commit.",
+            f"{ticket_intent} was absent or invalid in the first material implementation commit.",
             "Include the validated intent atomically with the first material commit; do not create a separate plan-only commit.",
             [ticket_intent], {"firstImplementationCommit": commit},
         )
@@ -1314,12 +1576,27 @@ def integration_policy_valid(integration: Any, workstreams: dict[str, Any]) -> b
     )
 
 
+def idle_takeover_policy_valid(policy: Any) -> bool:
+    def bounded(value: Any, low: int, high: int) -> bool:
+        return isinstance(value, int) and not isinstance(value, bool) and low <= value <= high
+    return (
+        isinstance(policy, dict)
+        and set(policy) == {"enabled", "idleMinutes", "leaseMinutes"}
+        and isinstance(policy["enabled"], bool)
+        and bounded(policy["idleMinutes"], 5, 240)
+        and bounded(policy["leaseMinutes"], 15, 480)
+        and policy["leaseMinutes"] > policy["idleMinutes"]
+    )
+
+
 def coordination_policy_valid(coordination: Any) -> bool:
     fields = {
         "mode", "maxActiveTicketsPerWorkstream", "rejectActiveScopeOverlap",
         "workstreams", "integration",
     }
-    if not isinstance(coordination, dict) or set(coordination) != fields:
+    if not isinstance(coordination, dict) or set(coordination) - {"idleTakeover"} != fields:
+        return False
+    if "idleTakeover" in coordination and not idle_takeover_policy_valid(coordination["idleTakeover"]):
         return False
     limit = coordination.get("maxActiveTicketsPerWorkstream")
     settings_valid = (
@@ -1397,6 +1674,8 @@ def lock_standard_valid(standard: Any, expected_version: str) -> bool:
 
 def load_managed_lock(lock_path: Path, manifest: dict[str, Any]) -> dict[str, str]:
     lock = load_json(lock_path)
+    if not isinstance(lock, dict):
+        raise ValueError("lock must be an object")
     managed = lock["managedFiles"]
     if (
         lock.get("schema") != "new-project.lock/v1"
@@ -1522,12 +1801,7 @@ def parse_ticket_state(readme: Path) -> tuple[str | None, str | None]:
 
 
 def parse_ticket_state_text(text: str) -> tuple[str | None, str | None]:
-    status_match = re.search(r"(?mi)^-[ \t]+\*\*Status\*\*:[ \t]*([A-Z_]+)[ \t]*$", text)
-    state_match = re.search(r"(?mi)^-[ \t]+\*\*Workflow state\*\*:[ \t]*([A-Z_]+)[ \t]*$", text)
-    return (
-        status_match.group(1).upper() if status_match else None,
-        state_match.group(1).upper() if state_match else None,
-    )
+    return _shared_ticket_state(text)
 
 
 def ticket_directories(root: Path, config: dict[str, Any]) -> list[Path]:
@@ -1584,6 +1858,10 @@ def intent_v2_error(intent: dict[str, Any], ticket_name: str) -> str | None:
         error = delivery_intent_error(intent["delivery"])
         if error:
             return error
+    if "physicalChanges" in intent:
+        error = physical_changes_error(intent["physicalChanges"])
+        if error:
+            return error
     if "placement" in intent:
         return placement_error(intent["placement"])
     return None
@@ -1611,16 +1889,8 @@ def intent_fields_error(intent: Any) -> str | None:
     expected = v1_fields if intent["schema"] == "new-project.intent/v1" else v2_fields
     if intent["schema"] == "new-project.intent/v3":
         expected |= {"classification"}
-    if intent["schema"] == "new-project.intent/v1":
-        allowed = [expected]
-    else:
-        allowed = [
-            expected,
-            expected | {"delivery"},
-            expected | {"placement"},
-            expected | {"delivery", "placement"},
-        ]
-    if set(intent) not in allowed:
+    optional = set() if intent["schema"] == "new-project.intent/v1" else {"delivery", "placement", "physicalChanges"}
+    if not expected <= set(intent) <= expected | optional:
         return f"intent must contain exactly the {intent['schema'].rsplit('/', 1)[-1]} fields"
     return None
 
@@ -1698,8 +1968,9 @@ def load_repository_policy_ticket(
         "integrationTicket": None,
         "classification": {"kind": "SERVICE", "priority": "P2", "origin": "requested"},
     }
+    ticket_root = policy.get("tickets", {}).get("root", "project")
     return TicketRecord(
-        root / str(raw_path),
+        root / str(ticket_root) / adapter["ticket"],
         adapter["status"],
         adapter["workflow"],
         intent,
@@ -1763,6 +2034,38 @@ def active_ticket_records(
 ) -> list[TicketRecord]:
     """Return live reservations from the shared status/receipt resolver."""
     active_statuses = set(config.get("activeStatuses", ACTIVE_DEFAULT))
+    projected = [record for record in records if record.status in active_statuses]
+    if not projected:
+        return []
+    try:
+        with ActivityReadBatch(root):
+            return _resolve_active_ticket_records(root, config, projected, report)
+    except ActivityError as error:
+        # Inactivity is accepted only after the whole batch revalidates. A
+        # changed input invalidates every terminal result from this inspection.
+        _report_activity_error(root, projected[0], error, report)
+        return projected
+
+
+def _report_activity_error(
+    root: Path, record: TicketRecord, error: ActivityError, report: Report | None,
+) -> None:
+    if report is not None and not any(
+        finding.code == TICKET_ACTIVITY_ERROR for finding in report.findings
+    ):
+        report.add(
+            TICKET_ACTIVITY_ERROR,
+            f"Ticket activity could not be resolved safely: {error}",
+            "Reconcile or quarantine the clone-external registry from protected evidence; follow error/GOV-TICKET-ACTIVITY.md.",
+            [rel(root, record.directory / "README.md")],
+            {"ticket": record.directory.name, "fallback": "remain-active"},
+        )
+
+
+def _resolve_active_ticket_records(
+    root: Path, config: dict[str, Any], records: list[TicketRecord], report: Report | None,
+) -> list[TicketRecord]:
+    active_statuses = set(config.get("activeStatuses", ACTIVE_DEFAULT))
     active: list[TicketRecord] = []
     for record in records:
         if record.status not in active_statuses:
@@ -1774,16 +2077,7 @@ def active_ticket_records(
             # A broken optional cache must never fabricate terminal authority.
             # Keep the projection active and expose one stable, recoverable error.
             active.append(record)
-            if report is not None and not any(
-                finding.code == TICKET_ACTIVITY_ERROR for finding in report.findings
-            ):
-                report.add(
-                    TICKET_ACTIVITY_ERROR,
-                    f"Ticket activity could not be resolved safely: {error}",
-                    "Reconcile or quarantine the clone-external registry from protected evidence; follow error/GOV-TICKET-ACTIVITY.md.",
-                    [rel(root, record.directory / "README.md")],
-                    {"ticket": record.directory.name, "fallback": "remain-active"},
-                )
+            _report_activity_error(root, record, error, report)
             continue
         if resolution.active:
             active.append(record)
@@ -1920,13 +2214,13 @@ def adoption_path_list_valid(paths: Any, pattern: str) -> bool:
     return (
         isinstance(paths, list)
         and bool(paths)
-        and len(paths) == len(set(paths))
         and all(
             isinstance(path, str)
             and re.fullmatch(pattern, path) is not None
             and relative_pattern(path)
             for path in paths
         )
+        and len(paths) == len(set(paths))
     )
 
 
@@ -1947,6 +2241,8 @@ def adoption_binding_registry(root: Path) -> tuple[list[str], list[str]] | None:
     try:
         registry = load_json(registry_path)
     except (OSError, UnicodeError, json.JSONDecodeError, TypeError, ValueError):
+        return None
+    if not isinstance(registry, dict):
         return None
     workflow_paths = registry.get("revisionBoundWorkflowPaths")
     target_patterns = registry.get("digestBoundTargetPatterns")
@@ -2020,6 +2316,78 @@ def add_adoption_docker_bindings(root: Path, manifest: dict[str, Any], bindings:
                 )
 
 
+WELLMAN_SCAFFOLD_PROFILES = frozenset({
+    "wellmanifest/new-project",
+    "profile:baseline",
+    "profile:domain-pack",
+    "profile:runtime-service",
+    "profile:agent-executor",
+    "profile:deployment",
+    "profile:embedded-fleet",
+    "profile:full",
+})
+WELLMAN_SCAFFOLD_VERSION_RE = re.compile(
+    r"\A(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)"
+    r"(?:-(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
+    r"(?:\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?\Z"
+)
+
+
+def initial_adoption_seed_paths(root: Path, base: str, revision: str,
+                                manifest: dict[str, Any]) -> set[str]:
+    """Closed required seeds; neither existing ownership nor writer authority."""
+    if not isinstance(base, str) or re.fullmatch(r"[a-f0-9]{40}", base) is None:
+        return set()
+    root = root.resolve()
+    # ls-tree distinguishes proven absence from missing objects/Git failures.
+    native = [".governance/manifest.lock.json", ".governance/package-manifest.json",
+              ".governance/manifest.base.json"]
+    if git_output(root, ["ls-tree", "-z", base, "--", *native]):
+        return set()
+    legacy = git_output(root, ["ls-tree", "-z", base, "--", ".governance/manifest.json"])
+    if legacy:
+        if legacy.split(b" ", 1)[0] not in {b"100644", b"100755"}:
+            return set()
+        original = json.loads(git_output(root, ["show", base + ":.governance/manifest.json"]))
+        standard = original.get("standard", {}) if isinstance(original, dict) else {}
+        if (not isinstance(original, dict) or set(original) != {"schema", "standard"}
+                or original.get("schema") != "wellmanifest.manifest/v1"
+                or not isinstance(standard, dict) or set(standard) != {"id", "version"}
+                or standard.get("id") not in WELLMAN_SCAFFOLD_PROFILES
+                or not isinstance(standard.get("version"), str)
+                or WELLMAN_SCAFFOLD_VERSION_RE.fullmatch(standard["version"]) is None):
+            return set()
+    for name in native:
+        path = root / name
+        if any(p.is_symlink() for p in (path, *path.parents)) or not path.is_file():
+            return set()
+    lock = load_json(safe_repo_path(root, ".governance/manifest.lock.json"))
+    if (lock.get("standard", {}).get("sourceRevision") != revision
+            or lock.get("standard", {}).get("publicationStatus") != "published"):
+        return set()
+    base_path = safe_repo_path(root, ".governance/manifest.base.json")
+    if content_digest(base_path.read_bytes()) != lock.get("managedFiles", {}).get(
+            ".governance/manifest.base.json"):
+        return set()
+    published = load_json(base_path)
+    package = load_json(safe_repo_path(root, ".governance/package-manifest.json"))
+    targets = {item["target"] for item in package["files"]}
+    shared = manifest["coordination"]["integration"]["requiredForPaths"]
+    seeds = set()
+    for name in published["requiredFiles"]:
+        if (not isinstance(name, str) or not relative_pattern(name)
+                or any(c in name for c in "*?[\\") or name in targets or matches(name, shared)):
+            continue
+        path = root / name
+        if (any(p.is_symlink() for p in (path, *path.parents)) or not path.is_file()
+                or path.suffix.lower() in EXECUTABLE_SUFFIXES or path.stat().st_mode & 0o111
+                or git_output(root, ["ls-tree", "-z", base, "--", name])):
+            continue
+        seeds.add(name)
+    return seeds
+
+
 def atomic_adoption_binding_paths(
     root: Path,
     manifest: dict[str, Any],
@@ -2038,6 +2406,13 @@ def atomic_adoption_binding_paths(
     add_adoption_workflow_bindings(root, revision, registry, bindings)
     add_adoption_packaging_bindings(root, bindings)
     add_adoption_docker_bindings(root, manifest, bindings)
+    if (intent.get("workstream") == "governance" and adoption.get("fromRevision") is None
+            and standard_adoption_error(adoption) is None):
+        try:
+            bindings.update(initial_adoption_seed_paths(
+                root, delivery.get("acceptedBaseSha"), revision, manifest))
+        except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
+            pass  # Incomplete seed evidence grants no cross-workstream scope.
     return bindings
 
 
@@ -2201,17 +2576,33 @@ def check_scope_overlaps(
     governance_patterns: list[str],
     report: Report,
 ) -> None:
+    if len(valid_active) < 2:
+        return
+    # Match each ticket against repository paths once, rather than repeating
+    # that work for every pair. Positions retain duplicate counts and the
+    # original first-20 selection before Report canonicalizes the paths.
+    candidates = [(index, path) for index, path in enumerate(files)
+                  if not matches(path, governance_patterns)]
+    matching_positions: list[set[int]] = []
+    for record in valid_active:
+        assert record.intent is not None
+        matching_positions.append({
+            index for index, path in candidates
+            if matches(path, record.intent["allowedPaths"])
+            and not matches(path, record.intent["forbiddenPaths"])
+        })
     for index, first in enumerate(valid_active):
-        for second in valid_active[index + 1:]:
-            shared_files = ticket_shared_files(first, second, files, governance_patterns)
+        for second_index in range(index + 1, len(valid_active)):
+            second = valid_active[second_index]
+            shared_positions = matching_positions[index] & matching_positions[second_index]
             overlapping_patterns = ticket_overlapping_patterns(first, second, governance_patterns)
-            if shared_files or overlapping_patterns:
+            if shared_positions or overlapping_patterns:
                 report.add(
                     "GOV-WORKSTREAM-004",
                     f"Active ticket scopes overlap: {first.directory.name} and {second.directory.name}.",
                     "Narrow one allowedPaths declaration, serialize the work, or route the shared contract through integration.",
-                    shared_files[:20],
-                    {"tickets": [first.directory.name, second.directory.name], "overlappingPatterns": overlapping_patterns, "concretePathCount": len(shared_files)},
+                    [files[position] for position in sorted(shared_positions)[:20]],
+                    {"tickets": [first.directory.name, second.directory.name], "overlappingPatterns": overlapping_patterns, "concretePathCount": len(shared_positions)},
                 )
 
 
@@ -2546,12 +2937,19 @@ def validate_domain_errors(root: Path, errors: dict[str, Any], domain: str, comm
         {"code", "documentation", "retryability", "status", "rejectionEvent"},
         "errors",
     )
+    command_for_code = {
+        code: [cmd_name for cmd_name, cmd in commands.items() if code in cmd["rejects"]]
+        for code in error_index
+    }
     for error in error_index.values():
         contract_document(
             root, error["documentation"], f"error/{error['code']}.md", "error",
         )
         if error["rejectionEvent"] not in event_index:
             raise ValueError("error rejection event is unknown")
+        emitter = event_index[error["rejectionEvent"]]["emittedBy"]
+        if emitter not in command_for_code.get(error["code"], []):
+            raise ValueError("error rejection event emitter does not match rejecting command")
         if error["retryability"] not in {
             "never", "after-correction", "after-new-evidence",
         }:
@@ -2627,6 +3025,313 @@ def check_required_files(root: Path, manifest: dict[str, Any], report: Report) -
                 "Add a pinned Docker runtime and validate its Compose configuration.",
                 [*([] if dockerfile else docker["dockerfiles"]), *([] if compose else docker["composeFiles"])],
             )
+
+
+def _section_aware_toml_version(content: str, section_names: tuple[str, ...]) -> str | None:
+    current_section = None
+    for line in content.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("[") and line.endswith("]"):
+            current_section = line.strip("[]").strip()
+            continue
+        if current_section in section_names:
+            m = re.match(r'^version\s*=\s*["\']([^"\']+)["\']', line)
+            if m:
+                return m.group(1).strip()
+    return None
+
+
+def _extract_pyproject_version(content: str) -> str | None:
+    if tomllib is not None:
+        try:
+            data = tomllib.loads(content)
+            project = data.get("project", {})
+            if isinstance(project, dict) and "version" in project and isinstance(project["version"], str):
+                return project["version"].strip()
+            poetry = data.get("tool", {}).get("poetry", {})
+            if isinstance(poetry, dict) and "version" in poetry and isinstance(poetry["version"], str):
+                return poetry["version"].strip()
+            flit = data.get("tool", {}).get("flit", {}).get("metadata", {})
+            if isinstance(flit, dict) and "version" in flit and isinstance(flit["version"], str):
+                return flit["version"].strip()
+        except Exception:
+            pass
+    return _section_aware_toml_version(content, ("project", "tool.poetry", "tool.flit.metadata"))
+
+
+def _extract_setup_py_version(content: str) -> str | None:
+    m = re.search(r'^\s*version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+    if m:
+        return m.group(1).strip()
+    m2 = re.search(r'\bversion\s*=\s*["\']([^"\']+)["\']', content)
+    return m2.group(1).strip() if m2 else None
+
+
+def _extract_cargo_version(content: str) -> str | None:
+    if tomllib is not None:
+        try:
+            data = tomllib.loads(content)
+            pkg = data.get("package", {})
+            if isinstance(pkg, dict) and "version" in pkg and isinstance(pkg["version"], str):
+                return pkg["version"].strip()
+        except Exception:
+            pass
+    return _section_aware_toml_version(content, ("package",))
+
+
+def _read_bounded_regular_utf8(path: Path, resolved_root: Path, max_bytes: int) -> str | None:
+    resolved_path = path.resolve()
+    resolved_path.relative_to(resolved_root)
+    open_flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+    fd = os.open(path, open_flags)
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode) or st.st_size > max_bytes:
+            return None
+        chunks: list[bytes] = []
+        total = 0
+        while total <= max_bytes:
+            chunk = os.read(fd, min(65536, max_bytes + 1 - total))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            total += len(chunk)
+        if total > max_bytes:
+            return None
+        return b"".join(chunks).decode("utf-8")
+    finally:
+        os.close(fd)
+
+
+def _enclosing_subpackage_version(
+    root: Path,
+    resolved_root: Path,
+    init_file: Path,
+    max_bytes: int,
+    report: Report,
+) -> tuple[str | None, str | None, bool]:
+    anc = init_file.parent
+    while anc != root:
+        for manifest_name in ("pyproject.toml", "setup.py"):
+            candidate = anc / manifest_name
+            if candidate.is_symlink():
+                rel_c = rel(root, candidate)
+                report.add(
+                    "GOV-VERSION-001",
+                    f"Symlinked nested package manifest {rel_c} is forbidden in version parity scan.",
+                    "Replace symlinked nested package manifest with a regular repository-contained file.",
+                    [rel_c],
+                )
+                return None, None, True
+            if not os.path.lexists(candidate):
+                continue
+            rel_c = rel(root, candidate)
+            try:
+                content = _read_bounded_regular_utf8(candidate, resolved_root, max_bytes)
+            except (OSError, UnicodeDecodeError, ValueError):
+                content = None
+            if content is None:
+                report.add(
+                    "GOV-VERSION-001",
+                    f"Nested package manifest {rel_c} is unreadable, non-regular, or oversized in version parity scan.",
+                    "Ensure nested package manifests are regular UTF-8 files within size bounds.",
+                    [rel_c],
+                )
+                return None, None, True
+            if manifest_name == "pyproject.toml":
+                if tomllib is not None:
+                    try:
+                        tomllib.loads(content)
+                    except Exception:
+                        report.add(
+                            "GOV-VERSION-001",
+                            f"Nested pyproject.toml {rel_c} contains invalid TOML syntax.",
+                            "Fix TOML syntax in the nested pyproject.toml.",
+                            [rel_c],
+                        )
+                        return None, None, True
+                sub_v = _extract_pyproject_version(content)
+            else:
+                sub_v = _extract_setup_py_version(content)
+            if sub_v:
+                return sub_v, rel_c, False
+        anc = anc.parent
+    return None, None, False
+
+
+def check_version_parity(root: Path, manifest: dict[str, Any], report: Report) -> None:
+    try:
+        version_path = safe_repo_path(root, "VERSION")
+    except ValueError:
+        return
+    if not version_path.is_file():
+        return
+
+    try:
+        raw_version = version_path.read_text(encoding="utf-8").strip()
+    except (OSError, UnicodeDecodeError):
+        report.add(
+            "GOV-VERSION-001",
+            "Authoritative VERSION file is unreadable or contains invalid encoding.",
+            "Ensure VERSION is an accessible UTF-8 file declaring a valid plain version.",
+            ["VERSION"],
+        )
+        return
+
+    if not raw_version:
+        report.add(
+            "GOV-VERSION-001",
+            "Authoritative VERSION file is empty.",
+            "Declare a valid semantic or plain version in VERSION.",
+            ["VERSION"],
+        )
+        return
+
+    # 1. pyproject.toml
+    try:
+        pyproject_path = safe_repo_path(root, "pyproject.toml")
+        if pyproject_path.is_file():
+            content = pyproject_path.read_text(encoding="utf-8")
+            pyproject_version = _extract_pyproject_version(content)
+            if pyproject_version and pyproject_version != raw_version:
+                report.add(
+                    "GOV-VERSION-001",
+                    f"Declared pyproject.toml version '{pyproject_version}' does not match authoritative VERSION '{raw_version}'.",
+                    "Synchronize pyproject.toml version with the VERSION file.",
+                    ["pyproject.toml", "VERSION"],
+                )
+    except (OSError, UnicodeDecodeError, ValueError):
+        pass
+
+    # 2. setup.py
+    try:
+        setup_path = safe_repo_path(root, "setup.py")
+        if setup_path.is_file():
+            content = setup_path.read_text(encoding="utf-8")
+            setup_version = _extract_setup_py_version(content)
+            if setup_version and setup_version != raw_version:
+                report.add(
+                    "GOV-VERSION-001",
+                    f"Declared setup.py version '{setup_version}' does not match authoritative VERSION '{raw_version}'.",
+                    "Synchronize setup.py version with the VERSION file or read VERSION dynamically.",
+                    ["setup.py", "VERSION"],
+                )
+    except (OSError, UnicodeDecodeError, ValueError):
+        pass
+
+    # 3. package.json
+    try:
+        package_json_path = safe_repo_path(root, "package.json")
+        if package_json_path.is_file():
+            pkg_data = json.loads(package_json_path.read_text(encoding="utf-8"))
+            if isinstance(pkg_data, dict) and "version" in pkg_data:
+                pkg_version = str(pkg_data["version"]).strip()
+                if pkg_version and pkg_version != raw_version:
+                    report.add(
+                        "GOV-VERSION-001",
+                        f"Declared package.json version '{pkg_version}' does not match authoritative VERSION '{raw_version}'.",
+                        "Synchronize package.json version with the VERSION file.",
+                        ["package.json", "VERSION"],
+                    )
+    except (OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError):
+        pass
+
+    # 4. Cargo.toml
+    try:
+        cargo_path = safe_repo_path(root, "Cargo.toml")
+        if cargo_path.is_file():
+            content = cargo_path.read_text(encoding="utf-8")
+            cargo_version = _extract_cargo_version(content)
+            if cargo_version and cargo_version != raw_version:
+                report.add(
+                    "GOV-VERSION-001",
+                    f"Declared Cargo.toml version '{cargo_version}' does not match authoritative VERSION '{raw_version}'.",
+                    "Synchronize Cargo.toml version with the VERSION file.",
+                    ["Cargo.toml", "VERSION"],
+                )
+    except (OSError, UnicodeDecodeError, ValueError):
+        pass
+
+    # 5. Check static __version__ in python packages
+    skip_dirs = {
+        ".git", ".venv", "venv", "env", ".subactor", ".worktrees",
+        "tests", "test", "build", "dist", "node_modules", "fixtures",
+        "__pycache__", ".tox", ".nox", ".pytest_cache"
+    }
+    resolved_root = root.resolve()
+    max_init_bytes = 1024 * 1024
+    for init_file in version_scan_initializers(root):
+        rel_parts = init_file.relative_to(root).parts
+        if any(part in skip_dirs for part in rel_parts):
+            continue
+        cur = init_file
+        has_symlink = False
+        while cur != root:
+            if cur.is_symlink():
+                has_symlink = True
+                break
+            cur = cur.parent
+        if has_symlink:
+            rel_p = rel(root, init_file)
+            report.add(
+                "GOV-VERSION-001",
+                f"Symlinked Python package initializer {rel_p} is forbidden in version parity scan.",
+                "Replace symlinked __init__.py or package directory with a regular repository-contained file.",
+                [rel_p],
+            )
+            continue
+        try:
+            text = _read_bounded_regular_utf8(init_file, resolved_root, max_init_bytes)
+            if text is None:
+                continue
+            m = re.search(r'^__version__\s*=\s*["\']([^"\']+)["\']', text, re.MULTILINE)
+            if m:
+                found_v = m.group(1).strip()
+                sub_v, sub_source, failed = _enclosing_subpackage_version(
+                    root, resolved_root, init_file, max_init_bytes, report
+                )
+                if failed:
+                    continue
+                if sub_v is not None and sub_source is not None:
+                    if found_v != sub_v:
+                        rel_p = rel(root, init_file)
+                        report.add(
+                            "GOV-VERSION-001",
+                            f"Static __version__ '{found_v}' in {rel_p} does not match enclosing {sub_source} version '{sub_v}'.",
+                            f"Synchronize __version__ in {rel_p} with {sub_source} or use dynamic version discovery.",
+                            [rel_p, sub_source],
+                        )
+                elif found_v != raw_version:
+                    rel_p = rel(root, init_file)
+                    report.add(
+                        "GOV-VERSION-001",
+                        f"Static __version__ '{found_v}' in {rel_p} does not match authoritative VERSION '{raw_version}'.",
+                        "Use dynamic version discovery (importlib.metadata / VERSION) or synchronize __version__ with VERSION.",
+                        [rel_p, "VERSION"],
+                    )
+        except (OSError, UnicodeDecodeError, ValueError):
+            pass
+
+
+def version_scan_initializers(root: Path) -> list[Path]:
+    """Return package initializers owned by this repository.
+
+    Local runtime directories (``.run``, virtualenvs, build caches) are not
+    repository state even when they are absent from the static skip set. Git
+    owns the ignore rules, so honor .gitignore/.git/info/exclude here; a
+    non-Git checkout keeps the previous full scan.
+    """
+    try:
+        raw = git_output(root, ["ls-files", "-co", "--exclude-standard", "-z"])
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return list(root.glob("**/__init__.py"))
+    names = raw.decode("utf-8", "surrogateescape").split("\0")
+    return [candidate for name in names
+            if name == "__init__.py" or name.endswith("/__init__.py")
+            for candidate in (root / name,)
+            if candidate.is_file()]
 
 
 def immutable_image_reference(reference: str) -> bool:
@@ -2761,7 +3466,92 @@ def check_ticket_content(
             check_file_ticket_content(root, directory, active_names, config, report)
 
 
-def probable_secret_fields(text: str) -> list[str]:
+def extract_constant_string(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+        left = extract_constant_string(node.left)
+        right = extract_constant_string(node.right)
+        if left is not None and right is not None:
+            return left + right
+    return None
+
+
+def is_secret_literal(node: ast.AST) -> bool:
+    val = extract_constant_string(node)
+    if val is not None:
+        if len(val) >= 12 and not SAFE_SECRET_VALUES.match(val) and not GENERATED_SECRET_PLACEHOLDER_RE.fullmatch(val):
+            return True
+    return False
+
+
+def find_python_secrets(tree: ast.AST) -> list[str]:
+    fields: list[str] = []
+
+    def add_field(name: str) -> None:
+        m = SECRET_FIELD_NAME_RE.search(name)
+        if m:
+            fields.append(m.group(1))
+
+    def assigned_literal(target: ast.AST, value: ast.AST) -> None:
+        if isinstance(target, (ast.Tuple, ast.List)):
+            if isinstance(value, (ast.Tuple, ast.List)) and len(target.elts) == len(value.elts):
+                for item, literal in zip(target.elts, value.elts):
+                    assigned_literal(item, literal)
+            return
+        if not is_secret_literal(value):
+            return
+        if isinstance(target, ast.Name):
+            add_field(target.id)
+        elif isinstance(target, ast.Attribute):
+            add_field(target.attr)
+        elif isinstance(target, ast.Subscript):
+            key = extract_constant_string(target.slice)
+            if key is not None:
+                add_field(key)
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                assigned_literal(target, node.value)
+        elif isinstance(node, ast.AnnAssign):
+            if node.value is not None:
+                assigned_literal(node.target, node.value)
+        elif isinstance(node, ast.Call):
+            for kw in node.keywords:
+                if kw.arg and SECRET_FIELD_NAME_RE.search(kw.arg):
+                    if is_secret_literal(kw.value):
+                        add_field(kw.arg)
+        elif isinstance(node, ast.Dict):
+            for k, v in zip(node.keys, node.values):
+                if isinstance(k, ast.Constant) and isinstance(k.value, str) and SECRET_FIELD_NAME_RE.search(k.value):
+                    if is_secret_literal(v):
+                        add_field(k.value)
+        elif isinstance(node, ast.Compare):
+            operands = [node.left, *node.comparators]
+            literal = next((value for value in operands if is_secret_literal(value)), None)
+            if literal is not None:
+                for target in operands:
+                    assigned_literal(target, literal)
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+            pos_args = [*node.args.posonlyargs, *node.args.args]
+            defaults = node.args.defaults
+            for arg, default in zip(pos_args[-len(defaults):], defaults):
+                if SECRET_FIELD_NAME_RE.search(arg.arg) and is_secret_literal(default):
+                    add_field(arg.arg)
+            for arg, default in zip(node.args.kwonlyargs, node.args.kw_defaults):
+                if default is not None and SECRET_FIELD_NAME_RE.search(arg.arg) and is_secret_literal(default):
+                    add_field(arg.arg)
+    return sorted(set(fields))
+
+
+def probable_secret_fields(text: str, filename: str = "") -> list[str]:
+    if filename.endswith((".py", ".pyi", ".pyw")):
+        try:
+            tree = ast.parse(text)
+            return find_python_secrets(tree)
+        except SyntaxError:
+            pass
     fields = []
     for match in SECRET_RE.finditer(text):
         value = match.group(2)
@@ -2789,7 +3579,7 @@ def check_changed_file(root: Path, raw: str, report: Report) -> None:
         text = path.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError):
         return
-    secrets = probable_secret_fields(text)
+    secrets = probable_secret_fields(text, raw)
     if secrets:
         report.add(
             "GOV-SECRET-001", f"Probable secret assignment detected in {raw}.",
@@ -2901,8 +3691,9 @@ def check_declared_delivery_budget(
     intent_path: str,
     report: Report,
 ) -> None:
+    profile = policy.get("profiles", {}).get(delivery["complexity"], {})
     limits = effective_delivery_policy(policy, delivery["complexity"])
-    complexity_limit = 10 if delivery["complexity"] == "XS" else policy["maxActiveMinutes"]
+    complexity_limit = profile.get("maxActiveMinutes", 10 if delivery["complexity"] == "XS" else policy["maxActiveMinutes"])
     declared_limits = delivery["budgets"]
     policy_limits = {
         "maxImplementationFiles": limits["maxImplementationFiles"],
@@ -3017,20 +3808,24 @@ def observe_delivery_bases(root, delivery, accepted_sha, intent_path, base, repo
     return observed
 
 
+def _is_git_ancestor(root: Path, ancestor_sha: str, descendant_sha: str) -> bool:
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor_sha, descendant_sha],
+        cwd=root,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return result.returncode == 0
+
+
 def check_observed_delivery_bases(root, accepted_commit, observed, component_patterns, record, intent_path, report) -> None:
     checked: set[str] = set()
     for source, observed_sha in observed:
         if observed_sha in checked or observed_sha == accepted_commit:
             continue
         checked.add(observed_sha)
-        ancestor = subprocess.run(
-            ["git", "merge-base", "--is-ancestor", accepted_commit, observed_sha],
-            cwd=root,
-            check=False,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        if ancestor.returncode != 0:
+        if not _is_git_ancestor(root, accepted_commit, observed_sha):
             report.add(
                 "GOV-BASE-001",
                 f"Ticket {record.directory.name} accepted base is not an ancestor of the observed target.",
@@ -3462,6 +4257,7 @@ def check_selected_ticket_intent(
         coordination = manifest.get("coordination")
         if isinstance(coordination, dict) and intent.get("schema") in {"new-project.intent/v2", "new-project.intent/v3"}:
             check_workstream_change_scope(root, manifest, records, coordination, selected, implementation, report)
+        check_physical_contract_changes(root, intent, directory.name, implementation, report)
         if intent is not None and not selected.external:
             check_delivery_gate(root, manifest, selected, implementation, base, elapsed_minutes, report)
 
@@ -3831,6 +4627,61 @@ def standard_adoption_records(active: list[TicketRecord]) -> list[TicketRecord]:
     ]
 
 
+def _record_ticket_dir_and_prefix(root: Path, record: Any) -> tuple[Path | None, str | None]:
+    ticket_dir = getattr(record, "directory", None)
+    if not isinstance(ticket_dir, Path):
+        return None, None
+    resolved_dir = ticket_dir if ticket_dir.is_absolute() else root / ticket_dir
+    try:
+        rel_dir = resolved_dir.resolve().relative_to(root.resolve()).as_posix().rstrip("/")
+    except ValueError:
+        rel_dir = ticket_dir.as_posix().rstrip("/") if not ticket_dir.is_absolute() else None
+    return resolved_dir, (f"{rel_dir}/" if rel_dir else None)
+
+
+def _is_clean_target_head(root: Path, target_ref: str, head: str) -> bool:
+    try:
+        target_sha = git_output(root, ["rev-parse", "--verify", f"{target_ref}^{{commit}}"]).decode().strip()
+        head_sha = git_output(root, ["rev-parse", "--verify", f"{head}^{{commit}}"]).decode().strip()
+        if not target_sha or head_sha != target_sha:
+            return False
+        return not git_output(root, ["status", "--porcelain", "--untracked-files=all"]).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
+
+
+def unlanded_standard_adoption_records(
+    root: Path,
+    active: list[TicketRecord],
+    changed: list[str] | None = None,
+    *,
+    require_clean_target_head: bool = False,
+    head: str = "HEAD",
+) -> list[TicketRecord]:
+    unlanded: list[TicketRecord] = []
+    for record in standard_adoption_records(active):
+        if record.intent is None:
+            continue
+        delivery = record.intent.get("delivery")
+        if not isinstance(delivery, dict):
+            continue
+        ticket_dir, prefix = _record_ticket_dir_and_prefix(root, record)
+        if changed and prefix and any(path.startswith(prefix) for path in changed):
+            unlanded.append(record)
+            continue
+        target_branch = delivery.get("targetBranch")
+        if ticket_dir is not None and isinstance(target_branch, str) and target_branch:
+            target_ref = f"refs/remotes/origin/{target_branch}"
+            if not require_clean_target_head or _is_clean_target_head(root, target_ref, head):
+                try:
+                    if delivery_landed(root, ticket_dir, target_ref):
+                        continue
+                except Exception:
+                    pass
+        unlanded.append(record)
+    return unlanded
+
+
 def load_standard_adoption_evidence(
     root: Path,
     base: str,
@@ -3869,7 +4720,7 @@ def load_standard_adoption_evidence(
     head_hashes = adoption_lock(head_lock_path.read_bytes(), adoption["toRevision"])
     base_managed = {path for path, strategy in base_strategies.items() if strategy == "managed"}
     head_managed = {path for path, strategy in head_strategies.items() if strategy == "managed"}
-    legacy_base = not base_strategies or (set(base_hashes) <= set(base_strategies))
+    legacy_base = base_package_content is None
     if (
         frozenset(base_hashes) not in {frozenset(base_strategies), frozenset(base_managed)}
         and not legacy_base
@@ -4006,8 +4857,11 @@ def atomic_standard_adoption_paths(
     changed: list[str],
     active: list[TicketRecord],
     report: Report,
+    head: str = "HEAD",
 ) -> set[str]:
-    records = standard_adoption_records(active)
+    records = unlanded_standard_adoption_records(
+        root, active, changed, require_clean_target_head=(base is None), head=head,
+    )
     if not records:
         return set()
     evidence_paths = [".governance/manifest.lock.json", ".governance/package-manifest.json"]
@@ -4198,6 +5052,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default=".governance/work-classification.dsl.json",
     )
     parser.add_argument("--base")
+    parser.add_argument("--infer-ticket-base", action="store_true",
+                        help="On a ticket/NNN-* branch without --base, validate from its merge-base with origin/<target>")
     parser.add_argument("--head", default="HEAD")
     parser.add_argument("--changed-file", action="append", default=[])
     parser.add_argument("--actor", choices=["agent", "human", "ci"], default="agent")
@@ -4306,27 +5162,10 @@ def resolve_validation_base(
     if supplied_base is not None:
         return supplied_base
     active = active_records if active_records is not None else active_ticket_records(root, config, records)
-    adoption_records = standard_adoption_records(active)
     # If an adoption ticket's delivery is already landed on its target branch,
     # its prose status remains active only because terminal receipts were not recorded.
     # Exclude landed adoptions so subsequent tickets do not have their validation base poisoned.
-    unlanded_adoptions = []
-    for record in adoption_records:
-        if record.intent is None:
-            continue
-        delivery = record.intent.get("delivery")
-        if not isinstance(delivery, dict):
-            continue
-        ticket_dir = getattr(record, "directory", None)
-        target_branch = delivery.get("targetBranch")
-        if ticket_dir is not None and target_branch:
-            target_ref = f"refs/remotes/origin/{target_branch}"
-            try:
-                if delivery_landed(root, ticket_dir, target_ref):
-                    continue
-            except Exception:
-                pass
-        unlanded_adoptions.append(record)
+    unlanded_adoptions = unlanded_standard_adoption_records(root, active)
     deliveries = [record.intent["delivery"] for record in unlanded_adoptions if record.intent is not None]
     if not deliveries:
         return None
@@ -4343,28 +5182,35 @@ def resolve_validation_base(
 
 
 def check_change_lease(root: Path, report: Report) -> None:
-    candidates = [
-        root / "scripts" / "change_lease_check.py",
-        root / ".governance" / "change_lease_check.py",
-    ]
-    checker = next((path for path in candidates if path.is_file()), None)
-    if checker is None:
+    # The inspected repository is data, not a source of executable validator
+    # code. Use the helper shipped with this particular validator instead.
+    checker = Path(__file__).resolve().with_name("change_lease_check.py")
+    if checker.is_symlink() or not checker.is_file():
+        report.add(
+            "GOV-CHANGE-LEASE-001", "The validator's change-lease checker is missing or not a regular file.",
+            "Restore the complete trusted new-project validator package.",
+        )
         return
     spec = importlib.util.spec_from_file_location("new_project_change_lease_check", checker)
     if spec is None or spec.loader is None:
         report.add(
             "GOV-CHANGE-LEASE-001", "Could not load the managed change-lease checker.",
-            "Restore the managed checker from the pinned new-project package.", [rel(root, checker)],
+            "Restore the managed checker from the pinned new-project package.",
         )
         return
     module = importlib.util.module_from_spec(spec)
     try:
-        spec.loader.exec_module(module)
+        previous_bytecode_policy = sys.dont_write_bytecode
+        try:
+            sys.dont_write_bytecode = True
+            spec.loader.exec_module(module)
+        finally:
+            sys.dont_write_bytecode = previous_bytecode_policy
         findings = module.validate_repository(root)
     except Exception as error:
         report.add(
             "GOV-CHANGE-LEASE-001", f"Change-lease validation failed closed: {error}",
-            "Repair the managed checker or lease evidence before continuing.", [rel(root, checker)],
+            "Repair the managed checker or lease evidence before continuing.",
         )
         return
     for item in findings:
@@ -4401,29 +5247,36 @@ def compute_git_dirty_digest(root: Path) -> str:
     if not raw:
         return "clean"
 
-    fields = iter(raw.split(b"\0"))
+    if not raw.endswith(b"\0"):
+        return "git-status-failed"
+    fields = iter(raw[:-1].split(b"\0"))
     dirty_files: list[str] = []
     for field in fields:
         if not field:
-            continue
-        path_bytes = field[3:]
-        try:
-            rel_path = path_bytes.decode("utf-8")
-        except UnicodeDecodeError:
-            rel_path = path_bytes.decode("utf-8", errors="replace")
-        dirty_files.append(rel_path)
-        if field[:2] in (b"R ", b"C "):
-            try:
-                dest = next(fields).decode("utf-8", errors="replace")
-                dirty_files.append(dest)
-            except StopIteration:
-                pass
+            return "git-status-failed"
+        if len(field) < 4 or field[2:3] != b" ":
+            return "git-status-failed"
+        dirty_files.append(field[3:].decode("utf-8", errors="surrogateescape"))
+        # Porcelain -z has one additional source pathname for a rename/copy
+        # in either column, including RM, MR and unstaged rename/copy states.
+        if b"R" in field[:2] or b"C" in field[:2]:
+            source = next(fields, b"")
+            if not source:
+                return "git-status-failed"
+            dirty_files.append(source.decode("utf-8", errors="surrogateescape"))
 
     file_hashes: dict[str, str] = {}
     for rel_path in sorted(set(dirty_files)):
+        relative = Path(rel_path)
+        if not relative.parts or relative.anchor or ".." in relative.parts:
+            return "git-status-failed"
         if rel_path.startswith(".subactor/cache/"):
             continue
-        p = root / rel_path
+        # A tracked child may remain in status after its parent directory was
+        # replaced by a link. Disable caching rather than hash its external target.
+        if any((root / parent).is_symlink() for parent in relative.parents if parent != Path(".")):
+            return "git-status-failed"
+        p = root / relative
         if p.is_symlink():
             try:
                 target = os.readlink(p)
@@ -4445,7 +5298,7 @@ def compute_git_dirty_digest(root: Path) -> str:
     hasher = hashlib.sha256()
     hasher.update(raw)
     for k in sorted(file_hashes.keys()):
-        hasher.update(f"\n{k}:{file_hashes[k]}".encode("utf-8"))
+        hasher.update(f"\n{k}:{file_hashes[k]}".encode("utf-8", errors="surrogateescape"))
     return hasher.hexdigest()
 
 
@@ -4460,6 +5313,50 @@ def file_sha256_or_none(path: Path | None) -> str | None:
         return hasher.hexdigest()
     except OSError:
         return "read-error"
+
+
+def infer_ticket_branch_base(root: Path, manifest_path: Path | None, head: str, report: Report) -> str | None:
+    """Bind a bare local run on a ticket branch to the range its PR will be validated on.
+
+    Without a base, only adoption tickets infer one, so an ordinary ticket's
+    committed implementation is invisible and a missing delivery contract
+    passes. A branch that cannot be bound fails closed instead.
+    """
+    branch = subprocess.run(["git", "symbolic-ref", "--quiet", "--short", "HEAD"],
+                            cwd=root, capture_output=True, text=True, check=False).stdout.strip()
+    match = re.fullmatch(r"ticket/([0-9]+)-[^/]+", branch)
+    if match is None:
+        return None
+    try:
+        targets = load_json(manifest_path)["delivery"]["targetBranches"] if manifest_path else None
+    except (OSError, ValueError, KeyError, TypeError):
+        targets = None
+    try:
+        declared = load_json(root / f"project/ticket-{match.group(1)}/intent.json")["delivery"]["targetBranch"]
+    except (OSError, ValueError, KeyError, TypeError):
+        declared = None
+    if isinstance(targets, list) and len(targets) == 1:
+        target = targets[0]
+    else:
+        # Several or no policy targets: only the ticket's own declaration may choose.
+        target = declared if not isinstance(targets, list) or declared in targets else None
+    target = target if branch_name(target) else None
+    remote = f"refs/remotes/origin/{target}"
+    base = (subprocess.run(["git", "merge-base", head, remote], cwd=root,
+                           capture_output=True, text=True, check=False).stdout.strip() if target else "")
+    if re.fullmatch(r"[0-9a-f]{40,64}", base) is None:
+        report.add(
+            "GOV-BASE-001",
+            f"Ticket branch {branch} has no validation base: "
+            + (f"{remote} is missing or unrelated to {head}." if target
+               else "the manifest names no single delivery target branch for it."),
+            f"Run git fetch origin {target or '<target>'} or pass --base explicitly; "
+            "a bare run never validates a ticket branch without a range.",
+            [], {"branch": branch, "targetBranch": target},
+        )
+        return None
+    print(f"governance-check: --base {base} (merge-base of {branch} and origin/{target})", file=sys.stderr)
+    return base
 
 
 def git_rev_parse(root: Path, ref: str) -> str:
@@ -4484,8 +5381,25 @@ def compute_preflight_cache_key(
     profiles_path: Path | None,
     work_classification_path: Path | None,
 ) -> str | None:
+    # A Git dirty digest cannot bind external ticket input, including SQLite WAL.
+    # Let the ordinary reader recheck its current contents and snapshot pins.
+    if not args.base or any((args.ticket_database, args.ticket_snapshot, args.ticket_snapshot_sha256)):
+        return None
+    try:
+        storage = git_output(root, ["config", "--local", "--get", "new-project.ticketStorage"]).decode().strip()
+    except subprocess.CalledProcessError as error:
+        if error.returncode != 1:
+            return None
+        storage = "files"
+    except (OSError, UnicodeError):
+        return None
+    if storage != "files":
+        return None
+
     head_sha = git_rev_parse(root, args.head or "HEAD")
-    base_sha = git_rev_parse(root, args.base) if args.base else "inferred"
+    base_sha = git_rev_parse(root, args.base)
+    if head_sha.startswith("unresolved:") or base_sha.startswith("unresolved:"):
+        return None
     dirty_digest = compute_git_dirty_digest(root)
     if dirty_digest == "git-status-failed":
         return None
@@ -4637,14 +5551,16 @@ def run_governance_checks(
         if any(path.startswith(f"{rel(root, record.directory).rstrip('/')}/") for path in changed)
     ]
     adoption_paths = atomic_standard_adoption_paths(
-        root, base, changed, changed_active or active, report,
+        root, base, changed, changed_active or active, report, args.head,
     )
     timed_step(report, "load_work_classification", load_work_classification, root, report, args.work_classification)
     timed_step(report, "check_lock", check_lock, root, lock_path, manifest, report)
     timed_step(report, "check_policy_dsl", check_policy_dsl, root, report)
+    timed_step(report, "check_host_merge_policy", check_host_merge_policy, root, report)
     timed_step(report, "check_required_checks_declaration", check_required_checks_declaration, root, report)
     timed_step(report, "check_agent_hosts", check_agent_hosts, root, args.actor, report)
     timed_step(report, "check_required_files", check_required_files, root, manifest, report)
+    timed_step(report, "check_version_parity", check_version_parity, root, manifest, report)
     timed_step(report, "check_domain_contracts", check_domain_contracts, root, manifest, report)
     timed_step(report, "check_docker_image_references", check_docker_image_references, root, manifest, report)
     timed_step(report, "check_stacks", check_stacks, root, manifest, profiles_path, report)
@@ -4735,6 +5651,9 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError:
         pass
 
+    if args.infer_ticket_base and args.base is None and not args.changed_file:
+        args.base = infer_ticket_branch_base(root, manifest_path, args.head, report)
+
     if cache_allowed and manifest_path and manifest_path.is_file():
         cache_key = compute_preflight_cache_key(
             root, args, manifest_path, lock_path, profiles_path, work_class_path
@@ -4751,6 +5670,12 @@ def main(argv: list[str] | None = None) -> int:
                     payload["timings"] = timings
                 write_resolved_ticket(root, args.resolved_ticket_output, selected_ticket, report)
                 output_path = optional_repo_path(root, args.output, "GOV-PATH-001", "report output", report)
+                current = report.payload()
+                if current["findings"]:
+                    payload["findings"].extend(current["findings"])
+                    for field in ("errors", "warnings", "findings"):
+                        payload["summary"][field] += current["summary"][field]
+                    payload["status"] = "failed" if payload["summary"]["errors"] else "passed"
                 write_report(output_path, formatted_report(payload, args.format))
                 return 0 if payload["summary"]["errors"] == 0 else 1
 
