@@ -1,0 +1,71 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-031",
+  "summary": "Refresh internal-dependencies documentation review date to resolve DOCS_REVIEW_DUE",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-031/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/information/internal-dependencies.md"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "6de6209ea434c60645c891bee1e08ad2bfebc950",
+    "targetBranch": "main",
+    "outcome": "Refresh review_after, updated, source_revision, and document version in docs/information/internal-dependencies.md to resolve DOCS_REVIEW_DUE in locked test CI.",
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "runtimeDependencies": [],
+    "nonGoals": [
+      "Changing dependency pins, lockfiles, runtime code, or ticket-030 governance adoption files."
+    ],
+    "architecture": {
+      "status": "accepted",
+      "decision": "Update only the frontmatter review metadata in docs/information/internal-dependencies.md following wellmanifest/docs check.py --prepare and --deliverable verification.",
+      "components": [
+        {
+          "name": "repository-docs",
+          "paths": [
+            "docs/information/internal-dependencies.md"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert ticket-031 PR via independent Validator."
+    },
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh --base origin/main --head HEAD"
+        ],
+        "evidence": "wellmanifest/docs check.py reports ok=true and governance-check.sh reports GOV-PASS."
+      }
+    ]
+  }
+}
